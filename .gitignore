@@ -1,0 +1,28 @@
+# Research manuscripts, editorial reviews, and unpublished generated pages
+sources/
+editorial/
+qa/
+drafts/
+manuscripts/
+private/
+site/essays/
+site/index.html
+site/content-manifest.json
+ci-v*/
+
+# Unpublished manuscript / packaging formats
+*.docx
+*.doc
+*.pdf
+*.zip
+
+# Local tooling and caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+.pytest_cache/
+.playwright/
+.DS_Store
