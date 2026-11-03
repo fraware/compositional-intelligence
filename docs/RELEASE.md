@@ -26,3 +26,27 @@ Run python3 tools/check_public_tree.py on the working Git checkout. The current 
 The existing Version 7 site-builder release checks are retained in the private research package. GitHub Actions and GitHub Pages are intentionally unconfigured. In particular, billing constraints should not be bypassed by weakening release safeguards.
 
 For staging prior to publication, use a **private** repository or access-controlled artifact store; a branch of this repository is not private staging.
+
+## Local verification before any push
+
+Run the following in the Git working tree:
+
+```sh
+python3 -m unittest discover -s tests -v
+python3 tools/check_public_tree.py
+git diff --cached --check
+git status --short
+```
+
+The preflight checks the staged Git index **and** the current committed `HEAD`
+tree. It rejects paths outside the small allowlist, symlinks, submodules,
+non-text payloads, oversized files, obvious credential patterns, Git LFS
+pointers, and unreviewed CSS/SVG external resources. Changes to its own code
+and allowed text files still require independent human review. The check does
+not scan all historical commits, prove that prose is approved for release, or
+prevent a contributor with write access from pushing directly. Branch rules
+and review policies must be configured separately when available.
+
+For any approved release, review a fresh clone and all new commits, rather than
+relying on a previously passed local preflight. Never upload Version 7's
+manuscript sources to a public branch to test a deployment.
