@@ -191,13 +191,14 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
                  if before else '<div></div>')
     next_link = (f'<div class="next"><span>Next</span><a href="{esc(after[0])}.html">{esc(after[1])}</a></div>'
                  if after else '<div></div>')
+    atlas_href = "../atlas/#" + slug if position >= 2 else "../atlas/"
     src_meta = f'<meta name="source-sha256" content="{digest}">\n'
     head = header(title, description, BASE + "essays/" + slug + ".html")
     head = head.replace("</head>", src_meta + "</head>", 1)
     return (head +
             '<article><header class="article-header"><p class="breadcrumb"><a href="../index.html">Essays</a> / ' +
             esc(category) + '</p><h1>' + esc(title) + '</h1><p class="byline">Mateo Petel</p>' +
-            '<p class="article-atlas-link"><a href="../atlas/#' + esc(slug) + '">Explore this concept in the Atlas</a></p>' +
+            '<p class="article-atlas-link"><a href="' + esc(atlas_href) + '">Explore the Concept Atlas</a></p>' +
             '</header><div class="article-content" id="article-content">\n' +
             render_toc(body) + body + '</div>\n' +
             '<nav class="article-pager" aria-label="Essay navigation">' + prev_link + next_link + '</nav>' +
