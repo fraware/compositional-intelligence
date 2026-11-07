@@ -172,8 +172,8 @@ Let c denote a generation context and Ω_c a finite or countable tagged candidat
 </tr>
 <tr class="odd">
 <td>P_theta</td>
-<td>Distribution, ranking, or search over candidates</td>
-<td>Sampling distribution, beam ranking, constrained decoding distribution, search policy</td>
+<td>Normalized joint probability mass over tagged target-class and candidate pairs in the displayed schema</td>
+<td>Normalized sampling distribution over pairs (A,t); ranking and search scores need a separate interpretation</td>
 </tr>
 </tbody>
 </table>
@@ -571,7 +571,7 @@ semantic_participation_target: string
 
 ### 7.3 Initial pilot {#7-3-initial-pilot}
 
-A first curated pilot should contain 150 items distributed evenly across code, Lean or mathematical formalization, explanation, scientific protocol design, planning, and tool use. This size supports expert annotation and still exposes initial diagnostic signal. The first pilot should prioritize label quality over scale.
+A first curated pilot should contain 150 items distributed evenly across code, Lean or mathematical formalization, explanation, scientific protocol design, planning, and tool use. This is a proposed feasibility sample for developing annotations and evaluation procedures. Its size alone establishes neither statistical power nor generalization; any comparative result needs a prespecified estimand, an appropriate uncertainty analysis, and explicit sampling assumptions. The first pilot should prioritize label quality over scale.
 
 The primary analysis should classify every failure into at least three classes: wrong target type, right target type with invalid inhabitant, and valid inhabitant with failed semantic participation. A fourth class, transformation instability, should be added when the artifact fails a Functorial Consistency test.
 

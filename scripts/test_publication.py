@@ -22,6 +22,38 @@ class PublicationMetadataTests(unittest.TestCase):
         """Read checked-in metadata without network access."""
         cls.atlas = json.loads((publication.ROOT / "atlas" / "concepts.json").read_text(encoding="utf-8"))
         cls.tables = json.loads((publication.ROOT / "tables" / "captions.json").read_text(encoding="utf-8"))
+        cls.guide = json.loads((publication.ROOT / "reading" / "guide.json").read_text(encoding="utf-8"))
+
+
+    def test_reader_guide_grounded_questions(self) -> None:
+        """Every expert-reader interpretation is attached to a matching source paragraph."""
+        publication.validate_reader_guide(self.guide)
+        self.assertEqual(len(self.guide["entries"]), 7)
+        self.assertEqual(sum(len(entry["checks"]) for entry in self.guide["entries"]), 14)
+
+    def test_reader_guide_rejects_wrong_section(self) -> None:
+        """A true passage cited to an unrelated section is invalid evidence."""
+        changed = copy.deepcopy(self.guide)
+        changed["entries"][0]["checks"][0]["evidence"]["section"] = (
+            "semantic-participation#3-from-output-quality-to-semantic-membership"
+        )
+        with self.assertRaisesRegex(ValueError, "Unmatched reading-guide evidence"):
+            publication.validate_reader_guide(changed)
+
+    def test_reader_guide_rejects_unbalanced_question_inventory(self) -> None:
+        """No series concept may silently lose its diagnostic question."""
+        changed = copy.deepcopy(self.guide)
+        changed["entries"][4]["checks"].pop()
+        with self.assertRaisesRegex(ValueError, "Expected two independent reader questions"):
+            publication.validate_reader_guide(changed)
+
+    def test_reader_guide_renders_native_disclosures(self) -> None:
+        """Questions, explanatory passages, and manuscript links are independently inspectable."""
+        rendered = publication.render_reader_guide(self.guide)
+        self.assertEqual(rendered.count('class="reader-check"'), 14)
+        self.assertEqual(rendered.count('class="reader-source"'), 14)
+        self.assertIn("<details><summary>", rendered)
+        self.assertIn('href="../essays/semantic-participation.html#5-3-semantic-membership"', rendered)
 
     def test_atlas_excerpts_are_exact_and_section_local(self) -> None:
         """Every cited passage occurs inside the declared manuscript section."""

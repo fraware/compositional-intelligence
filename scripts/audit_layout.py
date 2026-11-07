@@ -45,7 +45,7 @@ def main() -> int:
     scrollable_tables = 0
     base = f"http://127.0.0.1:{httpd.server_address[1]}/"
     paths = sorted(p.relative_to(site).as_posix() for p in site.rglob("*.html"))
-    selected = {"index.html", "atlas/index.html", "studies/commuting-square.html",
+    selected = {"index.html", "atlas/index.html", "reading/index.html", "studies/commuting-square.html",
                 "essays/functorial-consistency.html"}
 
     try:
@@ -97,6 +97,19 @@ def main() -> int:
                                             if moved <= 0:
                                                 failures.append(f"{width}px {rel}: table cannot scroll with keyboard")
                                             break
+                            if rel == "reading/index.html":
+                                checks = page.locator(".reader-check")
+                                if checks.count() != 14:
+                                    failures.append(f"{width}px reader guide: expected 14 source-grounded questions")
+                                else:
+                                    first = checks.first.locator("details")
+                                    first.locator("summary").click()
+                                    if first.get_attribute("open") is None:
+                                        failures.append(f"{width}px reader guide: disclosure failed")
+                                    if first.locator("blockquote").count() != 1:
+                                        failures.append(f"{width}px reader guide: missing manuscript evidence")
+                                    if first.locator(".reader-source a").count() != 1:
+                                        failures.append(f"{width}px reader guide: missing source link")
                             if rel == "atlas/index.html":
                                 citations = page.locator(".atlas-source-disclosure")
                                 if citations.count() != 8:

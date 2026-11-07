@@ -266,3 +266,38 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .table-scroll { overflow:visible; break-inside:avoid; }
   .atlas-source-disclosure { display:none; }
 }
+
+
+/* A focused reading route: native disclosure widgets, stable anchors, no scripting. */
+.reader-highlight { padding:25px 0 28px; border-top:1px solid var(--line); margin:0 0 37px; }
+.reader-highlight h2 { margin:5px 0 11px; font:normal 27px/1.3 Georgia,"Times New Roman",serif; letter-spacing:-.02em; }
+.reader-highlight p { margin:0 0 12px; font-size:17px; line-height:1.62; }
+.reader-highlight a { font:15px/1.5 Arial,Helvetica,sans-serif; }
+.reader-intro { max-width:740px; font-size:18px; line-height:1.65; padding:21px 0; }
+.reader-entries, .reader-checks { list-style:none; padding:0; margin:0; }
+.reader-entries { border-top:1px solid var(--line); counter-reset:none; }
+.reader-entry { border-bottom:1px solid var(--line); padding:30px 0 36px; scroll-margin-top:20px; }
+.reader-entry-meta { display:flex; align-items:center; gap:20px; margin-bottom:9px; }
+.reader-entry h2 { margin:0 0 12px; font:normal 29px/1.3 Georgia,"Times New Roman",serif; letter-spacing:-.025em; }
+.reader-entry .reader-focus { margin:0 0 20px; color:var(--soft); font:16px/1.6 Arial,Helvetica,sans-serif; }
+.reader-check { margin:0 0 11px; border:1px solid var(--line); }
+.reader-check summary { padding:15px 18px; cursor:pointer; font:600 15px/1.55 Arial,Helvetica,sans-serif; }
+.reader-check summary:focus-visible { outline:2px solid var(--link); outline-offset:2px; }
+.reader-check details[open] > summary { border-bottom:1px solid var(--line); }
+.reader-answer { padding:15px 18px 17px; font:15px/1.66 Arial,Helvetica,sans-serif; }
+.reader-answer p { margin:0 0 12px; }
+.reader-answer blockquote { margin:12px 0; padding:0 0 0 14px; border-left:2px solid var(--line); color:var(--soft); font:italic 16px/1.65 Georgia,"Times New Roman",serif; }
+.reader-answer .reader-source { font-size:13px; }
+.reader-essay-link, .reader-return { margin:18px 0 0; font:14px/1.55 Arial,Helvetica,sans-serif; }
+.reader-return { padding:24px 0; }
+@media (max-width:680px) {
+  .reader-entry { padding:24px 0 31px; }
+  .reader-entry h2 { font-size:25px; }
+  .reader-check summary { padding:15px 12px; }
+  .reader-answer { padding:14px 12px 15px; }
+}
+@media print {
+  .reader-check details { display:block; }
+  .reader-check details:not([open]) .reader-answer { display:block; }
+  .reader-entry { break-inside:avoid; }
+}

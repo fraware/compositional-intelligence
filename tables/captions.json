@@ -62,8 +62,8 @@
         "source_sha256": "be60dc7de1f67101ecbf3ffa28030cab4b58f1f92ad4c7db920b5e88cbdbda9e"
       },
       {
-        "caption": "Variables in the candidate-generation schema",
-        "source_sha256": "30ba0eb13a420416413ece11cdd6090e3885e338e71d2f64ca1e83858f925f53"
+        "caption": "Variables and probability semantics of the typed-generation schema",
+        "source_sha256": "c7add23fe3dfec9358ba563148ad9b4816b0160855d16a7554e50963b351d897"
       },
       {
         "caption": "Underspecified prompts and alternative target types",

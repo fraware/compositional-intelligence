@@ -370,7 +370,7 @@ A transformation family should be removed from the initial release if annotators
 
 ## 8. Metrics {#8-metrics}
 
-Functorial Consistency requires diagnostic metrics in place of a single aggregate score. Local validity and path agreement measure different properties. A system with high local validity and low path agreement is structurally unreliable; a system with high path agreement on trivial transformations has passed an insufficiently demanding item.
+Functorial Consistency requires diagnostic metrics in place of a single aggregate score. Local validity and path agreement measure different properties. High local validity with low path agreement indicates instability under the tested transformation family and acceptance relation. Broader reliability needs independent evidence. High path agreement on trivial transformations provides insufficient evidence of performance on more demanding items.
 
 Table 6. Recommended metrics.
 
