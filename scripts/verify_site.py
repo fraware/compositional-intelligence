@@ -96,8 +96,8 @@ class Document(HTMLParser):
                 self.invalid_table_wrappers.append("Missing valid table column count")
             else:
                 self.table_column_counts.append(int(columns))
-            if data.get("role") != "group" or data.get("tabindex") != "0" or not data.get("aria-label"):
-                self.invalid_table_wrappers.append("Missing keyboard scrolling or accessible name")
+            if data.get("role") != "group" or data.get("tabindex") != "0" or not data.get("aria-labelledby"):
+                self.invalid_table_wrappers.append("Missing keyboard scrolling or visible-label reference")
         if tag == "p" and "table-display-caption" in (data.get("class") or "").split():
             self.visual_caption_ids.append(data.get("id"))
         if tag == "caption":
