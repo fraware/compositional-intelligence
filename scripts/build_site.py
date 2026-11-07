@@ -126,45 +126,116 @@ def verify_table_catalog(markdown: str, captions: list[dict[str, str]], title: s
 
 
 def render_tables(body: str, captions: list[dict[str, str]]) -> str:
-    """Retain native table semantics and add source-bound captions and scroll containers."""
-    section = "Article"
+    """Render validated native tables with intact sectioning and readable captions.
+
+    Existing manuscript labels become the visible caption's table number.
+    The source-bound descriptive caption supplies the accessible table name.
+    Column counts are retained for responsive layout and browser assertions.
+    """
     counter = 0
     result: list[str] = []
     position = 0
     tokens = re.compile(r"<h[23]\b[^>]*>.*?</h[23]>|<table\b[^>]*>.*?</table>", re.S | re.I)
+    preceding_label = re.compile(
+        r"<p>Table(?:\s+([A-Za-z]?\d+[A-Za-z]?))?\.\s*[^<]*</p>\s*$", re.I
+    )
     for match in tokens.finditer(body):
-        result.append(body[position:match.start()])
+        before = body[position:match.start()]
         token = match.group()
-        if token.lower().startswith("<h"):
-            section = heading_text(token)
-            result.append(token)
-        else:
-            counter += 1
-            if counter > len(captions):
-                raise ValueError(f"Rendered table count exceeds caption catalogue in {section}")
-            label = captions[counter - 1]["caption"]
-            token = re.sub(
-                r"<table\b([^>]*)>",
-                lambda m: f'<table id="table-{counter}"{m.group(1)}>',
-                token, count=1, flags=re.I
-            )
-            if re.search(r"<caption\b", token, re.I):
-                raise ValueError(f"Unexpected embedded table caption in {section}")
-            token = re.sub(
-                r"(<table\b[^>]*>)",
-                lambda m: m.group(1) + '\n<caption class="visually-hidden">' + esc(label) + "</caption>",
-                token, count=1, flags=re.I
-            )
-            token = re.sub(r"<th(?![^>]*\bscope=)", '<th scope="col"', token, flags=re.I)
-            result.append(
-                '<div class="table-scroll" tabindex="0" role="group" aria-label="' +
-                esc("Scrollable table: " + label) + '">\n' + token + '\n</div>'
-            )
+        if not token.lower().startswith("<table"):
+            result.extend((before, token))
+            position = match.end()
+            continue
+
+        counter += 1
+        if counter > len(captions):
+            raise ValueError("Rendered table exceeds source-bound caption catalogue")
+        description = captions[counter - 1]["caption"]
+        label_match = preceding_label.search(before)
+        number = label_match.group(1) if label_match and label_match.group(1) else str(counter)
+        if label_match:
+            before = before[:label_match.start()] + "\n"
+        result.append(before)
+
+        first_row = re.search(r"<tr\b[^>]*>(.*?)</tr>", token, re.I | re.S)
+        if not first_row:
+            raise ValueError(f"Table {counter} has no header row")
+        header = first_row.group(1)
+        cells = re.findall(r"<(?:th|td)\b([^>]*)>", header, re.I)
+        if not cells:
+            raise ValueError(f"Table {counter} has no header cells")
+        columns = 0
+        for attrs in cells:
+            colspan = re.search(r'\bcolspan\s*=\s*["\x27]?(\d+)', attrs, re.I)
+            columns += int(colspan.group(1)) if colspan else 1
+        if not (1 <= columns <= 12):
+            raise ValueError(f"Table {counter} has invalid column count: {columns}")
+
+        token = re.sub(
+            r"<table\b([^>]*)>",
+            lambda m: f'<table id="table-{counter}"{m.group(1)}>',
+            token, count=1, flags=re.I,
+        )
+        if re.search(r"<caption\b", token, re.I):
+            raise ValueError(f"Table {counter} unexpectedly contains a prior caption")
+        caption = (f'<caption class="table-caption"><span class="table-caption-number">'
+                   f'Table {esc(number)}</span> {esc(description)}</caption>')
+        token = re.sub(r"(<table\b[^>]*>)", lambda m: m.group(1) + "\n" + caption,
+                       token, count=1, flags=re.I)
+
+        # Crucially, match <th> only. A previous expression also matched <thead>,
+        # corrupting every table header while leaving superficial counts unchanged.
+        token = re.sub(
+            r"<th\b([^>]*)>",
+            lambda m: ('<th' +
+                       ('' if re.search(r'\bscope\s*=', m.group(1), re.I) else ' scope="col"') +
+                       m.group(1) + '>'),
+            token, flags=re.I,
+        )
+        if not re.search(r"<thead\b", token, re.I) or not re.search(r"</thead>", token, re.I):
+            raise ValueError(f"Table {counter} lacks intact semantic header structure")
+
+        result.append(
+            f'<div class="table-scroll" data-columns="{columns}" tabindex="0" '
+            f'role="group" aria-label="{esc("Table " + str(number) + ": " + description)}">'
+            + "\n" + token + "\n</div>"
+        )
         position = match.end()
     result.append(body[position:])
     if counter != len(captions):
-        raise ValueError(f"Rendered table count {counter} differs from caption catalogue ({len(captions)})")
+        raise ValueError(f"Rendered {counter} tables, expected {len(captions)}")
     return "".join(result)
+
+
+def render_schema_blocks(body: str) -> str:
+    """Preserve the authored line breaks in structured manuscript records.
+
+    Only plain-text multiline blockquotes are transformed. Ordinary quoted
+    arguments and paragraphs retain their original blockquote semantics.
+    """
+    block = re.compile(r"<blockquote>\s*(.*?)\s*</blockquote>", re.S | re.I)
+    def convert(match: re.Match[str]) -> str:
+        raw = match.group(1)
+        if "<a " in raw or "<math" in raw or "<table" in raw:
+            return match.group()
+        lines = re.sub(r"<br\s*/?>", "\n", raw, flags=re.I)
+        lines = re.sub(r"</p>\s*<p>", "\n", lines, flags=re.I)
+        lines = re.sub(r"</?p>", "", lines, flags=re.I)
+        if re.search(r"<[A-Za-z]", lines):
+            return match.group()
+        plain = html.unescape(lines).strip()
+        pieces = [line.strip() for line in plain.split("\n") if line.strip()]
+        if len(pieces) < 3 or (len(pieces) < 5 and not any(
+            symbol in pieces[0] for symbol in ("=", ":", "{")
+        )):
+            return match.group()
+        if any(len(line) > 350 for line in pieces):
+            return match.group()
+        return ('<div class="record-schema" role="group" tabindex="0" '
+                'aria-label="Structured record or notation">'
+                '<pre><code>' + esc("\n".join(pieces)) +
+                '</code></pre></div>')
+    return block.sub(convert, body)
 
 
 def render_math(body: str) -> str:
@@ -204,7 +275,7 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
     verify_table_catalog(source_body, table_captions, expected_title)
     command = ["pandoc", "--from=markdown+raw_html", "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
-    body = render_tables(render_math(rendered.stdout.rstrip() + "\n"), table_captions)
+    body = render_schema_blocks(render_tables(render_math(rendered.stdout.rstrip() + "\n"), table_captions))
     for ident in MARKDOWN_SECTION.findall(source_body):
         if f'id="{ident}"' not in body:
             raise ValueError(f"Missing rendered heading anchor {ident!r}: {expected_title}")

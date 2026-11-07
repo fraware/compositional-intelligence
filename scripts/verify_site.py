@@ -33,6 +33,11 @@ class Document(HTMLParser):
         self.main = 0
         self.h1 = 0
         self.tables = 0
+        self.theads = 0
+        self.tbodies = 0
+        self.invalid_captions: list[str] = []
+        self.header_markup_errors: list[str] = []
+        self.table_column_counts: list[int] = []
         self.maths = 0
         self.display_maths = 0
         self.annotations = 0
@@ -76,19 +81,32 @@ class Document(HTMLParser):
             self.math_scrolls += 1
             if data.get("role") != "group" or data.get("tabindex") != "0" or not data.get("aria-label"):
                 self.invalid_math_scrolls.append("Missing MathML scroll semantics")
+        if tag == "thead":
+            self.theads += 1
+        if tag == "tbody":
+            self.tbodies += 1
         if tag == "table":
             self.tables += 1
             self.table_ids.append(data.get("id"))
         if tag == "div" and "table-scroll" in (data.get("class") or "").split():
             self.table_wrappers += 1
+            columns = data.get("data-columns")
+            if columns is None or not columns.isdecimal() or not (1 <= int(columns) <= 12):
+                self.invalid_table_wrappers.append("Missing valid table column count")
+            else:
+                self.table_column_counts.append(int(columns))
             if data.get("role") != "group" or data.get("tabindex") != "0" or not data.get("aria-label"):
                 self.invalid_table_wrappers.append("Missing keyboard scrolling or accessible name")
         if tag == "caption":
             self.captions += 1
+            if "table-caption" not in (data.get("class") or "").split():
+                self.invalid_captions.append("Table caption must be visible")
             self._in_caption = True
             self.caption_texts.append("")
         if tag == "th":
             self.th += 1
+            if "ead" in data or data.get("scope") not in {"col", "row"}:
+                self.header_markup_errors.append("Malformed or unscoped table header")
             if data.get("scope") in {"col", "row"}:
                 self.scoped_th += 1
         if tag == "script":
@@ -223,15 +241,18 @@ def main() -> int:
                               f"got {doc.display_maths} equations and {doc.figures} figures")
         total_display_maths += doc.display_maths
         total_figures += doc.figures
-        if doc.tables != doc.captions or doc.th != doc.scoped_th:
-            issues.append(f"Table caption/header mismatch: {relative}")
-        if doc.tables != doc.table_wrappers or doc.invalid_table_wrappers:
+        if (doc.tables != doc.captions or doc.tables != doc.theads or
+            doc.tables != doc.tbodies or doc.th != doc.scoped_th or
+            doc.header_markup_errors or doc.invalid_captions):
+            issues.append(f"Malformed HTML table section/header/caption in {relative}")
+        if (doc.tables != doc.table_wrappers or doc.invalid_table_wrappers or
+            doc.tables != len(doc.table_column_counts)):
             issues.append(f"Table scrolling accessibility mismatch: {relative}")
         if doc.tables and doc.table_ids != [f"table-{n}" for n in range(1, doc.tables + 1)]:
             issues.append(f"Unstable table identifiers in {relative}")
-        if any(len(label.strip()) < 20 or label.startswith("Table ") and " in " in label
+        if any(len(label.strip()) < 30 or not label.strip().startswith("Table ")
                for label in doc.caption_texts):
-            issues.append(f"Uninformative scientific table caption: {relative}")
+            issues.append(f"Missing or uninformative visible table caption: {relative}")
         if relative.startswith("essays/"):
             manuscript = ROOT / "essays" / page.with_suffix(".md").name
             if not manuscript.is_file():

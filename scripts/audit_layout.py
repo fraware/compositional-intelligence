@@ -52,7 +52,7 @@ def main() -> int:
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True)
             try:
-                for width in (375, 768, 1440):
+                for width in (320, 375, 768, 1440):
                     context = browser.new_context(
                         viewport={"width": width, "height": 850},
                         device_scale_factor=1,
@@ -91,6 +91,16 @@ def main() -> int:
                                 failures.append(f"{width}px {rel}: unexpected title hierarchy")
                             if errors:
                                 failures.append(f"{width}px {rel}: script errors: {errors[:2]}")
+                            if rel == "index.html" or rel.startswith("essays/"):
+                                typography = page.evaluate("""() => ({
+                                    display: getComputedStyle(document.querySelector("h1")).fontFamily,
+                                    prose: getComputedStyle(document.body).fontFamily,
+                                    background: getComputedStyle(document.body).backgroundColor
+                                })""")
+                                if ("Baskerville" not in typography["display"] or
+                                    "Palatino" not in typography["prose"] or
+                                    typography["background"] != "rgb(250, 249, 246)"):
+                                    failures.append(f"{width}px {rel}: editorial typography regression")
                             if rel.startswith("essays/"):
                                 media = page.evaluate("""() => {
                                     const article = document.querySelector(".article-content");
@@ -126,6 +136,29 @@ def main() -> int:
                                     failures.append(f"{width}px {rel}: invisible mathematics")
                                 if media and (media["invalidFigures"] or media["unnamedImages"] or media["overflowingMediaRoots"]):
                                     failures.append(f"{width}px {rel}: media accessibility/layout {media}")
+                                table_structure = page.evaluate("""() => ({
+                                    invalid: [...document.querySelectorAll(".article-content .table-scroll")]
+                                      .filter(w => {
+                                        const t = w.querySelector("table");
+                                        if (!t || !t.tHead || !t.tBodies.length ||
+                                            !t.caption || !t.caption.classList.contains("table-caption")) return true;
+                                        const headers = t.tHead.querySelectorAll("th[scope=col]");
+                                        const count = Number(w.dataset.columns);
+                                        if (!Number.isInteger(count) || count < 1 ||
+                                            headers.length < 1 || headers.length > count) return true;
+                                        if (t.querySelector("th[ead]")) return true;
+                                        if (getComputedStyle(t.caption).display === "none" ||
+                                            t.caption.getBoundingClientRect().height < 10) return true;
+                                        if (innerWidth <= 375 && count >= 2 &&
+                                            t.getBoundingClientRect().width < 550) return true;
+                                        return false;
+                                      }).length
+                                })""")
+                                if table_structure["invalid"]:
+                                    failures.append(
+                                        f"{width}px {rel}: invalid or cramped semantic tables "
+                                        f"({table_structure['invalid']})"
+                                    )
                                 tables = page.locator(".table-scroll")
                                 for table in tables.all():
                                     if table.get_attribute("tabindex") != "0" or table.get_attribute("role") != "group":
@@ -156,7 +189,7 @@ def main() -> int:
                                         failures.append(f"{width}px reader guide: missing manuscript evidence")
                                     if first.locator(".reader-source a").count() != 1:
                                         failures.append(f"{width}px reader guide: missing source link")
-                            if width in (375, 1440) and rel in selected:
+                            if width in (320, 375, 1440) and rel in selected:
                                 label = rel.replace("/", "-").replace(".html", "")
                                 # Capture the actual scientific media, not only the article header.
                                 if rel.startswith("essays/"):
@@ -200,7 +233,7 @@ def main() -> int:
         print(f"FAIL: {failure}")
     if failures:
         return 1
-    print(f"PASS: {len(paths)} pages at 375, 768, and 1440px; tables, MathML, figures, reader checks, study interactions; screenshots saved")
+    print(f"PASS: {len(paths)} pages at 320, 375, 768, and 1440px; semantic tables, MathML, figures, reader checks, study interactions; screenshots saved")
     return 0
 
 
