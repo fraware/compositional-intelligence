@@ -42,6 +42,7 @@ def main() -> int:
     thread = threading.Thread(target=httpd.serve_forever, daemon=True)
     thread.start()
     failures: list[str] = []
+    scrollable_tables = 0
     base = f"http://127.0.0.1:{httpd.server_address[1]}/"
     paths = sorted(p.relative_to(site).as_posix() for p in site.rglob("*.html"))
     selected = {"index.html", "atlas/index.html", "studies/commuting-square.html",
@@ -78,6 +79,32 @@ def main() -> int:
                                 failures.append(f"{width}px {rel}: unexpected title hierarchy")
                             if errors:
                                 failures.append(f"{width}px {rel}: script errors: {errors[:2]}")
+                            if rel.startswith("essays/"):
+                                tables = page.locator(".table-scroll")
+                                for table in tables.all():
+                                    if table.get_attribute("tabindex") != "0" or table.get_attribute("role") != "group":
+                                        failures.append(f"{width}px {rel}: inaccessible scroll container")
+                                        break
+                                if width == 375:
+                                    for table in tables.all():
+                                        sizing = table.evaluate("(e) => ({scroll: e.scrollWidth, client: e.clientWidth})")
+                                        if sizing["scroll"] > sizing["client"] + 1:
+                                            scrollable_tables += 1
+                                            table.focus()
+                                            page.keyboard.press("ArrowRight")
+                                            page.wait_for_timeout(150)
+                                            moved = table.evaluate("(e) => e.scrollLeft")
+                                            if moved <= 0:
+                                                failures.append(f"{width}px {rel}: table cannot scroll with keyboard")
+                                            break
+                            if rel == "atlas/index.html":
+                                citations = page.locator(".atlas-source-disclosure")
+                                if citations.count() != 8:
+                                    failures.append(f"{width}px Atlas: missing source-bound connections")
+                                else:
+                                    citations.first.locator("summary").click()
+                                    if citations.first.locator("blockquote").count() != 2:
+                                        failures.append(f"{width}px Atlas: missing supporting excerpts")
                             if width in (375, 1440) and rel in selected:
                                 label = rel.replace("/", "-").replace(".html", "")
                                 page.screenshot(path=str(screenshots / f"{width}-{label}.png"))
@@ -96,11 +123,13 @@ def main() -> int:
         httpd.server_close()
         thread.join(timeout=2)
 
+    if scrollable_tables == 0:
+        failures.append("No horizontally scrollable scientific table exercised at mobile width")
     for failure in failures:
         print(f"FAIL: {failure}")
     if failures:
         return 1
-    print(f"PASS: {len(paths)} pages at 375, 768, and 1440px; study interactions; screenshots saved")
+    print(f"PASS: {len(paths)} pages at 375, 768, and 1440px; scientific tables, Atlas excerpts, study interactions; screenshots saved")
     return 0
 
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Source-anchored conceptual relationships in the seven-essay series.",
+  "description": "An editorial guide to the seven concepts, with source-section excerpts and explicit interpretive boundaries.",
   "concepts": [
     {
       "id": "semantic-participation",
@@ -162,81 +162,137 @@
       "from": "semantic-participation",
       "to": "typed-generativity",
       "kind": "progression",
-      "label": "Membership conditions inform target-type construction.",
+      "label": "Membership criteria motivate the specification of target types and candidate inhabitants.",
       "evidence": [
-        "semantic-participation#1-position-in-the-compositional-intelligence-series",
-        "typed-generativity#1-position-in-the-compositional-intelligence-series"
-      ]
+        {
+          "section": "semantic-participation#1-position-in-the-compositional-intelligence-series",
+          "excerpt": "Essay 1 defines the membership criterion for the series. Essay 2 analyzes target-type inference and candidate construction."
+        },
+        {
+          "section": "typed-generativity#1-position-in-the-compositional-intelligence-series",
+          "excerpt": "Typed Generativity converts the external standard of Semantic Participation into an internal diagnostic for generation."
+        }
+      ],
+      "scope": "The essays define a conceptual sequence. They do not claim that every generative implementation performs a membership check before producing a candidate."
     },
     {
       "from": "typed-generativity",
       "to": "functorial-consistency",
       "kind": "progression",
-      "label": "Constructed candidates become subjects of transformation-sensitive tests.",
+      "label": "Candidate construction leads to the proposed transformation-sensitive evaluation.",
       "evidence": [
-        "typed-generativity#1-position-in-the-compositional-intelligence-series",
-        "functorial-consistency#2-position-within-the-compositional-intelligence-series"
-      ]
+        {
+          "section": "typed-generativity#1-position-in-the-compositional-intelligence-series",
+          "excerpt": "Essay 3 then tests whether the generated object changes correctly under structured transformations."
+        },
+        {
+          "section": "functorial-consistency#2-position-within-the-compositional-intelligence-series",
+          "excerpt": "Functorial Consistency then tests whether the candidate artifact maintains the relation that connects it to source transformations and target operations."
+        }
+      ],
+      "scope": "An item-level transformation test applies only if the two paths, typed outputs, comparison relation, and independent adequacy checks are specified."
     },
     {
       "from": "functorial-consistency",
       "to": "lambek-machines",
       "kind": "specialization",
-      "label": "The two-path test is instantiated for controlled linguistic transformations.",
+      "label": "The two-path framework is proposed for controlled linguistic transformations.",
       "evidence": [
-        "functorial-consistency#6-3-natural-language-to-semantic-parse",
-        "lambek-machines#6-functorial-language-consistency"
-      ]
+        {
+          "section": "functorial-consistency#6-3-natural-language-to-semantic-parse",
+          "excerpt": "The source side can vary paraphrase, quantifier scope, attachment, lexical choice, or representation format"
+        },
+        {
+          "section": "lambek-machines#6-functorial-language-consistency",
+          "excerpt": "Functorial Language Consistency instantiates the two-path benchmark for a declared linguistic transformation f and semantic representation."
+        }
+      ],
+      "scope": "The linguistic benchmark is a proposed domain instantiation; the cited sections report no improvement from an implemented model."
     },
     {
       "from": "functorial-consistency",
       "to": "algebraic-architectures",
       "kind": "constraint",
-      "label": "Transformation obligations help specify architecture-level structural commitments.",
+      "label": "Transformation obligations inform task-specific architecture specifications.",
       "evidence": [
-        "functorial-consistency#2-position-within-the-compositional-intelligence-series",
-        "algebraic-architectures#1-position-in-the-compositional-intelligence-series"
-      ]
+        {
+          "section": "functorial-consistency#2-position-within-the-compositional-intelligence-series",
+          "excerpt": "An architecture extension must state which task transformations a model family supports."
+        },
+        {
+          "section": "algebraic-architectures#1-position-in-the-compositional-intelligence-series",
+          "excerpt": "ArchitectureSpec inherits the transformation requirement from Functorial Consistency."
+        }
+      ],
+      "scope": "Architecture-level preservation commitments depend on task-specific transformation classes. The connection establishes a design obligation, not a guarantee of model behavior."
     },
     {
       "from": "lambek-machines",
       "to": "algebraic-architectures",
       "kind": "progression",
-      "label": "The linguistic instantiation motivates explicit architectural comparisons.",
+      "label": "The linguistic instantiation motivates general questions about architecture choice.",
       "evidence": [
-        "lambek-machines#14-relation-to-essay-5-algebraic-architectures",
-        "algebraic-architectures#1-position-in-the-compositional-intelligence-series"
-      ]
+        {
+          "section": "lambek-machines#14-relation-to-essay-5-algebraic-architectures",
+          "excerpt": "Essay 4 prepares the architecture-level question by isolating a case in which task structure is explicit."
+        },
+        {
+          "section": "algebraic-architectures#1-position-in-the-compositional-intelligence-series",
+          "excerpt": "The language layer instantiates these ideas in typed linguistic composition."
+        }
+      ],
+      "scope": "The linguistic case motivates architectural questions. The cited sections do not establish a performance benefit from a particular architecture."
     },
     {
       "from": "algebraic-architectures",
       "to": "quantitative-curry-howard",
       "kind": "progression",
-      "label": "Architectural commitments lead into questions about evidence and warrant.",
+      "label": "Architecture specifications lead to separate questions about quantitative evidence.",
       "evidence": [
-        "algebraic-architectures#13-relationship-to-essay-6-quantitative-curry-howard",
-        "quantitative-curry-howard#1-position-in-the-compositional-intelligence-series"
-      ]
+        {
+          "section": "algebraic-architectures#13-relationship-to-essay-6-quantitative-curry-howard",
+          "excerpt": "Architecture determines which structures a model represents and which validators it exposes"
+        },
+        {
+          "section": "quantitative-curry-howard#1-position-in-the-compositional-intelligence-series",
+          "excerpt": "Quantitative Curry-Howard supplies the evidence layer for candidate typed artifacts."
+        }
+      ],
+      "scope": "Architecture specifications and quantitative evidence records serve different purposes. Numerical evidence needs its own estimand, validation target, and calibration basis."
     },
     {
       "from": "quantitative-curry-howard",
       "to": "effectful-and-conceptual-intelligence",
       "kind": "boundary",
-      "label": "Warrant for a candidate does not itself authorize an action.",
+      "label": "Quantitative warrant is an input to action authorization, never a substitute for it.",
       "evidence": [
-        "quantitative-curry-howard#13-conclusion-and-transition-to-essay-7",
-        "effectful-and-conceptual-intelligence#1-position-in-the-compositional-intelligence-series"
-      ]
+        {
+          "section": "quantitative-curry-howard#13-conclusion-and-transition-to-essay-7",
+          "excerpt": "quantitative warrant becomes an input to authorization and audit."
+        },
+        {
+          "section": "effectful-and-conceptual-intelligence#1-position-in-the-compositional-intelligence-series",
+          "excerpt": "Scores, validators, and epistemic types guide action only through an authorization surface"
+        }
+      ],
+      "scope": "Evidence concerning a proposed action and authorization to execute it remain separate decisions, with distinct validators and authority conditions."
     },
     {
       "from": "effectful-and-conceptual-intelligence",
       "to": "semantic-participation",
-      "kind": "return",
-      "label": "Execution remains subject to membership and permitted-use conditions.",
+      "kind": "applicability",
+      "label": "Consequential action remains subject to environment-relative admission and permitted-use conditions.",
       "evidence": [
-        "effectful-and-conceptual-intelligence#14-2-series-synthesis",
-        "semantic-participation#2-governing-claim"
-      ]
+        {
+          "section": "effectful-and-conceptual-intelligence#14-2-series-synthesis",
+          "excerpt": "The suite converges on a single evaluation object: typed artifacts in structured environments, with validation, transformation stability, warrant, and effect control."
+        },
+        {
+          "section": "semantic-participation#2-governing-claim",
+          "excerpt": "Membership is environment-relative."
+        }
+      ],
+      "scope": "This is a cross-cutting applicability constraint, not a chronological feedback step, a mathematical implication, or evidence that any deployed system satisfies the membership criterion."
     }
   ]
 }

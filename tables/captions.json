@@ -1,0 +1,446 @@
+{
+  "schema_version": 1,
+  "description": "Source-bound descriptions for the published scientific tables, read by assistive technologies.",
+  "essays": {
+    "semantic-participation": [
+      {
+        "caption": "Six proposed contributions and their evidential status",
+        "source_sha256": "c878a6e04b0e5ab170b4adac35631e978d55913086c41f52bbb86d191fb6555d"
+      },
+      {
+        "caption": "Suggested reading paths by audience",
+        "source_sha256": "7520e8648201ae8beac53ae6b31185bc5e2fc1a8c66fc840092f0ef5cd07f7d1"
+      },
+      {
+        "caption": "Governing criterion for semantic membership",
+        "source_sha256": "774004106d508b4596c54e0add47fae2bba15d5533863af245e53b1a20cfec6a"
+      },
+      {
+        "caption": "Examples of local success and environment-relative admission conditions",
+        "source_sha256": "f73a146dd9344242059058e268af4cc29f382839f98185ba59a4f9798d491865"
+      },
+      {
+        "caption": "Seven distinct thresholds of semantic participation",
+        "source_sha256": "bd3d3e7a1fc55cfc01300cd3224d3161da75d8796db1a6d7f1f417086cb8022b"
+      },
+      {
+        "caption": "Epistemic claim types and their permitted uses",
+        "source_sha256": "35818970ce8ab9d56c51b696bfcff350bf2f7e1c205463ab6e5908cf302d76a6"
+      },
+      {
+        "caption": "Dimensions for assessing a formal-library contribution",
+        "source_sha256": "6cf59d741d465d0be15a7fb266b604cb268aaee241370f37b0688791fb2b0f80"
+      },
+      {
+        "caption": "Evidence distinctions for claims about scientific stability",
+        "source_sha256": "7fb64d1563f7d12985d145a4aff37bd35baacca7a55b541a25dde2e9a797e270"
+      },
+      {
+        "caption": "Proposed benchmark tracks and diagnostic targets",
+        "source_sha256": "cece2c0dd962498d9aaa438aee45e0c7b458b3623fbb4eff9433a0477b0f0b52"
+      },
+      {
+        "caption": "Objections and required response protocols",
+        "source_sha256": "dce17c2ea41f17a97cd6e49b402c0a74682ba6f90d663a764d6ba2064cadf2b2"
+      },
+      {
+        "caption": "Failure modes for semantic participation",
+        "source_sha256": "b320485a471da874bc7b3dbd99cb563fdbbbd26af0d6b189a95d5d08f35f5c51"
+      },
+      {
+        "caption": "Claim ledger and publication status of the proposal",
+        "source_sha256": "f1e81874a2a1274471579a113674c861718544412a9907e7590d9525c1a691b6"
+      }
+    ],
+    "typed-generativity": [
+      {
+        "caption": "Contributions to the typed-generation proposal",
+        "source_sha256": "28ff68d598e0ff233df7f0a33af68339fcb0ae4326cfd32342e77a318e10acf8"
+      },
+      {
+        "caption": "Suggested reading paths by audience",
+        "source_sha256": "be60dc7de1f67101ecbf3ffa28030cab4b58f1f92ad4c7db920b5e88cbdbda9e"
+      },
+      {
+        "caption": "Variables in the candidate-generation schema",
+        "source_sha256": "30ba0eb13a420416413ece11cdd6090e3885e338e71d2f64ca1e83858f925f53"
+      },
+      {
+        "caption": "Underspecified prompts and alternative target types",
+        "source_sha256": "16d54a61d5426398777f1d271c4d503b8ed4166d0cb032798980873758bb3ee2"
+      },
+      {
+        "caption": "Three levels of typed generation and their proposed tests",
+        "source_sha256": "2483cafee9ae683db7c19ddb1af6d9259077dcc912df6f22fe135d2e4c1f5653"
+      },
+      {
+        "caption": "Code-generation failure types",
+        "source_sha256": "0d39bcdf24418758891d21cecbfc56ea786a27e99e7b6eac1051bf4e60ce426a"
+      },
+      {
+        "caption": "Possible target types and validators for explanations",
+        "source_sha256": "2594672769f5a55f95fb933777e1013c5728f872b31d599f38a52bab38e6d3c6"
+      },
+      {
+        "caption": "Scientific-protocol design failure types",
+        "source_sha256": "6659ebcb69129bb68a45c4baae6c583cb78d0f64819e5a19e7d7dac87c4130c4"
+      },
+      {
+        "caption": "Experimental conditions for type-first prompting",
+        "source_sha256": "022eb8776f479f157993c9bc97a30e4da02253885de341b0621fdc4bd9ddd287"
+      },
+      {
+        "caption": "Proposed evaluation metrics for target-type inference and generation",
+        "source_sha256": "32b6dbd82581702e7dff7dc364d71047d780561898c1c6ba33073e3c6984a23b"
+      },
+      {
+        "caption": "Target-type and candidate-inhabitant records",
+        "source_sha256": "d282819fe0ff221f8ce18423a6f012709c8860f179aa25633983fbcc866b02b7"
+      },
+      {
+        "caption": "Related research areas and their evidential limits",
+        "source_sha256": "c1555d8ca8295ab8f06634aad9fe97a3e3862b47607ca80a5f5f9fbec56b392e"
+      },
+      {
+        "caption": "Objections, response standards, and tests",
+        "source_sha256": "f49466e3a4fc2c5d19edcf9400adb98027a1106a7978849c0f442ae860d76a3a"
+      },
+      {
+        "caption": "Generation failure taxonomy and repair paths",
+        "source_sha256": "f73c2552b74d9a8c1cb214ba5fb11eb061b56b65af74c689478ffca4d5c05978"
+      },
+      {
+        "caption": "Claim levels for typed generativity",
+        "source_sha256": "425b42eed1dc0ad13abed132181bab2d7e22614711b52951106b1d6b11960091"
+      }
+    ],
+    "functorial-consistency": [
+      {
+        "caption": "Contributions of the proposed transformation benchmark",
+        "source_sha256": "8220dbdd5a58336f936e12de0158bf82c10180bb0fb9caf0b3a25e05ef1cf7fd"
+      },
+      {
+        "caption": "Required fields in a Functorial Consistency evaluation item",
+        "source_sha256": "298a3333483dffe49ed9a8d3faa89fbc0f5c2db8c62a3ac90083a389225f5f17"
+      },
+      {
+        "caption": "Comparison relations and their validator regimes",
+        "source_sha256": "37c905850f821365c79c67976e919b181be8a24656c05ebfb49a5339139c8350"
+      },
+      {
+        "caption": "Distinctions from adjacent evaluation families",
+        "source_sha256": "cca91bbdcb90dc7c42e3c93c31013009a7673f78e7a6cc48a9981a8c3aa1a51e"
+      },
+      {
+        "caption": "Controlled families of source transformations",
+        "source_sha256": "7a54d911a8d13358b32ff61721c06d37ae6bad8b5cbf5a3195723996a2ffb082"
+      },
+      {
+        "caption": "Proposed agreement, coverage, and adequacy metrics",
+        "source_sha256": "e00c7951028ef2e04211fe3287d393c5ee40e5b44965ba35b5d5f8a201b617af"
+      },
+      {
+        "caption": "Failure labels and associated repair implications",
+        "source_sha256": "f33a3ab7a72896b20deb56988076a128c97dd0b286ba7874ae1ffd9579affe40"
+      },
+      {
+        "caption": "Fields of the benchmark-item record",
+        "source_sha256": "bfc600811e3f65459d166ca6b30980742c040d8ee56e2343763ea3c8c1dedee6"
+      },
+      {
+        "caption": "Fields of the model-output record",
+        "source_sha256": "f6001ebc4cf93e9405be08687df6d9e01e4031d13194fd97bc29c205520632fc"
+      },
+      {
+        "caption": "Proposed seed-item allocation across domains",
+        "source_sha256": "fd1147c5d98ce122ee7b9c852edab42cc593ac2af211edfcbb280ed355d1e712"
+      },
+      {
+        "caption": "Annotation steps and acceptance conditions",
+        "source_sha256": "2ec7789428c0534702668636201a9f6418e9dc9098bd140a8e744df167e617fc"
+      },
+      {
+        "caption": "Pilot phases and associated work products",
+        "source_sha256": "418eccf8eb2de17da0b7244cab96f8ae82fbe66442e92dbedad55ae2e4a48a40"
+      },
+      {
+        "caption": "Objections and required evaluation controls",
+        "source_sha256": "95da8ffa52d810b333847a40ea6d531c060527418b567818875edbea932142d5"
+      },
+      {
+        "caption": "Failure patterns and project decisions",
+        "source_sha256": "11b85e5cb34f9cd725fe5cd2a7320462c3bebd1ca691a0e08abea28bf5884c43"
+      },
+      {
+        "caption": "Proposed rejection or revision criteria",
+        "source_sha256": "d63a810764124cda5dac6d9d1fd356b15205e1289125d83ac74a94d59dce7da1"
+      },
+      {
+        "caption": "Template fields for a benchmark card",
+        "source_sha256": "2311384d4b59c5e6945d68fd6e98518e560ef75bdf6b27a720fbcea38f8cf76e"
+      },
+      {
+        "caption": "Worked transformation-benchmark cards",
+        "source_sha256": "2c06506fc20a3913dd869e8ce50306bd62a364279a3fd0e3f2681a33dcb51eb3"
+      },
+      {
+        "caption": "Dimensions in the reviewed-alignment rubric",
+        "source_sha256": "7ba1ad46167e2895cc1c5482f5e5a171b0228ab36957647043b4374a82a046a5"
+      }
+    ],
+    "lambek-machines": [
+      {
+        "caption": "Contributions of the Lambek Machines research proposal",
+        "source_sha256": "20df0f56bffc09eebe8329b22a1e608164bcf4d844fa044904faf151632fef43"
+      },
+      {
+        "caption": "Suggested reading paths by audience",
+        "source_sha256": "a98e416b6fa8b8d0cae9fc6fd8065585da23faabb833c495030edca20ae5441b"
+      },
+      {
+        "caption": "Relevant literature and the claims it supports",
+        "source_sha256": "dcc1bfea57483431ff5b0e69256601db5433ef76db27693a7f4dd63b6d7a6614"
+      },
+      {
+        "caption": "Four levels of proposed Lambek Machine implementations",
+        "source_sha256": "20a12efbd623ef86d13cd212d345fbcb6220b46af4dcc235ac29d83fb6cfea98"
+      },
+      {
+        "caption": "Linguistic transformation families and target-side expectations",
+        "source_sha256": "ffdf5d78ec30ec048533b759c531e1a03ff7456c9fabb69ea9d5cb9c973760b3"
+      },
+      {
+        "caption": "Experimental conditions for categorial auxiliary supervision",
+        "source_sha256": "4ba663eeb69bce454339f2358ef5db6f8e9d093edbb75b9eb07a4b4dbd1d8b91"
+      },
+      {
+        "caption": "Diagnostic failure labels in typed linguistic composition",
+        "source_sha256": "627c04c686cd29ca817a349a6c82f87d71a18a2382f149ac0d827825ce136c51"
+      },
+      {
+        "caption": "Metrics for the proposed language evaluation",
+        "source_sha256": "03f98efe0dd4f72edab8201e33704b09fa4ccb35665afaedae45700be52264f4"
+      },
+      {
+        "caption": "Proposed pilot tracks and item counts",
+        "source_sha256": "25130d38ff8f158d7ba8fe60319a22b0b1be6a6094304d07c2ba984422f68cac"
+      },
+      {
+        "caption": "Interpretation of favorable and unfavorable evidence",
+        "source_sha256": "6cd080b6264c3931a705ee67eebd7bc2e61faa03ab867c7d60d09157e86fbf6c"
+      },
+      {
+        "caption": "Objections and their research responses",
+        "source_sha256": "cb1e1102434ea22c1fd5a4ee4fad3579d1c85dd44b63b498e798a11c56621764"
+      },
+      {
+        "caption": "Proposed falsification criteria for Lambek-specific interventions",
+        "source_sha256": "21ac07b86ee550c35b0ee25b610840ade793dae376cf19928a13f2682c60be9c"
+      }
+    ],
+    "algebraic-architectures": [
+      {
+        "caption": "Contributions and status of the architecture-specification proposal",
+        "source_sha256": "16ea1e12a1d6e44fdae669b0e2377fe07746bd1decc26eac995cd2dc49dd2ee7"
+      },
+      {
+        "caption": "Suggested reading paths by audience",
+        "source_sha256": "b9dec86f1e00d31c25ef2f01c10a4cb8acc5772159d54d41d63c5e98f530c85f"
+      },
+      {
+        "caption": "Architecture-specification regimes and evidence obligations",
+        "source_sha256": "1d6557927a7bdf5e9f5cecb4a5c8a72fdb4068b3f523bcda227cbf398579d3ec"
+      },
+      {
+        "caption": "Underbias, overbias, and cost-related design risks",
+        "source_sha256": "64422a2f8b7de6db85f7b169ccd683dd266eff35c101e66460b945b18c02056f"
+      },
+      {
+        "caption": "Structural lessons and boundaries of relevant architecture literature",
+        "source_sha256": "72bffe8b441486f6751aa9e1b7e3b90875d53fbba873c8e0e15f2ac3fee5bf06"
+      },
+      {
+        "caption": "Fields in the architecture specification catalogue",
+        "source_sha256": "893218096ab6ce2850658a1400e98992e37819ee5d9400f3154cc9315a3aa0a4"
+      },
+      {
+        "caption": "Steps in the architecture comparison protocol",
+        "source_sha256": "3a55d64ca05f8641cdc8b11b2082471bbd02afc52408388c0d6556c3ab0dc2eb"
+      },
+      {
+        "caption": "Proposed pilot families and their validators",
+        "source_sha256": "80d34ac0b3e6b91668f302e44e2d68ddd4bd2e77e8b0f47f10c62f422d8617c6"
+      },
+      {
+        "caption": "Objections to architecture-specification methods",
+        "source_sha256": "8ac826bd9ea51a6d3d871899ecab57487bf637eaaf89a690244cec5b5976c019"
+      },
+      {
+        "caption": "Failure modes and required responses in architectural evaluation",
+        "source_sha256": "ab2a7fad4bc706be0a392977fd42356d7d20f2dcc1f7cecebadac855bac2b5f7"
+      },
+      {
+        "caption": "Proposed architecture-specification kill criteria",
+        "source_sha256": "201436f6429439e8e0e938b9eb2f76b91124a0dbb55a76f49d1ca61b6ba5f0dc"
+      }
+    ],
+    "quantitative-curry-howard": [
+      {
+        "caption": "Contributions and claim status of Quantitative Curry–Howard",
+        "source_sha256": "d5d501e69f85555637e612f8d3c8082125ab6db6cea5a64a2e6dc92bdcde1b7f"
+      },
+      {
+        "caption": "Suggested reading paths by audience",
+        "source_sha256": "2451e92ae568959e35163b964bafd4127cdc7f669bcca0a396318ec7978f2d75"
+      },
+      {
+        "caption": "Fields in the proposed quantitative evidence record",
+        "source_sha256": "aca7dd9dea05cda4910d212b3e076aec97211b43a71060ea791ce8cd9bacbccd"
+      },
+      {
+        "caption": "Relevant literature and limits of its evidential use",
+        "source_sha256": "b2cc7e59a13f8acb58f992bae32828450eb4b18559cea69e8cd8cd35fd67d7b0"
+      },
+      {
+        "caption": "Proposed benchmark tasks and primary metrics",
+        "source_sha256": "41eff419ef8fb5a594e31a9bd128b61d681fd4a909d650c3dc5a9a4a569e71c3"
+      },
+      {
+        "caption": "Quantitative-evidence evaluation metrics",
+        "source_sha256": "777add9b31f6e955a0b63396786642b859e5d3655be3cd8c9e5040eaa87b1326"
+      },
+      {
+        "caption": "Failure modes in scoring, calibration, and epistemic warrant",
+        "source_sha256": "96bb83bc2bf6ef693055c7d5ef9f4f7924f1d5160700ce549436f716caeda2bf"
+      },
+      {
+        "caption": "Objections, response standards, and operational tests",
+        "source_sha256": "6eab3314c4d8be2ff08843cc4d62089665b1407e8c79348d73b5fe5bdf38c448"
+      },
+      {
+        "caption": "Proposed revision and falsification criteria",
+        "source_sha256": "bf32f2aca0b9ffff6669db391bbb454b0bdb533c3ef3abd71bb186c0631939cc"
+      }
+    ],
+    "effectful-and-conceptual-intelligence": [
+      {
+        "caption": "Contributions to the proposed effectful-agent framework",
+        "source_sha256": "81110990a3ca425d5127f9b61b667d75175a46fd392a2571f1f3b8ad17510b95"
+      },
+      {
+        "caption": "Suggested reading paths by audience",
+        "source_sha256": "7f61a588e7d3fe2bee9ce96e8ec38758f4e0487caa2bd1e6450fcb5271d44c79"
+      },
+      {
+        "caption": "Symbols in the typed-action judgment",
+        "source_sha256": "df8d932a8abcbe5d557ce8ff83d9faa9a1ec8008adc806c058a2d08d9e7fb39c"
+      },
+      {
+        "caption": "Phases of consequential execution and their failure modes",
+        "source_sha256": "22ac27e0915394172d425997e7a3787fb3ae7a1fbb70490091e771de50be1fcf"
+      },
+      {
+        "caption": "Classes of agent effects and associated records",
+        "source_sha256": "3a1f486f835850b160f14bda11273a86aadbca338bc86ed8ffd370ed059a2eb4"
+      },
+      {
+        "caption": "Field groups in the Typed Action Ledger",
+        "source_sha256": "a5a4287f8e058bfc627cba7eefc4c420080fdf0b3a9377ad21fb8017d4d65be9"
+      },
+      {
+        "caption": "Levels of plan maturity for state-changing systems",
+        "source_sha256": "5e35cd553943bc07aa9ee77f9df2ff45c1b50a373e6c16e8dec16ea8edc6496e"
+      },
+      {
+        "caption": "Fields in the Concept Transfer Record",
+        "source_sha256": "f9d992ed49a13a1fc1c1032c59cac3e7552655609de293929e723a425e8b6826"
+      },
+      {
+        "caption": "Security failures diagnosed through effect control",
+        "source_sha256": "d6e583f4b60c63434edd9ddc1ee10d9104836846053012818628af1dcdc40fb3"
+      },
+      {
+        "caption": "Obligations in the proposed effectful-agent benchmark",
+        "source_sha256": "2b34f74e6bc8bccf18b03d9180b17b1c4088648a10bdcb5e6946cbfe33642677"
+      },
+      {
+        "caption": "Proposed metrics for authorization and execution traces",
+        "source_sha256": "a35ebbc88e09142f6025efc2d2abdfeae4a18928b0eb3eef40cdc9b0a87d9bcf"
+      },
+      {
+        "caption": "Objections to the effectful-agent framework",
+        "source_sha256": "96651cd495e30394034adfa5f4d2094289496a99ce74276f97a6f05d785edc7c"
+      },
+      {
+        "caption": "Failure taxonomy for effectful actions",
+        "source_sha256": "22d47517e5bda1c9528e6d5946f617c6878df09100ffbda79dea421cdc7dc17b"
+      },
+      {
+        "caption": "Proposed kill criteria for the framework",
+        "source_sha256": "3275e58b46bee9dd86d1b51ef51bf6f8af422b9947f04f1596c640e54318dd62"
+      },
+      {
+        "caption": "Contributions of the seven essays in the series",
+        "source_sha256": "2554b624e103eeb81da2ac84cafcb95ac8ce1dac098a9f0cf6d7b139f9a3ced2"
+      },
+      {
+        "caption": "Fields in the Typed Action Ledger schema",
+        "source_sha256": "b24d3114f7c0a0c2c182b4bff593af781ef316d7c9e27c206afc9a9851d170db"
+      },
+      {
+        "caption": "Fields in the effectful-agent benchmark schema",
+        "source_sha256": "7a4caed02f50ef26296d8bc0b17d3007b119867f72c3d772ba66e2cb731e04f5"
+      },
+      {
+        "caption": "Fields in the concept-transfer schema",
+        "source_sha256": "a921c0ac3cfbeeb7afb0b97778acd11a3fa5cf1c151d2e9ed1f8f9eda419d977"
+      },
+      {
+        "caption": "Claim levels in the effectful-agent research agenda",
+        "source_sha256": "b6e22a119517e53897259002ee2d63ce8050653effc5496fa26aa135a8c53712"
+      }
+    ],
+    "compositional-intelligence": [
+      {
+        "caption": "Examples of local success and missing artifact conditions",
+        "source_sha256": "dd42f20748b529245cad46874e0ea489cf15e84b155bd37d82cc7b637f7ff27e"
+      },
+      {
+        "caption": "Seven thresholds of semantic participation and outstanding obligations",
+        "source_sha256": "965d54ec60563a79eaa5102d78a6097d7962e070341f6125a4e999f32838197e"
+      },
+      {
+        "caption": "Levels of typed generation and their research status",
+        "source_sha256": "6e48489dc417406fc01a5761401f3b0f256b5f26233e0514b24739a8569e2e81"
+      },
+      {
+        "caption": "Failure categories in typed generation",
+        "source_sha256": "6d3c2fc607ad1fb7aefaec2920a7b9379f472429ed35b5d8c02ec8bed2e52d0f"
+      },
+      {
+        "caption": "Source and target paths in a transformation square",
+        "source_sha256": "f2856edde31a70f2365275a3faa93d61e3157f3b20b54a22a27e624ffae14de6"
+      },
+      {
+        "caption": "Comparison of transformation-sensitive evaluation families",
+        "source_sha256": "86644e65ab4b3bafd6fe67439a4c476c9983d3594fe0387ff4d248212b22fb07"
+      },
+      {
+        "caption": "Proposed record disciplines for language, architecture, warrant, and action",
+        "source_sha256": "8544b3f367b214e1ee1536f049f506136025f0b21d708e5ddc727e6557e41e67"
+      },
+      {
+        "caption": "Implementation artifacts, proposed tests, and failure conditions",
+        "source_sha256": "60b41d8975fc6bdf3a8d51498b65250fd8105f56af773c3bb4598c293e0d41c3"
+      },
+      {
+        "caption": "Claim levels and associated publication treatment",
+        "source_sha256": "1367ed70af76fbfd0ff356d2423c84b75bacef82162e3f9a4cfb032efce027ce"
+      },
+      {
+        "caption": "Epistemic types used in the research program",
+        "source_sha256": "555ec788c21673727fe6f6bca3d8087153d0c406efb3003f94a1a320259c8fac"
+      }
+    ]
+  }
+}

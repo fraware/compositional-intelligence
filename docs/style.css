@@ -204,3 +204,65 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .atlas-relation { margin-bottom:14px; break-inside:avoid; }
   .atlas-entry { break-inside:avoid; }
 }
+
+/* Scientific tables retain native table layout inside a keyboard-scrollable group. */
+.article-content .table-scroll {
+  max-width:100%;
+  overflow-x:auto;
+  margin:25px 0 30px;
+  overscroll-behavior-x:contain;
+}
+.article-content .table-scroll:focus-visible {
+  outline:2px solid var(--link);
+  outline-offset:3px;
+}
+.article-content .table-scroll table {
+  display:table;
+  width:100%;
+  max-width:none;
+  overflow:visible;
+  margin:0;
+}
+.article-content .table-scroll th,
+.article-content .table-scroll td {
+  min-width:95px;
+}
+.article-content .table-scroll caption.visually-hidden {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+.atlas-relation .atlas-scope {
+  padding:10px 0 0;
+  margin:0 0 14px;
+  border-top:1px solid var(--line);
+  color:var(--soft);
+  font-size:13px;
+  line-height:1.6;
+}
+.atlas-source-disclosure {
+  padding-top:10px;
+  font:13px/1.6 Arial,Helvetica,sans-serif;
+  border-top:1px solid var(--line);
+}
+.atlas-source-disclosure summary { cursor:pointer; color:var(--link); }
+.atlas-source-disclosure ol { margin:14px 0 0; padding-left:18px; }
+.atlas-source-disclosure li { margin:0 0 14px; }
+.atlas-source-disclosure blockquote {
+  padding:0 0 0 11px;
+  margin:0 0 6px;
+  border-left:2px solid var(--line);
+  color:var(--soft);
+  font:italic 14px/1.6 Georgia,"Times New Roman",serif;
+}
+.atlas-source-disclosure li a { font:13px/1.5 Arial,Helvetica,sans-serif; }
+@media print {
+  .article-content .table-scroll { overflow:visible; break-inside:avoid; }
+  .atlas-source-disclosure { display:none; }
+}

@@ -34,6 +34,11 @@ class Document(HTMLParser):
         self.h1 = 0
         self.tables = 0
         self.captions = 0
+        self.caption_texts: list[str] = []
+        self._in_caption = False
+        self.table_ids: list[str | None] = []
+        self.table_wrappers = 0
+        self.invalid_table_wrappers: list[str] = []
         self.th = 0
         self.scoped_th = 0
         self.scripts = 0
@@ -52,8 +57,15 @@ class Document(HTMLParser):
             self.h1 += 1
         if tag == "table":
             self.tables += 1
+            self.table_ids.append(data.get("id"))
+        if tag == "div" and "table-scroll" in (data.get("class") or "").split():
+            self.table_wrappers += 1
+            if data.get("role") != "group" or data.get("tabindex") != "0" or not data.get("aria-label"):
+                self.invalid_table_wrappers.append("Missing keyboard scrolling or accessible name")
         if tag == "caption":
             self.captions += 1
+            self._in_caption = True
+            self.caption_texts.append("")
         if tag == "th":
             self.th += 1
             if data.get("scope") in {"col", "row"}:
@@ -78,6 +90,14 @@ class Document(HTMLParser):
         for key in data:
             if key.lower().startswith("on") or key.lower().startswith("data-review"):
                 self.unsafe_attributes.append(key)
+
+    def handle_data(self, data: str) -> None:
+        if self._in_caption:
+            self.caption_texts[-1] += data
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "caption":
+            self._in_caption = False
 
 
 def parse_html(path: Path) -> Document:
@@ -158,6 +178,13 @@ def main() -> int:
             issues.append(f"Duplicate identifiers in {relative}: {duplicates[:3]}")
         if doc.tables != doc.captions or doc.th != doc.scoped_th:
             issues.append(f"Table caption/header mismatch: {relative}")
+        if doc.tables != doc.table_wrappers or doc.invalid_table_wrappers:
+            issues.append(f"Table scrolling accessibility mismatch: {relative}")
+        if doc.tables and doc.table_ids != [f"table-{n}" for n in range(1, doc.tables + 1)]:
+            issues.append(f"Unstable table identifiers in {relative}")
+        if any(len(label.strip()) < 20 or label.startswith("Table ") and " in " in label
+               for label in doc.caption_texts):
+            issues.append(f"Uninformative scientific table caption: {relative}")
         if relative.startswith("essays/"):
             manuscript = ROOT / "essays" / page.with_suffix(".md").name
             if not manuscript.is_file():

@@ -444,7 +444,7 @@ Diagnostic novelty is the decisive pilot statistic. If commutation items produce
 
 ## 9. Failure taxonomy {#9-failure-taxonomy}
 
-The failure taxonomy identifies the broken component of the square. This localization is the principal advantage of the record format. The evaluator should be able to say whether the source item, source transformation, translation, target transformation, equivalence regime, or validator produced the failure.
+The failure taxonomy identifies possible fault locations in a failed square. Path disagreement alone does not determine which component is responsible. Attribution to the source item, source transformation, translation, target transformation, equivalence regime, or validator needs local validation, controlled interventions, or independent fault provenance.
 
 Table 7. Failure labels and repair implications.
 

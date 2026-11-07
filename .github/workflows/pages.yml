@@ -27,6 +27,8 @@ jobs:
           pandoc-version: '3.1.13'
       - name: Check Python syntax
         run: python3 -m py_compile scripts/build_site.py scripts/verify_site.py scripts/audit_layout.py
+      - name: Test source-bound publication metadata
+        run: python3 -m unittest discover -s scripts -p 'test_publication.py' -v
       - name: Build website twice and verify reproducibility
         run: python3 scripts/build_site.py --output _site --reproducibility-check
       - name: Validate publication integrity and navigation

@@ -112,7 +112,7 @@ Typed Generativity occupies the transition between artifact membership and trans
 
 semantic membership -\> target-type inference -\> candidate inhabitant -\> transformation preservation
 
-This position determines the essay's scope. A proof, program, protocol, plan, tool call, or explanation needs dependencies, validators, assumptions, epistemic status, and permitted-use conditions in order to participate in a target environment. A generative system should therefore be evaluated by how it identifies the requested object class before it constructs a candidate. Many failures attributed to weak reasoning or weak retrieval are more accurately diagnosed as failures of target-type inference.
+This position determines the essay's scope. A proof, program, protocol, plan, tool call, or explanation needs dependencies, validators, assumptions, epistemic status, and permitted-use conditions in order to participate in a target environment. A generative system should therefore be evaluated by how it identifies the requested object class before it constructs a candidate. Incorrect target-type inference is one possible explanation for apparent reasoning or retrieval failures. Task-matched controls are needed to distinguish these causes.
 
 Typed Generativity converts the external standard of Semantic Participation into an internal diagnostic for generation. The wrong answer can arise from incorrect target selection, incomplete constraint extraction, invalid inhabitant construction, unstable target maintenance, or local validity without world membership. These cases require different interventions and should be separated at benchmark time.
 

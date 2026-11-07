@@ -111,12 +111,22 @@ def heading_text(raw: str) -> str:
     return html.unescape(re.sub(r"<[^>]+>", "", raw)).strip()
 
 
-def render_tables(body: str) -> str:
-    """Provide scope and concise captions, preferring explicit manuscript table titles.
+def verify_table_catalog(markdown: str, captions: list[dict[str, str]], title: str) -> None:
+    """Keep table descriptions attached to the exact manuscript table they describe."""
+    original_tables = list(TABLE.finditer(markdown))
+    if len(original_tables) != len(captions):
+        raise ValueError(f"{title}: table catalogue count differs from manuscript")
+    for index, (match, entry) in enumerate(zip(original_tables, captions, strict=True), 1):
+        digest = hashlib.sha256(match.group().encode("utf-8")).hexdigest()
+        label = entry.get("caption", "")
+        if digest != entry.get("source_sha256"):
+            raise ValueError(f"{title}: table {index} changed; review its accessible description")
+        if not isinstance(label, str) or len(label.strip()) < 20:
+            raise ValueError(f"{title}: table {index} lacks a meaningful description")
 
-    Existing prose labels remain visible. Fallback captions use the current
-    section and column headers, without inventing an unseen manuscript title.
-    """
+
+def render_tables(body: str, captions: list[dict[str, str]]) -> str:
+    """Retain native table semantics and add source-bound captions and scroll containers."""
     section = "Article"
     counter = 0
     result: list[str] = []
@@ -130,26 +140,30 @@ def render_tables(body: str) -> str:
             result.append(token)
         else:
             counter += 1
-            previous = body[:match.start()]
-            last_para = list(re.finditer(r"<p(?:\s+[^>]*)?>(.*?)</p>\s*$", previous, re.S))
-            label = ""
-            if last_para:
-                text = heading_text(last_para[-1].group(1))
-                table_match = TABLE_NAME.match(text)
-                if table_match:
-                    label = text
-            if not label:
-                headers = [heading_text(t) for t in re.findall(r"<th\b[^>]*>(.*?)</th>", token, re.S | re.I)]
-                header_summary = ", ".join(t for t in headers[:3] if t)
-                label = f"Table {counter} in {section}" + (f": {header_summary}" if header_summary else "")
-            if not re.search(r"<caption\b", token, re.I):
-                token = re.sub(r"(<table\b[^>]*>)",
-                               lambda m: m.group(1) + '\n<caption class="visually-hidden">' + esc(label) + "</caption>",
-                               token, count=1, flags=re.I)
+            if counter > len(captions):
+                raise ValueError(f"Rendered table count exceeds caption catalogue in {section}")
+            label = captions[counter - 1]["caption"]
+            token = re.sub(
+                r"<table\b([^>]*)>",
+                lambda m: f'<table id="table-{counter}"{m.group(1)}>',
+                token, count=1, flags=re.I
+            )
+            if re.search(r"<caption\b", token, re.I):
+                raise ValueError(f"Unexpected embedded table caption in {section}")
+            token = re.sub(
+                r"(<table\b[^>]*>)",
+                lambda m: m.group(1) + '\n<caption class="visually-hidden">' + esc(label) + "</caption>",
+                token, count=1, flags=re.I
+            )
             token = re.sub(r"<th(?![^>]*\bscope=)", '<th scope="col"', token, flags=re.I)
-            result.append(token)
+            result.append(
+                '<div class="table-scroll" tabindex="0" role="group" aria-label="' +
+                esc("Scrollable table: " + label) + '">\n' + token + '\n</div>'
+            )
         position = match.end()
     result.append(body[position:])
+    if counter != len(captions):
+        raise ValueError(f"Rendered table count {counter} differs from caption catalogue ({len(captions)})")
     return "".join(result)
 
 
@@ -166,25 +180,26 @@ def render_toc(body: str) -> str:
     return f'<nav class="article-toc" aria-label="On this page"><details><summary>On this page</summary><ol>{links}</ol></details></nav>\n'
 
 
-def source_to_body(markdown: str, expected_title: str) -> tuple[str, str]:
+def source_to_body(markdown: str, expected_title: str, table_captions: list[dict[str, str]]) -> tuple[str, str]:
     """Render the authored Markdown to HTML with a fixed Pandoc release."""
     match = TITLE_AUTHOR.match(markdown)
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
     source_body = markdown[match.end():]
+    verify_table_catalog(source_body, table_captions, expected_title)
     command = ["pandoc", "--from=markdown+raw_html", "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
-    body = render_tables(rendered.stdout.rstrip() + "\n")
+    body = render_tables(rendered.stdout.rstrip() + "\n", table_captions)
     for ident in MARKDOWN_SECTION.findall(source_body):
         if f'id="{ident}"' not in body:
             raise ValueError(f"Missing rendered heading anchor {ident!r}: {expected_title}")
     return body, hashlib.sha256(markdown.encode("utf-8")).hexdigest()
 
 
-def render_essay(slug: str, title: str, category: str, description: str, position: int) -> str:
+def render_essay(slug: str, title: str, category: str, description: str, position: int, table_captions: list[dict[str, str]]) -> str:
     """Render a manuscript with source provenance, toc, and sequential links."""
     manuscript = (ROOT / "essays" / (slug + ".md")).read_text(encoding="utf-8")
-    body, digest = source_to_body(manuscript, title)
+    body, digest = source_to_body(manuscript, title, table_captions)
     before = ESSAYS[position - 1] if position > 0 else None
     after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None
     prev_link = (f'<div class="previous"><span>Previous</span><a href="{esc(before[0])}.html">{esc(before[1])}</a></div>'
@@ -223,20 +238,34 @@ def validate_concepts(data: dict) -> None:
             if section["id"] not in source_ids[slug]:
                 raise ValueError(f"Unverified source section: {slug}#{section['id']}")
     edges = set()
-    if len(data["relations"]) < 7:
-        raise ValueError("Concept connections missing")
+    if len(data["relations"]) != 8:
+        raise ValueError("Expected eight source-supported editorial relationships")
     for relation in data["relations"]:
         frm, to = relation["from"], relation["to"]
         if frm not in source_ids or to not in source_ids or frm == to:
             raise ValueError(f"Invalid concept connection {frm} -> {to}")
-        if (frm, to) in edges or len(relation["evidence"]) < 2:
-            raise ValueError("Duplicate or unsupported conceptual connection")
+        if (frm, to) in edges or len(relation["evidence"]) != 2:
+            raise ValueError("Duplicate or incompletely supported connection")
+        if relation.get("kind") not in {"progression", "specialization", "constraint", "boundary", "applicability"}:
+            raise ValueError("Unknown conceptual relationship type")
+        if len(relation.get("scope", "").strip()) < 40:
+            raise ValueError("Missing interpretive boundary for an Atlas connection")
         edges.add((frm, to))
         seen = set()
-        for ref in relation["evidence"]:
-            slug, _, anchor = ref.partition("#")
-            if slug not in (frm, to) or anchor not in source_ids[slug]:
+        for evidence in relation["evidence"]:
+            ref, excerpt = evidence["section"], evidence["excerpt"]
+            slug, separator, anchor = ref.partition("#")
+            if not separator or slug not in {frm, to} or anchor not in source_ids[slug]:
                 raise ValueError(f"Unsupported connection evidence: {ref}")
+            source = (ROOT / "essays" / (slug + ".md")).read_text(encoding="utf-8")
+            marker = re.search(r"^#{2,4}\s+.*?\{#" + re.escape(anchor) + r"\}\s*$", source, re.M)
+            if not marker:
+                raise ValueError(f"Missing evidence section: {ref}")
+            remaining = source[marker.end():]
+            next_heading = re.search(r"^#{2,4}\s+", remaining, re.M)
+            section = remaining[:next_heading.start()] if next_heading else remaining
+            if len(excerpt) < 28 or excerpt not in section:
+                raise ValueError(f"Unmatched manuscript evidence excerpt: {ref}")
             seen.add(slug)
         if seen != {frm, to}:
             raise ValueError(f"Connection must cite both endpoints: {frm} -> {to}")
@@ -252,9 +281,9 @@ def render_atlas(data: dict) -> str:
         '<p class="deck">A second reading path through Compositional Intelligence.</p></header>'
         '<div class="atlas-intro"><p>The series examines artifact membership, construction, '
         'transformation, language, architecture, warrant, and action. Each concept below '
-        'links to exact sections in the published manuscripts. The relationships identify '
-        'the editorial structure of the research program; they are not mathematical '
-        'implications or empirical results.</p></div>'
+        'links to exact sections in the published manuscripts. Each relationship includes '
+        'source excerpts and a statement of its interpretive limits. These editorial '
+        'connections are neither mathematical implications nor empirical results.</p></div>'
     )
     entries = []
     for c in data["concepts"]:
@@ -278,15 +307,25 @@ def render_atlas(data: dict) -> str:
     relations = []
     names = {c["id"]: c["title"] for c in data["concepts"]}
     for index, r in enumerate(data["relations"], start=1):
-        evidence = " · ".join(
-            f'<a href="{esc(source_link(ref))}">Source {n}</a>'
-            for n, ref in enumerate(r["evidence"], start=1)
+        evidence_items = []
+        for passage in r["evidence"]:
+            slug, _, _ = passage["section"].partition("#")
+            evidence_items.append(
+                '<li><blockquote>' + esc(passage["excerpt"]) + '</blockquote>'
+                '<a href="' + esc(source_link(passage["section"])) + '">Read in ' +
+                esc(names[slug]) + '</a></li>'
+            )
+        evidence = (
+            '<details class="atlas-source-disclosure"><summary>Manuscript basis</summary>'
+            '<ol>' + "".join(evidence_items) + '</ol></details>'
         )
         relations.append(
             f'<li id="relation-{index}" class="atlas-relation">'
             f'<p class="atlas-relation-names"><a href="#{esc(r["from"])}">{esc(names[r["from"]])}</a>'
             f' <span aria-hidden="true">→</span> <a href="#{esc(r["to"])}">{esc(names[r["to"]])}</a></p>'
-            f'<p>{esc(r["label"])}</p><p class="atlas-evidence">{evidence}</p></li>'
+            f'<p>{esc(r["label"])}</p>'
+            f'<p class="atlas-scope">{esc(r["scope"])}</p>'
+            + evidence + '</li>'
         )
     return (
         header("Concept Atlas", "Source-anchored guide to the seven central concepts and their relationships.",
@@ -332,10 +371,14 @@ def build(output: Path) -> None:
     shutil.rmtree(output / "atlas", ignore_errors=True)
     (output / "essays").mkdir(parents=True)
     (output / "atlas").mkdir(parents=True)
+    catalogue = json.loads((ROOT / "tables" / "captions.json").read_text(encoding="utf-8"))
+    if catalogue.get("schema_version") != 1 or set(catalogue["essays"]) != {row[0] for row in ESSAYS} - {"series-preface"}:
+        raise ValueError("Table caption catalogue does not match the manuscript inventory")
     for index, row in enumerate(ESSAYS):
         slug = row[0]
         (output / "essays" / (slug + ".html")).write_text(
-            render_essay(*row, position=index), encoding="utf-8")
+            render_essay(*row, position=index, table_captions=catalogue["essays"].get(slug, [])),
+            encoding="utf-8")
     data = json.loads((ROOT / "atlas" / "concepts.json").read_text(encoding="utf-8"))
     validate_concepts(data)
     (output / "atlas" / "index.html").write_text(render_atlas(data), encoding="utf-8")
