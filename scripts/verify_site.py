@@ -37,6 +37,7 @@ class Document(HTMLParser):
         self.th = 0
         self.scoped_th = 0
         self.scripts = 0
+        self.script_sources: list[tuple[str | None, str | None]] = []
         self.unsafe_attributes: list[str] = []
         self.noindex = False
 
@@ -58,6 +59,7 @@ class Document(HTMLParser):
                 self.scoped_th += 1
         if tag == "script":
             self.scripts += 1
+            self.script_sources.append((data.get("src"), data.get("type")))
         if "id" in data and data["id"]:
             self.ids.append(data["id"])
         if tag in {"a", "link"} and data.get("href") is not None:
@@ -126,8 +128,8 @@ def main() -> int:
     check_manifest(issues)
     pages = sorted(SITE.rglob("*.html"))
     essays = sorted((ROOT / "essays").glob("*.md"))
-    if len(pages) != 10 or len(essays) != 9:
-        issues.append(f"Expected 10 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
+    if len(pages) != 11 or len(essays) != 9:
+        issues.append(f"Expected 11 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
     if not (SITE / "index.html").is_file() or not (SITE / ".nojekyll").is_file():
         issues.append("Missing HTML entrypoint or .nojekyll")
     documents = {p: parse_html(p) for p in pages}
@@ -143,8 +145,11 @@ def main() -> int:
             issues.append(f"Incorrect document semantics: {relative}")
         if doc.canonicals != [target_canonical] or doc.og_urls != [target_canonical]:
             issues.append(f"Canonical/OG URL mismatch: {relative}")
-        if doc.scripts or doc.unsafe_attributes:
-            issues.append(f"Unexpected script or event handler in {relative}")
+        if doc.unsafe_attributes:
+            issues.append(f"Unexpected event handler in {relative}")
+        allowed_scripts = [("./commuting-square.mjs", "module")] if relative == "studies/commuting-square.html" else []
+        if doc.script_sources != allowed_scripts:
+            issues.append(f"Unexpected script inclusion in {relative}")
         duplicates = [id_ for id_, n in collections.Counter(doc.ids).items() if n > 1]
         if duplicates:
             issues.append(f"Duplicate identifiers in {relative}: {duplicates[:3]}")
@@ -179,7 +184,7 @@ def main() -> int:
         try:
             root = ElementTree.parse(sitemap).getroot()
             urls = [x.text for x in root.findall(f".//{namespace}loc")]
-            if len(urls) != 10 or set(urls) != canonical_set:
+            if len(urls) != 11 or set(urls) != canonical_set:
                 issues.append("Sitemap URLs differ from public HTML canonicals")
         except ElementTree.ParseError as exc:
             issues.append(f"Invalid sitemap: {exc}")

@@ -6,6 +6,8 @@
 
 **Read the essays:** https://fraware.github.io/compositional-intelligence/
 
+**Explore a finite concept study:** https://fraware.github.io/compositional-intelligence/studies/commuting-square.html
+
 Compositional Intelligence is a series of research essays on the creation, interpretation, and use of AI-generated artifacts within structured worlds. The collection examines semantic validity, typed generation, structural transformations, linguistic composition, neural architectures, quantitative evidence, and consequential action.
 
 ## Essays
