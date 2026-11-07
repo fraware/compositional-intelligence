@@ -853,86 +853,52 @@ Algebraic Architectures extends this inquiry beyond language. The next essay tre
 
 ## Appendix A. Lambek Machine record {#appendix-a-lambek-machine-record}
 
+```text
 lambek_machine_record:
-
 system_id: string
-
 level:
-
-enum\[
-
+enum[
 post_hoc_categorial_analysis,
-
 auxiliary_categorial_supervision,
-
 grammar_guided_decoding,
-
 architecture_level_typed_compositional_bias
-
-\]
-
-grammar_formalism: CCG \| LCG \| pregroup \| ACG \| other
-
+]
+grammar_formalism: CCG | LCG | pregroup | ACG | other
 exposed_structures:
-
-\- lexical_categories
-
-\- structured_categories
-
-\- reductions_or_derivations
-
-\- semantic_composition_maps
-
-\- diagnostics
-
+- lexical_categories
+- structured_categories
+- reductions_or_derivations
+- semantic_composition_maps
+- diagnostics
 validators:
-
-\- category_accuracy
-
-\- reduction_validity
-
-\- semantic_equivalence
-
-\- functorial_language_consistency
-
-supported_transformations: list\[string\]
-
-failure_labels: list\[string\]
-
-evidence_level: L0 \| L1 \| L2 \| L3 \| L4
+- category_accuracy
+- reduction_validity
+- semantic_equivalence
+- functorial_language_consistency
+supported_transformations: list[string]
+failure_labels: list[string]
+evidence_level: L0 | L1 | L2 | L3 | L4
+```
 
 ## Appendix B. Functorial Language Consistency item {#appendix-b-functorial-language-consistency-item}
 
+```text
 functorial_language_consistency_item:
-
 id: string
-
 source_sentence: string
-
 source_transformation:
-
 family: string
-
 transformed_sentence: string
-
-intended_change: preserve_meaning \| change_scope \| change_attachment \| change_role \| change_modality \| other
-
-translation_task: semantic_parse \| logical_form \| semantic_roles \| explanation \| query \| other
-
+intended_change: preserve_meaning | change_scope | change_attachment | change_role | change_modality | other
+translation_task: semantic_parse | logical_form | semantic_roles | explanation | query | other
 target_artifact: object
-
 target_transformation: object
-
 expected_target_artifact: object
-
-equivalence_regime: logical \| denotational \| graph_isomorphism \| query_result \| role_equivalence \| reviewed_alignment
-
+equivalence_regime: logical | denotational | graph_isomorphism | query_result | role_equivalence | reviewed_alignment
 validator: string
-
-failure_taxonomy: list\[string\]
-
+failure_taxonomy: list[string]
 repair_guidance: string
-
+```
 
 <section class="bibliography" aria-labelledby="references-heading">
 <h2 id="references-heading">References</h2>

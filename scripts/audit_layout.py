@@ -140,15 +140,18 @@ def main() -> int:
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
                                       .filter(w => {
                                         const t = w.querySelector("table");
+                                        const label = w.previousElementSibling;
                                         if (!t || !t.tHead || !t.tBodies.length ||
-                                            !t.caption || !t.caption.classList.contains("table-caption")) return true;
+                                            !t.caption || !t.caption.classList.contains("visually-hidden") ||
+                                            !label || !label.classList.contains("table-display-caption") ||
+                                            label.id !== w.getAttribute("aria-labelledby")) return true;
                                         const headers = t.tHead.querySelectorAll("th[scope=col]");
                                         const count = Number(w.dataset.columns);
                                         if (!Number.isInteger(count) || count < 1 ||
                                             headers.length < 1 || headers.length > count) return true;
                                         if (t.querySelector("th[ead]")) return true;
-                                        if (getComputedStyle(t.caption).display === "none" ||
-                                            t.caption.getBoundingClientRect().height < 10) return true;
+                                        if (getComputedStyle(label).display === "none" ||
+                                            label.getBoundingClientRect().height < 10) return true;
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550) return true;
                                         return false;

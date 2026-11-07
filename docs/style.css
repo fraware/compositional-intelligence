@@ -308,7 +308,7 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 
 /* Technical reading: intact HTML tables, comfortable column measures, visible labels. */
 .article-content .table-scroll {
-  margin:29px 0 34px;
+  margin:0 0 34px;
   border-top:1px solid var(--line);
   border-bottom:1px solid var(--line);
   scrollbar-gutter:stable;
@@ -319,14 +319,31 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 .article-content .table-scroll[data-columns="4"] table { min-width:max(100%,920px); }
 .article-content .table-scroll[data-columns="5"] table,
 .article-content .table-scroll[data-columns="6"] table { min-width:max(100%,1050px); }
-.article-content .table-caption {
-  caption-side:top;
-  padding:16px 0 14px;
-  font:400 13px/1.55 var(--sans);
+.article-content .table-display-caption {
+  margin:29px 0 9px;
+  padding:0;
   color:var(--soft);
+  font:13.5px/1.6 var(--sans);
   text-wrap:pretty;
 }
 .article-content .table-caption-number { font-weight:650; color:var(--ink); margin-right:7px; }
+.article-content caption.visually-hidden {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+.article-content .table-scroll-hint {
+  display:none;
+  margin:6px 0 32px;
+  color:var(--muted);
+  font:italic 13px/1.5 var(--serif);
+}
 .article-content .table-scroll thead th {
   font-weight:650;
   color:var(--ink);
@@ -371,6 +388,8 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 .reader-entry h2,.bibliography h2 { font-family:var(--display); }
 .site-footer { font-family:var(--serif); }
 @media (max-width:650px) {
+  .article-content .table-scroll[data-columns]:not([data-columns="1"]) { margin-bottom:0; }
+  .article-content .table-scroll-hint { display:block; }
   .container { width:min(100% - 40px,810px); }
   .site-header { padding:12px 0; }
   .brand { font-size:21px; }
@@ -387,3 +406,16 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .table-scroll { overflow:visible; }
   .article-content .table-scroll table { min-width:0!important; }
 }
+
+/* Unstyled manuscript source records use the same restrained typesetting. */
+.article-content > pre {
+  margin:29px 0 35px;
+  padding:17px 6px 19px;
+  background:transparent;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  font:13.5px/1.7 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.article-content > pre code { font:inherit; white-space:inherit; }

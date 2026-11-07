@@ -893,21 +893,22 @@ Typed Generativity: P_theta(A,t \| c) = P_theta(A \| c) P_theta(t \| A,c), for a
 
 ## Appendix B. Benchmark item schema {#appendix-b-benchmark-item-schema}
 
-typed_generativity_benchmark_item:\
-id: string\
-domain: string\
-prompt: string\
-intended_target_type: string\
-candidate_target_types: list\[string\]\
-constraints: list\[string\]\
-invalid_target_examples: list\[string\]\
-valid_inhabitant_criteria: list\[string\]\
-validator: string\
-semantic_participation_target: string\
-transformation_tests: list\[string\]\
-reviewer_guidelines: string\
-failure_labels: list\[string\]
-
+```text
+typed_generativity_benchmark_item:
+id: string
+domain: string
+prompt: string
+intended_target_type: string
+candidate_target_types: list[string]
+constraints: list[string]
+invalid_target_examples: list[string]
+valid_inhabitant_criteria: list[string]
+validator: string
+semantic_participation_target: string
+transformation_tests: list[string]
+reviewer_guidelines: string
+failure_labels: list[string]
+```
 
 <section class="bibliography" aria-labelledby="references-heading">
 <h2 id="references-heading">References</h2>

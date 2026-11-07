@@ -781,197 +781,128 @@ The framework succeeds only if it makes AI artifacts more checkable, composable,
 
 ### ArtifactRecord
 
+```text
 artifact_record:
-
 id: string
-
 kind: string
-
-content: string \| object
-
+content: string | object
 target_environment: string
-
-dependencies: list\[string\]
-
-assumptions: list\[string\]
-
+dependencies: list[string]
+assumptions: list[string]
 validation_status: string
-
 epistemic_type: string
-
 alignment_status: string
-
-permitted_use: list\[string\]
-
-repair_path: string \| null
+permitted_use: list[string]
+repair_path: string | null
+```
 
 ### TargetTypeRecord
 
+```text
 target_type_record:
-
 task_id: string
-
 prompt: string
-
 context: string
-
-candidate_target_types: list\[string\]
-
+candidate_target_types: list[string]
 selected_target_type: string
-
-constraints: list\[string\]
-
-invalid_target_types: list\[string\]
-
+constraints: list[string]
+invalid_target_types: list[string]
 validation_method: string
+```
 
 ### FunctorialConsistencyItem
 
+```text
 functorial_consistency_item:
-
 id: string
-
 source_environment: string
-
 target_environment: string
-
 source_object: string
-
 source_transformation: string
-
 translation: string
-
 target_transformation: string
-
 equivalence_regime: string
-
 validator: string
-
-failure_labels: list\[string\]
+failure_labels: list[string]
+```
 
 ### ArchitectureSpec
 
+```text
 architecture_spec:
-
 id: string
-
 task_family: string
-
-object_types: list\[string\]
-
-transformations: list\[string\]
-
-laws: list\[string\]
-
-operations: list\[string\]
-
-interfaces: list\[string\]
-
-effects: list\[string\]
-
-validators: list\[string\]
-
-candidate_architectures: list\[string\]
-
-excluded_architectures: list\[string\]
-
-predicted_failure_modes: list\[string\]
+object_types: list[string]
+transformations: list[string]
+laws: list[string]
+operations: list[string]
+interfaces: list[string]
+effects: list[string]
+validators: list[string]
+candidate_architectures: list[string]
+excluded_architectures: list[string]
+predicted_failure_modes: list[string]
+```
 
 ### QuantitativeJudgmentRecord
 
+```text
 quantitative_judgment:
-
 artifact_id: string
-
 context: string
-
 target: string
-
 candidate: string
-
 model: string
-
-score: string \| number \| null
-
-probability: number \| null
-
-uncertainty: string \| null
-
+score: string | number | null
+probability: number | null
+uncertainty: string | null
 calibration_status: string
-
 validation_status: string
-
 diagnostics: string
-
-repair_distance: string \| null
-
+repair_distance: string | null
 epistemic_type: string
-
-permitted_use: list\[string\]
+permitted_use: list[string]
+```
 
 ### TypedActionLedgerEntry
 
+```text
 typed_action_ledger_entry:
-
 entry_id: string
-
 action_type: string
-
-instruction_sources: list\[string\]
-
-observation_sources: list\[string\]
-
-preconditions: list\[string\]
-
-postconditions: list\[string\]
-
-declared_effects: list\[string\]
-
+instruction_sources: list[string]
+observation_sources: list[string]
+preconditions: list[string]
+postconditions: list[string]
+declared_effects: list[string]
 authority_source: string
-
-capabilities_required: list\[string\]
-
+capabilities_required: list[string]
 handler: string
-
 authorization_result: string
-
 execution_result: string
-
 observed_state_delta: string
-
 frame_conditions:
-
-may_modify: list\[string\]
-
-must_preserve: list\[string\]
-
+may_modify: list[string]
+must_preserve: list[string]
 validation_result: string
-
-repair_or_rollback: string \| null
-
-permitted_downstream_use: list\[string\]
+repair_or_rollback: string | null
+permitted_downstream_use: list[string]
+```
 
 ### ConceptTransferRecord
 
+```text
 concept_transfer_record:
-
 id: string
-
 source_domain: string
-
 target_domain: string
-
-preserved_relations: list\[string\]
-
-lost_relations: list\[string\]
-
-counterexamples: list\[string\]
-
+preserved_relations: list[string]
+lost_relations: list[string]
+counterexamples: list[string]
 distortion_risk: string
-
-permitted_use: list\[string\]
-
-forbidden_use: list\[string\]
+permitted_use: list[string]
+forbidden_use: list[string]
+```
 
 ## Source-Use Warnings
 

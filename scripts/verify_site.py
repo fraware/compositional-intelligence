@@ -36,6 +36,7 @@ class Document(HTMLParser):
         self.theads = 0
         self.tbodies = 0
         self.invalid_captions: list[str] = []
+        self.visual_caption_ids: list[str | None] = []
         self.header_markup_errors: list[str] = []
         self.table_column_counts: list[int] = []
         self.maths = 0
@@ -97,10 +98,12 @@ class Document(HTMLParser):
                 self.table_column_counts.append(int(columns))
             if data.get("role") != "group" or data.get("tabindex") != "0" or not data.get("aria-label"):
                 self.invalid_table_wrappers.append("Missing keyboard scrolling or accessible name")
+        if tag == "p" and "table-display-caption" in (data.get("class") or "").split():
+            self.visual_caption_ids.append(data.get("id"))
         if tag == "caption":
             self.captions += 1
-            if "table-caption" not in (data.get("class") or "").split():
-                self.invalid_captions.append("Table caption must be visible")
+            if "visually-hidden" not in (data.get("class") or "").split():
+                self.invalid_captions.append("Missing native table caption")
             self._in_caption = True
             self.caption_texts.append("")
         if tag == "th":
@@ -243,7 +246,8 @@ def main() -> int:
         total_figures += doc.figures
         if (doc.tables != doc.captions or doc.tables != doc.theads or
             doc.tables != doc.tbodies or doc.th != doc.scoped_th or
-            doc.header_markup_errors or doc.invalid_captions):
+            doc.header_markup_errors or doc.invalid_captions or
+            doc.visual_caption_ids != [f"table-{n}-caption" for n in range(1, doc.tables + 1)]):
             issues.append(f"Malformed HTML table section/header/caption in {relative}")
         if (doc.tables != doc.table_wrappers or doc.invalid_table_wrappers or
             doc.tables != len(doc.table_column_counts)):

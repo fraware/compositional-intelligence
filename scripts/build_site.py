@@ -178,10 +178,16 @@ def render_tables(body: str, captions: list[dict[str, str]]) -> str:
         )
         if re.search(r"<caption\b", token, re.I):
             raise ValueError(f"Table {counter} unexpectedly contains a prior caption")
-        caption = (f'<caption class="table-caption"><span class="table-caption-number">'
-                   f'Table {esc(number)}</span> {esc(description)}</caption>')
-        token = re.sub(r"(<table\b[^>]*>)", lambda m: m.group(1) + "\n" + caption,
-                       token, count=1, flags=re.I)
+        caption_text = "Table " + str(number) + ". " + description
+        # The visual caption is outside the scroll region, so its complete
+        # wording stays in view on narrow screens. Native table caption
+        # semantics remain available to assistive technology.
+        token = re.sub(
+            r"(<table\b[^>]*>)",
+            lambda m: m.group(1) + "\n" +
+            '<caption class="visually-hidden">' + esc(caption_text) + "</caption>",
+            token, count=1, flags=re.I,
+        )
 
         # Crucially, match <th> only. A previous expression also matched <thead>,
         # corrupting every table header while leaving superficial counts unchanged.
@@ -196,10 +202,15 @@ def render_tables(body: str, captions: list[dict[str, str]]) -> str:
             raise ValueError(f"Table {counter} lacks intact semantic header structure")
 
         result.append(
+            f'<p id="table-{counter}-caption" class="table-display-caption">'
+            f'<span class="table-caption-number">Table {esc(number)}</span> '
+            f'{esc(description)}</p>\n'
             f'<div class="table-scroll" data-columns="{columns}" tabindex="0" '
-            f'role="group" aria-label="{esc("Table " + str(number) + ": " + description)}">'
-            + "\n" + token + "\n</div>"
+            f'role="group" aria-labelledby="table-{counter}-caption">'
+            + "\n" + token + "\n</div>\n"
         )
+        if columns >= 2:
+            result.append('<p class="table-scroll-hint">Scroll sideways for remaining columns.</p>\n')
         position = match.end()
     result.append(body[position:])
     if counter != len(captions):

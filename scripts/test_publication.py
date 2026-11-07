@@ -54,6 +54,18 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertIn("<details><summary>", rendered)
         self.assertIn('href="../essays/semantic-participation.html#5-3-semantic-membership"', rendered)
 
+    def test_appendix_schemas_are_preformatted_in_manuscripts(self) -> None:
+        """Canonical manuscript schemas must retain readable line structure."""
+        counts = {
+            "compositional-intelligence": 7,
+            "lambek-machines": 2,
+            "typed-generativity": 1,
+        }
+        for slug, expected in counts.items():
+            source = (publication.ROOT / "essays" / f"{slug}.md").read_text(encoding="utf-8")
+            self.assertEqual(source.count("```text\n"), expected,
+                             f"{slug}: missing preformatted schema")
+
     def test_mathml_display_is_keyboard_scrollable(self) -> None:
         """MathML is preserved in a named, focusable overflow container."""
         sample = (
@@ -118,7 +130,9 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertIn('data-columns="2"', output)
         self.assertIn('<thead>', output)
         self.assertIn('</thead>', output)
-        self.assertIn('<caption class="table-caption">', output)
+        self.assertIn('<p id="table-1-caption" class="table-display-caption">', output)
+        self.assertIn('<caption class="visually-hidden">', output)
+        self.assertIn('aria-labelledby="table-1-caption"', output)
 
     def test_malformed_table_without_section_is_rejected(self) -> None:
         """The publication must reject missing thead instead of emitting malformed HTML."""
@@ -155,9 +169,11 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertIn('<thead>', rendered)
         self.assertIn('</thead>', rendered)
         self.assertNotIn('<th scope="col"ead', rendered)
-        self.assertIn('class="table-caption"', rendered)
+        self.assertIn('class="table-display-caption"', rendered)
+        self.assertIn('class="visually-hidden"', rendered)
         self.assertIn('data-columns="1"', rendered)
         self.assertIn('Table 1</span> One explicit scientific-table description.', rendered)
+        self.assertIn('aria-labelledby="table-1-caption"', rendered)
 
 
 if __name__ == "__main__":
