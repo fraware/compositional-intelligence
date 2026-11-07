@@ -88,10 +88,13 @@ Table. Output failures and missing artifact conditions.
 
 These failures differ operationally, but they share a record problem. The evaluator cannot tell what kind of object was produced, what it preserves, what warrants it, and what it is allowed to affect.
 
-**output -\> candidate artifact -\> typed candidate -\> transformed artifact\
-**-\> validated artifact -\> warranted artifact -\> reusable artifact -\> effectful action
-
-Figure. From output to artifact. The lifecycle is conceptual instead of strictly linear; its purpose is to expose the status of generated objects as they enter structured worlds.
+<figure class="lifecycle-figure" aria-labelledby="lifecycle-caption">
+<ol class="lifecycle-stages">
+<li>Output</li><li>Candidate artifact</li><li>Typed candidate</li><li>Transformed artifact</li>
+<li>Validated artifact</li><li>Warranted artifact</li><li>Reusable artifact</li><li>Effectful action</li>
+</ol>
+<figcaption id="lifecycle-caption">Figure 1. An illustrative artifact lifecycle. The stages represent distinct obligations; the order is neither universal nor strictly sequential.</figcaption>
+</figure>
 
 This lifecycle is neither strictly linear nor universal. Some artifacts never receive formal validation. Some are reviewed. Some remain conjectural. Some are useful as heuristics. Some should be rejected. The relevant condition is that the artifact\'s status should be explicit.
 
@@ -184,7 +187,9 @@ Semantic participation is therefore an original proposal in the series. It does 
 
 Typed generativity models generation as target-type inference followed by candidate-inhabitant construction:
 
-P_theta(A,t \| c) = P_theta(A \| c) P_theta(t \| A,c).
+$$
+P_{\theta}(A,t \mid c) = P_{\theta}(A \mid c)\,P_{\theta}(t \mid A,c).
+$$
 
 Here c is the generator context, including prompts, retrieved material, examples, tools, memory and environment. A is a declared target-class label, while t is a candidate representation that can later fail validation. The factorization assumes a normalized joint model distribution on a specified tagged candidate space and follows from the probability chain rule. For formal tasks, the independent judgment Δ ⊢ t : τ belongs to an object-language typing environment Δ and a target type τ; mapping A to τ is a domain-specific obligation. Model rankings without a normalized distribution retain ranking semantics. Claims about latent type-like representations remain empirical hypotheses.
 
@@ -285,6 +290,7 @@ The claim is diagnostic. Local correctness is too weak. A model can produce a pl
 
 
 
+<figure class="square-figure" aria-labelledby="square-figure-caption">
 <table>
 <colgroup>
 <col style="width: 33%"/>
@@ -311,14 +317,20 @@ The claim is diagnostic. Local correctness is too weak. A model can produce a pl
 </tr>
 </tbody>
 </table>
+<figcaption id="square-figure-caption">Figure 2. Typed two-path comparison with distinct transports T₀ and T₁. Target results are assessed under a declared relation R, which can be directional and need not be an equivalence.</figcaption>
+</figure>
 
 
 
-Figure. Typed two-path comparison with separate transports T_0 and T_1. The target results are assessed under a declared relation R, which can be directional and need not be an equivalence.
+
 
 The evaluation condition is:
 
-T_1(f(x)) R g(T_0(x)), with R and its orientation declared for the target environment.
+$$
+T_1(f(x)) \mathrel{R} g(T_0(x)).
+$$
+
+The comparison relation $R$ and its orientation are declared for the target environment.
 
 The diagram illustrates two typed paths, not a proof of mathematical functoriality. Let f : X → X′ be a source-side operation, T_0 : X → Y and T_1 : X′ → Y′ be transports, and g : Y → Y′ be a target-side operation. Both paths must be defined and independently valid in Y′ before their outputs are compared under the declared relation R. The comparison procedure distinguishes relation_pass, relation_fail and relation_unknown from invalid items or unavailable paths. The earlier shorthand T(f(x)) ≈ g(T(x)) is explanatory; the operative comparison is T_1(f(x)) R g(T_0(x)).
 
@@ -331,7 +343,9 @@ The comparison relation R and its validator are declared per task. Formal settin
 
 A benchmark item records eight fields: source environment E_s, target environment E_t, source object x, source transformation f, transport specification T = (T_0, T_1), target transformation g, target-side acceptance relation R, and validator V. Additional fields include typing assumptions, directionality, reference cases, reviewer protocol, failure labels, repair traces and validator uncertainty. The minimal item is:
 
-I = (E_s, E_t, x, f, T, g, R, V).
+$$
+I=(E_s,E_t,x,f,T,g,R,V).
+$$
 
 Here E_s and E_t name the declared source and target environments. The artifact x belongs to a source class X, and f maps X into the transformed source class X′. The transport record T supplies T_0 : X -\> Y and T_1 : X′ -\> Y′. The corresponding target operation g maps Y into Y′. The relation R compares two artifacts in Y′; the validator V implements its declared acceptance procedure with an explicit undetermined outcome for unresolved cases. The representation I denotes one evaluation item.
 
@@ -453,7 +467,7 @@ Architecture design solves a matching problem. A task imposes structure. A model
 
 The core schema is:
 
-TaskSpec -\> ArchitectureType -\> ArchitectureInstance. The notation A \|= S is reserved for a specified formal satisfaction judgment. Structural support, empirical performance, reviewed fit, runtime cost and implementation constraints receive distinct fields in ArchitectureSpec.
+$\mathrm{TaskSpec}\to\mathrm{ArchitectureType}\to\mathrm{ArchitectureInstance}$. The notation $A\models S$ is reserved for a specified formal satisfaction judgment. Structural support, empirical performance, reviewed fit, runtime cost and implementation constraints receive distinct fields in ArchitectureSpec.
 
 Geometric Deep Learning, Deep Sets, Graph Networks, Transformers, and Mamba address different structural assumptions and architectural mechanisms [\[[20](#ref-GDL2021){.citation-link aria-label="Reference 20 — Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges"}, [21](#ref-DeepSets2017){.citation-link aria-label="Reference 21 — Deep Sets"}, [22](#ref-GraphNetworks2018){.citation-link aria-label="Reference 22 — Relational Inductive Biases, Deep Learning, and Graph Networks"}, [23](#ref-Transformer2017){.citation-link aria-label="Reference 23 — Attention Is All You Need"}, [24](#ref-Mamba2023){.citation-link aria-label="Reference 24 — Mamba: Linear-Time Sequence Modeling with Selective State Spaces"}\]]{.citation-group}. Categorical Deep Learning already proposes an algebraic bridge between constraints and neural architecture implementations [\[[25](#ref-CategoricalDL2024){.citation-link aria-label="Reference 25 — Position: Categorical Deep Learning is an Algebraic Theory of All Architectures"}\]]{.citation-group}. ArchitectureSpec is a separate proposed decision record connecting task transformations, interfaces, resource assumptions, evidence grades, and validators to architecture selection. Its incremental contribution would be established through prospective, information-matched decisions and demonstrable improvement in mismatch diagnosis or validation.
 
@@ -463,7 +477,9 @@ Modern AI systems often operate around exact judgments without producing exact j
 
 Quantitative Curry-Howard is proposed here as a study of the candidate layer before and around exact validation:
 
-Gamma ⊢\_theta t : A ▷ Q.
+$$
+\Gamma \vdash_{\theta} t : A \triangleright Q.
+$$
 
 Q is a quantitative evidence record. It can include score, probability, uncertainty, loss, margin, calibration status, validation status, diagnostics, repair distance, epistemic type, and permitted use.
 
@@ -475,7 +491,9 @@ When AI systems act, output-centric evaluation fails more severely since an acti
 
 The central judgment is:
 
-Γ; M; E; C ⊢\_spec a : Pre → Post ! ε @ ρ.
+$$
+\Gamma;M;E;C \vdash_{\mathrm{spec}} a : \mathrm{Pre}\to\mathrm{Post}\;!\varepsilon@\rho.
+$$
 
 Here Gamma is instruction and policy context. M is memory. E is environment or interface state. C is capability context. a is an action or plan step. Pre and Post are preconditions and postconditions. epsilon is an effect row. rho records risk, authority, reversibility, and validation obligations.
 

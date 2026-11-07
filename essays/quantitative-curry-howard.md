@@ -128,13 +128,15 @@ The contribution is an interface theory for evidence, not a replacement calculus
 
 Classical Curry-Howard fixes the exact validity target. In a dependent type-theoretic proof assistant, a proposition is represented as a type, and an accepted proof is an inhabitant of that type under a formal context.
 
-> Δ ⊢ t : τ
+$$
+\Delta\vdash t:\tau.
+$$
 
 This judgment records formal validity relative to a system. It does not measure search difficulty, probability before checking, empirical support, maintainability, or source-target alignment. Those quantities arise outside the exact judgment, despite their importance for learned theorem proving and AI-assisted formalization.
 
 AI reasoning systems generally operate around the exact judgment through candidate production. A model proposes a tactic, retrieves premises, drafts a proof script, ranks a program, estimates confidence for a claim, or generates a reasoning trace. These artifacts require pre-validation evidence records and post-failure diagnostics. The candidate layer is the learned object; the validation layer supplies acceptance, rejection, or repair information.
 
-> candidate layer: Gamma \|-\_theta t : A \|\> Q
+> Candidate record: $\Gamma\vdash_{\theta}t:A\triangleright Q$
 >
 > validation layer: Δ ⊢ t : τ (when the target label A denotes formal type τ)
 >
@@ -146,7 +148,9 @@ The distinction localizes responsibility. A learned score can be good evidence f
 
 The central judgment records candidate construction with an explicit evidence object.
 
-> Gamma \|-\_theta t : A \|\> Q
+$$
+\Gamma\vdash_{\theta}t:A\triangleright Q.
+$$
 
 Under operational generator context Γ, system θ proposes a candidate representation t for target-class label A and attaches quantitative evidence record Q. The record states the target event or quantity, score meaning, calibration status, uncertainty, validator outcome, provenance, and permissible use. In formal tasks, accepted inhabitation is independently checked as Δ ⊢ t : τ under an explicit label-to-type mapping. Neither the annotation nor the numerical score constitutes a proof.
 
@@ -182,7 +186,9 @@ Each step can fail independently. Target inference can be wrong even when the sc
 
 Quantitative search assigns scores to candidate formal objects before exact validation. The object can be a tactic, proof term, proof state transition, lemma, program fragment, schema, or formal statement. The score has operational value only when it predicts a validator-relevant outcome such as proof progress, acceptance, search-depth reduction, repairability, or proof-state simplification.
 
-> P_theta(tactic \| proof_state)
+$$
+P_{\theta}(\mathrm{tactic}\mid\mathrm{proof\ state}).
+$$
 
 The search layer exposes a common failure in learned theorem proving. Locally plausible tactics can score highly and still lead to dead ends, circular search, excessive proof length, hidden assumptions, or library-inconsistent scripts. A useful quantitative record therefore stores validation status and repair distance in addition to probability or rank.
 

@@ -33,6 +33,13 @@ class Document(HTMLParser):
         self.main = 0
         self.h1 = 0
         self.tables = 0
+        self.maths = 0
+        self.display_maths = 0
+        self.annotations = 0
+        self.figures = 0
+        self.figcaptions = 0
+        self.math_scrolls = 0
+        self.invalid_math_scrolls: list[str] = []
         self.captions = 0
         self.caption_texts: list[str] = []
         self._in_caption = False
@@ -55,6 +62,20 @@ class Document(HTMLParser):
             self.main += 1
         if tag == "h1":
             self.h1 += 1
+        if tag == "math":
+            self.maths += 1
+            if data.get("display") == "block":
+                self.display_maths += 1
+        if tag == "annotation" and data.get("encoding") == "application/x-tex":
+            self.annotations += 1
+        if tag == "figure":
+            self.figures += 1
+        if tag == "figcaption":
+            self.figcaptions += 1
+        if tag == "div" and "math-scroll" in (data.get("class") or "").split():
+            self.math_scrolls += 1
+            if data.get("role") != "group" or data.get("tabindex") != "0" or not data.get("aria-label"):
+                self.invalid_math_scrolls.append("Missing MathML scroll semantics")
         if tag == "table":
             self.tables += 1
             self.table_ids.append(data.get("id"))
@@ -151,18 +172,31 @@ def main() -> int:
     check_manifest(issues)
     pages = sorted(SITE.rglob("*.html"))
     essays = sorted((ROOT / "essays").glob("*.md"))
-    if len(pages) != 13 or len(essays) != 9:
-        issues.append(f"Expected 13 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
+    if len(pages) != 12 or len(essays) != 9:
+        issues.append(f"Expected 12 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
     if not (SITE / "index.html").is_file() or not (SITE / ".nojekyll").is_file():
         issues.append("Missing HTML entrypoint or .nojekyll")
     documents = {p: parse_html(p) for p in pages}
     canonical_set: set[str] = set()
     total_tables = 0
     total_links = 0
+    total_display_maths = 0
+    total_figures = 0
+    expected_media = {
+        "compositional-intelligence": (5, 2),
+        "semantic-participation": (1, 0),
+        "typed-generativity": (1, 0),
+        "functorial-consistency": (1, 0),
+        "lambek-machines": (1, 2),
+        "algebraic-architectures": (1, 0),
+        "quantitative-curry-howard": (3, 0),
+        "effectful-and-conceptual-intelligence": (3, 0),
+        "series-preface": (0, 0),
+    }
 
     for page, doc in documents.items():
         relative = page.relative_to(SITE).as_posix()
-        target_canonical = URL if relative == "index.html" else URL + ("atlas/" if relative == "atlas/index.html" else "reading/" if relative == "reading/index.html" else relative)
+        target_canonical = URL if relative == "index.html" else URL + ("reading/" if relative == "reading/index.html" else relative)
         canonical_set.add(target_canonical)
         if doc.lang != "en" or doc.main != 1 or doc.h1 != 1 or doc.noindex:
             issues.append(f"Incorrect document semantics: {relative}")
@@ -176,6 +210,19 @@ def main() -> int:
         duplicates = [id_ for id_, n in collections.Counter(doc.ids).items() if n > 1]
         if duplicates:
             issues.append(f"Duplicate identifiers in {relative}: {duplicates[:3]}")
+        if doc.maths != doc.annotations or doc.display_maths != doc.math_scrolls:
+            issues.append(f"Unusable MathML or non-scrollable display equation: {relative}")
+        if doc.invalid_math_scrolls:
+            issues.append(f"Non-keyboard-accessible equation: {relative}")
+        if doc.figures != doc.figcaptions:
+            issues.append(f"Figure missing visible caption: {relative}")
+        if relative.startswith("essays/"):
+            slug = page.stem
+            if (doc.display_maths, doc.figures) != expected_media[slug]:
+                issues.append(f"Equation/figure inventory does not match publication: {relative} "
+                              f"got {doc.display_maths} equations and {doc.figures} figures")
+        total_display_maths += doc.display_maths
+        total_figures += doc.figures
         if doc.tables != doc.captions or doc.th != doc.scoped_th:
             issues.append(f"Table caption/header mismatch: {relative}")
         if doc.tables != doc.table_wrappers or doc.invalid_table_wrappers:
@@ -224,7 +271,7 @@ def main() -> int:
         try:
             root = ElementTree.parse(sitemap).getroot()
             urls = [x.text for x in root.findall(f".//{namespace}loc")]
-            if len(urls) != 13 or set(urls) != canonical_set:
+            if len(urls) != 12 or set(urls) != canonical_set:
                 issues.append("Sitemap URLs differ from public HTML canonicals")
         except ElementTree.ParseError as exc:
             issues.append(f"Invalid sitemap: {exc}")
@@ -236,7 +283,7 @@ def main() -> int:
             print(f"FAIL: {issue}")
         print(f"FAIL: {len(issues)} publication checks failed")
         return 1
-    print(f"PASS: {len(pages)} HTML pages, {len(essays)} sources, {total_links} links, {total_tables} tables; checksums and sitemap verified")
+    print(f"PASS: {len(pages)} HTML pages, {len(essays)} sources, {total_links} links, {total_tables} tables, {total_display_maths} display equations, {total_figures} figures; checksums and sitemap verified")
     return 0
 
 

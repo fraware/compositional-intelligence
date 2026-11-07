@@ -443,7 +443,9 @@ Epistemic typing is stronger than provenance and weaker than proof. Provenance r
 
 A system that proves local goals can still make a weak contribution to a formal world. Formal libraries are memory systems whose value depends on theorem reuse, searchability, naming, abstraction, dependency control, automation compatibility, proof robustness, and maintainer acceptance.
 
-> Delta_L(c) = F(L + c) - F(L)
+$$
+\Delta_L(c)=F(L+c)-F(L).
+$$
 
 This expression should be interpreted as a vector-valued diagnostic. A contribution can improve one dimension and degrade another.
 

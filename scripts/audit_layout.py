@@ -45,8 +45,8 @@ def main() -> int:
     scrollable_tables = 0
     base = f"http://127.0.0.1:{httpd.server_address[1]}/"
     paths = sorted(p.relative_to(site).as_posix() for p in site.rglob("*.html"))
-    selected = {"index.html", "atlas/index.html", "reading/index.html", "studies/commuting-square.html",
-                "essays/functorial-consistency.html"}
+    # Capture every publication page at narrow and wide widths for human review.
+    selected = set(paths)
 
     try:
         with sync_playwright() as playwright:
@@ -80,6 +80,40 @@ def main() -> int:
                             if errors:
                                 failures.append(f"{width}px {rel}: script errors: {errors[:2]}")
                             if rel.startswith("essays/"):
+                                media = page.evaluate("""() => {
+                                    const article = document.querySelector(".article-content");
+                                    if (!article) return null;
+                                    const boxes = [...article.querySelectorAll(
+                                        "figure, .table-scroll, .math-scroll, pre, img"
+                                    )];
+                                    const math = [...article.querySelectorAll("math[display=block]")];
+                                    return {
+                                        displayMath: math.length,
+                                        mathScrolls: article.querySelectorAll(".math-scroll").length,
+                                        invisibleMath: math.filter(e => {
+                                            const r = e.getBoundingClientRect();
+                                            return r.width < 4 || r.height < 4 ||
+                                                getComputedStyle(e).visibility === "hidden";
+                                        }).length,
+                                        invalidFigures: [...article.querySelectorAll("figure")].filter(e => {
+                                            const caption = e.querySelector("figcaption");
+                                            if (!caption) return true;
+                                            return caption.getBoundingClientRect().height < 5;
+                                        }).length,
+                                        unnamedImages: [...article.querySelectorAll("img")].filter(
+                                            e => !e.hasAttribute("alt")).length,
+                                        overflowingMediaRoots: boxes.filter(e => {
+                                            const r = e.getBoundingClientRect();
+                                            return r.left < -2 || r.right > innerWidth + 2;
+                                        }).map(e => e.tagName + "." + e.className).slice(0, 4)
+                                    };
+                                }""")
+                                if media is None or media["displayMath"] != media["mathScrolls"]:
+                                    failures.append(f"{width}px {rel}: missing MathML scroll wrappers")
+                                elif media["invisibleMath"]:
+                                    failures.append(f"{width}px {rel}: invisible mathematics")
+                                if media and (media["invalidFigures"] or media["unnamedImages"] or media["overflowingMediaRoots"]):
+                                    failures.append(f"{width}px {rel}: media accessibility/layout {media}")
                                 tables = page.locator(".table-scroll")
                                 for table in tables.all():
                                     if table.get_attribute("tabindex") != "0" or table.get_attribute("role") != "group":
@@ -110,14 +144,6 @@ def main() -> int:
                                         failures.append(f"{width}px reader guide: missing manuscript evidence")
                                     if first.locator(".reader-source a").count() != 1:
                                         failures.append(f"{width}px reader guide: missing source link")
-                            if rel == "atlas/index.html":
-                                citations = page.locator(".atlas-source-disclosure")
-                                if citations.count() != 8:
-                                    failures.append(f"{width}px Atlas: missing source-bound connections")
-                                else:
-                                    citations.first.locator("summary").click()
-                                    if citations.first.locator("blockquote").count() != 2:
-                                        failures.append(f"{width}px Atlas: missing supporting excerpts")
                             if width in (375, 1440) and rel in selected:
                                 label = rel.replace("/", "-").replace(".html", "")
                                 page.screenshot(path=str(screenshots / f"{width}-{label}.png"))
@@ -142,7 +168,7 @@ def main() -> int:
         print(f"FAIL: {failure}")
     if failures:
         return 1
-    print(f"PASS: {len(paths)} pages at 375, 768, and 1440px; scientific tables, Atlas excerpts, study interactions; screenshots saved")
+    print(f"PASS: {len(paths)} pages at 375, 768, and 1440px; tables, MathML, figures, reader checks, study interactions; screenshots saved")
     return 0
 
 

@@ -130,7 +130,9 @@ Typed Generativity is an operational abstraction over the object layer of genera
 
 The central schema records generation at the level of candidate artifact construction.
 
-P_theta(A,t \| c) = P_theta(A \| c) P_theta(t \| A,c)
+$$
+P_{\theta}(A,t \mid c) = P_{\theta}(A \mid c)\,P_{\theta}(t \mid A,c).
+$$
 
 Let c denote a generation context and Ω_c a finite or countable tagged candidate space of pairs (A,t), with target-class label A and candidate representation t. A normalized joint probability mass P_theta(A,t | c) satisfies P_theta(A,t | c) = P_theta(A | c) P_theta(t | A,c) for classes with P_theta(A | c) > 0. At zero marginal probability, the joint law leaves the conditional distribution undetermined. Invalid and malformed candidates remain in the sampling space. In formally checkable tasks, a declared partial mapping μ_c(A) = τ associates eligible target classes with object-language types, and a separate parser and checker assess Δ ⊢ parse(t) : τ where defined. Schema-governed and semi-formal tasks use separately declared validation or annotation protocols. The factorization is the probability chain rule; its empirical usefulness and any type-inference mechanism remain independent questions.
 

@@ -62,7 +62,17 @@ Table 1. Contribution summary.
 
 Functorial Consistency proposes a typed two-path test. For x in X, a source transformation f : X -> X′, transports T_0 : X -> Y and T_1 : X′ -> Y′, and target transformation g : Y -> Y′, both T_1(f(x)) and g(T_0(x)) inhabit Y′. The declared relation R is a subset of Y′ × Y′ with an explicit operand order, including directional refinement where appropriate. The evaluation record distinguishes invalid item, unavailable path, unknown relation, false relation, and true relation, with oracle provenance and applicable coverage denominators. A false relation is a determined counterexample to that item’s proposed comparison; unknown indicates insufficient evidence under the declared oracle. Finite square results are separate from quantified identity and composition preservation laws for any claimed functor.
 
-> Source path: x ∈ X ---f→ f(x) ∈ X′. Transports: T_0 : X → Y and T_1 : X′ → Y′. Target path: T_0(x) ∈ Y ---g→ g(T_0(x)) ∈ Y′. Evaluation compares T_1(f(x)) R g(T_0(x)) in Y′ under the declared relation R and its evaluator. A relation result presupposes that the two paths are defined and locally valid.
+The two-path record declares the source transformation, both transports, the target-side operation, and its acceptance relation.
+
+$$
+\begin{aligned}
+x&\xrightarrow{f}f(x),\\
+T_0(x)&\xrightarrow{g}g(T_0(x)),\\
+T_1(f(x))&\mathrel{R}g(T_0(x)).
+\end{aligned}
+$$
+
+Here $T_0:X\to Y$ and $T_1:X'\to Y'$ are distinct transports. This selected path-agreement condition is not a proof that either transport is a functor.
 
 The square is an operational item-level comparison of two well-typed paths, not by itself a theorem of mathematical functoriality. An item declares its source and target environments, source object, source operation, two transports, target-side operation, comparison relation and its orientation, and independently auditable validators. Item formation and local path validation precede comparison of T_1(f(x)) with g(T_0(x)). Invalid or undefined paths, demonstrated disagreement, and unresolved comparison evidence receive different labels. A directional refinement relation need not be symmetric. Formal functoriality would additionally specify categories and mappings preserving identities and composition; the present benchmark tests selected path agreements.
 

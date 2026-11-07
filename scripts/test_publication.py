@@ -20,7 +20,6 @@ class PublicationMetadataTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         """Read checked-in metadata without network access."""
-        cls.atlas = json.loads((publication.ROOT / "atlas" / "concepts.json").read_text(encoding="utf-8"))
         cls.tables = json.loads((publication.ROOT / "tables" / "captions.json").read_text(encoding="utf-8"))
         cls.guide = json.loads((publication.ROOT / "reading" / "guide.json").read_text(encoding="utf-8"))
 
@@ -55,26 +54,31 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertIn("<details><summary>", rendered)
         self.assertIn('href="../essays/semantic-participation.html#5-3-semantic-membership"', rendered)
 
-    def test_atlas_excerpts_are_exact_and_section_local(self) -> None:
-        """Every cited passage occurs inside the declared manuscript section."""
-        publication.validate_concepts(self.atlas)
-        self.assertEqual(len(self.atlas["concepts"]), 7)
-        self.assertEqual(len(self.atlas["relations"]), 8)
-        self.assertEqual(sum(len(r["evidence"]) for r in self.atlas["relations"]), 16)
+    def test_mathml_display_is_keyboard_scrollable(self) -> None:
+        """MathML is preserved in a named, focusable overflow container."""
+        sample = (
+            '<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML">'
+            '<semantics><mi>x</mi><annotation encoding="application/x-tex">x'
+            '</annotation></semantics></math></p>'
+        )
+        rendered = publication.render_math(sample)
+        self.assertIn('class="math-scroll"', rendered)
+        self.assertIn('role="group" tabindex="0"', rendered)
+        self.assertIn('<math display="block"', rendered)
+        self.assertIn('encoding="application/x-tex"', rendered)
+        self.assertNotIn('<p><math', rendered)
 
-    def test_invalid_atlas_passage_rejected(self) -> None:
-        """A plausible-looking but unsupported passage must fail publication."""
-        tampered = copy.deepcopy(self.atlas)
-        tampered["relations"][0]["evidence"][0]["excerpt"] = "This statement is absent from the source section."
-        with self.assertRaisesRegex(ValueError, "Unmatched manuscript evidence excerpt"):
-            publication.validate_concepts(tampered)
+    def test_inline_mathml_is_not_wrapped(self) -> None:
+        """Display handling leaves text-flow equations intact."""
+        raw = '<p>Term <math display="inline"><mi>x</mi></math>.</p>'
+        self.assertEqual(publication.render_math(raw), raw)
 
-    def test_unsupported_relation_type_rejected(self) -> None:
-        """Conceptual relationships must use the defined, bounded categories."""
-        tampered = copy.deepcopy(self.atlas)
-        tampered["relations"][0]["kind"] = "mathematically-proven"
-        with self.assertRaisesRegex(ValueError, "Unknown conceptual relationship type"):
-            publication.validate_concepts(tampered)
+    def test_figures_have_explicit_source_captions(self) -> None:
+        """The conceptual diagrams are self-describing rather than plaintext pseudo-figures."""
+        for slug, count in [("compositional-intelligence", 2), ("lambek-machines", 2)]:
+            source = (publication.ROOT / "essays" / f"{slug}.md").read_text(encoding="utf-8")
+            self.assertEqual(source.count("<figure "), count)
+            self.assertEqual(source.count("<figcaption "), count)
 
     def test_all_table_captions_are_source_bound(self) -> None:
         """Every manuscript table must have a complete and matching description."""

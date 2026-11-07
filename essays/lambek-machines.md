@@ -128,13 +128,15 @@ The proposal is positioned among established literatures without absorbing their
 
 The formal core is a typed compositional pipeline for a declared grammar and its interpretation. Let the ordered lexical context be Γ_L = (τ₁, ..., τₙ), where τᵢ is the assigned category of word wᵢ. A grammatical derivation π establishes Γ_L ⊢ S under a specified Lambek, pregroup, or other explicitly chosen calculus <span class="citation-group">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Reference 1 — The Mathematics of Sentence Structure">1</a>, <a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>. Exchange or other structural rules are available only where that calculus admits them. A semantic interpretation of the categories and derivations <span class="citation-group">[<a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span> supplies ⟦π⟧; the resulting meaning is evaluated against an independently declared target and acceptance rule. Neural supertag predictions alone establish neither derivability nor correct semantic interpretation. This is a specification of observable structure, not a claim about transformer internals. The associative Lambek calculus L uses ordered antecedent sequences, and its nonassociative variants impose distinct structural restrictions. Each language evaluation track must identify its calculus, admissible structural rules, semantic model, and comparison oracle.
 
-w_1, \..., w_n
-
--\> tau_1, \..., tau_n
-
--\> pi : Γ_L ⊢_G S (derivation in the declared grammar G)
-
--\> ⟦pi⟧_G(v_1, \..., v_n) (interpretation under the declared semantic model)
+<figure class="formal-pipeline" aria-labelledby="lambek-pipeline-caption">
+<ol class="lifecycle-stages">
+<li>Tokens <i>w</i><sub>1</sub>, …, <i>w</i><sub>n</sub></li>
+<li>Lexical categories τ<sub>1</sub>, …, τ<sub>n</sub></li>
+<li>Typed derivation π with Γ<sub>L</sub> ⊢<sub>G</sub> S</li>
+<li>Interpretation ⟦π⟧<sub>G</sub>(v<sub>1</sub>, …, v<sub>n</sub>)</li>
+</ol>
+<figcaption id="lambek-pipeline-caption">Typed composition under a declared grammar and semantic interpretation. Derivability does not alone establish semantic correctness.</figcaption>
+</figure>
 
 The schema separates failure modes that ordinary semantic scores tend to merge. A system can assign an incorrect lexical category, choose categories that fail to reduce globally, produce a valid derivation with the wrong semantic operation, or preserve syntax and lose the intended semantic relation. Each failure implies a different intervention. Lexical errors require category-level repair. Reduction failures require global well-typedness constraints. Semantic-composition errors require a target-side equivalence test. A single aggregate score obscures these distinctions.
 
@@ -259,19 +261,23 @@ The hierarchy constrains publication claims. Evidence for L1 supports diagnostic
 
 Functorial Language Consistency instantiates the two-path benchmark for a declared linguistic transformation f and semantic representation. The source sentence x and its transformed form f(x) are interpreted by task-specific transports T_0 and T_1, while g acts on the original semantic representation. The benchmark compares T_1(f(x)) with g(T_0(x)) under a specified target-side relation R, which must distinguish denotational equivalence, directional entailment, and other task-specific criteria.
 
-sentence x \--f\--\> transformed sentence f(x)
+<figure class="path-comparison" aria-labelledby="lambek-square-caption">
+<div class="path-route">
+<p class="path-route-label">Path A · Transform, then translate</p>
+<p><i>x</i> → <i>f</i>(<i>x</i>) → <i>T</i><sub>1</sub>(<i>f</i>(<i>x</i>))</p>
+</div>
+<div class="path-route">
+<p class="path-route-label">Path B · Translate, then transform</p>
+<p><i>x</i> → <i>T</i><sub>0</sub>(<i>x</i>) → <i>g</i>(<i>T</i><sub>0</sub>(<i>x</i>))</p>
+</div>
+<figcaption id="lambek-square-caption">Two evaluation paths with distinct transports. The target artifacts T₁(f(x)) and g(T₀(x)) are compared under a declared, possibly directional relation R. This diagram asserts no prior agreement.</figcaption>
+</figure>
 
-\| \|
+The evaluation condition is
 
-T T
-
-v v
-
-semantic artifact T(x) \--g\--\> transformed artifact g(T(x))
-
-Evaluation condition
-
-T_1(f(x)) R g(T_0(x)), with the semantic relation R and its orientation specified.
+$$
+T_1(f(x)) \mathrel{R} g(T_0(x)).
+$$
 
 The benchmark distinguishes meaning-preserving transformations from controlled semantic changes. Paraphrase and voice alternation often require stable denotation or thematic roles. Scope clarification, attachment clarification, modality changes, and authority-sensitive language require specific target-side updates. The evaluation therefore checks covariance under typed transformation, not invariance under arbitrary perturbation.
 

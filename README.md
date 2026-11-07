@@ -6,8 +6,6 @@
 
 **Read the essays:** https://fraware.github.io/compositional-intelligence/
 
-**Concept Atlas:** https://fraware.github.io/compositional-intelligence/atlas/
-
 **Reader's Guide:** https://fraware.github.io/compositional-intelligence/reading/
 
 **Explore a finite concept study:** https://fraware.github.io/compositional-intelligence/studies/commuting-square.html
@@ -28,6 +26,6 @@ Compositional Intelligence is a series of research essays on the creation, inter
 
 The essays advance a research program and identify questions that remain open. The scope of each mathematical and empirical claim is stated in the corresponding essay.
 
-The nine Markdown manuscripts in `essays/` are the publication sources. The static website is rendered from those sources with Pandoc 3.1.13 and the repository’s reproducible build script. The Concept Atlas and Reader's Guide are generated from source-anchored, automatically checked catalogues. The Guide is an editorial self-assessment, not evidence from recruited study participants.
+The nine Markdown manuscripts in `essays/` are the publication sources. The static website is rendered from those sources with Pandoc 3.1.13 and the repository’s reproducible build script. The Reader's Guide is generated from a source-anchored, automatically checked catalogue. The Guide is an editorial self-assessment, not evidence from recruited study participants.
 
 © 2026 Mateo Petel. All rights reserved.

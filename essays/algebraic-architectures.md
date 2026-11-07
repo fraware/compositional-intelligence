@@ -126,7 +126,9 @@ Geometric deep learning, Deep Sets, graph networks, and categorical deep learnin
 
 The central schema separates task structure, model-family commitment, and trained-system evidence.
 
-> TaskSpec -\> ArchitectureType -\> ArchitectureInstance
+$$
+\mathrm{TaskSpec}\to\mathrm{ArchitectureType}\to\mathrm{ArchitectureInstance}.
+$$
 
 TaskSpec describes the structure the task imposes before candidate architectures are selected. ArchitectureType describes a model family together with its representational commitments, computational primitives, symmetry assumptions, memory mechanisms, interfaces, and validator exposure. ArchitectureInstance denotes a trained system with parameters, data, objective, optimizer, inference procedure, memory subsystem, interface implementation, validation record, and deployment profile. A strong architecture type can produce a weak instance, and a general model family can occasionally learn a structure that another family encodes directly. The record should keep those cases distinct.
 
