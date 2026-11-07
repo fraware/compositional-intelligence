@@ -293,15 +293,6 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   font:11px/1.7 Arial,Helvetica,sans-serif;
   margin-bottom:8px;
 }
-.article-content .square-figure .table-scroll { margin:0; }
-.article-content .square-figure th,
-.article-content .square-figure td {
-  text-align:center;
-  vertical-align:middle;
-  padding:14px 10px;
-  min-width:145px;
-}
-.article-content .square-figure table { font-size:14px; }
 .article-content .path-comparison { display:grid; gap:10px; }
 .article-content .path-route { padding:16px 17px; border:1px solid var(--line); }
 .article-content .path-route p { margin:0; overflow-wrap:anywhere; }

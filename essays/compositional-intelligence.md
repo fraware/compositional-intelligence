@@ -290,34 +290,16 @@ The claim is diagnostic. Local correctness is too weak. A model can produce a pl
 
 
 
-<figure class="square-figure" aria-labelledby="square-figure-caption">
-<table>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th>source x ∈ X</th>
-<th>f : X → X′</th>
-<th>transformed source f(x) ∈ X′</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>↓ T_0</td>
-<td></td>
-<td>↓ T_1</td>
-</tr>
-<tr class="even">
-<td>target T_0(x) ∈ Y</td>
-<td>g : Y → Y′</td>
-<td>transformed target g(T_0(x)) ∈ Y′</td>
-</tr>
-</tbody>
-</table>
-<figcaption id="square-figure-caption">Figure 2. Typed two-path comparison with distinct transports T₀ and T₁. Target results are assessed under a declared relation R, which can be directional and need not be an equivalence.</figcaption>
+<figure class="path-comparison" aria-labelledby="square-figure-caption">
+<div class="path-route">
+<p class="path-route-label">Path A · Transform, then translate</p>
+<p><i>x</i> → <i>f</i>(<i>x</i>) → <i>T</i><sub>1</sub>(<i>f</i>(<i>x</i>))</p>
+</div>
+<div class="path-route">
+<p class="path-route-label">Path B · Translate, then transform</p>
+<p><i>x</i> → <i>T</i><sub>0</sub>(<i>x</i>) → <i>g</i>(<i>T</i><sub>0</sub>(<i>x</i>))</p>
+</div>
+<figcaption id="square-figure-caption">Figure 2. Typed two-path comparison with distinct transports T₀ and T₁. The resulting artifacts are compared under a declared relation R, which can be directional and need not be an equivalence. The figure does not presume their agreement.</figcaption>
 </figure>
 
 
@@ -468,7 +450,10 @@ Architecture design solves a matching problem. A task imposes structure. A model
 The core schema is:
 
 $$
-\mathrm{TaskSpec}\to\mathrm{ArchitectureType}\to\mathrm{ArchitectureInstance}.
+\begin{aligned}
+\mathrm{TaskSpec}&\to\mathrm{ArchitectureType}\\
+&\to\mathrm{ArchitectureInstance}.
+\end{aligned}
 $$
 
 The notation $A\models S$ is reserved for a specified formal satisfaction judgment. Structural support, empirical performance, reviewed fit, runtime cost and implementation constraints receive distinct fields in ArchitectureSpec.
@@ -496,7 +481,10 @@ When AI systems act, output-centric evaluation fails more severely since an acti
 The central judgment is:
 
 $$
-\Gamma;M;E;C \vdash_{\mathrm{spec}} a : \mathrm{Pre}\to\mathrm{Post}\;!\varepsilon@\rho.
+\begin{aligned}
+\Gamma;M;E;C&\vdash_{\mathrm{spec}}a:\\
+\mathrm{Pre}&\to\mathrm{Post}\;!\varepsilon@\rho.
+\end{aligned}
 $$
 
 Here Gamma is instruction and policy context. M is memory. E is environment or interface state. C is capability context. a is an action or plan step. Pre and Post are preconditions and postconditions. epsilon is an effect row. rho records risk, authority, reversibility, and validation obligations.

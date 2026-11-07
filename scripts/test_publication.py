@@ -87,7 +87,7 @@ class PublicationMetadataTests(unittest.TestCase):
             manuscript = (publication.ROOT / "essays" / f"{slug}.md").read_text(encoding="utf-8")
             publication.verify_table_catalog(manuscript, entries, slug)
             count += len(entries)
-        self.assertEqual(count, 106)
+        self.assertEqual(count, 105)
 
     def test_table_change_requires_caption_review(self) -> None:
         """Even a minimally altered source table invalidates its prior fingerprint."""

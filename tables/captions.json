@@ -418,10 +418,6 @@
         "source_sha256": "6d3c2fc607ad1fb7aefaec2920a7b9379f472429ed35b5d8c02ec8bed2e52d0f"
       },
       {
-        "caption": "Source and target paths in a transformation square",
-        "source_sha256": "f2856edde31a70f2365275a3faa93d61e3157f3b20b54a22a27e624ffae14de6"
-      },
-      {
         "caption": "Comparison of transformation-sensitive evaluation families",
         "source_sha256": "86644e65ab4b3bafd6fe67439a4c476c9983d3594fe0387ff4d248212b22fb07"
       },
