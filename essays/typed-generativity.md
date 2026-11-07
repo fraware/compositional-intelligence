@@ -9,7 +9,11 @@ Typed Generativity is the generation layer of the Compositional Intelligence ser
 Typed Generativity proposes an operational decomposition of candidate generation. Under a normalized joint model distribution over declared target labels $A$ and candidate representations $t$, with generator context $c$, the probability mass factors as
 
 $$
-P_{\theta}(A,t\mid c)=P_{\theta}(A\mid c)\,P_{\theta}(t\mid A,c).
+\begin{aligned}
+P_{\theta}(A,t\mid c)
+&=P_{\theta}(A\mid c)\\
+&\phantom{=}\,\cdot P_{\theta}(t\mid A,c).
+\end{aligned}
 $$
 
 This is the probability chain rule, not a model-specific theorem. Candidate representations include outputs later rejected by a validator. In a formal object language, a separate environment $\Delta$ and target type $\tau$ govern $\Delta\vdash t:\tau$, with the correspondence from label $A$ to type $\tau$ explicitly declared. Schema-governed and semi-formal tasks need independent validators or annotation protocols. Internal type-like representations remain an untested empirical hypothesis. The probabilistic factorization holds for any normalized joint law and supplies no evidence of a literal internal infer-then-generate mechanism. A mechanism claim needs independent intervention or causal evidence. The proposed Type-First Prompting Harness should compare diagnostic and downstream gains against information-, token-, and checker-exposure-matched controls. Pre-generation target commitments and labels reconstructed from outputs are distinct observations.
@@ -143,7 +147,11 @@ Typed Generativity is an operational abstraction over the object layer of genera
 The central schema records generation at the level of candidate artifact construction.
 
 $$
-P_{\theta}(A,t \mid c) = P_{\theta}(A \mid c)\,P_{\theta}(t \mid A,c).
+\begin{aligned}
+P_{\theta}(A,t\mid c)
+&=P_{\theta}(A\mid c)\\
+&\phantom{=}\,\cdot P_{\theta}(t\mid A,c).
+\end{aligned}
 $$
 
 Let c denote a generation context and Ω_c a finite or countable tagged candidate space of pairs (A,t), with target-class label A and candidate representation t. The normalized joint mass $P_{\theta}(A,t\mid c)$ satisfies the displayed factorization wherever $P_{\theta}(A\mid c)>0$. At zero marginal probability, the joint law leaves the conditional distribution undetermined. Invalid and malformed candidates remain in the sampling space. In formally checkable tasks, a declared partial mapping $\mu_c(A)=\tau$ associates eligible target classes with object-language types, and a separate parser and checker assess $\Delta\vdash\operatorname{parse}(t):\tau$ where defined. Schema-governed and semi-formal tasks use separately declared validation or annotation protocols. The factorization is the probability chain rule; its empirical usefulness and any type-inference mechanism remain independent questions.

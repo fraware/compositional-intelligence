@@ -112,6 +112,8 @@ def main() -> int:
                                     return {
                                         displayMath: math.length,
                                         mathScrolls: article.querySelectorAll(".math-scroll").length,
+                                        clippedDisplayMath: [...article.querySelectorAll(".math-scroll")]
+                                          .filter(e => e.scrollWidth > e.clientWidth + 2).length,
                                         invalidInlineMath: [...article.querySelectorAll('math[display="inline"]')]
                                           .filter(e => {
                                             const r = e.getBoundingClientRect();
@@ -143,6 +145,8 @@ def main() -> int:
                                     failures.append(f"{width}px {rel}: missing MathML scroll wrappers")
                                 elif media["invisibleMath"] or media["invalidInlineMath"]:
                                     failures.append(f"{width}px {rel}: clipped or invisible mathematics {media}")
+                                if width <= 375 and media and media["clippedDisplayMath"]:
+                                    failures.append(f"{width}px {rel}: display formulas require sideways scrolling {media}")
                                 if media and (media["invalidFigures"] or media["unnamedImages"] or media["overflowingMediaRoots"]):
                                     failures.append(f"{width}px {rel}: media accessibility/layout {media}")
                                 table_structure = page.evaluate("""() => ({

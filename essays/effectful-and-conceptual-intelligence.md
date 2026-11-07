@@ -395,11 +395,12 @@ The ledger succeeds only when it alters system behavior or human review. If entr
 Memory writes are consequential effects. A persistent memory record can preserve validated facts and successful plans, but it can also propagate false premises into future decisions. The required record fields include source, confidence, scope, retention, privacy class, invalidation condition, and permitted use.
 
 $$
-\begin{aligned}
-\Gamma;M;E;C\vdash&\operatorname{write\_memory}(m):\\
-&M\to M+\{m\}\\
-&!\mathrm{memory\_write}@\rho.
-\end{aligned}
+\begin{gathered}
+\Gamma;M;E;C\vdash\\
+\operatorname{write\_memory}(m):\\
+M\to M+\{m\}\\
+!\mathrm{memory\_write}@\rho.
+\end{gathered}
 $$
 
 ### 8.2 Tools as typed interfaces {#8-2-tools-as-typed-interfaces}
@@ -411,11 +412,11 @@ Toolformer studies language-model selection and use of external APIs <span class
 Plans are state-transition programs with dependency, contingency, and validation structure. A mature plan records initial state, resources, temporal constraints, cumulative effects, precondition checks, postcondition checks, abort conditions, rollback strategy, human approval points, and evidence ledger. Narrative plans lack the execution contract needed for high-impact settings.
 
 $$
-\begin{aligned}
-\Gamma;M;E;C\vdash&\pi:\\
-\mathrm{Pre}_0&\to\mathrm{Post}_n\\
-&!(\varepsilon_1+\cdots+\varepsilon_n)@\rho.
-\end{aligned}
+\begin{gathered}
+\Gamma;M;E;C\vdash\pi:\\
+\mathrm{Pre}_0\to\mathrm{Post}_n\\
+!(\varepsilon_1+\cdots+\varepsilon_n)@\rho.
+\end{gathered}
 $$
 
 

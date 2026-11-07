@@ -188,7 +188,11 @@ Semantic participation is therefore an original proposal in the series. It does 
 Typed generativity models generation as target-type inference followed by candidate-inhabitant construction:
 
 $$
-P_{\theta}(A,t \mid c) = P_{\theta}(A \mid c)\,P_{\theta}(t \mid A,c).
+\begin{aligned}
+P_{\theta}(A,t\mid c)
+&=P_{\theta}(A\mid c)\\
+&\phantom{=}\,\cdot P_{\theta}(t\mid A,c).
+\end{aligned}
 $$
 
 Here c is the generator context, including prompts, retrieved material, examples, tools, memory and environment. A is a declared target-class label, while t is a candidate representation that can later fail validation. The factorization assumes a normalized joint model distribution on a specified tagged candidate space and follows from the probability chain rule. For formal tasks, the independent judgment Δ ⊢ t : τ belongs to an object-language typing environment Δ and a target type τ; mapping A to τ is a domain-specific obligation. Model rankings without a normalized distribution retain ranking semantics. Claims about latent type-like representations remain empirical hypotheses.
@@ -450,10 +454,13 @@ Architecture design solves a matching problem. A task imposes structure. A model
 The core schema is:
 
 $$
-\begin{aligned}
-\mathrm{TaskSpec}&\to\mathrm{ArchitectureType}\\
-&\to\mathrm{ArchitectureInstance}.
-\end{aligned}
+\begin{gathered}
+\mathrm{TaskSpec}\\
+\downarrow\\
+\mathrm{ArchitectureType}\\
+\downarrow\\
+\mathrm{ArchitectureInstance}
+\end{gathered}
 $$
 
 The notation $A\models S$ is reserved for a specified formal satisfaction judgment. Structural support, empirical performance, reviewed fit, runtime cost and implementation constraints receive distinct fields in ArchitectureSpec.
