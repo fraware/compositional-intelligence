@@ -158,6 +158,26 @@ def main() -> int:
                                         failures.append(f"{width}px reader guide: missing source link")
                             if width in (375, 1440) and rel in selected:
                                 label = rel.replace("/", "-").replace(".html", "")
+                                # Capture the actual scientific media, not only the article header.
+                                if rel.startswith("essays/"):
+                                    for index, equation in enumerate(page.locator(".math-scroll").all(), start=1):
+                                        equation.screenshot(
+                                            path=str(screenshots / f"{width}-{label}-equation-{index:02d}.png")
+                                        )
+                                    for index, figure in enumerate(page.locator(".article-content figure").all(), start=1):
+                                        figure.screenshot(
+                                            path=str(screenshots / f"{width}-{label}-figure-{index:02d}.png")
+                                        )
+                                    first_table = page.locator(".table-scroll").first
+                                    if first_table.count():
+                                        first_table.evaluate("(e) => { e.scrollLeft = 0; }")
+                                        first_table.screenshot(
+                                            path=str(screenshots / f"{width}-{label}-table-01.png")
+                                        )
+                                # Scroll checks and disclosure interactions may alter the viewport.
+                                # Capture the actual page top deterministically.
+                                page.evaluate("window.scrollTo(0, 0)")
+                                page.wait_for_timeout(60)
                                 page.screenshot(path=str(screenshots / f"{width}-{label}.png"))
                             if rel == "studies/commuting-square.html":
                                 page.locator("#transport").select_option("collapsed")
