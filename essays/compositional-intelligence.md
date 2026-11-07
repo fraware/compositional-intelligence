@@ -600,23 +600,23 @@ Compositional Intelligence has a broad scope, and breadth creates the primary me
 
 The main limitations are the following.
 
-6.  The framework can turn into too broad to constrain annotation, evaluation, or design.
+1.  The framework can turn into too broad to constrain annotation, evaluation, or design.
 
-7.  Domains differ sharply in formalization level.
+2.  Domains differ sharply in formalization level.
 
-8.  Human equivalence judgments can be noisy.
+3.  Human equivalence judgments can be noisy.
 
-9.  Record schemas can turn into expensive metadata.
+4.  Record schemas can turn into expensive metadata.
 
-10. Type annotations can fail to predict model errors.
+5. Type annotations can fail to predict model errors.
 
-11. Functorial Consistency can add little beyond local accuracy.
+6. Functorial Consistency can add little beyond local accuracy.
 
-12. ArchitectureSpec can fail to improve architecture choice.
+7. ArchitectureSpec can fail to improve architecture choice.
 
-13. TypedActionLedger can fail to influence execution or repair.
+8. TypedActionLedger can fail to influence execution or repair.
 
-14. The framework can overfit to domains where artifacts are already structured and underperform in open-ended interpretive tasks.
+9. The framework can overfit to domains where artifacts are already structured and underperform in open-ended interpretive tasks.
 
 The first empirical phase should therefore focus on domains with explicit validators before expanding to interpretive settings. Proof assistants, code, semantic parsing, planning, and tool-use workflows are better initial domains than open-ended conversation, cultural interpretation, or unconstrained creative tasks. The program can later expand only where its records produce measurable diagnostic value.
 
@@ -630,19 +630,19 @@ The credible version of the program is empirical.
 
 The kill criteria are explicit and operational.
 
-15. Artifact records do not improve review, repair, or reuse.
+1. Artifact records do not improve review, repair, or reuse.
 
-16. Target-type annotations do not predict or classify failures.
+2. Target-type annotations do not predict or classify failures.
 
-17. Functorial Consistency adds no diagnostic signal beyond ordinary accuracy.
+3. Functorial Consistency adds no diagnostic signal beyond ordinary accuracy.
 
-18. Categorial supervision does not improve downstream compositional behavior.
+4. Categorial supervision does not improve downstream compositional behavior.
 
-19. ArchitectureSpec cannot rule out unsuitable architectures.
+5. ArchitectureSpec cannot rule out unsuitable architectures.
 
-20. Quantitative records do not predict validation, repair, or calibration.
+6. Quantitative records do not predict validation, repair, or calibration.
 
-21. Typed action ledgers do not reduce unauthorized actions, side effects, repair cost, or audit failures.
+7. Typed action ledgers do not reduce unauthorized actions, side effects, repair cost, or audit failures.
 
 These criteria expose the proposal to empirical rejection, which is part of the contribution.
 

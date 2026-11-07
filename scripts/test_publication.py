@@ -113,7 +113,8 @@ class PublicationMetadataTests(unittest.TestCase):
         output = publication.render_tables(
             content, [{"caption": "Formal assumptions and their acceptance checks"}],
         )
-        self.assertEqual(output.count("Table B2"), 1)
+        self.assertNotIn("<p>Table B2", output)
+        self.assertEqual(output.count('Table B2</span>'), 1)
         self.assertIn('data-columns="2"', output)
         self.assertIn('<thead>', output)
         self.assertIn('</thead>', output)
