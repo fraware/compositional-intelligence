@@ -147,3 +147,60 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 .study-counts strong { font-size:22px; }
 }
 @media print { .study-controls { display:none; } .study-workspace { break-inside:avoid; } }
+
+/* Essay hierarchy, local navigation, and responsive concept atlas. */
+.article-content > p,.article-content > ul,.article-content > ol,.article-content > blockquote {
+  max-width:70ch;
+}
+.article-content > p { hyphens:auto; }
+.article-content pre,.article-content code { overflow-wrap:anywhere; }
+.article-atlas-link { margin:19px 0 0; font:14px/1.5 Arial,Helvetica,sans-serif; }
+.article-atlas-link a { text-underline-offset:4px; }
+.article-toc { padding:14px 0 19px; margin:0 0 34px; }
+.article-toc details summary { font:600 14px/1.5 Arial,Helvetica,sans-serif; cursor:pointer; }
+.article-toc details[open] { padding-bottom:12px; }
+.article-toc ol { padding-top:12px; }
+.header-nav a { display:inline-flex; align-items:center; min-height:40px; }
+.atlas-highlight { padding:27px 0 31px; margin:18px 0 39px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.atlas-highlight h2 { margin:5px 0 12px; font:normal 27px/1.3 Georgia,"Times New Roman",serif; letter-spacing:-.02em; }
+.atlas-highlight p { margin:0 0 14px; font-size:17px; line-height:1.62; }
+.atlas-highlight a { font:15px/1.5 Arial,Helvetica,sans-serif; }
+.atlas-header { padding-bottom:34px; }
+.atlas-header .deck { margin:16px 0 0; }
+.atlas-intro { max-width:720px; padding:28px 0 2px; font-size:19px; line-height:1.67; }
+.atlas-section-title { margin:52px 0 15px; font:normal 29px/1.28 Georgia,"Times New Roman",serif; letter-spacing:-.026em; }
+.atlas-list,.atlas-relations { list-style:none; padding:0; margin:0; }
+.atlas-list { border-top:1px solid var(--line); }
+.atlas-entry { display:grid; grid-template-columns:40px minmax(0,1fr); gap:16px; border-bottom:1px solid var(--line); padding:28px 0 34px; scroll-margin-top:25px; }
+.atlas-num { font:13px/1.5 Arial,Helvetica,sans-serif; color:var(--muted); padding-top:4px; }
+.atlas-content h2 { margin:0 0 9px; font:normal 29px/1.25 Georgia,"Times New Roman",serif; letter-spacing:-.025em; }
+.atlas-question { margin:0 0 13px; max-width:690px; font-size:19px; line-height:1.48; }
+.atlas-summary { margin:0 0 21px; font:15px/1.65 Arial,Helvetica,sans-serif; color:var(--soft); max-width:650px; }
+.atlas-link-title { margin:0 0 10px; font:600 12px/1.5 Arial,Helvetica,sans-serif; text-transform:uppercase; letter-spacing:.07em; color:var(--soft); }
+.atlas-sections { display:flex; flex-wrap:wrap; list-style:none; padding:0; gap:8px 20px; margin:0 0 15px; }
+.atlas-sections a,.atlas-read { font:14px/1.55 Arial,Helvetica,sans-serif; }
+.atlas-read { color:var(--link); }
+.atlas-relations-section > p { max-width:680px; font-size:17px; }
+.atlas-relations { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:27px; }
+.atlas-relation { padding:18px 19px; border:1px solid var(--line); scroll-margin-top:20px; }
+.atlas-relation p { margin:0 0 10px; font:15px/1.57 Arial,Helvetica,sans-serif; }
+.atlas-relation .atlas-relation-names { font-weight:600; font-size:14px; line-height:1.6; }
+.atlas-relation-names a { text-decoration:none; border-bottom:1px solid var(--line); }
+.atlas-relation-names span { padding:0 4px; color:var(--muted); }
+.atlas-relation .atlas-evidence { font-size:13px; color:var(--soft); margin:14px 0 0; }
+.atlas-evidence a { margin-right:8px; }
+@media (max-width:680px) {
+  .atlas-relations { grid-template-columns:1fr; }
+  .atlas-entry { grid-template-columns:31px minmax(0,1fr); gap:11px; padding:21px 0 28px; }
+  .atlas-content h2 { font-size:25px; }
+  .atlas-question { font-size:18px; }
+  .header-inner { gap:7px 18px; }
+  .header-nav { display:flex; flex-wrap:wrap; gap:3px 16px; }
+  .header-nav a { margin-left:0; min-height:42px; }
+  .article-toc ol { columns:1; }
+}
+@media print {
+  .atlas-relations { display:block; }
+  .atlas-relation { margin-bottom:14px; break-inside:avoid; }
+  .atlas-entry { break-inside:avoid; }
+}

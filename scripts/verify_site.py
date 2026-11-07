@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Verify the publication artifact using only the Python standard library.
 
-This checks repository integrity, local navigation, bibliographic anchors, and
-basic semantic accessibility. It does not assert that GitHub Pages is deployed,
+This checks the source manifest, generated-site navigation, manuscript
+provenance, bibliographic anchors, and basic semantic accessibility. It does not assert that GitHub Pages is deployed,
 that external URLs are reachable, or that research claims are validated.
 """
 
@@ -16,7 +16,7 @@ from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[1]
-SITE = ROOT / "docs"
+SITE = ROOT / "_site"
 URL = "https://fraware.github.io/compositional-intelligence/"
 
 
@@ -38,6 +38,7 @@ class Document(HTMLParser):
         self.scoped_th = 0
         self.scripts = 0
         self.script_sources: list[tuple[str | None, str | None]] = []
+        self.source_hashes: list[str] = []
         self.unsafe_attributes: list[str] = []
         self.noindex = False
 
@@ -60,6 +61,8 @@ class Document(HTMLParser):
         if tag == "script":
             self.scripts += 1
             self.script_sources.append((data.get("src"), data.get("type")))
+        if tag == "meta" and data.get("name") == "source-sha256":
+            self.source_hashes.append(data.get("content") or "")
         if "id" in data and data["id"]:
             self.ids.append(data["id"])
         if tag in {"a", "link"} and data.get("href") is not None:
@@ -115,7 +118,7 @@ def check_manifest(issues: list[str]) -> None:
     }
     # Repo-owned deployment scripts are reviewed source, not part of the
     # original publication checksum set. All published reading files are.
-    published = {p for p in published if not p.startswith(("scripts/", ".github/"))}
+    published = {p for p in published if not p.startswith(("scripts/", ".github/", "_site/", "__pycache__/")) and "/__pycache__/" not in p}
     for path in sorted(published - seen):
         issues.append(f"Published file absent from checksum manifest: {path}")
     for path in sorted(seen - published):
@@ -128,8 +131,8 @@ def main() -> int:
     check_manifest(issues)
     pages = sorted(SITE.rglob("*.html"))
     essays = sorted((ROOT / "essays").glob("*.md"))
-    if len(pages) != 11 or len(essays) != 9:
-        issues.append(f"Expected 11 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
+    if len(pages) != 12 or len(essays) != 9:
+        issues.append(f"Expected 12 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
     if not (SITE / "index.html").is_file() or not (SITE / ".nojekyll").is_file():
         issues.append("Missing HTML entrypoint or .nojekyll")
     documents = {p: parse_html(p) for p in pages}
@@ -139,7 +142,7 @@ def main() -> int:
 
     for page, doc in documents.items():
         relative = page.relative_to(SITE).as_posix()
-        target_canonical = URL if relative == "index.html" else URL + relative
+        target_canonical = URL if relative == "index.html" else URL + ("atlas/" if relative == "atlas/index.html" else relative)
         canonical_set.add(target_canonical)
         if doc.lang != "en" or doc.main != 1 or doc.h1 != 1 or doc.noindex:
             issues.append(f"Incorrect document semantics: {relative}")
@@ -155,8 +158,16 @@ def main() -> int:
             issues.append(f"Duplicate identifiers in {relative}: {duplicates[:3]}")
         if doc.tables != doc.captions or doc.th != doc.scoped_th:
             issues.append(f"Table caption/header mismatch: {relative}")
-        if relative.startswith("essays/") and not (ROOT / "essays" / page.with_suffix(".md").name).is_file():
-            issues.append(f"Missing Markdown source for {relative}")
+        if relative.startswith("essays/"):
+            manuscript = ROOT / "essays" / page.with_suffix(".md").name
+            if not manuscript.is_file():
+                issues.append(f"Missing Markdown source for {relative}")
+            else:
+                expected_hash = hashlib.sha256(manuscript.read_bytes()).hexdigest()
+                if doc.source_hashes != [expected_hash]:
+                    issues.append(f"Source provenance mismatch: {relative}")
+        elif doc.source_hashes:
+            issues.append(f"Unexpected manuscript provenance on {relative}")
         total_tables += doc.tables
         total_links += len(doc.links)
 
@@ -168,6 +179,8 @@ def main() -> int:
                 issues.append(f"Unsafe link in {relative}: {raw}")
                 continue
             file_path = (page.parent / unquote(split.path)).resolve() if split.path else page
+            if file_path.is_dir():
+                file_path = file_path / "index.html"
             if not file_path.is_relative_to(SITE) or not file_path.is_file():
                 issues.append(f"Missing local link in {relative}: {raw}")
                 continue
@@ -184,7 +197,7 @@ def main() -> int:
         try:
             root = ElementTree.parse(sitemap).getroot()
             urls = [x.text for x in root.findall(f".//{namespace}loc")]
-            if len(urls) != 11 or set(urls) != canonical_set:
+            if len(urls) != 12 or set(urls) != canonical_set:
                 issues.append("Sitemap URLs differ from public HTML canonicals")
         except ElementTree.ParseError as exc:
             issues.append(f"Invalid sitemap: {exc}")

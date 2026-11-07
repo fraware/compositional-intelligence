@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "description": "Source-anchored conceptual relationships in the seven-essay series.",
+  "concepts": [
+    {
+      "id": "semantic-participation",
+      "number": "01",
+      "title": "Semantic Participation",
+      "role": "Membership",
+      "question": "Under which conditions does a generated output qualify as an artifact in a structured environment?",
+      "summary": "Specifies the environment, alignment, validation status, epistemic type, dependencies and permitted use of a candidate artifact.",
+      "sections": [
+        {
+          "id": "2-governing-claim",
+          "label": "Governing claim"
+        },
+        {
+          "id": "5-3-semantic-membership",
+          "label": "Semantic membership"
+        },
+        {
+          "id": "5-4-semantic-transport",
+          "label": "Semantic transport"
+        }
+      ]
+    },
+    {
+      "id": "typed-generativity",
+      "number": "02",
+      "title": "Typed Generativity",
+      "role": "Construction",
+      "question": "Which target object is being requested, and what constitutes a candidate inhabitant?",
+      "summary": "Separates target-type inference, constraint extraction, candidate construction and validity checks.",
+      "sections": [
+        {
+          "id": "3-central-schema",
+          "label": "Central schema"
+        },
+        {
+          "id": "4-latent-target-types-and-underspecified-prompts",
+          "label": "Latent target types"
+        },
+        {
+          "id": "5-three-levels-of-typed-generation",
+          "label": "Three levels of typed generation"
+        }
+      ]
+    },
+    {
+      "id": "functorial-consistency",
+      "number": "03",
+      "title": "Functorial Consistency",
+      "role": "Transformation",
+      "question": "Do corresponding source-side and target-side transformations satisfy a declared agreement relation?",
+      "summary": "Introduces a typed two-path evaluation item with explicit equivalence regimes, independent adequacy checks and failure labels.",
+      "sections": [
+        {
+          "id": "1-evaluation-object",
+          "label": "Evaluation object"
+        },
+        {
+          "id": "3-formal-status-of-the-square",
+          "label": "Formal status"
+        },
+        {
+          "id": "4-equivalence-regimes",
+          "label": "Equivalence regimes"
+        }
+      ]
+    },
+    {
+      "id": "lambek-machines",
+      "number": "04",
+      "title": "Lambek Machines",
+      "role": "Language",
+      "question": "Does explicit typed composition improve controlled evaluation of linguistic meaning?",
+      "summary": "Uses linguistic composition and controlled transformation tests as domain-specific hypotheses, with explicit empirical conditions.",
+      "sections": [
+        {
+          "id": "3-formal-core-the-lambek-machine-schema",
+          "label": "Formal core"
+        },
+        {
+          "id": "6-functorial-language-consistency",
+          "label": "Language consistency"
+        },
+        {
+          "id": "13-kill-criteria",
+          "label": "Falsification conditions"
+        }
+      ]
+    },
+    {
+      "id": "algebraic-architectures",
+      "number": "05",
+      "title": "Algebraic Architectures",
+      "role": "Architecture",
+      "question": "Which structural commitments should a model architecture satisfy for a specified task?",
+      "summary": "Treats architecture choice as a testable specification of object types, transformations, invariants and predicted failure modes.",
+      "sections": [
+        {
+          "id": "3-formal-core-architecture-as-satisfaction-of-structure",
+          "label": "Formal core"
+        },
+        {
+          "id": "4-architecturespec-v0-3",
+          "label": "ArchitectureSpec"
+        },
+        {
+          "id": "9-architecture-comparison-protocol",
+          "label": "Comparison protocol"
+        }
+      ]
+    },
+    {
+      "id": "quantitative-curry-howard",
+      "number": "06",
+      "title": "Quantitative Curry–Howard",
+      "role": "Warrant",
+      "question": "What does a numerical score establish about a typed candidate artifact?",
+      "summary": "Records the target of quantitative evidence, calibration, validation status, uncertainty and permitted inference without equating a score with proof.",
+      "sections": [
+        {
+          "id": "4-the-quantitative-judgment",
+          "label": "Quantitative judgment"
+        },
+        {
+          "id": "5-four-layers-of-quantitative-curry-howard",
+          "label": "Four levels"
+        },
+        {
+          "id": "6-quantitative-evidence-record-v0-2",
+          "label": "Evidence record"
+        }
+      ]
+    },
+    {
+      "id": "effectful-and-conceptual-intelligence",
+      "number": "07",
+      "title": "Effectful and Conceptual Intelligence",
+      "role": "Action",
+      "question": "Under which authority and effect constraints does an artifact enter consequential execution?",
+      "summary": "Distinguishes a candidate plan from authorized execution, validated state change and controlled conceptual transfer.",
+      "sections": [
+        {
+          "id": "3-the-typed-action-judgment",
+          "label": "Typed-action judgment"
+        },
+        {
+          "id": "6-handlers-validators-and-authority",
+          "label": "Authority and validators"
+        },
+        {
+          "id": "9-conceptual-intelligence-as-controlled-transfer",
+          "label": "Conceptual transfer"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "semantic-participation",
+      "to": "typed-generativity",
+      "kind": "progression",
+      "label": "Membership conditions inform target-type construction.",
+      "evidence": [
+        "semantic-participation#1-position-in-the-compositional-intelligence-series",
+        "typed-generativity#1-position-in-the-compositional-intelligence-series"
+      ]
+    },
+    {
+      "from": "typed-generativity",
+      "to": "functorial-consistency",
+      "kind": "progression",
+      "label": "Constructed candidates become subjects of transformation-sensitive tests.",
+      "evidence": [
+        "typed-generativity#1-position-in-the-compositional-intelligence-series",
+        "functorial-consistency#2-position-within-the-compositional-intelligence-series"
+      ]
+    },
+    {
+      "from": "functorial-consistency",
+      "to": "lambek-machines",
+      "kind": "specialization",
+      "label": "The two-path test is instantiated for controlled linguistic transformations.",
+      "evidence": [
+        "functorial-consistency#6-3-natural-language-to-semantic-parse",
+        "lambek-machines#6-functorial-language-consistency"
+      ]
+    },
+    {
+      "from": "functorial-consistency",
+      "to": "algebraic-architectures",
+      "kind": "constraint",
+      "label": "Transformation obligations help specify architecture-level structural commitments.",
+      "evidence": [
+        "functorial-consistency#2-position-within-the-compositional-intelligence-series",
+        "algebraic-architectures#1-position-in-the-compositional-intelligence-series"
+      ]
+    },
+    {
+      "from": "lambek-machines",
+      "to": "algebraic-architectures",
+      "kind": "progression",
+      "label": "The linguistic instantiation motivates explicit architectural comparisons.",
+      "evidence": [
+        "lambek-machines#14-relation-to-essay-5-algebraic-architectures",
+        "algebraic-architectures#1-position-in-the-compositional-intelligence-series"
+      ]
+    },
+    {
+      "from": "algebraic-architectures",
+      "to": "quantitative-curry-howard",
+      "kind": "progression",
+      "label": "Architectural commitments lead into questions about evidence and warrant.",
+      "evidence": [
+        "algebraic-architectures#13-relationship-to-essay-6-quantitative-curry-howard",
+        "quantitative-curry-howard#1-position-in-the-compositional-intelligence-series"
+      ]
+    },
+    {
+      "from": "quantitative-curry-howard",
+      "to": "effectful-and-conceptual-intelligence",
+      "kind": "boundary",
+      "label": "Warrant for a candidate does not itself authorize an action.",
+      "evidence": [
+        "quantitative-curry-howard#13-conclusion-and-transition-to-essay-7",
+        "effectful-and-conceptual-intelligence#1-position-in-the-compositional-intelligence-series"
+      ]
+    },
+    {
+      "from": "effectful-and-conceptual-intelligence",
+      "to": "semantic-participation",
+      "kind": "return",
+      "label": "Execution remains subject to membership and permitted-use conditions.",
+      "evidence": [
+        "effectful-and-conceptual-intelligence#14-2-series-synthesis",
+        "semantic-participation#2-governing-claim"
+      ]
+    }
+  ]
+}
