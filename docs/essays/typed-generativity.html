@@ -32,6 +32,7 @@
 <p>The companion evaluation object is the Type-First Prompting Harness v0.3. It tests whether explicit target-type articulation improves generation across code, Lean or mathematics, explanation, scientific protocol design, planning, and tool-use tasks. The essay succeeds if it gives researchers a precise way to distinguish target-type failure, invalid inhabitant failure, valid non-participation, and transformation instability. It leads directly to Functorial Consistency, which asks whether generated artifacts preserve structure across representations.</p>
 <h2 id="contribution-summary">Contribution summary</h2>
 <table>
+<caption class="visually-hidden">Table 1: Contribution summary</caption>
 <colgroup>
 <col style="width: 6%"/>
 <col style="width: 29%"/>
@@ -39,13 +40,13 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>ID</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Contribution</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Publication claim</strong>
 </th>
 </tr>
@@ -121,16 +122,17 @@ The essay uses type-theoretic vocabulary as an operational abstraction and avoid
 </table>
 <h2 id="reader-map">Reader map</h2>
 <table>
+<caption class="visually-hidden">Table 2: Reader map</caption>
 <colgroup>
 <col style="width: 29%"/>
 <col style="width: 70%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Reader</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Recommended path</strong>
 </th>
 </tr>
@@ -186,13 +188,14 @@ Read after Essay 1 and before Essay 3
 <h2 id="2-thesis-and-scope-control">2. Thesis and scope control</h2>
 <p>The proposal models a class of generative tasks as inference over target-class labels followed by production of candidate representations. A candidate is submitted to independent validation, review, repair, and semantic participation assessment; successful type inhabitation is an outcome of checking, not a premise of sampling.</p>
 <p>generator context c → infer target label A → propose candidate t → validate under task rules (Δ ⊢ t : τ where formally applicable) → assess ParticipationStatus for the proposed use</p>
-<p>In proof assistants and type-directed program synthesis, a target proposition, type, or refinement specification is explicit under a declared formal environment <span class="citation-group" data-review="unapproved" data-target="TYPED-GENERATIVITY-P014" data-scope-id="TYPED-GENERATIVITY-P014-1" data-source-keys="LeanRef,TPIL4,Polikarpova2016">[<a class="citation-link" href="#ref-LeanRef" aria-label="Provisional reference 1 — The Lean Language Reference">1</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Provisional reference 2 — Theorem Proving in Lean 4">2</a>, <a class="citation-link" href="#ref-Polikarpova2016" aria-label="Provisional reference 3 — Program Synthesis from Polymorphic Refinement Types">3</a>]</span>. For tool use, interface definitions constrain valid arguments and actions; Toolformer studies model-selected API calls <span class="citation-group" data-review="unapproved" data-target="TYPED-GENERATIVITY-P014" data-scope-id="TYPED-GENERATIVITY-P014-2" data-source-keys="Toolformer2023">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Provisional reference 4 — Toolformer: Language Models Can Teach Themselves to Use Tools">4</a>]</span>. Structured output may likewise be checked against an application-defined schema. Explanation, planning, scientific protocol design, and structured writing are exploratory domains proposed in this essay. Treating their targets as latent types is a modeling hypothesis that needs domain-specific validation and evaluation.</p>
+<p>In proof assistants and type-directed program synthesis, a target proposition, type, or refinement specification is explicit under a declared formal environment <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 1 — The Lean Language Reference">1</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 2 — Theorem Proving in Lean 4">2</a>, <a class="citation-link" href="#ref-Polikarpova2016" aria-label="Reference 3 — Program Synthesis from Polymorphic Refinement Types">3</a>]</span>. For tool use, interface definitions constrain valid arguments and actions; Toolformer studies model-selected API calls <span class="citation-group">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Reference 4 — Toolformer: Language Models Can Teach Themselves to Use Tools">4</a>]</span>. Structured output may likewise be checked against an application-defined schema. Explanation, planning, scientific protocol design, and structured writing are exploratory domains proposed in this essay. Treating their targets as latent types is a modeling hypothesis that needs domain-specific validation and evaluation.</p>
 <p>Typed Generativity is an operational abstraction over the object layer of generation. A code string is judged as a program. A proof script is elaborated as a formal object. A JSON response is consumed through a schema. A scientific protocol encodes controls, measurements, uncertainty, stopping criteria, analysis plans, and permitted claims. A plan encodes a state transformation under constraints. The abstraction is useful to the extent that it improves diagnosis, validation, repair, and downstream artifact use.</p>
 <h2 id="3-central-schema">3. Central schema</h2>
 <p>The central schema records generation at the level of candidate artifact construction.</p>
 <p>P_theta(A,t | c) = P_theta(A | c) P_theta(t | A,c)</p>
 <p>Let c denote a generation context and Ω_c a finite or countable tagged candidate space of pairs (A,t), with target-class label A and candidate representation t. A normalized joint probability mass P_theta(A,t | c) satisfies P_theta(A,t | c) = P_theta(A | c) P_theta(t | A,c) for classes with P_theta(A | c) &gt; 0. At zero marginal probability, the joint law leaves the conditional distribution undetermined. Invalid and malformed candidates remain in the sampling space. In formally checkable tasks, a declared partial mapping μ_c(A) = τ associates eligible target classes with object-language types, and a separate parser and checker assess Δ ⊢ parse(t) : τ where defined. Schema-governed and semi-formal tasks use separately declared validation or annotation protocols. The factorization is the probability chain rule; its empirical usefulness and any type-inference mechanism remain independent questions.</p>
 <table>
+<caption class="visually-hidden">Table 3: 3. Central schema</caption>
 <colgroup>
 <col style="width: 11%"/>
 <col style="width: 33%"/>
@@ -200,13 +203,13 @@ Read after Essay 1 and before Essay 3
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Symbol</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Example</strong>
 </th>
 </tr>
@@ -273,6 +276,7 @@ Sampling distribution, beam ranking, constrained decoding distribution, search p
 <h2 id="4-latent-target-types-and-underspecified-prompts">4. Latent target types and underspecified prompts</h2>
 <p>Target types are frequently latent under natural-language prompting. The prompt “Explain compactness” can request an expert summary, undergraduate explanation, proof sketch, model-theoretic statement, topology example, historical note, or Lean formalization guide. The prompt “write the function” can request a pure function, API-compatible implementation, vectorized operation, memory-safe patch, or testable reference implementation. The prompt “design an experiment” can request a literature plan, executable protocol, statistical design, lab automation workflow, or claim-warrant record.</p>
 <table>
+<caption class="visually-hidden">Table 4: 4. Latent target types and underspecified prompts</caption>
 <colgroup>
 <col style="width: 18%"/>
 <col style="width: 37%"/>
@@ -280,13 +284,13 @@ Sampling distribution, beam ranking, constrained decoding distribution, search p
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Prompt family</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Candidate target types</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Typical target-type failure</strong>
 </th>
 </tr>
@@ -352,6 +356,7 @@ Lists steps without preconditions, resource dependencies, authority, or recovery
 <p>A well-calibrated system should sometimes preserve ambiguity instead of forcing a single target. Target-type inference should therefore record candidate target types, selection rationale, unresolved ambiguity, invalid target examples, and validation criteria. This record improves generation only if it changes the candidate artifact or the repair path.</p>
 <h2 id="5-three-levels-of-typed-generation">5. Three levels of typed generation</h2>
 <table>
+<caption class="visually-hidden">Table 5: 5. Three levels of typed generation</caption>
 <colgroup>
 <col style="width: 18%"/>
 <col style="width: 28%"/>
@@ -360,16 +365,16 @@ Lists steps without preconditions, resource dependencies, authority, or recovery
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Level</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Definition</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Current status</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Main test</strong>
 </th>
 </tr>
@@ -428,16 +433,17 @@ A = forall alpha. List alpha -&gt; List alpha<br />
 constraints = preserves order, preserves first occurrence, removes later duplicates, pure function, stable equality semantics<br />
 t = candidate implementation</p>
 <table>
+<caption class="visually-hidden">Table 6: 6.1 Code generation</caption>
 <colgroup>
 <col style="width: 27%"/>
 <col style="width: 72%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Failure</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
 </tr>
@@ -487,16 +493,17 @@ t = Lean theorem statement, definitions, proof sketch, or proof script</p>
 <h3 id="6-3-explanation">6.3 Explanation</h3>
 <p>Explanation tasks are often misdiagnosed as failures of clarity when the deeper failure is wrong target-type selection. The requested object depends on audience, allowed simplification, notation, proof status, and permitted use.</p>
 <table>
+<caption class="visually-hidden">Table 7: 6.3 Explanation</caption>
 <colgroup>
 <col style="width: 32%"/>
 <col style="width: 67%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Candidate target type</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Validation criterion</strong>
 </th>
 </tr>
@@ -549,16 +556,17 @@ Definitions, library names, theorem statement shape, and proof obligations.
 <p>Prompt: design an experiment to test whether molecule X is stable under condition Y.<br />
 A = ExperimentalProtocol(hypothesis, materials, controls, measurement, uncertainty, QC, stopping_conditions, analysis_plan, permitted_claim)</p>
 <table>
+<caption class="visually-hidden">Table 8: 6.4 Scientific protocol design</caption>
 <colgroup>
 <col style="width: 27%"/>
 <col style="width: 72%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Failure</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
 </tr>
@@ -615,6 +623,7 @@ constraints = time, resources, dependencies, authority, risk, recovery path</p>
 <h2 id="7-type-first-prompting-harness-v0-3">7. Type-First Prompting Harness v0.3</h2>
 <p>The Type-First Prompting Harness is an evaluation design. It tests whether explicit target-type articulation improves generation. It should be reported as a scientific probe of Typed Generativity, not as a prompting style.</p>
 <table>
+<caption class="visually-hidden">Table 9: 7. Type-First Prompting Harness v0.3</caption>
 <colgroup>
 <col style="width: 20%"/>
 <col style="width: 43%"/>
@@ -622,13 +631,13 @@ constraints = time, resources, dependencies, authority, risk, recovery path</p>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Condition</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Instruction pattern</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Purpose</strong>
 </th>
 </tr>
@@ -707,6 +716,7 @@ ambiguity_status: explicit | latent | unresolved<br />
 semantic_participation_target: string</p>
 <h3 id="7-2-metrics">7.2 Metrics</h3>
 <table>
+<caption class="visually-hidden">Table 10: 7.2 Metrics</caption>
 <colgroup>
 <col style="width: 20%"/>
 <col style="width: 46%"/>
@@ -714,13 +724,13 @@ semantic_participation_target: string</p>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Metric</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Definition</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Interpretation</strong>
 </th>
 </tr>
@@ -833,6 +843,7 @@ Rewards calibrated uncertainty.
 <h2 id="8-target-type-and-candidate-inhabitant-records">8. Target-type and candidate-inhabitant records</h2>
 <p>Typed Generativity requires two lightweight records. The target_type_record records the object inferred before generation. The candidate_inhabitant_record records the generated candidate and its validation path. Together they connect generation to membership and transformation.</p>
 <table>
+<caption class="visually-hidden">Table 11: 8. Target-type and candidate-inhabitant records</caption>
 <colgroup>
 <col style="width: 28%"/>
 <col style="width: 35%"/>
@@ -840,13 +851,13 @@ Rewards calibrated uncertainty.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Record</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Core question</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Primary downstream use</strong>
 </th>
 </tr>
@@ -911,8 +922,9 @@ epistemic_type: string<br />
 permitted_use: list[string]<br />
 transformation_tests: list[string]</p>
 <h2 id="9-relation-to-the-state-of-the-art">9. Relation to the state of the art</h2>
-<p>Typed Generativity draws on established areas, each with a bounded source function. Curry-Howard supplies the proof-as-inhabitant analogy. Polymorphic refinement-type-directed synthesis uses declared refinement specifications to constrain recursive program construction <span class="citation-group" data-review="unapproved" data-target="TYPED-GENERATIVITY-P040" data-scope-id="TYPED-GENERATIVITY-P040-1" data-source-keys="Polikarpova2016">[<a class="citation-link" href="#ref-Polikarpova2016" aria-label="Provisional reference 3 — Program Synthesis from Polymorphic Refinement Types">3</a>]</span>. Lean and LeanDojo provide environments <span class="citation-group" data-review="unapproved" data-target="TYPED-GENERATIVITY-P040" data-scope-id="TYPED-GENERATIVITY-P040-2" data-source-keys="LeanRef,TPIL4,LeanDojo2023">[<a class="citation-link" href="#ref-LeanRef" aria-label="Provisional reference 1 — The Lean Language Reference">1</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Provisional reference 2 — Theorem Proving in Lean 4">2</a>, <a class="citation-link" href="#ref-LeanDojo2023" aria-label="Provisional reference 5 — LeanDojo: Theorem Proving with Retrieval-Augmented Language Models">5</a>]</span> in which generated proof artifacts can be checked and proof states can be extracted or manipulated programmatically. Structured-output and schema-constrained systems supply operational typed decoding for model interfaces. Tool-use systems show that generated text can encode calls <span class="citation-group" data-review="unapproved" data-target="TYPED-GENERATIVITY-P040" data-scope-id="TYPED-GENERATIVITY-P040-3" data-source-keys="Toolformer2023">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Provisional reference 4 — Toolformer: Language Models Can Teach Themselves to Use Tools">4</a>]</span> whose validity depends on interface schemas and arguments.</p>
+<p>Typed Generativity draws on established areas, each with a bounded source function. Curry-Howard supplies the proof-as-inhabitant analogy. Polymorphic refinement-type-directed synthesis uses declared refinement specifications to constrain recursive program construction <span class="citation-group">[<a class="citation-link" href="#ref-Polikarpova2016" aria-label="Reference 3 — Program Synthesis from Polymorphic Refinement Types">3</a>]</span>. Lean and LeanDojo provide environments <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 1 — The Lean Language Reference">1</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 2 — Theorem Proving in Lean 4">2</a>, <a class="citation-link" href="#ref-LeanDojo2023" aria-label="Reference 5 — LeanDojo: Theorem Proving with Retrieval-Augmented Language Models">5</a>]</span> in which generated proof artifacts can be checked and proof states can be extracted or manipulated programmatically. Structured-output and schema-constrained systems supply operational typed decoding for model interfaces. Tool-use systems show that generated text can encode calls <span class="citation-group">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Reference 4 — Toolformer: Language Models Can Teach Themselves to Use Tools">4</a>]</span> whose validity depends on interface schemas and arguments.</p>
 <table>
+<caption class="visually-hidden">Table 12: 9. Relation to the state of the art</caption>
 <colgroup>
 <col style="width: 25%"/>
 <col style="width: 39%"/>
@@ -920,13 +932,13 @@ transformation_tests: list[string]</p>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Source area</strong>
 </th>
-<th>
+<th scope="col">
 <strong>What it supports</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Boundary</strong>
 </th>
 </tr>
@@ -1003,6 +1015,7 @@ Contest performance does not establish the general Typed Generativity hypothesis
 <p>The source boundary is strict. These literatures motivate the generation layer. They do not validate the original Type-First Prompting Harness, target_type_record, candidate_inhabitant_record, or Typed Generativity Bench.</p>
 <h2 id="10-strongest-objections">10. Strongest objections</h2>
 <table>
+<caption class="visually-hidden">Table 13: 10. Strongest objections</caption>
 <colgroup>
 <col style="width: 24%"/>
 <col style="width: 42%"/>
@@ -1010,13 +1023,13 @@ Contest performance does not establish the general Typed Generativity hypothesis
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Objection</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Response standard</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Operational test</strong>
 </th>
 </tr>
@@ -1103,6 +1116,7 @@ Require evidence beyond output-format improvement.
 </table>
 <h2 id="11-failure-taxonomy-and-kill-criteria">11. Failure taxonomy and kill criteria</h2>
 <table>
+<caption class="visually-hidden">Table 14: 11. Failure taxonomy and kill criteria</caption>
 <colgroup>
 <col style="width: 22%"/>
 <col style="width: 41%"/>
@@ -1110,13 +1124,13 @@ Require evidence beyond output-format improvement.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Failure</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Repair path</strong>
 </th>
 </tr>
@@ -1228,6 +1242,7 @@ Ablate length and record fields.
 <p>Typed Generativity: P_theta(A,t | c) = P_theta(A | c) P_theta(t | A,c), for a declared normalized joint model. Formal typing, where applicable, uses Δ ⊢ t : τ. Functorial Consistency: T_1(f(x)) R g(T_0(x)), under a declared relation, orientation, and comparison procedure.</p>
 <h2 id="appendix-a-claim-levels">Appendix A. Claim levels</h2>
 <table>
+<caption class="visually-hidden">Table 15: Appendix A. Claim levels</caption>
 <colgroup>
 <col style="width: 9%"/>
 <col style="width: 33%"/>
@@ -1235,13 +1250,13 @@ Ablate length and record fields.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Level</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Example</strong>
 </th>
 </tr>
@@ -1319,28 +1334,25 @@ semantic_participation_target: string<br />
 transformation_tests: list[string]<br />
 reviewer_guidelines: string<br />
 failure_labels: list[string]</p>
-<section class="bibliography" aria-labelledby="references-heading" data-review="unapproved">
+<section class="bibliography" aria-labelledby="references-heading">
 <h2 id="references-heading">
-References (provisional)
+References
 </h2>
-<p class="bibliography-note">
-Source-scoped working citations. Text and references await specialist and author review.
-</p>
 <ol class="references-list">
-<li id="ref-LeanRef" data-source-key="LeanRef" data-provisional="true">
-<span class="ref-key">[1]</span>. <a href="https://lean-lang.org/doc/reference/latest/" rel="noopener noreferrer">The Lean Language Reference</a>. <span class="ref-details">Lean Community · online reference.</span>
+<li id="ref-LeanRef">
+<span class="ref-key">[1]</span> <a href="https://lean-lang.org/doc/reference/latest/" rel="noopener noreferrer">The Lean Language Reference</a>. <span class="ref-details">Lean Community · online reference.</span>
 </li>
-<li id="ref-TPIL4" data-source-key="TPIL4" data-provisional="true">
-<span class="ref-key">[2]</span>. <a href="https://docs.lean-lang.org/theorem_proving_in_lean4/" rel="noopener noreferrer">Theorem Proving in Lean 4</a>. <span class="ref-details">Avigad, de Moura, Kong, and Ullrich · online textbook.</span>
+<li id="ref-TPIL4">
+<span class="ref-key">[2]</span> <a href="https://docs.lean-lang.org/theorem_proving_in_lean4/" rel="noopener noreferrer">Theorem Proving in Lean 4</a>. <span class="ref-details">Avigad, de Moura, Kong, and Ullrich · online textbook.</span>
 </li>
-<li id="ref-Polikarpova2016" data-source-key="Polikarpova2016" data-provisional="true">
-<span class="ref-key">[3]</span>. <a href="https://dspace.mit.edu/entities/publication/c3dcde41-ff5d-442d-b1c1-4f269c8896ef" rel="noopener noreferrer">Program Synthesis from Polymorphic Refinement Types</a>. <span class="ref-details">Polikarpova, Kuraj, and Solar-Lezama · PLDI 2016, pp. 522–538.</span>
+<li id="ref-Polikarpova2016">
+<span class="ref-key">[3]</span> <a href="https://dspace.mit.edu/entities/publication/c3dcde41-ff5d-442d-b1c1-4f269c8896ef" rel="noopener noreferrer">Program Synthesis from Polymorphic Refinement Types</a>. <span class="ref-details">Polikarpova, Kuraj, and Solar-Lezama · PLDI 2016, pp. 522–538.</span>
 </li>
-<li id="ref-Toolformer2023" data-source-key="Toolformer2023" data-provisional="true">
-<span class="ref-key">[4]</span>. <a href="https://proceedings.neurips.cc/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html" rel="noopener noreferrer">Toolformer: Language Models Can Teach Themselves to Use Tools</a>. <span class="ref-details">Schick et al. · NeurIPS 2023.</span>
+<li id="ref-Toolformer2023">
+<span class="ref-key">[4]</span> <a href="https://proceedings.neurips.cc/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html" rel="noopener noreferrer">Toolformer: Language Models Can Teach Themselves to Use Tools</a>. <span class="ref-details">Schick et al. · NeurIPS 2023.</span>
 </li>
-<li id="ref-LeanDojo2023" data-source-key="LeanDojo2023" data-provisional="true">
-<span class="ref-key">[5]</span>. <a href="https://proceedings.neurips.cc/paper_files/paper/2023/hash/4441469427094f8873d0fecb0c4e1cee-Abstract-Datasets_and_Benchmarks.html" rel="noopener noreferrer">LeanDojo: Theorem Proving with Retrieval-Augmented Language Models</a>. <span class="ref-details">Yang et al. · NeurIPS 2023.</span>
+<li id="ref-LeanDojo2023">
+<span class="ref-key">[5]</span> <a href="https://proceedings.neurips.cc/paper_files/paper/2023/hash/4441469427094f8873d0fecb0c4e1cee-Abstract-Datasets_and_Benchmarks.html" rel="noopener noreferrer">LeanDojo: Theorem Proving with Retrieval-Augmented Language Models</a>. <span class="ref-details">Yang et al. · NeurIPS 2023.</span>
 </li>
 </ol>
 </section>

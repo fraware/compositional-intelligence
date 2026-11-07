@@ -28,9 +28,10 @@
 <h2 id="abstract">Abstract</h2>
 <p>Language-model agents now operate through interfaces that alter state, including tools, files, databases, browsers, calendars, code execution, workflow systems, and embodied environments. This shift changes the evaluation target. A text response can often receive review before downstream use. An agent action changes internal, computational, social, economic, or physical state. The relevant object is therefore the typed, warranted, effectful trace connecting instruction, authority, execution, validation, and consequence.</p>
 <p>This essay proposes a type-and-effect record for consequential agent behavior. Its judgment, Gamma; M; E; C |- a : Pre -&gt; Post ! eps @ rho, records instruction context, memory, environment, capabilities, requested action, preconditions, postconditions, declared effects and risk-authority obligations. It specifies an auditable candidate action and its governing checks. Execution-time enforcement additionally depends on actual permission gates, state observations, handlers and post-execution validation. Record completeness and enforcement effectiveness are independently testable properties.</p>
-<p>The framework is grounded in Hoare-style pre/post reasoning, planning formalisms, monadic semantics, algebraic effects and handlers <span class="citation-group" data-review="unapproved" data-target="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P006" data-scope-id="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P006-1" data-source-keys="Hoare1969,PDDL1998,Moggi1989,PlotkinPretnar2013">[<a class="citation-link" href="#ref-Hoare1969" aria-label="Provisional reference 1 — An Axiomatic Basis for Computer Programming">1</a>, <a class="citation-link" href="#ref-PDDL1998" aria-label="Provisional reference 2 — PDDL—The Planning Domain Definition Language, Version 1.2">2</a>, <a class="citation-link" href="#ref-Moggi1989" aria-label="Provisional reference 3 — Computational Lambda-Calculus and Monads">3</a>, <a class="citation-link" href="#ref-PlotkinPretnar2013" aria-label="Provisional reference 4 — Handling Algebraic Effects">4</a>]</span>. Agent security and trajectory-judge evaluation supply distinct empirical antecedents <span class="citation-group" data-review="unapproved" data-target="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P006" data-scope-id="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P006-2" data-source-keys="AgentDojo2024,AgentRewardBench2025">[<a class="citation-link" href="#ref-AgentDojo2024" aria-label="Provisional reference 5 — AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents">5</a>, <a class="citation-link" href="#ref-AgentRewardBench2025" aria-label="Provisional reference 6 — AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories">6</a>]</span>. AgentDojo studies prompt-injection attack and defense. AgentRewardBench assesses judgments of web-agent trajectories, including task success and side effects. Tool use, memory writes, and authorization controls are separate targets of the proposed ledger. Its contribution is an accounting layer for consequential agent behavior. Actions, tool calls, memory writes, plan steps, skill invocations, and concept transfers are represented with declared effects, authority source, provenance, validators, compensation paths, and permitted downstream use.</p>
+<p>The framework is grounded in Hoare-style pre/post reasoning, planning formalisms, monadic semantics, algebraic effects and handlers <span class="citation-group">[<a class="citation-link" href="#ref-Hoare1969" aria-label="Reference 1 — An Axiomatic Basis for Computer Programming">1</a>, <a class="citation-link" href="#ref-PDDL1998" aria-label="Reference 2 — PDDL—The Planning Domain Definition Language, Version 1.2">2</a>, <a class="citation-link" href="#ref-Moggi1989" aria-label="Reference 3 — Computational Lambda-Calculus and Monads">3</a>, <a class="citation-link" href="#ref-PlotkinPretnar2013" aria-label="Reference 4 — Handling Algebraic Effects">4</a>]</span>. Agent security and trajectory-judge evaluation supply distinct empirical antecedents <span class="citation-group">[<a class="citation-link" href="#ref-AgentDojo2024" aria-label="Reference 5 — AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents">5</a>, <a class="citation-link" href="#ref-AgentRewardBench2025" aria-label="Reference 6 — AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories">6</a>]</span>. AgentDojo studies prompt-injection attack and defense. AgentRewardBench assesses judgments of web-agent trajectories, including task success and side effects. Tool use, memory writes, and authorization controls are separate targets of the proposed ledger. Its contribution is an accounting layer for consequential agent behavior. Actions, tool calls, memory writes, plan steps, skill invocations, and concept transfers are represented with declared effects, authority source, provenance, validators, compensation paths, and permitted downstream use.</p>
 <p>The claim is falsifiable. Typed effect records matter only where they improve action selection, authorization, validation, repair, auditability, memory quality, skill reuse, security analysis, or controlled conceptual transfer. A ledger that adds documentation without changing execution-time control has no technical role in the proposed program.</p>
 <table>
+<caption class="visually-hidden">Table 1: Abstract</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -38,13 +39,13 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>ID</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Contribution</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Publication claim</strong>
 </th>
 </tr>
@@ -119,16 +120,17 @@ The essay connects membership, generation, transformation, language structure, a
 </tbody>
 </table>
 <table>
+<caption class="visually-hidden">Table 2: Abstract</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Reader</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Recommended path</strong>
 </th>
 </tr>
@@ -187,6 +189,7 @@ Read after Essay 6; use Section 14 as the suite synthesis
 <p>The core judgment records an action as a constrained state transition. It exposes the context available to the agent, the persistent memory state, the target environment, the capabilities under which execution occurs, the action contract, the declared effects, and the risk-authority record governing authorization and validation.</p>
 <p>Γ; M; E; C ⊢_spec a : Pre → Post ! ε @ ρ</p>
 <table>
+<caption class="visually-hidden">Table 3: 3. The typed-action judgment</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -194,13 +197,13 @@ Read after Essay 6; use Section 14 as the suite synthesis
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Symbol</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Operational role</strong>
 </th>
 </tr>
@@ -311,6 +314,7 @@ Records risk level, authority source, reversibility, validation type, and escala
 <h2 id="4-execution-phases">4. Execution phases</h2>
 <p>Effectful evaluation separates proposal, authorization, execution, and validation. Final task success erases these phases and therefore hides the failure mode most relevant to audit. An agent can choose the wrong operation, possess a tool without authority, execute only a partial state transition, or report completion without verifying the resulting state.</p>
 <table>
+<caption class="visually-hidden">Table 4: 4. Execution phases</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -318,13 +322,13 @@ Records risk level, authority source, reversibility, validation type, and escala
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Phase</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Question</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Failure exposed</strong>
 </th>
 </tr>
@@ -380,6 +384,7 @@ Unverified completion, state drift, failed rollback, missing evidence, or audit 
 <h2 id="5-effect-taxonomy">5. Effect taxonomy</h2>
 <p>Agent systems require an effect taxonomy that distinguishes operations by state impact and review obligation. A generic tool-call label erases the difference between reading a page, writing a file, committing to a social action, storing memory, or touching a physical instrument. Those effects require different authority sources, validators, rollback paths, and audit evidence.</p>
 <table>
+<caption class="visually-hidden">Table 5: 5. Effect taxonomy</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -387,13 +392,13 @@ Unverified completion, state drift, failed rollback, missing evidence, or audit 
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Effect class</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Typical operation</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Required record field</strong>
 </th>
 </tr>
@@ -521,16 +526,17 @@ Preserved relations, lost relations, counterexamples, distortion risk, and permi
 <h2 id="7-typed-action-ledger">7. Typed Action Ledger</h2>
 <p>The Typed Action Ledger is a proposed record of consequential agent steps. Its fields distinguish a proposed action contract, the policy decision, authorized dispatch, observed effects, and subsequent validation or compensation. The ledger itself records evidence; an enforcement claim depends on a trusted mediator covering all consequential dispatch routes, current authority and capabilities, revocation or freshness checks, concurrent operations, asynchronous effects, and irreversible external actions. Recording an unauthorized dispatch supports retrospective diagnosis, while preventing that dispatch is a separate operational property. The proposal identifies these trust-boundary obligations; enforcement effectiveness and side-effect reduction remain empirical questions.</p>
 <table>
+<caption class="visually-hidden">Table 6: 7. Typed Action Ledger</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Ledger field group</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Purpose</strong>
 </th>
 </tr>
@@ -600,21 +606,22 @@ Record permitted downstream use, memory-update policy, skill-library update poli
 <p>Memory writes are consequential effects. A persistent memory record can preserve validated facts and successful plans, but it can also propagate false premises into future decisions. The required record fields include source, confidence, scope, retention, privacy class, invalidation condition, and permitted use.</p>
 <p>Gamma; M; E; C |- write_memory(m) : M -&gt; M + {m} ! memory_write @ rho</p>
 <h3 id="8-2-tools-as-typed-interfaces">8.2 Tools as typed interfaces</h3>
-<p>Toolformer studies language-model selection and use of external APIs <span class="citation-group" data-review="unapproved" data-target="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P029" data-scope-id="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P029-1" data-source-keys="Toolformer2023">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Provisional reference 7 — Toolformer: Language Models Can Teach Themselves to Use Tools">7</a>]</span>. AgentDojo evaluates prompt-injection attacks against tool-using agents <span class="citation-group" data-review="unapproved" data-target="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P029" data-scope-id="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P029-2" data-source-keys="AgentDojo2024">[<a class="citation-link" href="#ref-AgentDojo2024" aria-label="Provisional reference 5 — AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents">5</a>]</span>. AgentRewardBench evaluates unintended side effects of agent trajectories <span class="citation-group" data-review="unapproved" data-target="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P029" data-scope-id="EFFECTFUL-AND-CONCEPTUAL-INTELLIGENCE-P029-3" data-source-keys="AgentRewardBench2025">[<a class="citation-link" href="#ref-AgentRewardBench2025" aria-label="Provisional reference 6 — AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories">6</a>]</span>. Tool calls are treated here as interface actions with schemas, arguments, authority requirements, failure modes, side effects, return values, and trust conditions. Under the proposed ledger specification, a tool-result hallucination occurs if the agent claims an observation absent from the recorded tool output or attributes authority exceeding the recorded interface contract.</p>
+<p>Toolformer studies language-model selection and use of external APIs <span class="citation-group">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Reference 7 — Toolformer: Language Models Can Teach Themselves to Use Tools">7</a>]</span>. AgentDojo evaluates prompt-injection attacks against tool-using agents <span class="citation-group">[<a class="citation-link" href="#ref-AgentDojo2024" aria-label="Reference 5 — AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents">5</a>]</span>. AgentRewardBench evaluates unintended side effects of agent trajectories <span class="citation-group">[<a class="citation-link" href="#ref-AgentRewardBench2025" aria-label="Reference 6 — AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories">6</a>]</span>. Tool calls are treated here as interface actions with schemas, arguments, authority requirements, failure modes, side effects, return values, and trust conditions. Under the proposed ledger specification, a tool-result hallucination occurs if the agent claims an observation absent from the recorded tool output or attributes authority exceeding the recorded interface contract.</p>
 <h3 id="8-3-plans-as-state-transition-programs">8.3 Plans as state-transition programs</h3>
 <p>Plans are state-transition programs with dependency, contingency, and validation structure. A mature plan records initial state, resources, temporal constraints, cumulative effects, precondition checks, postcondition checks, abort conditions, rollback strategy, human approval points, and evidence ledger. Narrative plans lack the execution contract needed for high-impact settings.</p>
 <p>Gamma; M; E; C |- pi : Pre_0 -&gt; Post_n ! (eps_1 + ... + eps_n) @ rho</p>
 <table>
+<caption class="visually-hidden">Table 7: 8.3 Plans as state-transition programs</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Level</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Plan maturity</strong>
 </th>
 </tr>
@@ -677,16 +684,17 @@ Reusable plan pattern supported by execution evidence.
 <p>Conceptual transfer is first a proposed transformation of a reasoning artifact: an analogy or abstraction maps selected source relations into a target domain under stated assumptions. The record names the source and target domains, mapping, intended relation, known losses, counterexamples, reviewer or validator, and permitted uses. Source-domain validity does not certify target-domain correctness. The transfer becomes consequential for effect control if it changes persistent memory, guides a tool operation or authorizes an external decision. At that boundary, the target claim needs independent warrant and the action needs the authority and effect checks specified elsewhere in the series.</p>
 <p>concept_transfer : SourceDomain -&gt; TargetDomain</p>
 <table>
+<caption class="visually-hidden">Table 8: 9. Conceptual intelligence as controlled transfer</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Transfer field</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Question</strong>
 </th>
 </tr>
@@ -754,16 +762,17 @@ Can the transfer support explanation, hypothesis generation, design, or executio
 <h2 id="10-security-as-effect-control">10. Security as effect control</h2>
 <p>Agent security can be analyzed as effect control under adversarial observation and authority pressure. Prompt injection, untrusted tool output, malicious webpages, credential exposure, memory poisoning, and data exfiltration all exploit confusion among observation, instruction, authority, and external write effects.</p>
 <table>
+<caption class="visually-hidden">Table 9: 10. Security as effect control</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Security failure</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Effect-control diagnosis</strong>
 </th>
 </tr>
@@ -831,16 +840,17 @@ Reviewer cannot reconstruct context, authority, action, state delta, and validat
 <h2 id="11-effectful-agent-benchmark-v0-2">11. Effectful Agent Benchmark v0.2</h2>
 <p>The Effectful Agent Benchmark evaluates task completion together with effect control. Its items specify the goal, initial state, policy context, tool set, memory state, allowed effects, forbidden effects, required checks, frame conditions, required authority, rollback obligations, untrusted inputs, validators, and audit requirements.</p>
 <table>
+<caption class="visually-hidden">Table 10: 11. Effectful Agent Benchmark v0.2</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Component</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Benchmark obligation</strong>
 </th>
 </tr>
@@ -905,16 +915,17 @@ Unauthorized action, missing precondition, wrong postcondition, memory pollution
 </tbody>
 </table>
 <table>
+<caption class="visually-hidden">Table 11: 11. Effectful Agent Benchmark v0.2</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Metric</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Definition</strong>
 </th>
 </tr>
@@ -1002,16 +1013,17 @@ Reconstructability of action, context, authority, state delta, and validation.
 <p>A web agent operating over untrusted content tests authority isolation. The system should separate observations from instructions, block untrusted content from granting authority, and label any external write effect. Prompt injection appears as a transition from read effect to unauthorized write, memory, or social effect.</p>
 <h2 id="13-objections-and-failure-modes">13. Objections and failure modes</h2>
 <table>
+<caption class="visually-hidden">Table 12: 13. Objections and failure modes</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Objection</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Response</strong>
 </th>
 </tr>
@@ -1084,16 +1096,17 @@ Effect-level invariants remain stable across attack forms, including authority c
 </tbody>
 </table>
 <table>
+<caption class="visually-hidden">Table 13: 13. Objections and failure modes</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Failure mode</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
 </tr>
@@ -1184,16 +1197,17 @@ A reviewer cannot reconstruct why an action occurred or what changed.
 <h2 id="14-kill-criteria-and-series-synthesis">14. Kill criteria and series synthesis</h2>
 <h3 id="14-1-kill-criteria">14.1 Kill criteria</h3>
 <table>
+<caption class="visually-hidden">Table 14: 14.1 Kill criteria</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Criterion</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Decision rule</strong>
 </th>
 </tr>
@@ -1284,16 +1298,17 @@ The ledger remains documentation with no execution-time control function.
 <h3 id="14-2-series-synthesis">14.2 Series synthesis</h3>
 <p>The suite converges on a single evaluation object: typed artifacts in structured environments, with validation, transformation stability, warrant, and effect control. Each essay supplies one layer of that object, and each layer has an associated failure mode and benchmark obligation.</p>
 <table>
+<caption class="visually-hidden">Table 15: 14.2 Series synthesis</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Essay</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Core contribution</strong>
 </th>
 </tr>
@@ -1361,16 +1376,17 @@ Agent action requires authority, effects, state changes, handlers, validators, r
 <h2 id="appendix-a-typed-action-ledger-schema">Appendix A. Typed Action Ledger schema</h2>
 <p><strong>typed_action_ledger</strong></p>
 <table>
+<caption class="visually-hidden">Table 16: Appendix A. Typed Action Ledger schema</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Field</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Specification</strong>
 </th>
 </tr>
@@ -1445,16 +1461,17 @@ Modifiable state and state that must remain preserved.
 <h2 id="appendix-b-effectful-agent-benchmark-schema">Appendix B. Effectful Agent Benchmark schema</h2>
 <p><strong>effectful_agent_benchmark_item</strong></p>
 <table>
+<caption class="visually-hidden">Table 17: Appendix B. Effectful Agent Benchmark schema</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Field</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Specification</strong>
 </th>
 </tr>
@@ -1585,16 +1602,17 @@ Unauthorized action, missing precondition, wrong postcondition, memory pollution
 <h2 id="appendix-c-concept-transfer-record-schema">Appendix C. Concept Transfer Record schema</h2>
 <p><strong>concept_transfer_record</strong></p>
 <table>
+<caption class="visually-hidden">Table 18: Appendix C. Concept Transfer Record schema</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Field</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Specification</strong>
 </th>
 </tr>
@@ -1716,6 +1734,7 @@ Human, automated, or hybrid review result.
 </table>
 <h2 id="appendix-d-claim-ledger">Appendix D. Claim ledger</h2>
 <table>
+<caption class="visually-hidden">Table 19: Appendix D. Claim ledger</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -1723,13 +1742,13 @@ Human, automated, or hybrid review result.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Claim</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Level</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Treatment</strong>
 </th>
 </tr>
@@ -1792,34 +1811,31 @@ Hypothesis to be tested.
 </tr>
 </tbody>
 </table>
-<section class="bibliography" aria-labelledby="references-heading" data-review="unapproved">
+<section class="bibliography" aria-labelledby="references-heading">
 <h2 id="references-heading">
-References (provisional)
+References
 </h2>
-<p class="bibliography-note">
-Source-scoped working citations. Text and references await specialist and author review.
-</p>
 <ol class="references-list">
-<li id="ref-Hoare1969" data-source-key="Hoare1969" data-provisional="true">
-<span class="ref-key">[1]</span>. <a href="https://doi.org/10.1145/363235.363259" rel="noopener noreferrer">An Axiomatic Basis for Computer Programming</a>. <span class="ref-details">C. A. R. Hoare · Communications of the ACM 12(10), 1969.</span>
+<li id="ref-Hoare1969">
+<span class="ref-key">[1]</span> <a href="https://doi.org/10.1145/363235.363259" rel="noopener noreferrer">An Axiomatic Basis for Computer Programming</a>. <span class="ref-details">C. A. R. Hoare · Communications of the ACM 12(10), 1969.</span>
 </li>
-<li id="ref-PDDL1998" data-source-key="PDDL1998" data-provisional="true">
-<span class="ref-key">[2]</span>. <a href="https://homepages.inf.ed.ac.uk/mfourman/tools/propplan/pddl.pdf" rel="noopener noreferrer">PDDL—The Planning Domain Definition Language, Version 1.2</a>. <span class="ref-details">McDermott et al. · AIPS-98 technical report.</span>
+<li id="ref-PDDL1998">
+<span class="ref-key">[2]</span> <a href="https://homepages.inf.ed.ac.uk/mfourman/tools/propplan/pddl.pdf" rel="noopener noreferrer">PDDL—The Planning Domain Definition Language, Version 1.2</a>. <span class="ref-details">McDermott et al. · AIPS-98 technical report.</span>
 </li>
-<li id="ref-Moggi1989" data-source-key="Moggi1989" data-provisional="true">
-<span class="ref-key">[3]</span>. <a href="https://lics.siglog.org/1989/Moggi-Computationallambda.html" rel="noopener noreferrer">Computational Lambda-Calculus and Monads</a>. <span class="ref-details">Eugenio Moggi · LICS 1989.</span>
+<li id="ref-Moggi1989">
+<span class="ref-key">[3]</span> <a href="https://lics.siglog.org/1989/Moggi-Computationallambda.html" rel="noopener noreferrer">Computational Lambda-Calculus and Monads</a>. <span class="ref-details">Eugenio Moggi · LICS 1989.</span>
 </li>
-<li id="ref-PlotkinPretnar2013" data-source-key="PlotkinPretnar2013" data-provisional="true">
-<span class="ref-key">[4]</span>. <a href="https://lmcs.episciences.org/705" rel="noopener noreferrer">Handling Algebraic Effects</a>. <span class="ref-details">Plotkin and Pretnar · Logical Methods in Computer Science 9(4), 2013.</span>
+<li id="ref-PlotkinPretnar2013">
+<span class="ref-key">[4]</span> <a href="https://lmcs.episciences.org/705" rel="noopener noreferrer">Handling Algebraic Effects</a>. <span class="ref-details">Plotkin and Pretnar · Logical Methods in Computer Science 9(4), 2013.</span>
 </li>
-<li id="ref-AgentDojo2024" data-source-key="AgentDojo2024" data-provisional="true">
-<span class="ref-key">[5]</span>. <a href="https://proceedings.nips.cc/paper_files/paper/2024/hash/97091a5177d8dc64b1da8bf3e1f6fb54-Abstract-Datasets_and_Benchmarks_Track.html" rel="noopener noreferrer">AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents</a>. <span class="ref-details">Debenedetti et al. · NeurIPS 2024.</span>
+<li id="ref-AgentDojo2024">
+<span class="ref-key">[5]</span> <a href="https://proceedings.nips.cc/paper_files/paper/2024/hash/97091a5177d8dc64b1da8bf3e1f6fb54-Abstract-Datasets_and_Benchmarks_Track.html" rel="noopener noreferrer">AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents</a>. <span class="ref-details">Debenedetti et al. · NeurIPS 2024.</span>
 </li>
-<li id="ref-AgentRewardBench2025" data-source-key="AgentRewardBench2025" data-provisional="true">
-<span class="ref-key">[6]</span>. <a href="https://arxiv.org/abs/2504.08942" rel="noopener noreferrer">AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories</a>. <span class="ref-details">Lù et al. · arXiv preprint 2025.</span>
+<li id="ref-AgentRewardBench2025">
+<span class="ref-key">[6]</span> <a href="https://arxiv.org/abs/2504.08942" rel="noopener noreferrer">AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories</a>. <span class="ref-details">Lù et al. · arXiv preprint 2025.</span>
 </li>
-<li id="ref-Toolformer2023" data-source-key="Toolformer2023" data-provisional="true">
-<span class="ref-key">[7]</span>. <a href="https://proceedings.neurips.cc/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html" rel="noopener noreferrer">Toolformer: Language Models Can Teach Themselves to Use Tools</a>. <span class="ref-details">Schick et al. · NeurIPS 2023.</span>
+<li id="ref-Toolformer2023">
+<span class="ref-key">[7]</span> <a href="https://proceedings.neurips.cc/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html" rel="noopener noreferrer">Toolformer: Language Models Can Teach Themselves to Use Tools</a>. <span class="ref-details">Schick et al. · NeurIPS 2023.</span>
 </li>
 </ol>
 </section>

@@ -32,6 +32,7 @@
 <p>The proposal is falsifiable. A strong result shows that categorial structure improves downstream semantic behavior beyond strong pretrained, dependency-supervised, constituency-supervised, and semantic-tagging baselines. A weak result confines the claim to diagnostic analysis or supertag prediction. A negative result supports rejection of Lambek-specific supervision or architecture claims for the tested regime.</p>
 <h2 id="contribution-summary">Contribution summary</h2>
 <table>
+<caption class="visually-hidden">Table 1: Contribution summary</caption>
 <colgroup>
 <col style="width: 7%"/>
 <col style="width: 22%"/>
@@ -39,13 +40,13 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>ID</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Contribution</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Publication claim</strong>
 </th>
 </tr>
@@ -121,16 +122,17 @@ The strong claim fails when categorial supervision improves supertagging alone o
 </table>
 <h2 id="reader-map">Reader map</h2>
 <table>
+<caption class="visually-hidden">Table 2: Reader map</caption>
 <colgroup>
 <col style="width: 30%"/>
 <col style="width: 69%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Reader</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Recommended path</strong>
 </th>
 </tr>
@@ -186,9 +188,9 @@ Read after Essay 3 and before Essay 5.
 <h2 id="2-thesis-and-boundary-conditions">2. Thesis and boundary conditions</h2>
 <p>The thesis of Lambek Machines is that grammar-as-logic supplies an explicit structure layer for evaluating, supervising, constraining, and interpreting language models. The claim is empirical and scoped. Categorial structure earns relevance only when it improves semantic behavior, diagnostic resolution, repair quality, or transformation-sensitive evaluation under declared metrics.</p>
 <p>The framework treats transformer internals as an object of measurement, not as a premise. Attention heads, hidden states, and token distributions are not identified with Lambek reductions. Supertag prediction is also insufficient as a semantic result. The proposed interface isolates a tractable layer of linguistic structure, namely lexical categories, derivations, reductions, argument structure, and semantic composition. Open-domain discourse, pragmatics, grounding, sociolinguistic context, and task intent require additional machinery and fall outside the strongest claim of this essay.</p>
-<p>The proposal is positioned among established literatures without absorbing their claims. Lambek calculus, Combinatory Categorial Grammar, Linear Categorial Grammar, DisCoCat <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P014" data-scope-id="LAMBEK-MACHINES-P014-1" data-source-keys="Lambek1958,LLMSupertagger2024,DisCoCat2010">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Provisional reference 1 — The Mathematics of Sentence Structure">1</a>, <a class="citation-link" href="#ref-LLMSupertagger2024" aria-label="Provisional reference 2 — LLM-supertagger: Categorial Grammar Supertagging via Large Language Models">2</a>, <a class="citation-link" href="#ref-DisCoCat2010" aria-label="Provisional reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>, semantic parsing, supertagging <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P014" data-scope-id="LAMBEK-MACHINES-P014-2" data-source-keys="LLMSupertagger2024">[<a class="citation-link" href="#ref-LLMSupertagger2024" aria-label="Provisional reference 2 — LLM-supertagger: Categorial Grammar Supertagging via Large Language Models">2</a>]</span>, and grammar-constrained decoding provide the background vocabulary and operational substrates. Lambek Machines names the Compositional Intelligence interface that asks which explicit typed structures help neural language systems preserve meaning under composition and transformation.</p>
+<p>The proposal is positioned among established literatures without absorbing their claims. Lambek calculus, Combinatory Categorial Grammar, Linear Categorial Grammar, DisCoCat <span class="citation-group">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Reference 1 — The Mathematics of Sentence Structure">1</a>, <a class="citation-link" href="#ref-LLMSupertagger2024" aria-label="Reference 2 — LLM-supertagger: Categorial Grammar Supertagging via Large Language Models">2</a>, <a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>, semantic parsing, supertagging <span class="citation-group">[<a class="citation-link" href="#ref-LLMSupertagger2024" aria-label="Reference 2 — LLM-supertagger: Categorial Grammar Supertagging via Large Language Models">2</a>]</span>, and grammar-constrained decoding provide the background vocabulary and operational substrates. Lambek Machines names the Compositional Intelligence interface that asks which explicit typed structures help neural language systems preserve meaning under composition and transformation.</p>
 <h2 id="3-formal-core-the-lambek-machine-schema">3. Formal core - the Lambek Machine schema</h2>
-<p>The formal core is a typed compositional pipeline for a declared grammar and its interpretation. Let the ordered lexical context be Γ_L = (τ₁, …, τₙ), where τᵢ is the assigned category of word wᵢ. A grammatical derivation π establishes Γ_L ⊢ S under a specified Lambek, pregroup, or other explicitly chosen calculus <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P015" data-scope-id="LAMBEK-MACHINES-P015-1" data-source-keys="Lambek1958,DisCoCat2010">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Provisional reference 1 — The Mathematics of Sentence Structure">1</a>, <a class="citation-link" href="#ref-DisCoCat2010" aria-label="Provisional reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>. Exchange or other structural rules are available only where that calculus admits them. A semantic interpretation of the categories and derivations <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P015" data-scope-id="LAMBEK-MACHINES-P015-2" data-source-keys="DisCoCat2010">[<a class="citation-link" href="#ref-DisCoCat2010" aria-label="Provisional reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span> supplies ⟦π⟧; the resulting meaning is evaluated against an independently declared target and acceptance rule. Neural supertag predictions alone establish neither derivability nor correct semantic interpretation. This is a specification of observable structure, not a claim about transformer internals. The associative Lambek calculus L uses ordered antecedent sequences, and its nonassociative variants impose distinct structural restrictions. Each language evaluation track must identify its calculus, admissible structural rules, semantic model, and comparison oracle.</p>
+<p>The formal core is a typed compositional pipeline for a declared grammar and its interpretation. Let the ordered lexical context be Γ_L = (τ₁, …, τₙ), where τᵢ is the assigned category of word wᵢ. A grammatical derivation π establishes Γ_L ⊢ S under a specified Lambek, pregroup, or other explicitly chosen calculus <span class="citation-group">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Reference 1 — The Mathematics of Sentence Structure">1</a>, <a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>. Exchange or other structural rules are available only where that calculus admits them. A semantic interpretation of the categories and derivations <span class="citation-group">[<a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span> supplies ⟦π⟧; the resulting meaning is evaluated against an independently declared target and acceptance rule. Neural supertag predictions alone establish neither derivability nor correct semantic interpretation. This is a specification of observable structure, not a claim about transformer internals. The associative Lambek calculus L uses ordered antecedent sequences, and its nonassociative variants impose distinct structural restrictions. Each language evaluation track must identify its calculus, admissible structural rules, semantic model, and comparison oracle.</p>
 <p>w_1, ..., w_n</p>
 <p>-&gt; tau_1, ..., tau_n</p>
 <p>-&gt; pi : Γ_L ⊢_G S (derivation in the declared grammar G)</p>
@@ -198,6 +200,7 @@ Read after Essay 3 and before Essay 5.
 <h2 id="4-literature-landscape-and-source-policy">4. Literature landscape and source policy</h2>
 <p>The literature supporting Lambek Machines should be used source-functionally. Lambek calculus supplies the grammar-as-logic foundation in which lexical types compose through derivability. Supertagging supplies a practical lexical-category interface. DisCoCat connects grammatical reductions with compositional distributional semantics. Compositional semantic-parsing benchmarks supply controlled tests for syntax-to-meaning generalization. Grammar-constrained decoding supplies operational constraints at generation time. None of these sources validates the Lambek Auxiliary Supervision protocol proposed here.</p>
 <table>
+<caption class="visually-hidden">Table 3: 4. Literature landscape and source policy</caption>
 <colgroup>
 <col style="width: 22%"/>
 <col style="width: 39%"/>
@@ -205,13 +208,13 @@ Read after Essay 3 and before Essay 5.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Literature</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Supported claim</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Boundary for this essay</strong>
 </th>
 </tr>
@@ -296,10 +299,11 @@ They are required comparison classes for Lambek-specific claims.
 </tr>
 </tbody>
 </table>
-<p>The source map fixes the evidential role of each tradition. Lambek 1958 supports grammar-as-logic <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P023" data-scope-id="LAMBEK-MACHINES-P023-1" data-source-keys="Lambek1958">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Provisional reference 1 — The Mathematics of Sentence Structure">1</a>]</span>. Bangalore and Joshi 1999 supports supertagging as almost parsing <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P023" data-scope-id="LAMBEK-MACHINES-P023-2" data-source-keys="BangaloreJoshi1999">[<a class="citation-link" href="#ref-BangaloreJoshi1999" aria-label="Provisional reference 4 — Supertagging: An Approach to Almost Parsing">4</a>]</span>. Coecke, Sadrzadeh, and Clark 2010 supports the DisCoCat bridge <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P023" data-scope-id="LAMBEK-MACHINES-P023-3" data-source-keys="DisCoCat2010">[<a class="citation-link" href="#ref-DisCoCat2010" aria-label="Provisional reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>. COGS and SLOG support compositional semantic-parsing context <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P023" data-scope-id="LAMBEK-MACHINES-P023-4" data-source-keys="COGS2020,SLOG2023">[<a class="citation-link" href="#ref-COGS2020" aria-label="Provisional reference 5 — COGS: A Compositional Generalization Challenge Based on Semantic Interpretation">5</a>, <a class="citation-link" href="#ref-SLOG2023" aria-label="Provisional reference 6 — SLOG: A Structural Generalization Benchmark for Semantic Parsing">6</a>]</span>. Zhao and Penn 2024 supports LLM-based categorial supertagging and reports CCG logical-form parsing and LCG parsability evaluations <span class="citation-group" data-review="unapproved" data-target="LAMBEK-MACHINES-P023" data-scope-id="LAMBEK-MACHINES-P023-5" data-source-keys="LLMSupertagger2024">[<a class="citation-link" href="#ref-LLMSupertagger2024" aria-label="Provisional reference 2 — LLM-supertagger: Categorial Grammar Supertagging via Large Language Models">2</a>]</span>. These sources motivate the research design; the implemented and measured value of Lambek Auxiliary Supervision remains an empirical obligation.</p>
+<p>The source map fixes the evidential role of each tradition. Lambek 1958 supports grammar-as-logic <span class="citation-group">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Reference 1 — The Mathematics of Sentence Structure">1</a>]</span>. Bangalore and Joshi 1999 supports supertagging as almost parsing <span class="citation-group">[<a class="citation-link" href="#ref-BangaloreJoshi1999" aria-label="Reference 4 — Supertagging: An Approach to Almost Parsing">4</a>]</span>. Coecke, Sadrzadeh, and Clark 2010 supports the DisCoCat bridge <span class="citation-group">[<a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>. COGS and SLOG support compositional semantic-parsing context <span class="citation-group">[<a class="citation-link" href="#ref-COGS2020" aria-label="Reference 5 — COGS: A Compositional Generalization Challenge Based on Semantic Interpretation">5</a>, <a class="citation-link" href="#ref-SLOG2023" aria-label="Reference 6 — SLOG: A Structural Generalization Benchmark for Semantic Parsing">6</a>]</span>. Zhao and Penn 2024 supports LLM-based categorial supertagging and reports CCG logical-form parsing and LCG parsability evaluations <span class="citation-group">[<a class="citation-link" href="#ref-LLMSupertagger2024" aria-label="Reference 2 — LLM-supertagger: Categorial Grammar Supertagging via Large Language Models">2</a>]</span>. These sources motivate the research design; the implemented and measured value of Lambek Auxiliary Supervision remains an empirical obligation.</p>
 <h2 id="5-four-levels-of-lambek-machines">5. Four levels of Lambek Machines</h2>
 <p>The Lambek Machine hierarchy separates conservative diagnostic uses from stronger claims about supervision, decoding, and architecture. Level 1 and Level 2 are implementable with existing annotation and training pipelines. Level 3 applies grammar or semantic constraints during generation where target representations permit such control. Level 4 proposes architecture-level typed-compositional bias and therefore requires evidence beyond the scope of this essay.</p>
 <table>
+<caption class="visually-hidden">Table 4: 5. Four levels of Lambek Machines</caption>
 <colgroup>
 <col style="width: 6%"/>
 <col style="width: 21%"/>
@@ -308,16 +312,16 @@ They are required comparison classes for Lambek-specific claims.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Level</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Name</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Description</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Evidence required</strong>
 </th>
 </tr>
@@ -393,6 +397,7 @@ The architectural bias improves generalization or diagnostic resolution at scale
 <p>T_1(f(x)) R g(T_0(x)), with the semantic relation R and its orientation specified.</p>
 <p>The benchmark distinguishes meaning-preserving transformations from controlled semantic changes. Paraphrase and voice alternation often require stable denotation or thematic roles. Scope clarification, attachment clarification, modality changes, and authority-sensitive language require specific target-side updates. The evaluation therefore checks covariance under typed transformation, not invariance under arbitrary perturbation.</p>
 <table>
+<caption class="visually-hidden">Table 5: 6. Functorial Language Consistency</caption>
 <colgroup>
 <col style="width: 23%"/>
 <col style="width: 38%"/>
@@ -400,13 +405,13 @@ The architectural bias improves generalization or diagnostic resolution at scale
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Transformation family</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Source-side operation</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Target-side expectation</strong>
 </th>
 </tr>
@@ -514,6 +519,7 @@ Semantic operators attach to the correct predicate or proposition.
 <p>Lambek Auxiliary Supervision is an experimental design for testing downstream transfer from categorial structure. A study that reports supertag accuracy alone supplies insufficient evidence for the strong claim. The target outcome is semantic preservation under controlled transformations, with supertagging treated as an intermediate mechanism.</p>
 <p>The central hypothesis is that categorial type supervision improves downstream compositional behavior beyond strong pretrained baselines and simpler syntactic or semantic supervision. The hypothesis has a strict ablation requirement. Gains attributed to Lambek structure must exceed those obtained through dependency labels, constituency labels, semantic tags, flat supertags, or generic structured-output constraints.</p>
 <table>
+<caption class="visually-hidden">Table 6: 8. Lambek Auxiliary Supervision v0.2</caption>
 <colgroup>
 <col style="width: 10%"/>
 <col style="width: 51%"/>
@@ -521,13 +527,13 @@ Semantic operators attach to the correct predicate or proposition.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Condition</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Description</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Purpose</strong>
 </th>
 </tr>
@@ -659,16 +665,17 @@ Test constrained generation in suitable target environments.
 <p>repair_trace: string | null</p>
 <h3 id="9-3-error-taxonomy">9.3 Error taxonomy</h3>
 <table>
+<caption class="visually-hidden">Table 7: 9.3 Error taxonomy</caption>
 <colgroup>
 <col style="width: 27%"/>
 <col style="width: 72%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Failure label</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
 </tr>
@@ -767,16 +774,17 @@ The output looks acceptable under one metric and fails the declared equivalence 
 <h2 id="10-metrics-and-pilot-plan">10. Metrics and pilot plan</h2>
 <p>A first pilot should be small enough for expert annotation and large enough to expose diagnostic signal. The recommended study uses 300 to 500 language items distributed across categorial supervision and Functorial Language Consistency tracks. The purpose is diagnostic novelty, not broad benchmark coverage.</p>
 <table>
+<caption class="visually-hidden">Table 8: 10. Metrics and pilot plan</caption>
 <colgroup>
 <col style="width: 30%"/>
 <col style="width: 69%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Metric</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Measures</strong>
 </th>
 </tr>
@@ -865,6 +873,7 @@ Human or expert effort per item and agreement rate.
 </tbody>
 </table>
 <table>
+<caption class="visually-hidden">Table 9: 10. Metrics and pilot plan</caption>
 <colgroup>
 <col style="width: 27%"/>
 <col style="width: 22%"/>
@@ -872,13 +881,13 @@ Human or expert effort per item and agreement rate.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Track</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Recommended size</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Purpose</strong>
 </th>
 </tr>
@@ -945,16 +954,17 @@ Test whether categorial diagnostics improve correction.
 <h2 id="11-success-and-failure-conditions">11. Success and failure conditions</h2>
 <p>A strong result would show that explicit categorial structure improves downstream semantic behavior beyond strong baselines and simpler syntactic supervision. The result would remain scoped. It would establish that typed grammatical structure helps with a defined class of compositional failures, not that language models instantiate Lambek calculus internally.</p>
 <table>
+<caption class="visually-hidden">Table 10: 11. Success and failure conditions</caption>
 <colgroup>
 <col style="width: 53%"/>
 <col style="width: 46%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Evidence pattern</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Interpretation</strong>
 </th>
 </tr>
@@ -1013,16 +1023,17 @@ Supports robustness of the downstream claim.
 <p>A weak result would show improved supertag prediction without downstream semantic improvement. That result still has technical value, but it supports only the local analysis layer. A negative result would show that explicit categorial structure is separable from the semantic behaviors targeted here, or that simpler explicit syntax gives the same benefit at lower cost.</p>
 <h2 id="12-strongest-objections">12. Strongest objections</h2>
 <table>
+<caption class="visually-hidden">Table 11: 12. Strongest objections</caption>
 <colgroup>
 <col style="width: 34%"/>
 <col style="width: 65%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Objection</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Response</strong>
 </th>
 </tr>
@@ -1088,16 +1099,17 @@ The definition is operational and limited to exposed typed composition for analy
 </table>
 <h2 id="13-kill-criteria">13. Kill criteria</h2>
 <table>
+<caption class="visually-hidden">Table 12: 13. Kill criteria</caption>
 <colgroup>
 <col style="width: 10%"/>
 <col style="width: 89%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Criterion</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Decision rule</strong>
 </th>
 </tr>
@@ -1212,31 +1224,28 @@ Annotation cost exceeds the diagnostic value produced.
 <p>validator: string</p>
 <p>failure_taxonomy: list[string]</p>
 <p>repair_guidance: string</p>
-<section class="bibliography" aria-labelledby="references-heading" data-review="unapproved">
+<section class="bibliography" aria-labelledby="references-heading">
 <h2 id="references-heading">
-References (provisional)
+References
 </h2>
-<p class="bibliography-note">
-Source-scoped working citations. Text and references await specialist and author review.
-</p>
 <ol class="references-list">
-<li id="ref-Lambek1958" data-source-key="Lambek1958" data-provisional="true">
-<span class="ref-key">[1]</span>. <a href="https://doi.org/10.1080/00029890.1958.11989160" rel="noopener noreferrer">The Mathematics of Sentence Structure</a>. <span class="ref-details">Joachim Lambek · American Mathematical Monthly 65(3), 1958.</span>
+<li id="ref-Lambek1958">
+<span class="ref-key">[1]</span> <a href="https://doi.org/10.1080/00029890.1958.11989160" rel="noopener noreferrer">The Mathematics of Sentence Structure</a>. <span class="ref-details">Joachim Lambek · American Mathematical Monthly 65(3), 1958.</span>
 </li>
-<li id="ref-LLMSupertagger2024" data-source-key="LLMSupertagger2024" data-provisional="true">
-<span class="ref-key">[2]</span>. <a href="https://aclanthology.org/2024.findings-emnlp.39/" rel="noopener noreferrer">LLM-supertagger: Categorial Grammar Supertagging via Large Language Models</a>. <span class="ref-details">Zhao and Penn · Findings of EMNLP 2024.</span>
+<li id="ref-LLMSupertagger2024">
+<span class="ref-key">[2]</span> <a href="https://aclanthology.org/2024.findings-emnlp.39/" rel="noopener noreferrer">LLM-supertagger: Categorial Grammar Supertagging via Large Language Models</a>. <span class="ref-details">Zhao and Penn · Findings of EMNLP 2024.</span>
 </li>
-<li id="ref-DisCoCat2010" data-source-key="DisCoCat2010" data-provisional="true">
-<span class="ref-key">[3]</span>. <a href="https://arxiv.org/abs/1003.4394" rel="noopener noreferrer">Mathematical Foundations for a Compositional Distributional Model of Meaning</a>. <span class="ref-details">Coecke, Sadrzadeh, and Clark · Linguistic Analysis, 2010.</span>
+<li id="ref-DisCoCat2010">
+<span class="ref-key">[3]</span> <a href="https://arxiv.org/abs/1003.4394" rel="noopener noreferrer">Mathematical Foundations for a Compositional Distributional Model of Meaning</a>. <span class="ref-details">Coecke, Sadrzadeh, and Clark · Linguistic Analysis, 2010.</span>
 </li>
-<li id="ref-BangaloreJoshi1999" data-source-key="BangaloreJoshi1999" data-provisional="true">
-<span class="ref-key">[4]</span>. <a href="https://aclanthology.org/J99-2004/" rel="noopener noreferrer">Supertagging: An Approach to Almost Parsing</a>. <span class="ref-details">Bangalore and Joshi · Computational Linguistics 25(2), 1999.</span>
+<li id="ref-BangaloreJoshi1999">
+<span class="ref-key">[4]</span> <a href="https://aclanthology.org/J99-2004/" rel="noopener noreferrer">Supertagging: An Approach to Almost Parsing</a>. <span class="ref-details">Bangalore and Joshi · Computational Linguistics 25(2), 1999.</span>
 </li>
-<li id="ref-COGS2020" data-source-key="COGS2020" data-provisional="true">
-<span class="ref-key">[5]</span>. <a href="https://aclanthology.org/2020.emnlp-main.731/" rel="noopener noreferrer">COGS: A Compositional Generalization Challenge Based on Semantic Interpretation</a>. <span class="ref-details">Kim and Linzen · EMNLP 2020.</span>
+<li id="ref-COGS2020">
+<span class="ref-key">[5]</span> <a href="https://aclanthology.org/2020.emnlp-main.731/" rel="noopener noreferrer">COGS: A Compositional Generalization Challenge Based on Semantic Interpretation</a>. <span class="ref-details">Kim and Linzen · EMNLP 2020.</span>
 </li>
-<li id="ref-SLOG2023" data-source-key="SLOG2023" data-provisional="true">
-<span class="ref-key">[6]</span>. <a href="https://aclanthology.org/2023.emnlp-main.194/" rel="noopener noreferrer">SLOG: A Structural Generalization Benchmark for Semantic Parsing</a>. <span class="ref-details">Li et al. · EMNLP 2023.</span>
+<li id="ref-SLOG2023">
+<span class="ref-key">[6]</span> <a href="https://aclanthology.org/2023.emnlp-main.194/" rel="noopener noreferrer">SLOG: A Structural Generalization Benchmark for Semantic Parsing</a>. <span class="ref-details">Li et al. · EMNLP 2023.</span>
 </li>
 </ol>
 </section>

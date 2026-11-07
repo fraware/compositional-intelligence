@@ -82,3 +82,6 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 
 /* Additional reading and accessibility refinements. */
 .article-content img{max-width:100%;height:auto}.article-content table{width:100%}.article-content td,.article-content th{white-space:normal}.article-content .citation-link{overflow-wrap:normal}.references-list li{scroll-margin-top:30px}.article-content math[display="block"]{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;margin:25px 0}.article-content .footnotes{font-size:0.82em}.brand{font-variant:small-caps}.article-content h1{font-size:36px}@media(prefers-color-scheme:dark){:root{color-scheme:light}}
+
+/* Screen-reader captions for scientific tables. */
+.article-content caption.visually-hidden {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}

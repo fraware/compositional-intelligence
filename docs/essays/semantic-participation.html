@@ -28,10 +28,11 @@
 <h2 id="abstract">Abstract</h2>
 <p>AI reasoning is commonly evaluated through output quality, benchmark performance, and local task completion. Those measures remain useful, although they understate the condition required for cumulative knowledge. A proof sketch, code patch, theorem formalization, protocol, dataset, model result, or scientific claim receives epistemic status only when it can enter a structured environment with explicit validity, alignment, warrant, compositional behavior, and conditions for future use.</p>
 <p>This essay introduces semantic participation as the membership layer for AI-generated artifacts. Semantic participation is the capacity of an AI system to place candidate artifacts inside a semantic environment with recorded validation, source-target alignment, compositional role, epistemic type, and permitted use. The framework treats AI outputs as candidate artifacts whose value depends on their position in a world of definitions, dependencies, checkers, provenance, review procedures, admissible operations, and downstream consumption.</p>
-<p>Curry-Howard-Lambek supplies the conceptual architecture. Curry-Howard links propositions, types, proofs, and programs. Lambek’s original syntactic calculus formalizes composition through ordered grammatical types <span class="citation-group" data-review="unapproved" data-target="SEMANTIC-PARTICIPATION-P006" data-scope-id="SEMANTIC-PARTICIPATION-P006-1" data-source-keys="Lambek1958">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Provisional reference 1 — The Mathematics of Sentence Structure">1</a>]</span>. Lean supplies the operational exemplar <span class="citation-group" data-review="unapproved" data-target="SEMANTIC-PARTICIPATION-P006" data-scope-id="SEMANTIC-PARTICIPATION-P006-2" data-source-keys="LeanRef,TPIL4">[<a class="citation-link" href="#ref-LeanRef" aria-label="Provisional reference 2 — The Lean Language Reference">2</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Provisional reference 3 — Theorem Proving in Lean 4">3</a>]</span>, since generated proof artifacts can be elaborated, checked by a trusted kernel, inspected through proof states, integrated with Mathlib, and reviewed by maintainers. The target class is broader and includes proof assistants, verified programming languages, scientific workflow systems, laboratory automation protocols, research-object infrastructures, and institutional review environments.</p>
+<p>Curry-Howard-Lambek supplies the conceptual architecture. Curry-Howard links propositions, types, proofs, and programs. Lambek’s original syntactic calculus formalizes composition through ordered grammatical types <span class="citation-group">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Reference 1 — The Mathematics of Sentence Structure">1</a>]</span>. Lean supplies the operational exemplar <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 2 — The Lean Language Reference">2</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 3 — Theorem Proving in Lean 4">3</a>]</span>, since generated proof artifacts can be elaborated, checked by a trusted kernel, inspected through proof states, integrated with Mathlib, and reviewed by maintainers. The target class is broader and includes proof assistants, verified programming languages, scientific workflow systems, laboratory automation protocols, research-object infrastructures, and institutional review environments.</p>
 <p>The essay contributes six technical objects. It defines semantic environment, ArtifactRecord, semantic membership, semantic transport, epistemic type, and library improvement delta, then turns those objects into record schemas, lifecycle contracts, benchmark protocols, case studies, and falsification criteria. The research program asks how AI systems can participate in cumulative knowledge worlds beyond the production of impressive local answers.</p>
 <h2 id="contribution-summary">Contribution summary</h2>
 <table>
+<caption class="visually-hidden">Table 1: Contribution summary</caption>
 <colgroup>
 <col style="width: 6%"/>
 <col style="width: 22%"/>
@@ -39,13 +40,13 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>ID</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Contribution</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Publication claim</strong>
 </th>
 </tr>
@@ -121,16 +122,17 @@ A proposed evaluation program for source-target alignment, semantic transport, e
 </table>
 <h2 id="reader-map">Reader map</h2>
 <table>
+<caption class="visually-hidden">Table 2: Reader map</caption>
 <colgroup>
 <col style="width: 29%"/>
 <col style="width: 70%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Reader</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Recommended path</strong>
 </th>
 </tr>
@@ -186,12 +188,13 @@ Read before Essay 2; return to Section 8 before Essay 3.
 <p>Semantic Participation is the entry point into the sequence. Later essays ask how artifacts are generated, transformed, architecturally supported, quantitatively warranted, and executed. This essay asks the prior membership question. An AI-generated object counts as an artifact in a serious world of knowledge, software, science, or action only after its target environment, validation status, source alignment, compositional role, epistemic type, and permitted use have been specified.</p>
 <h2 id="2-governing-claim">2. Governing claim</h2>
 <table>
+<caption class="visually-hidden">Table 3: 2. Governing claim</caption>
 <colgroup>
 <col style="width: 100%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Governing claim</strong>
 </th>
 </tr>
@@ -210,6 +213,7 @@ An AI output counts as an artifact when it has a recorded position inside a stru
 <p>Output-centric evaluation asks whether a system produces a persuasive answer, passes a benchmark, solves a formal goal, or completes an isolated task. This grammar has advanced AI evaluation through comparable metrics and visible capability demonstrations. It also leaves unresolved the difference between local performance and membership in a structured world.</p>
 <p>A membership-centric grammar asks whether a generated artifact can enter an environment that controls expression, validation, alignment, composition, warrant, and reuse. The artifact must be available to the environment in a representation the environment can process; it must satisfy available checkers or review procedures; it must preserve source intention under an explicit relation; it must fit the relevant dependency and interface structure; it must support only claims licensed by its epistemic type.</p>
 <table>
+<caption class="visually-hidden">Table 4: 3. From output quality to semantic membership</caption>
 <colgroup>
 <col style="width: 17%"/>
 <col style="width: 28%"/>
@@ -217,13 +221,13 @@ An AI output counts as an artifact when it has a recorded position inside a stru
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Domain</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Local success</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Membership condition</strong>
 </th>
 </tr>
@@ -290,6 +294,7 @@ Authority, side effects, memory writes, rollback obligations, and audit traces a
 <h2 id="4-the-seven-thresholds">4. The seven thresholds</h2>
 <p>Semantic Participation separates seven thresholds that current AI evaluation often merges into one judgment. The separation matters as each threshold supports a different downstream inference and fails through a different mechanism.</p>
 <table>
+<caption class="visually-hidden">Table 5: 4. The seven thresholds</caption>
 <colgroup>
 <col style="width: 18%"/>
 <col style="width: 38%"/>
@@ -297,13 +302,13 @@ Authority, side effects, memory writes, rollback obligations, and audit traces a
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Threshold</strong>
 </th>
-<th>
+<th scope="col">
 <strong>What it establishes</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Membership question</strong>
 </th>
 </tr>
@@ -388,7 +393,7 @@ Which maintenance, search, automation, and review conditions apply?
 </tr>
 </tbody>
 </table>
-<p>The distinction between formal validity and semantic alignment is central. A proof assistant can check that a term inhabits a formal statement under a specified environment <span class="citation-group" data-review="unapproved" data-target="SEMANTIC-PARTICIPATION-P017" data-scope-id="SEMANTIC-PARTICIPATION-P017-1" data-source-keys="LeanRef,TPIL4">[<a class="citation-link" href="#ref-LeanRef" aria-label="Provisional reference 2 — The Lean Language Reference">2</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Provisional reference 3 — Theorem Proving in Lean 4">3</a>]</span>. The alignment relation asks whether that formal statement preserves the intended informal claim. In mathematical formalization, this separates proving a valid theorem from proving the theorem the source intended. In science, it separates a model-relative result from an empirical claim. In code, it separates passing tests from preserving the intended interface contract.</p>
+<p>The distinction between formal validity and semantic alignment is central. A proof assistant can check that a term inhabits a formal statement under a specified environment <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 2 — The Lean Language Reference">2</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 3 — Theorem Proving in Lean 4">3</a>]</span>. The alignment relation asks whether that formal statement preserves the intended informal claim. In mathematical formalization, this separates proving a valid theorem from proving the theorem the source intended. In science, it separates a model-relative result from an empirical claim. In code, it separates passing tests from preserving the intended interface contract.</p>
 <h2 id="5-formal-core">5. Formal core</h2>
 <h3 id="5-1-semantic-environment">5.1 Semantic environment</h3>
 <p>A semantic environment is a structured world in which artifacts can be expressed, transformed, checked, stored, diagnosed, reviewed, and reused. The definition is operational. It identifies the components that an implementation, benchmark, or review interface should expose.</p>
@@ -465,10 +470,11 @@ reviewer_notes<br />
 <h2 id="6-lean-as-operational-exemplar">6. Lean as operational exemplar</h2>
 <p>Lean is the privileged example for this essay as it makes several membership dimensions visible at once. A generated proof artifact can be elaborated, type checked, inspected through proof states, connected to library dependencies, repaired through diagnostics, and reviewed by maintainers. Lean therefore illustrates the separation among fluent proof sketch, formal target, proof term, checker acceptance, library integration, source-target alignment, and future reuse.</p>
 <p>The trusted kernel establishes a strong form of formal validity for accepted artifacts relative to the formal statement and environment. The membership question extends that result by asking whether the formal statement captured the intended source claim, whether the selected definitions fit the intended mathematics, whether the artifact composes with library conventions, and whether future users can find, maintain, and reuse it.</p>
-<p>Lean is one example in a broader family. Rocq and Isabelle/HOL provide distinct theorem-proving environments <span class="citation-group" data-review="unapproved" data-target="SEMANTIC-PARTICIPATION-P032" data-scope-id="SEMANTIC-PARTICIPATION-P032-1" data-source-keys="RocqDocs,IsabelleDocs">[<a class="citation-link" href="#ref-RocqDocs" aria-label="Provisional reference 4 — Rocq Prover documentation">4</a>, <a class="citation-link" href="#ref-IsabelleDocs" aria-label="Provisional reference 5 — Isabelle documentation (Isabelle2025-1)">5</a>]</span>. Dafny and F* provide program-verification environments with different specification and trust models <span class="citation-group" data-review="unapproved" data-target="SEMANTIC-PARTICIPATION-P032" data-scope-id="SEMANTIC-PARTICIPATION-P032-2" data-source-keys="DafnyDocs,FStarDocs">[<a class="citation-link" href="#ref-DafnyDocs" aria-label="Provisional reference 6 — Dafny Reference Manual">6</a>, <a class="citation-link" href="#ref-FStarDocs" aria-label="Provisional reference 7 — Proof-Oriented Programming in F*">7</a>]</span>. Alloy supports relational software modeling <span class="citation-group" data-review="unapproved" data-target="SEMANTIC-PARTICIPATION-P032" data-scope-id="SEMANTIC-PARTICIPATION-P032-3" data-source-keys="AlloyDocs">[<a class="citation-link" href="#ref-AlloyDocs" aria-label="Provisional reference 8 — Alloy language specification">8</a>]</span>; PRISM and Storm support probabilistic model checking <span class="citation-group" data-review="unapproved" data-target="SEMANTIC-PARTICIPATION-P032" data-scope-id="SEMANTIC-PARTICIPATION-P032-4" data-source-keys="PrismDocs,StormDocs">[<a class="citation-link" href="#ref-PrismDocs" aria-label="Provisional reference 9 — PRISM Manual: Introduction">9</a>, <a class="citation-link" href="#ref-StormDocs" aria-label="Provisional reference 10 — Storm: A Modern Probabilistic Model Checker">10</a>]</span>. RO-Crate 1.1 specifies research-object metadata and provenance conventions <span class="citation-group" data-review="unapproved" data-target="SEMANTIC-PARTICIPATION-P032" data-scope-id="SEMANTIC-PARTICIPATION-P032-5" data-source-keys="ROCrate11">[<a class="citation-link" href="#ref-ROCrate11" aria-label="Provisional reference 11 — RO-Crate Metadata Specification 1.1">11</a>]</span>. Scientific workflows and laboratory automation remain proposed extensions to the Semantic Participation framework. Each proposed extension needs its own object language, validators, review criteria, authority model, and permitted-use semantics.</p>
+<p>Lean is one example in a broader family. Rocq and Isabelle/HOL provide distinct theorem-proving environments <span class="citation-group">[<a class="citation-link" href="#ref-RocqDocs" aria-label="Reference 4 — Rocq Prover documentation">4</a>, <a class="citation-link" href="#ref-IsabelleDocs" aria-label="Reference 5 — Isabelle documentation (Isabelle2025-1)">5</a>]</span>. Dafny and F* provide program-verification environments with different specification and trust models <span class="citation-group">[<a class="citation-link" href="#ref-DafnyDocs" aria-label="Reference 6 — Dafny Reference Manual">6</a>, <a class="citation-link" href="#ref-FStarDocs" aria-label="Reference 7 — Proof-Oriented Programming in F*">7</a>]</span>. Alloy supports relational software modeling <span class="citation-group">[<a class="citation-link" href="#ref-AlloyDocs" aria-label="Reference 8 — Alloy language specification">8</a>]</span>; PRISM and Storm support probabilistic model checking <span class="citation-group">[<a class="citation-link" href="#ref-PrismDocs" aria-label="Reference 9 — PRISM Manual: Introduction">9</a>, <a class="citation-link" href="#ref-StormDocs" aria-label="Reference 10 — Storm: A Modern Probabilistic Model Checker">10</a>]</span>. RO-Crate 1.1 specifies research-object metadata and provenance conventions <span class="citation-group">[<a class="citation-link" href="#ref-ROCrate11" aria-label="Reference 11 — RO-Crate Metadata Specification 1.1">11</a>]</span>. Scientific workflows and laboratory automation remain proposed extensions to the Semantic Participation framework. Each proposed extension needs its own object language, validators, review criteria, authority model, and permitted-use semantics.</p>
 <h2 id="7-epistemic-types">7. Epistemic types</h2>
 <p>AI systems need an explicit grammar of warrant. Current interfaces often present theorem, conjecture, proof sketch, simulation, empirical result, causal claim, approximation, benchmark result, and reviewed claim in the same confident register. Semantic Participation treats this as an epistemic-typing problem.</p>
 <table>
+<caption class="visually-hidden">Table 6: 7. Epistemic types</caption>
 <colgroup>
 <col style="width: 22%"/>
 <col style="width: 12%"/>
@@ -477,13 +483,13 @@ reviewer_notes<br />
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Epistemic type</strong>
 </th>
-<th colspan="2">
+<th scope="col" colspan="2">
 <strong>Meaning</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Permitted use</strong>
 </th>
 </tr>
@@ -638,16 +644,17 @@ Transport or alignment resolution with reviewer notes.
 </blockquote>
 <p>This expression should be interpreted as a vector-valued diagnostic. A contribution can improve one dimension and degrade another.</p>
 <table>
+<caption class="visually-hidden">Table 7: 8. Library improvement delta</caption>
 <colgroup>
 <col style="width: 32%"/>
 <col style="width: 67%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Dimension</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Diagnostic question</strong>
 </th>
 </tr>
@@ -742,16 +749,17 @@ exists x in Icc a b, forall y in Icc a b, f y &lt;= f x</p>
 </blockquote>
 <p>The sentence can describe a literature-supported conjecture, a model-relative prediction, a simulation-derived result, an empirical measurement, or a causal claim about stability under specified interventions. The surface sentence therefore admits several epistemic types.</p>
 <table>
+<caption class="visually-hidden">Table 8: 9.2 From simulation-derived stability to empirical scientific claim</caption>
 <colgroup>
 <col style="width: 31%"/>
 <col style="width: 68%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Status</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Required record</strong>
 </th>
 </tr>
@@ -795,6 +803,7 @@ Intervention, identification assumptions, mechanism, counterfactual scope, and r
 <h2 id="10-semantic-participation-bench-v0-3">10. Semantic Participation Bench v0.3</h2>
 <p>The benchmark agenda tests whether membership records improve diagnosis, review, repair, reuse, and permitted-use control. The first phase should use domains where validators and review procedures already exist, then expand to scientific and institutional settings where alignment and epistemic typing exert greater influence.</p>
 <table>
+<caption class="visually-hidden">Table 9: 10. Semantic Participation Bench v0.3</caption>
 <colgroup>
 <col style="width: 18%"/>
 <col style="width: 22%"/>
@@ -803,16 +812,16 @@ Intervention, identification assumptions, mechanism, counterfactual scope, and r
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Track</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Input</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Primary metric</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Diagnostic value</strong>
 </th>
 </tr>
@@ -915,16 +924,17 @@ reviewer_protocol</p>
 <p>The transport record rho_T is the bridge. It records source artifact, target artifact, environments, transformations preserved, assumptions changed, generality changes, validators, alignment status, epistemic type, and permitted use. Functorial Consistency can use that record to classify non-commutation, type drift, assumption loss, generality collapse, overstrengthening, spurious equivalence, and validator mismatch.</p>
 <h2 id="12-strongest-objections-and-response-protocol">12. Strongest objections and response protocol</h2>
 <table>
+<caption class="visually-hidden">Table 10: 12. Strongest objections and response protocol</caption>
 <colgroup>
 <col style="width: 37%"/>
 <col style="width: 62%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Objection</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Response protocol</strong>
 </th>
 </tr>
@@ -990,16 +1000,17 @@ The delta is vector-valued and review-assisted. Scalar aggregation is an optiona
 </table>
 <h2 id="13-failure-modes-and-kill-criteria">13. Failure modes and kill criteria</h2>
 <table>
+<caption class="visually-hidden">Table 11: 13. Failure modes and kill criteria</caption>
 <colgroup>
 <col style="width: 32%"/>
 <col style="width: 67%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Failure mode</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
 </tr>
@@ -1121,6 +1132,7 @@ reviewer_notes: string</p>
 </blockquote>
 <h2 id="appendix-c-claim-ledger">Appendix C. Claim ledger</h2>
 <table>
+<caption class="visually-hidden">Table 12: Appendix C. Claim ledger</caption>
 <colgroup>
 <col style="width: 48%"/>
 <col style="width: 11%"/>
@@ -1128,13 +1140,13 @@ reviewer_notes: string</p>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Claim</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Level</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Treatment</strong>
 </th>
 </tr>
@@ -1208,46 +1220,43 @@ Test against maintainer judgment and reuse traces.
 </tr>
 </tbody>
 </table>
-<section class="bibliography" aria-labelledby="references-heading" data-review="unapproved">
+<section class="bibliography" aria-labelledby="references-heading">
 <h2 id="references-heading">
-References (provisional)
+References
 </h2>
-<p class="bibliography-note">
-Source-scoped working citations. Text and references await specialist and author review.
-</p>
 <ol class="references-list">
-<li id="ref-Lambek1958" data-source-key="Lambek1958" data-provisional="true">
-<span class="ref-key">[1]</span>. <a href="https://doi.org/10.1080/00029890.1958.11989160" rel="noopener noreferrer">The Mathematics of Sentence Structure</a>. <span class="ref-details">Joachim Lambek · American Mathematical Monthly 65(3), 1958.</span>
+<li id="ref-Lambek1958">
+<span class="ref-key">[1]</span> <a href="https://doi.org/10.1080/00029890.1958.11989160" rel="noopener noreferrer">The Mathematics of Sentence Structure</a>. <span class="ref-details">Joachim Lambek · American Mathematical Monthly 65(3), 1958.</span>
 </li>
-<li id="ref-LeanRef" data-source-key="LeanRef" data-provisional="true">
-<span class="ref-key">[2]</span>. <a href="https://lean-lang.org/doc/reference/latest/" rel="noopener noreferrer">The Lean Language Reference</a>. <span class="ref-details">Lean Community · online reference.</span>
+<li id="ref-LeanRef">
+<span class="ref-key">[2]</span> <a href="https://lean-lang.org/doc/reference/latest/" rel="noopener noreferrer">The Lean Language Reference</a>. <span class="ref-details">Lean Community · online reference.</span>
 </li>
-<li id="ref-TPIL4" data-source-key="TPIL4" data-provisional="true">
-<span class="ref-key">[3]</span>. <a href="https://docs.lean-lang.org/theorem_proving_in_lean4/" rel="noopener noreferrer">Theorem Proving in Lean 4</a>. <span class="ref-details">Avigad, de Moura, Kong, and Ullrich · online textbook.</span>
+<li id="ref-TPIL4">
+<span class="ref-key">[3]</span> <a href="https://docs.lean-lang.org/theorem_proving_in_lean4/" rel="noopener noreferrer">Theorem Proving in Lean 4</a>. <span class="ref-details">Avigad, de Moura, Kong, and Ullrich · online textbook.</span>
 </li>
-<li id="ref-RocqDocs" data-source-key="RocqDocs" data-provisional="true">
-<span class="ref-key">[4]</span>. <a href="https://rocq-prover.org/docs" rel="noopener noreferrer">Rocq Prover documentation</a>. <span class="ref-details">Rocq Prover project · official documentation portal; evolving edition, accessed November 2026.</span>
+<li id="ref-RocqDocs">
+<span class="ref-key">[4]</span> <a href="https://rocq-prover.org/docs" rel="noopener noreferrer">Rocq Prover documentation</a>. <span class="ref-details">Rocq Prover project · official documentation portal; evolving edition, accessed November 2026.</span>
 </li>
-<li id="ref-IsabelleDocs" data-source-key="IsabelleDocs" data-provisional="true">
-<span class="ref-key">[5]</span>. <a href="https://isabelle.in.tum.de/website-Isabelle2025-1/documentation.html" rel="noopener noreferrer">Isabelle documentation (Isabelle2025-1)</a>. <span class="ref-details">Isabelle project · official versioned Isabelle/HOL documentation.</span>
+<li id="ref-IsabelleDocs">
+<span class="ref-key">[5]</span> <a href="https://isabelle.in.tum.de/website-Isabelle2025-1/documentation.html" rel="noopener noreferrer">Isabelle documentation (Isabelle2025-1)</a>. <span class="ref-details">Isabelle project · official versioned Isabelle/HOL documentation.</span>
 </li>
-<li id="ref-DafnyDocs" data-source-key="DafnyDocs" data-provisional="true">
-<span class="ref-key">[6]</span>. <a href="https://dafny.org/dafny/DafnyRef/DafnyRef.html" rel="noopener noreferrer">Dafny Reference Manual</a>. <span class="ref-details">Dafny project · official reference manual; evolving edition, accessed November 2026.</span>
+<li id="ref-DafnyDocs">
+<span class="ref-key">[6]</span> <a href="https://dafny.org/dafny/DafnyRef/DafnyRef.html" rel="noopener noreferrer">Dafny Reference Manual</a>. <span class="ref-details">Dafny project · official reference manual; evolving edition, accessed November 2026.</span>
 </li>
-<li id="ref-FStarDocs" data-source-key="FStarDocs" data-provisional="true">
-<span class="ref-key">[7]</span>. <a href="https://fstar-lang.org/tutorial/book/" rel="noopener noreferrer">Proof-Oriented Programming in F*</a>. <span class="ref-details">F* project · official proof-oriented programming textbook; evolving edition.</span>
+<li id="ref-FStarDocs">
+<span class="ref-key">[7]</span> <a href="https://fstar-lang.org/tutorial/book/" rel="noopener noreferrer">Proof-Oriented Programming in F*</a>. <span class="ref-details">F* project · official proof-oriented programming textbook; evolving edition.</span>
 </li>
-<li id="ref-AlloyDocs" data-source-key="AlloyDocs" data-provisional="true">
-<span class="ref-key">[8]</span>. <a href="https://alloytools.org/spec.html" rel="noopener noreferrer">Alloy language specification</a>. <span class="ref-details">Alloy Tools · official language specification; evolving edition.</span>
+<li id="ref-AlloyDocs">
+<span class="ref-key">[8]</span> <a href="https://alloytools.org/spec.html" rel="noopener noreferrer">Alloy language specification</a>. <span class="ref-details">Alloy Tools · official language specification; evolving edition.</span>
 </li>
-<li id="ref-PrismDocs" data-source-key="PrismDocs" data-provisional="true">
-<span class="ref-key">[9]</span>. <a href="https://prismmodelchecker.org/manual/Main/Introduction" rel="noopener noreferrer">PRISM Manual: Introduction</a>. <span class="ref-details">PRISM project · official probabilistic model-checking manual; evolving edition.</span>
+<li id="ref-PrismDocs">
+<span class="ref-key">[9]</span> <a href="https://prismmodelchecker.org/manual/Main/Introduction" rel="noopener noreferrer">PRISM Manual: Introduction</a>. <span class="ref-details">PRISM project · official probabilistic model-checking manual; evolving edition.</span>
 </li>
-<li id="ref-StormDocs" data-source-key="StormDocs" data-provisional="true">
-<span class="ref-key">[10]</span>. <a href="https://www.stormchecker.org/" rel="noopener noreferrer">Storm: A Modern Probabilistic Model Checker</a>. <span class="ref-details">Storm project · official documentation and scope statement; evolving edition.</span>
+<li id="ref-StormDocs">
+<span class="ref-key">[10]</span> <a href="https://www.stormchecker.org/" rel="noopener noreferrer">Storm: A Modern Probabilistic Model Checker</a>. <span class="ref-details">Storm project · official documentation and scope statement; evolving edition.</span>
 </li>
-<li id="ref-ROCrate11" data-source-key="ROCrate11" data-provisional="true">
-<span class="ref-key">[11]</span>. <a href="https://www.researchobject.org/ro-crate/specification/1.1/" rel="noopener noreferrer">RO-Crate Metadata Specification 1.1</a>. <span class="ref-details">Research Object Crate community · Recommendation, 26 April 2023 · DOI:10.5281/zenodo.7867028.</span>
+<li id="ref-ROCrate11">
+<span class="ref-key">[11]</span> <a href="https://www.researchobject.org/ro-crate/specification/1.1/" rel="noopener noreferrer">RO-Crate Metadata Specification 1.1</a>. <span class="ref-details">Research Object Crate community · Recommendation, 26 April 2023 · DOI:10.5281/zenodo.7867028.</span>
 </li>
 </ol>
 </section>

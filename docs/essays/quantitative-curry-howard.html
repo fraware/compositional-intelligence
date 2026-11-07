@@ -31,6 +31,7 @@
 <p>Classical Curry–Howard relates a formal proof term to a judgment in a declared calculus. Quantitative search scores, relaxed logical satisfaction, probability estimates, and reviewer-facing warrants are separate evidence types. For a probability-valued warrant q in [0,1], the proposed record declares its binary target event Z, reference population D, observation process, and permitted decision role. Population calibration would mean E_D[Z | q] = q wherever the conditional expectation is defined; the claim must be assessed using held-out outcomes, subgroup diagnostics, and distribution-shift checks. The warrant remains advisory pending that evidence. A formal acceptance judgment Δ ⊢ t : τ remains independent of numerical warrant scores, including scores exhibiting pooled calibration.</p>
 <h2 id="contribution-summary">Contribution summary</h2>
 <table>
+<caption class="visually-hidden">Table 1: Contribution summary</caption>
 <colgroup>
 <col style="width: 7%"/>
 <col style="width: 24%"/>
@@ -38,13 +39,13 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>ID</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Contribution</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Publication claim</strong>
 </th>
 </tr>
@@ -120,16 +121,17 @@ Essay 7 treats warrant records as inputs to action authorization, memory updates
 </table>
 <h2 id="reader-map">Reader map</h2>
 <table>
+<caption class="visually-hidden">Table 2: Reader map</caption>
 <colgroup>
 <col style="width: 31%"/>
 <col style="width: 68%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Reader</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Recommended path</strong>
 </th>
 </tr>
@@ -240,10 +242,11 @@ Read after Essay 5 and prior to Essay 7
 <p>A probability in this setting has no default epistemic type. It can be a calibrated predictive confidence, posterior support under a model, likelihood score, sampling frequency, judge-model score, or heuristic ranking value. The record assigns the number to one of these roles and limits downstream use accordingly.</p>
 <h3 id="5-4-calibrated-semantic-participation">5.4 Calibrated semantic participation</h3>
 <p>Calibrated semantic participation connects quantitative evidence to artifact membership. A generated proof script with high model confidence remains unvalidated until the target proof assistant accepts it. A scientific claim with posterior support remains model-relative until the evidentiary pathway supports stronger status. A reasoning trace with high plausibility remains a candidate trace until faithfulness and task relevance have been evaluated.</p>
-<p>Classification confidence calibration tests whether predicted confidence agrees with empirical correctness frequencies <span class="citation-group" data-review="unapproved" data-target="QUANTITATIVE-CURRY-HOWARD-P047" data-scope-id="QUANTITATIVE-CURRY-HOWARD-P047-1" data-source-keys="Guo2017Calibration">[<a class="citation-link" href="#ref-Guo2017Calibration" aria-label="Provisional reference 1 — On Calibration of Modern Neural Networks">1</a>]</span>. This provides methodological background for evaluating predictive scores. In Quantitative Curry–Howard, proposed warrant scores would need an explicit target event or quantity, such as formal validation, repair cost, reviewer acceptance, downstream reuse, or authorized action. Binary acceptance events need held-out calibration analysis; continuous repair cost and other nonbinary outcomes need endpoint-appropriate predictive evaluation. Each decision policy must declare its outcome and test population. A high score alone confers no authority.</p>
+<p>Classification confidence calibration tests whether predicted confidence agrees with empirical correctness frequencies <span class="citation-group">[<a class="citation-link" href="#ref-Guo2017Calibration" aria-label="Reference 1 — On Calibration of Modern Neural Networks">1</a>]</span>. This provides methodological background for evaluating predictive scores. In Quantitative Curry–Howard, proposed warrant scores would need an explicit target event or quantity, such as formal validation, repair cost, reviewer acceptance, downstream reuse, or authorized action. Binary acceptance events need held-out calibration analysis; continuous repair cost and other nonbinary outcomes need endpoint-appropriate predictive evaluation. Each decision policy must declare its outcome and test population. A high score alone confers no authority.</p>
 <h2 id="6-quantitative-evidence-record-v0-2">6. Quantitative evidence record v0.2</h2>
 <p>The quantitative_judgment record is the companion object for this essay. It should be compact enough to attach to candidate artifacts and precise enough to prevent warrant confusion. The record is needed whenever a score, probability, loss, confidence value, or satisfaction value influences review, repair, reuse, or authorization.</p>
 <table>
+<caption class="visually-hidden">Table 3: 6. Quantitative evidence record v0.2</caption>
 <colgroup>
 <col style="width: 21%"/>
 <col style="width: 43%"/>
@@ -251,13 +254,13 @@ Read after Essay 5 and prior to Essay 7
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Field</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Question answered</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Failure addressed</strong>
 </th>
 </tr>
@@ -366,8 +369,9 @@ Evidence used outside its support regime.
 </table>
 <p>The record should be interpreted as an audit artifact. Its fields are retained only when they alter validation, diagnosis, review, repair, reuse, or permitted use. If a field is filled after the fact and never consulted, the benchmark should remove it or reserve it for high-risk domains.</p>
 <h2 id="7-state-of-the-art-landscape-and-source-control">7. State-of-the-art landscape and source control</h2>
-<p>The state-of-the-art landscape supplies mechanisms for the candidate layer without validating the proposed record. Differentiable proving motivates soft search over proof-like objects <span class="citation-group" data-review="unapproved" data-target="QUANTITATIVE-CURRY-HOWARD-P050" data-scope-id="QUANTITATIVE-CURRY-HOWARD-P050-1" data-source-keys="DiffProving2017">[<a class="citation-link" href="#ref-DiffProving2017" aria-label="Provisional reference 2 — End-to-End Differentiable Proving">2</a>]</span>. Logical Neural Networks motivate score semantics for real-valued logical bounds <span class="citation-group" data-review="unapproved" data-target="QUANTITATIVE-CURRY-HOWARD-P050" data-scope-id="QUANTITATIVE-CURRY-HOWARD-P050-2" data-source-keys="LNN2020">[<a class="citation-link" href="#ref-LNN2020" aria-label="Provisional reference 3 — Logical Neural Networks">3</a>]</span>. Quasi-Borel spaces motivate rigorous treatment of higher-order probability <span class="citation-group" data-review="unapproved" data-target="QUANTITATIVE-CURRY-HOWARD-P050" data-scope-id="QUANTITATIVE-CURRY-HOWARD-P050-3" data-source-keys="QBS2017">[<a class="citation-link" href="#ref-QBS2017" aria-label="Provisional reference 4 — A Convenient Category for Higher-Order Probability Theory">4</a>]</span>. Formalized fuzzy and differentiable logics show that soft logics can receive algebraic and proof-theoretic analysis <span class="citation-group" data-review="unapproved" data-target="QUANTITATIVE-CURRY-HOWARD-P050" data-scope-id="QUANTITATIVE-CURRY-HOWARD-P050-4" data-source-keys="DifferentiableLogicsDTT2026">[<a class="citation-link" href="#ref-DifferentiableLogicsDTT2026" aria-label="Provisional reference 5 — A Foundation for Differentiable Logics using Dependent Type Theory">5</a>]</span>. Learned theorem proving and trace evaluation motivate checker-facing validation and faithfulness records.</p>
+<p>The state-of-the-art landscape supplies mechanisms for the candidate layer without validating the proposed record. Differentiable proving motivates soft search over proof-like objects <span class="citation-group">[<a class="citation-link" href="#ref-DiffProving2017" aria-label="Reference 2 — End-to-End Differentiable Proving">2</a>]</span>. Logical Neural Networks motivate score semantics for real-valued logical bounds <span class="citation-group">[<a class="citation-link" href="#ref-LNN2020" aria-label="Reference 3 — Logical Neural Networks">3</a>]</span>. Quasi-Borel spaces motivate rigorous treatment of higher-order probability <span class="citation-group">[<a class="citation-link" href="#ref-QBS2017" aria-label="Reference 4 — A Convenient Category for Higher-Order Probability Theory">4</a>]</span>. Formalized fuzzy and differentiable logics show that soft logics can receive algebraic and proof-theoretic analysis <span class="citation-group">[<a class="citation-link" href="#ref-DifferentiableLogicsDTT2026" aria-label="Reference 5 — A Foundation for Differentiable Logics using Dependent Type Theory">5</a>]</span>. Learned theorem proving and trace evaluation motivate checker-facing validation and faithfulness records.</p>
 <table>
+<caption class="visually-hidden">Table 4: 7. State-of-the-art landscape and source control</caption>
 <colgroup>
 <col style="width: 25%"/>
 <col style="width: 39%"/>
@@ -375,13 +379,13 @@ Evidence used outside its support regime.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Source area</strong>
 </th>
-<th>
+<th scope="col">
 <strong>What it contributes</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Use in this essay</strong>
 </th>
 </tr>
@@ -455,7 +459,7 @@ Motivates faithfulness records and permitted-use labels.
 </tr>
 </tbody>
 </table>
-<p>The source map is intentionally limited. Rocktaschel and Riedel, Riegel et al., Heunen et al., and Affeldt et al. <span class="citation-group" data-review="unapproved" data-target="QUANTITATIVE-CURRY-HOWARD-P051" data-scope-id="QUANTITATIVE-CURRY-HOWARD-P051-1" data-source-keys="DiffProving2017,LNN2020,QBS2017,DifferentiableLogicsDTT2026">[<a class="citation-link" href="#ref-DiffProving2017" aria-label="Provisional reference 2 — End-to-End Differentiable Proving">2</a>, <a class="citation-link" href="#ref-LNN2020" aria-label="Provisional reference 3 — Logical Neural Networks">3</a>, <a class="citation-link" href="#ref-QBS2017" aria-label="Provisional reference 4 — A Convenient Category for Higher-Order Probability Theory">4</a>, <a class="citation-link" href="#ref-DifferentiableLogicsDTT2026" aria-label="Provisional reference 5 — A Foundation for Differentiable Logics using Dependent Type Theory">5</a>]</span> motivate the warrant layer through established mechanisms and recent formal work. They do not establish the Quantitative Curry-Howard record, the benchmark, or the calibration protocol proposed here.</p>
+<p>The source map is intentionally limited. Rocktaschel and Riedel, Riegel et al., Heunen et al., and Affeldt et al. <span class="citation-group">[<a class="citation-link" href="#ref-DiffProving2017" aria-label="Reference 2 — End-to-End Differentiable Proving">2</a>, <a class="citation-link" href="#ref-LNN2020" aria-label="Reference 3 — Logical Neural Networks">3</a>, <a class="citation-link" href="#ref-QBS2017" aria-label="Reference 4 — A Convenient Category for Higher-Order Probability Theory">4</a>, <a class="citation-link" href="#ref-DifferentiableLogicsDTT2026" aria-label="Reference 5 — A Foundation for Differentiable Logics using Dependent Type Theory">5</a>]</span> motivate the warrant layer through established mechanisms and recent formal work. They do not establish the Quantitative Curry-Howard record, the benchmark, or the calibration protocol proposed here.</p>
 <h2 id="8-worked-examples">8. Worked examples</h2>
 <h3 id="8-1-lean-proof-search">8.1 Lean proof search</h3>
 <p>Lean proof search exposes the candidate layer in a setting with exact validation. A model observes a proof state, retrieves premises, and proposes a tactic. The kernel or elaborator then accepts, rejects, or transforms the proof state. The quantitative record states what the score was intended to predict and records the actual validator result.</p>
@@ -501,6 +505,7 @@ Motivates faithfulness records and permitted-use labels.
 <h2 id="9-quantitative-curry-howard-bench-v0-2">9. Quantitative Curry-Howard Bench v0.2</h2>
 <p>Quantitative Curry-Howard Bench tests whether a structured evidence record changes decisions about candidate typed artifacts. Compare score-only and structured-record conditions using the same candidate pool, validators, model access, information budget and reviewer effort; report costs for extra evidence collection. Define the target event and primary decision metric before inspecting outcomes. Evaluate calibration and utility on held-out data without leaking validation results into predictive features. The practical claim succeeds only if the record improves a specified action, calibration, diagnosis or repair outcome beyond a cost-matched baseline.</p>
 <table>
+<caption class="visually-hidden">Table 5: 9. Quantitative Curry-Howard Bench v0.2</caption>
 <colgroup>
 <col style="width: 20%"/>
 <col style="width: 25%"/>
@@ -509,16 +514,16 @@ Motivates faithfulness records and permitted-use labels.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Domain</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Candidate artifact</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Validator</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Primary metric</strong>
 </th>
 </tr>
@@ -598,6 +603,7 @@ Trace usefulness and misleading-trace rate.
 </table>
 <p>The benchmark has a single decisive question. Does the structured record improve prediction of validation, repair cost, reviewer action, calibration, epistemic typing, or semantic participation? A record that only increases annotation length fails this test.</p>
 <table>
+<caption class="visually-hidden">Table 6: 9. Quantitative Curry-Howard Bench v0.2</caption>
 <colgroup>
 <col style="width: 23%"/>
 <col style="width: 42%"/>
@@ -605,13 +611,13 @@ Trace usefulness and misleading-trace rate.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Metric</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Definition</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Why it matters</strong>
 </th>
 </tr>
@@ -688,6 +694,7 @@ Detects dangerous evidence failures.
 <h2 id="10-failure-taxonomy">10. Failure taxonomy</h2>
 <p>The failure taxonomy identifies the evidential fault induced by the score or record. Its function is diagnostic, with description subordinated to repair and calibration. Each label should point to a repair, calibration, validator, or permitted-use change.</p>
 <table>
+<caption class="visually-hidden">Table 7: 10. Failure taxonomy</caption>
 <colgroup>
 <col style="width: 23%"/>
 <col style="width: 36%"/>
@@ -695,13 +702,13 @@ Detects dangerous evidence failures.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Failure mode</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Meaning</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Diagnostic case</strong>
 </th>
 </tr>
@@ -799,6 +806,7 @@ A model emits calibrated-looking records without better artifacts.
 </table>
 <h2 id="11-strongest-objections">11. Strongest objections</h2>
 <table>
+<caption class="visually-hidden">Table 8: 11. Strongest objections</caption>
 <colgroup>
 <col style="width: 30%"/>
 <col style="width: 39%"/>
@@ -806,13 +814,13 @@ A model emits calibrated-looking records without better artifacts.
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Objection</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Best answer</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Operational test</strong>
 </th>
 </tr>
@@ -889,16 +897,17 @@ Evaluate trace utility with verifier and reviewer protocols.
 <h2 id="12-kill-criteria">12. Kill criteria</h2>
 <p>The proposal should be revised or narrowed under the following decision rules.</p>
 <table>
+<caption class="visually-hidden">Table 9: 12. Kill criteria</caption>
 <colgroup>
 <col style="width: 10%"/>
 <col style="width: 89%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th>
+<th scope="col">
 <strong>Criterion</strong>
 </th>
-<th>
+<th scope="col">
 <strong>Decision rule</strong>
 </th>
 </tr>
@@ -1004,28 +1013,25 @@ Models learn to produce plausible records without improving artifact quality.
 <p>permitted_use_label: list[string]</p>
 <p>failure_labels: list[string]</p>
 </blockquote>
-<section class="bibliography" aria-labelledby="references-heading" data-review="unapproved">
+<section class="bibliography" aria-labelledby="references-heading">
 <h2 id="references-heading">
-References (provisional)
+References
 </h2>
-<p class="bibliography-note">
-Source-scoped working citations. Text and references await specialist and author review.
-</p>
 <ol class="references-list">
-<li id="ref-Guo2017Calibration" data-source-key="Guo2017Calibration" data-provisional="true">
-<span class="ref-key">[1]</span>. <a href="https://proceedings.mlr.press/v70/guo17a.html" rel="noopener noreferrer">On Calibration of Modern Neural Networks</a>. <span class="ref-details">Guo, Pleiss, Sun, and Weinberger · ICML 2017, PMLR 70:1321–1330.</span>
+<li id="ref-Guo2017Calibration">
+<span class="ref-key">[1]</span> <a href="https://proceedings.mlr.press/v70/guo17a.html" rel="noopener noreferrer">On Calibration of Modern Neural Networks</a>. <span class="ref-details">Guo, Pleiss, Sun, and Weinberger · ICML 2017, PMLR 70:1321–1330.</span>
 </li>
-<li id="ref-DiffProving2017" data-source-key="DiffProving2017" data-provisional="true">
-<span class="ref-key">[2]</span>. <a href="https://papers.nips.cc/paper/6969-end-to-end-differentiable-proving" rel="noopener noreferrer">End-to-End Differentiable Proving</a>. <span class="ref-details">Rocktäschel and Riedel · NeurIPS 2017.</span>
+<li id="ref-DiffProving2017">
+<span class="ref-key">[2]</span> <a href="https://papers.nips.cc/paper/6969-end-to-end-differentiable-proving" rel="noopener noreferrer">End-to-End Differentiable Proving</a>. <span class="ref-details">Rocktäschel and Riedel · NeurIPS 2017.</span>
 </li>
-<li id="ref-LNN2020" data-source-key="LNN2020" data-provisional="true">
-<span class="ref-key">[3]</span>. <a href="https://arxiv.org/abs/2006.13155" rel="noopener noreferrer">Logical Neural Networks</a>. <span class="ref-details">Riegel et al. · arXiv preprint 2020.</span>
+<li id="ref-LNN2020">
+<span class="ref-key">[3]</span> <a href="https://arxiv.org/abs/2006.13155" rel="noopener noreferrer">Logical Neural Networks</a>. <span class="ref-details">Riegel et al. · arXiv preprint 2020.</span>
 </li>
-<li id="ref-QBS2017" data-source-key="QBS2017" data-provisional="true">
-<span class="ref-key">[4]</span>. <a href="https://arxiv.org/abs/1701.02547" rel="noopener noreferrer">A Convenient Category for Higher-Order Probability Theory</a>. <span class="ref-details">Heunen, Kammar, Staton, and Yang · LICS 2017.</span>
+<li id="ref-QBS2017">
+<span class="ref-key">[4]</span> <a href="https://arxiv.org/abs/1701.02547" rel="noopener noreferrer">A Convenient Category for Higher-Order Probability Theory</a>. <span class="ref-details">Heunen, Kammar, Staton, and Yang · LICS 2017.</span>
 </li>
-<li id="ref-DifferentiableLogicsDTT2026" data-source-key="DifferentiableLogicsDTT2026" data-provisional="true">
-<span class="ref-key">[5]</span>. <a href="https://arxiv.org/abs/2602.23878" rel="noopener noreferrer">A Foundation for Differentiable Logics using Dependent Type Theory</a>. <span class="ref-details">Affeldt et al. · arXiv preprint 2026.</span>
+<li id="ref-DifferentiableLogicsDTT2026">
+<span class="ref-key">[5]</span> <a href="https://arxiv.org/abs/2602.23878" rel="noopener noreferrer">A Foundation for Differentiable Logics using Dependent Type Theory</a>. <span class="ref-details">Affeldt et al. · arXiv preprint 2026.</span>
 </li>
 </ol>
 </section>
