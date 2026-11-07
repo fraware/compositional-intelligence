@@ -1,0 +1,199 @@
+#!/usr/bin/env python3
+"""Verify the publication artifact using only the Python standard library.
+
+This checks repository integrity, local navigation, bibliographic anchors, and
+basic semantic accessibility. It does not assert that GitHub Pages is deployed,
+that external URLs are reachable, or that research claims are validated.
+"""
+
+from __future__ import annotations
+
+import collections
+import hashlib
+from html.parser import HTMLParser
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+from xml.etree import ElementTree
+
+ROOT = Path(__file__).resolve().parents[1]
+SITE = ROOT / "docs"
+URL = "https://fraware.github.io/compositional-intelligence/"
+
+
+class Document(HTMLParser):
+    """Collect structural evidence from a single static HTML document."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.ids: list[str] = []
+        self.links: list[str] = []
+        self.canonicals: list[str] = []
+        self.og_urls: list[str] = []
+        self.lang: str | None = None
+        self.main = 0
+        self.h1 = 0
+        self.tables = 0
+        self.captions = 0
+        self.th = 0
+        self.scoped_th = 0
+        self.scripts = 0
+        self.unsafe_attributes: list[str] = []
+        self.noindex = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        data = dict(attrs)
+        if tag == "html":
+            self.lang = data.get("lang")
+        if tag == "main":
+            self.main += 1
+        if tag == "h1":
+            self.h1 += 1
+        if tag == "table":
+            self.tables += 1
+        if tag == "caption":
+            self.captions += 1
+        if tag == "th":
+            self.th += 1
+            if data.get("scope") in {"col", "row"}:
+                self.scoped_th += 1
+        if tag == "script":
+            self.scripts += 1
+        if "id" in data and data["id"]:
+            self.ids.append(data["id"])
+        if tag in {"a", "link"} and data.get("href") is not None:
+            self.links.append(data["href"] or "")
+        if tag in {"img", "script"} and data.get("src") is not None:
+            self.links.append(data["src"] or "")
+        if tag == "link" and data.get("rel") == "canonical":
+            self.canonicals.append(data.get("href", ""))
+        if tag == "meta" and data.get("property") == "og:url":
+            self.og_urls.append(data.get("content", ""))
+        if tag == "meta" and data.get("name") == "robots" and "noindex" in (data.get("content") or "").lower():
+            self.noindex = True
+        for key in data:
+            if key.lower().startswith("on") or key.lower().startswith("data-review"):
+                self.unsafe_attributes.append(key)
+
+
+def parse_html(path: Path) -> Document:
+    """Parse HTML into the structural audit representation."""
+    document = Document()
+    document.feed(path.read_text(encoding="utf-8"))
+    document.close()
+    return document
+
+
+def check_manifest(issues: list[str]) -> None:
+    """Validate every file against the release SHA-256 manifest."""
+    manifest = ROOT / "SHA256SUMS"
+    if not manifest.is_file():
+        issues.append("Missing SHA256SUMS")
+        return
+    seen: set[str] = set()
+    for line_number, line in enumerate(manifest.read_text(encoding="utf-8").splitlines(), 1):
+        parts = line.split("  ", 1)
+        if len(parts) != 2 or len(parts[0]) != 64:
+            issues.append(f"Invalid checksum entry on line {line_number}")
+            continue
+        expected, rel = parts
+        if rel in seen:
+            issues.append(f"Duplicate manifest path: {rel}")
+        seen.add(rel)
+        target = (ROOT / rel).resolve()
+        if not target.is_relative_to(ROOT) or not target.is_file():
+            issues.append(f"Missing or unsafe manifest target: {rel}")
+            continue
+        actual = hashlib.sha256(target.read_bytes()).hexdigest()
+        if actual != expected:
+            issues.append(f"Checksum mismatch: {rel}")
+    published = {
+        p.relative_to(ROOT).as_posix()
+        for p in ROOT.rglob("*")
+        if p.is_file() and ".git" not in p.parts and p != manifest
+    }
+    # Repo-owned deployment scripts are reviewed source, not part of the
+    # original publication checksum set. All published reading files are.
+    published = {p for p in published if not p.startswith(("scripts/", ".github/"))}
+    for path in sorted(published - seen):
+        issues.append(f"Published file absent from checksum manifest: {path}")
+    for path in sorted(seen - published):
+        issues.append(f"Manifest contains an unexpected path: {path}")
+
+
+def main() -> int:
+    """Return nonzero if any local release assertion fails."""
+    issues: list[str] = []
+    check_manifest(issues)
+    pages = sorted(SITE.rglob("*.html"))
+    essays = sorted((ROOT / "essays").glob("*.md"))
+    if len(pages) != 10 or len(essays) != 9:
+        issues.append(f"Expected 10 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
+    if not (SITE / "index.html").is_file() or not (SITE / ".nojekyll").is_file():
+        issues.append("Missing HTML entrypoint or .nojekyll")
+    documents = {p: parse_html(p) for p in pages}
+    canonical_set: set[str] = set()
+    total_tables = 0
+    total_links = 0
+
+    for page, doc in documents.items():
+        relative = page.relative_to(SITE).as_posix()
+        target_canonical = URL if relative == "index.html" else URL + relative
+        canonical_set.add(target_canonical)
+        if doc.lang != "en" or doc.main != 1 or doc.h1 != 1 or doc.noindex:
+            issues.append(f"Incorrect document semantics: {relative}")
+        if doc.canonicals != [target_canonical] or doc.og_urls != [target_canonical]:
+            issues.append(f"Canonical/OG URL mismatch: {relative}")
+        if doc.scripts or doc.unsafe_attributes:
+            issues.append(f"Unexpected script or event handler in {relative}")
+        duplicates = [id_ for id_, n in collections.Counter(doc.ids).items() if n > 1]
+        if duplicates:
+            issues.append(f"Duplicate identifiers in {relative}: {duplicates[:3]}")
+        if doc.tables != doc.captions or doc.th != doc.scoped_th:
+            issues.append(f"Table caption/header mismatch: {relative}")
+        if relative.startswith("essays/") and not (ROOT / "essays" / page.with_suffix(".md").name).is_file():
+            issues.append(f"Missing Markdown source for {relative}")
+        total_tables += doc.tables
+        total_links += len(doc.links)
+
+        for raw in doc.links:
+            split = urlsplit(raw)
+            if split.scheme in {"http", "https", "mailto", "tel"}:
+                continue
+            if split.scheme or split.netloc or raw.startswith("//"):
+                issues.append(f"Unsafe link in {relative}: {raw}")
+                continue
+            file_path = (page.parent / unquote(split.path)).resolve() if split.path else page
+            if not file_path.is_relative_to(SITE) or not file_path.is_file():
+                issues.append(f"Missing local link in {relative}: {raw}")
+                continue
+            if split.fragment and file_path.suffix.lower() == ".html":
+                destination = documents.get(file_path)
+                if destination is None:
+                    destination = parse_html(file_path)
+                if unquote(split.fragment) not in destination.ids:
+                    issues.append(f"Broken anchor in {relative}: {raw}")
+
+    sitemap = SITE / "sitemap.xml"
+    if sitemap.is_file():
+        namespace = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+        try:
+            root = ElementTree.parse(sitemap).getroot()
+            urls = [x.text for x in root.findall(f".//{namespace}loc")]
+            if len(urls) != 10 or set(urls) != canonical_set:
+                issues.append("Sitemap URLs differ from public HTML canonicals")
+        except ElementTree.ParseError as exc:
+            issues.append(f"Invalid sitemap: {exc}")
+    else:
+        issues.append("Missing sitemap")
+
+    if issues:
+        for issue in issues:
+            print(f"FAIL: {issue}")
+        print(f"FAIL: {len(issues)} publication checks failed")
+        return 1
+    print(f"PASS: {len(pages)} HTML pages, {len(essays)} sources, {total_links} links, {total_tables} tables; checksums and sitemap verified")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
