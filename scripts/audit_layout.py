@@ -74,7 +74,19 @@ def main() -> int:
                                 viewport: window.innerWidth
                             })""")
                             if widths["scroll"] > widths["viewport"] + 1:
-                                failures.append(f"{width}px {rel}: horizontal overflow ({widths})")
+                                offenders = page.evaluate("""() => [...document.querySelectorAll("body *")]
+                                    .filter(e => {
+                                        const r = e.getBoundingClientRect();
+                                        return r.right > window.innerWidth + 1 && r.width > 0;
+                                    })
+                                    .slice(0, 8)
+                                    .map(e => ({
+                                        element: e.tagName.toLowerCase(),
+                                        className: typeof e.className === "string" ? e.className : "",
+                                        width: Math.round(e.getBoundingClientRect().width),
+                                        right: Math.round(e.getBoundingClientRect().right)
+                                    }))""")
+                                failures.append(f"{width}px {rel}: horizontal overflow ({widths}); elements: {offenders}")
                             if page.locator("main h1").count() != 1:
                                 failures.append(f"{width}px {rel}: unexpected title hierarchy")
                             if errors:

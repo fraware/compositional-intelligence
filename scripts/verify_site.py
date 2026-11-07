@@ -183,7 +183,7 @@ def main() -> int:
     total_display_maths = 0
     total_figures = 0
     expected_media = {
-        "compositional-intelligence": (5, 2),
+        "compositional-intelligence": (6, 2),
         "semantic-participation": (1, 0),
         "typed-generativity": (1, 0),
         "functorial-consistency": (1, 0),

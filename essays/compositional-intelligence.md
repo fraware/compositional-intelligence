@@ -467,7 +467,11 @@ Architecture design solves a matching problem. A task imposes structure. A model
 
 The core schema is:
 
-$\mathrm{TaskSpec}\to\mathrm{ArchitectureType}\to\mathrm{ArchitectureInstance}$. The notation $A\models S$ is reserved for a specified formal satisfaction judgment. Structural support, empirical performance, reviewed fit, runtime cost and implementation constraints receive distinct fields in ArchitectureSpec.
+$$
+\mathrm{TaskSpec}\to\mathrm{ArchitectureType}\to\mathrm{ArchitectureInstance}.
+$$
+
+The notation $A\models S$ is reserved for a specified formal satisfaction judgment. Structural support, empirical performance, reviewed fit, runtime cost and implementation constraints receive distinct fields in ArchitectureSpec.
 
 Geometric Deep Learning, Deep Sets, Graph Networks, Transformers, and Mamba address different structural assumptions and architectural mechanisms [\[[20](#ref-GDL2021){.citation-link aria-label="Reference 20 — Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges"}, [21](#ref-DeepSets2017){.citation-link aria-label="Reference 21 — Deep Sets"}, [22](#ref-GraphNetworks2018){.citation-link aria-label="Reference 22 — Relational Inductive Biases, Deep Learning, and Graph Networks"}, [23](#ref-Transformer2017){.citation-link aria-label="Reference 23 — Attention Is All You Need"}, [24](#ref-Mamba2023){.citation-link aria-label="Reference 24 — Mamba: Linear-Time Sequence Modeling with Selective State Spaces"}\]]{.citation-group}. Categorical Deep Learning already proposes an algebraic bridge between constraints and neural architecture implementations [\[[25](#ref-CategoricalDL2024){.citation-link aria-label="Reference 25 — Position: Categorical Deep Learning is an Algebraic Theory of All Architectures"}\]]{.citation-group}. ArchitectureSpec is a separate proposed decision record connecting task transformations, interfaces, resource assumptions, evidence grades, and validators to architecture selection. Its incremental contribution would be established through prospective, information-matched decisions and demonstrable improvement in mismatch diagnosis or validation.
 
