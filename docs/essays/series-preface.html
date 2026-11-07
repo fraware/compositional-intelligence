@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="The aims, scope, and conceptual sequence of the essay collection.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Series Preface">
+<meta property="og:description" content="The aims, scope, and conceptual sequence of the essay collection.">
+<meta property="og:url" content="https://fraware.github.io/compositional-intelligence/essays/series-preface.html">
+<link rel="canonical" href="https://fraware.github.io/compositional-intelligence/essays/series-preface.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+<title>Series Preface · Compositional Intelligence</title>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="container header-inner">
+<a class="brand" href="../index.html">Compositional Intelligence</a>
+<nav class="header-nav" aria-label="Primary navigation"><a href="../index.html#essays">Essays</a><a href="../essays/compositional-intelligence.html">The thesis</a></nav>
+</div></header>
+<main class="container" id="main">
+<article>
+<header class="article-header"><p class="breadcrumb"><a href="../index.html">Essays</a> / Orientation</p>
+<h1>Series Preface</h1><p class="byline">Mateo Petel</p></header>
+<div class="article-content" id="article-content">
+<p>Generative AI produces artifacts that enter increasingly complex intellectual and operational environments. Proof sketches enter formal mathematical systems. Programs enter codebases governed by interfaces and invariants. Scientific protocols enter experimental workflows governed by measurement, controls, and evidential standards. Agents issue tool calls and modify persistent state. Each setting raises a question extending beyond the quality of an isolated response. How does a generated object acquire a defensible status inside the world that will use it?</p>
+<p><strong>Compositional Intelligence</strong> proposes a research program centered on that question. Its objects are typed artifacts in structured worlds. The program studies how such artifacts are constructed, checked, aligned with their sources, transformed, composed, warranted, reused, and executed under appropriate authority. Prediction quality, benchmark accuracy, and local task success retain their roles as evidence. The proposed framework adds evaluation of artifact status, preservation of relevant structure, and consequences of downstream use.</p>
+<h2 id="from-output-to-artifact">From output to artifact</h2>
+<p>Typed artifacts include formal proofs, programs, mathematical statements, semantic parses, experimental protocols, datasets, claims, plans, memory updates, and tool calls. Each artifact is interpreted relative to an environment that specifies admissible representations, dependencies, validators, transformations, epistemic classifications, and permitted uses.</p>
+<p>The distinction carries several obligations. Proof checking establishes validity relative to a formal statement and a trusted checking regime. Source–target alignment addresses the relation of that statement to its intended meaning. Scientific evidence supports claims within declared assumptions and uncertainty bounds. Tool execution introduces state transitions whose authority and effects need independent assessment. Compositional Intelligence organizes these obligations around the artifact and its position in the environment.</p>
+<h2 id="three-foundations">Three foundations</h2>
+<p>The first three essays establish the program's core sequence.</p>
+<p><strong>Semantic Participation</strong> studies the conditions under which a candidate artifact receives a usable status in a structured environment. Validation, source alignment, composability, epistemic classification, and permitted use are recorded as distinct conditions of membership.</p>
+<p><strong>Typed Generativity</strong> analyzes target-class inference and the generation of candidate representations. On a declared normalized joint distribution, the factorization <span class="math-text" aria-label="P theta of A and t given c equals P theta of A given c times P theta of t given A and c" role="math">P<sub>θ</sub>(A,t ∣ c) = P<sub>θ</sub>(A ∣ c) P<sub>θ</sub>(t ∣ A,c)</span> follows the probability chain rule. The generator context <span class="math-text" aria-label="c" role="math">c</span> is distinct from the formal typing environment; <span class="math-text" aria-label="A" role="math">A</span> denotes a target-class label and <span class="math-text" aria-label="t" role="math">t</span> denotes a candidate that can fail validation. Formal acceptance uses the independent judgment <span class="math-text" aria-label="Delta proves parsed t has type tau" role="math">Δ ⊢ parse(t) : τ</span> under an explicit mapping from the target label to type τ. Semi-formal tasks need declared validators, and claims about latent type-like representations remain empirical hypotheses.</p>
+<p><strong>Functorial Consistency</strong> studies the preservation of relevant relations under transformations. The evaluation pattern compares two well-typed routes through a source-to-target transformation. For source operation <span class="math-text" aria-label="f maps X to X prime" role="math">f : X → X′</span>, transports <span class="math-text" aria-label="T zero maps X to Y" role="math">T<sub>0</sub> : X → Y</span> and <span class="math-text" aria-label="T one maps X prime to Y prime" role="math">T<sub>1</sub> : X′ → Y′</span>, and target operation <span class="math-text" aria-label="g maps Y to Y prime" role="math">g : Y → Y′</span>, a declared relation <span class="math-text" aria-label="R" role="math">R</span> compares <span class="math-text" aria-label="T one of f of x" role="math">T<sub>1</sub>(f(x))</span> and <span class="math-text" aria-label="g of T zero of x" role="math">g(T<sub>0</sub>(x))</span>. The validator and relation determine the result and its evidentiary status. This is a proposed family of path-agreement tests. Mathematical functoriality introduces additional identity and composition obligations.</p>
+<p>Together, these concepts define the destination of generation, the construction problem, and a test of structural preservation.</p>
+<h2 id="language-architecture-evidence-and-action">Language, architecture, evidence, and action</h2>
+<p>Four companion essays develop the program across additional domains.</p>
+<p><strong>Lambek Machines</strong> treats categorial linguistic structure as a candidate interface for supervision, interpretation, and evaluation of language systems. Its empirical question concerns downstream semantic behavior under controlled transformations.</p>
+<p><strong>Algebraic Architectures</strong> investigates task specifications as constraints on architectural choice. Object structure, symmetries, interfaces, and validators provide a basis for comparing architectural commitments against domain requirements. Formal satisfaction, structural support and empirical performance receive distinct evidence grades.</p>
+<p><strong>Quantitative Curry–Howard</strong> separates scores used for search, probabilistic support, relaxed satisfaction, and exact validation. Candidate artifacts acquire evidence records whose semantics and calibration determine their appropriate use. A learned score retains its evidential meaning within its specified validation regime.</p>
+<p><strong>Effectful and Conceptual Intelligence</strong> extends artifact evaluation to actions and state changes. Typed action records relate instructions, authority, preconditions, effects, execution, validation, repair, memory, and audit. Their effectiveness as runtime controls depends on independently evaluated authorization gates and state-transition enforcement.</p>
+<h2 id="an-empirical-research-agenda">An empirical research agenda</h2>
+<p>The proposed schemas and benchmark protocols are research designs. Their scientific value depends on implementation and comparative evaluation. Useful tests would establish whether the records improve failure diagnosis, validation, repair, compositional generalization, architecture selection, calibration, downstream reuse, or control of agent effects. Independent baselines and explicit failure criteria are central to that assessment.</p>
+<p>The essays distinguish established mathematical and technical foundations from the program's original proposals. Formal validity is judged by the applicable formal system. Empirical claims are judged by the corresponding evidence and evaluation design. Interpretive claims remain tied to their assumptions. This separation preserves the scientific status of each contribution.</p>
+<p>The sequence begins with membership, continues through construction and structural preservation, and extends toward language, architecture, evidence, and action. Read together, the essays propose a common way to study intelligent systems through the objects they place into structured worlds and the relationships those objects sustain.</p>
+
+
+</div>
+<nav class="article-pager" aria-label="Essay navigation"><div class="previous"><span>Previous</span><a href="compositional-intelligence.html">Compositional Intelligence</a></div><div class="next"><span>Next</span><a href="semantic-participation.html">Semantic Participation</a></div></nav>
+</article></main>
+<footer class="site-footer"><div class="container"><span>Compositional Intelligence · Mateo Petel</span><span>© 2026 Mateo Petel</span></div></footer>
+</body></html>
