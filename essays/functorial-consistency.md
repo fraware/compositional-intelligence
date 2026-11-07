@@ -31,7 +31,7 @@ Table 1. Contribution summary.
 <tr class="odd">
 <td>C1</td>
 <td>Benchmark unit</td>
-<td>The typed item records E_s, E_t, x, f, T=(T_0,T_1), g, acceptance relation R and validator V.</td>
+<td>The typed item records <var>E</var><sub>s</sub>, <var>E</var><sub>t</sub>, x, f, T=(T<sub>0</sub>,T<sub>1</sub>), g, acceptance relation R and validator V.</td>
 </tr>
 <tr class="even">
 <td>C2</td>
@@ -116,12 +116,12 @@ Table 2. Minimal FunctorialConsistencyItem fields.
 </thead>
 <tbody>
 <tr class="odd">
-<td>E_s</td>
+<td><var>E</var><sub>s</sub></td>
 <td>Source environment</td>
 <td>Object language, task context, source validation assumptions.</td>
 </tr>
 <tr class="even">
-<td>E_t</td>
+<td><var>E</var><sub>t</sub></td>
 <td>Target environment</td>
 <td>Formal system, executable interface, parser target, planner, workflow, or review setting.</td>
 </tr>
@@ -680,7 +680,7 @@ Table 9. Model-output record.
 </tr>
 <tr class="even">
 <td>path_A_transform_then_translate.target_artifact</td>
-<td>Records T_1(f(x)).</td>
+<td>Records T<sub>1</sub>(f(x)).</td>
 </tr>
 <tr class="odd">
 <td>path_A_transform_then_translate.validation_result</td>
@@ -800,7 +800,7 @@ Table 11. Annotation protocol.
 <tr class="odd">
 <td>1</td>
 <td>Write source object x.</td>
-<td>The object is expressible in E_s and has a target transport task.</td>
+<td>The object is expressible in E<sub>s</sub> and has a target transport task.</td>
 </tr>
 <tr class="even">
 <td>2</td>
@@ -1107,11 +1107,11 @@ Table A1. Benchmark card template.
 </tr>
 <tr class="odd">
 <td>Source environment</td>
-<td>E_s.</td>
+<td><var>E</var><sub>s</sub>.</td>
 </tr>
 <tr class="even">
 <td>Target environment</td>
-<td>E_t.</td>
+<td><var>E</var><sub>t</sub>.</td>
 </tr>
 <tr class="odd">
 <td>Source object x</td>
@@ -1247,7 +1247,7 @@ Table C1. Reviewed-alignment rubric.
 </tr>
 <tr class="odd">
 <td>Target-side correspondence</td>
-<td>Does g implement the same change in E_t.</td>
+<td>Does g implement the same change in E<sub>t</sub>.</td>
 </tr>
 <tr class="even">
 <td>Assumption preservation</td>

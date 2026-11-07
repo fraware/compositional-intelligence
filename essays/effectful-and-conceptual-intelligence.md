@@ -142,7 +142,7 @@ $$
 </thead>
 <tbody>
 <tr class="odd">
-<td>Gamma</td>
+<td><var>Γ</var></td>
 <td>instruction, policy, and task context</td>
 <td>States goals, constraints, user intent, and system-level rules.</td>
 </tr>
@@ -177,12 +177,12 @@ $$
 <td>Defines the expected state after execution and the evidence needed to assert completion.</td>
 </tr>
 <tr class="even">
-<td>eps</td>
+<td><var>ε</var></td>
 <td>effect row</td>
 <td>Declares state changes and side effects.</td>
 </tr>
 <tr class="odd">
-<td>rho</td>
+<td><var>ρ</var></td>
 <td>risk-authority record</td>
 <td>Records risk level, authority source, reversibility, validation type, and escalation policy.</td>
 </tr>

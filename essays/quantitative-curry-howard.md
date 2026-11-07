@@ -136,11 +136,9 @@ This judgment records formal validity relative to a system. It does not measure 
 
 AI reasoning systems generally operate around the exact judgment through candidate production. A model proposes a tactic, retrieves premises, drafts a proof script, ranks a program, estimates confidence for a claim, or generates a reasoning trace. These artifacts require pre-validation evidence records and post-failure diagnostics. The candidate layer is the learned object; the validation layer supplies acceptance, rejection, or repair information.
 
-> Candidate record: $\Gamma\vdash_{\theta}t:A\triangleright Q$
->
-> validation layer: Δ ⊢ t : τ (when the target label A denotes formal type τ)
->
-> failure layer: diagnostics(t, A, Gamma)
+- **Candidate record:** $\Gamma\vdash_{\theta}t:A\triangleright Q$.
+- **Validation judgment:** $\Delta\vdash t:\tau$, where target label $A$ denotes formal type $\tau$.
+- **Failure diagnostics:** $\operatorname{diagnostics}(t,A,\Gamma)$.
 
 The distinction localizes responsibility. A learned score can be good evidence for prioritizing search and weak evidence for validity. A rejected tactic can still contain useful repair signal. A proof that validates can still have poor maintainability or weak alignment to the source theorem. Quantitative Curry-Howard places those distinctions in the record so aggregate success rates do not hide them.
 

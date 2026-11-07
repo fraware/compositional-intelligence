@@ -327,7 +327,7 @@ Commutation establishes agreement only relative to the supplied relation and val
 
 The comparison relation R and its validator are declared per task. Formal settings distinguish definitional equality, logical equivalence, directional implication, and refinement through their respective proof obligations [\[[1](#ref-LeanRef){.citation-link aria-label="Reference 1 — The Lean Language Reference"}, [2](#ref-TPIL4){.citation-link aria-label="Reference 2 — Theorem Proving in Lean 4"}\]]{.citation-group}. In executable systems, passing a test suite establishes agreement only under the tested specification and coverage. COGS and SLOG provide semantic-parsing tasks with task-specific logical forms and generalization splits [\[[9](#ref-COGS2020){.citation-link aria-label="Reference 9 — COGS: A Compositional Generalization Challenge Based on Semantic Interpretation"}, [10](#ref-SLOG2023){.citation-link aria-label="Reference 10 — SLOG: A Structural Generalization Benchmark for Semantic Parsing"}\]]{.citation-group}. The proposed cross-representation comparison needs an independently specified relation and acceptance procedure. PDDL specifies planning domains with actions, preconditions, and effects [\[[11](#ref-PDDL1998){.citation-link aria-label="Reference 11 — PDDL—The Planning Domain Definition Language, Version 1.2"}\]]{.citation-group}. Any plan or trace comparison must additionally declare its target relation. Expert-reviewed transport records assumptions, uncertainty, and permitted claims. Validator protocols include known-positive and known-negative controls and distinguish unresolved outcomes from rejection.
 
-A benchmark item records eight fields: source environment E_s, target environment E_t, source object x, source transformation f, transport specification T = (T_0, T_1), target transformation g, target-side acceptance relation R, and validator V. Additional fields include typing assumptions, directionality, reference cases, reviewer protocol, failure labels, repair traces and validator uncertainty. The minimal item is:
+A benchmark item records eight fields: source environment $E_s$, target environment $E_t$, source object $x$, source transformation $f$, transport specification $T=(T_0,T_1)$, target transformation $g$, target-side acceptance relation $R$, and validator $V$. Additional fields include typing assumptions, directionality, reference cases, reviewer protocol, failure labels, repair traces and validator uncertainty. The minimal item is:
 
 $$
 I=(E_s,E_t,x,f,T,g,R,V).
@@ -427,7 +427,7 @@ Table. Extension schemas and boundaries.
 <tr class="odd">
 <td>warrant</td>
 <td>do scores predict validation, repair, or reuse?</td>
-<td>Gamma ⊢_theta t : A ▷ Q</td>
+<td><span class="inline-notation">Γ ⊢<sub>θ</sub> t : A ▷ Q</span></td>
 <td>soft warrant is not proof</td>
 </tr>
 <tr class="even">

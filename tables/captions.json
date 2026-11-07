@@ -117,11 +117,11 @@
     "functorial-consistency": [
       {
         "caption": "Contributions of the proposed transformation benchmark",
-        "source_sha256": "8220dbdd5a58336f936e12de0158bf82c10180bb0fb9caf0b3a25e05ef1cf7fd"
+        "source_sha256": "aef1418dc2a75b7aad1d3c5d360f45fe8c88711eef83f5ebdcba4b131934bf3c"
       },
       {
         "caption": "Required fields in a Functorial Consistency evaluation item",
-        "source_sha256": "298a3333483dffe49ed9a8d3faa89fbc0f5c2db8c62a3ac90083a389225f5f17"
+        "source_sha256": "575404ddaf00a67655d6254c9f8d97e8b36222bf3e8820720c078d3432f38a18"
       },
       {
         "caption": "Comparison relations and their validator regimes",
@@ -149,7 +149,7 @@
       },
       {
         "caption": "Fields of the model-output record",
-        "source_sha256": "f6001ebc4cf93e9405be08687df6d9e01e4031d13194fd97bc29c205520632fc"
+        "source_sha256": "ad8e96966fe0f72eefd0c12f0dc4b09f9621f8ff581736a5f28af92c9fb3719b"
       },
       {
         "caption": "Proposed seed-item allocation across domains",
@@ -157,7 +157,7 @@
       },
       {
         "caption": "Annotation steps and acceptance conditions",
-        "source_sha256": "2ec7789428c0534702668636201a9f6418e9dc9098bd140a8e744df167e617fc"
+        "source_sha256": "e7c162c1c810102338cb63ff0bbb75ae0fa1de0f3d6c61ec58e2daf6d9be1c52"
       },
       {
         "caption": "Pilot phases and associated work products",
@@ -177,7 +177,7 @@
       },
       {
         "caption": "Template fields for a benchmark card",
-        "source_sha256": "2311384d4b59c5e6945d68fd6e98518e560ef75bdf6b27a720fbcea38f8cf76e"
+        "source_sha256": "0b847eb6da99a1a7768d1572806cdd9c176609a404716a29cd6a7ea238653765"
       },
       {
         "caption": "Worked transformation-benchmark cards",
@@ -185,7 +185,7 @@
       },
       {
         "caption": "Dimensions in the reviewed-alignment rubric",
-        "source_sha256": "7ba1ad46167e2895cc1c5482f5e5a171b0228ab36957647043b4374a82a046a5"
+        "source_sha256": "fc9757584d82dd1dad50b9b17e7313dea898f509978dfc7c36c8f9a181667e26"
       }
     ],
     "lambek-machines": [
@@ -333,7 +333,7 @@
       },
       {
         "caption": "Symbols in the typed-action judgment",
-        "source_sha256": "df8d932a8abcbe5d557ce8ff83d9faa9a1ec8008adc806c058a2d08d9e7fb39c"
+        "source_sha256": "61fd86c6d3e03255fcd6d4393ec9c545c97426b6a9742073df2c43b90954560d"
       },
       {
         "caption": "Phases of consequential execution and their failure modes",
@@ -423,7 +423,7 @@
       },
       {
         "caption": "Proposed record disciplines for language, architecture, warrant, and action",
-        "source_sha256": "8544b3f367b214e1ee1536f049f506136025f0b21d708e5ddc727e6557e41e67"
+        "source_sha256": "fed69ce33724ac8686b2df232001967a6ded483eecd5f1806675f0adcbb069ed"
       },
       {
         "caption": "Implementation artifacts, proposed tests, and failure conditions",
