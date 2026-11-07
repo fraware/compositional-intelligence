@@ -4,10 +4,20 @@
 
 **Mateo Petel**
 
-A series of research essays on the relation of generative AI to formal, scientific, software, and operational environments. The collection develops a proposed framework spanning semantic participation, typed generativity, transformation consistency, grammar and composition, neural architecture, quantitative warrant, and effectful action.
+Compositional Intelligence is a series of research essays on the creation, interpretation, and use of AI-generated artifacts within structured worlds. The collection examines semantic validity, typed generation, structural transformations, linguistic composition, neural architectures, quantitative evidence, and consequential action.
 
-**Public manuscripts:** [Read the essays and edition notes](docs/MANUSCRIPTS.md).
+## Essays
 
-The repository preserves both the nine unmodified original V3 Word manuscripts and the nine M3B Markdown scientific-review candidates. These are **public working drafts**, not independently certified final scientific publications. The two editions are maintained separately to preserve provenance and avoid implying author approval of proposed revisions.
+1. [Compositional Intelligence](essays/compositional-intelligence.md)
+2. [Series Preface](essays/series-preface.md)
+3. [Semantic Participation](essays/semantic-participation.md)
+4. [Typed Generativity](essays/typed-generativity.md)
+5. [Functorial Consistency](essays/functorial-consistency.md)
+6. [Lambek Machines](essays/lambek-machines.md)
+7. [Algebraic Architectures](essays/algebraic-architectures.md)
+8. [Quantitative Curry–Howard](essays/quantitative-curry-howard.md)
+9. [Effectful and Conceptual Intelligence](essays/effectful-and-conceptual-intelligence.md)
 
-A dedicated reading website is in preparation. The manuscript files are publicly accessible here; the public site has not yet been deployed.
+The essays advance a research program and identify questions that remain open. The scope of each mathematical and empirical claim is stated in the corresponding essay.
+
+© 2026 Mateo Petel. All rights reserved.

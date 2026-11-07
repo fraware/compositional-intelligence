@@ -1,3 +1,7 @@
+# Lambek Machines
+
+*Mateo Petel*
+
 ## Abstract
 
 Lambek Machines applies the Compositional Intelligence framework to natural language. Semantic Participation defines artifact membership in structured environments. Typed Generativity models generation as candidate-inhabitant construction under an inferred target type. Functorial Consistency evaluates path agreement across transformations and target transports. This essay specializes that sequence to linguistic artifacts, where grammar-as-logic supplies an explicit account of typed composition.

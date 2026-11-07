@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "Please cite the relevant essay and this repository."
+title: "Compositional Intelligence: Typed Artifacts, Structured Worlds, and Effectful AI"
+type: generic
+authors:
+  - family-names: Petel
+    given-names: Mateo
+repository-code: "https://github.com/fraware/compositional-intelligence"

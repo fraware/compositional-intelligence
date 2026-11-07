@@ -1,3 +1,7 @@
+# Quantitative Curry–Howard
+
+*Mateo Petel*
+
 ## Abstract
 
 Classical Curry-Howard gives an exact relation among propositions, types, proofs, and programs. Contemporary AI reasoning systems operate in the candidate layer surrounding that exact relation. They rank tactics prior to kernel acceptance, optimize relaxed logical objectives prior to hard validation, attach probabilities to model-relative scientific claims, generate code prior to tests and static analysis, and emit reasoning traces whose evidential status requires separate faithfulness checks. Quantitative Curry-Howard names this candidate-layer interface between typed validity and learned scoring.

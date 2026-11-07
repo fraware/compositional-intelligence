@@ -1,3 +1,7 @@
+# Functorial Consistency
+
+*Mateo Petel*
+
 ## Abstract
 
 Functorial Consistency evaluates AI-generated artifacts by path agreement under structured transformation. The object of evaluation is a commutation-square item containing a source object, a source-side transformation, a translation or semantic transport, a corresponding target-side transformation, an equivalence regime, and a validator. The benchmark asks whether transform-then-translate agrees with translate-then-transform according to the acceptance relation declared for the target environment.

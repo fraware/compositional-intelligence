@@ -1,3 +1,7 @@
+# Typed Generativity
+
+*Mateo Petel*
+
 ## Abstract
 
 Typed Generativity is the generation layer of the Compositional Intelligence series. Semantic Participation asks when generated outputs count as artifacts in structured worlds. Typed Generativity asks how generation should be analyzed once the requested product is treated as a candidate artifact instead of a bare token sequence. The central claim is that many high-value generative tasks are usefully modeled as probabilistic construction of candidate inhabitants of inferred target types.

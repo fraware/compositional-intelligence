@@ -1,3 +1,7 @@
+# Semantic Participation
+
+*Mateo Petel*
+
 ## Abstract
 
 AI reasoning is commonly evaluated through output quality, benchmark performance, and local task completion. Those measures remain useful, although they understate the condition required for cumulative knowledge. A proof sketch, code patch, theorem formalization, protocol, dataset, model result, or scientific claim receives epistemic status only when it can enter a structured environment with explicit validity, alignment, warrant, compositional behavior, and conditions for future use.

@@ -1,3 +1,7 @@
+# Algebraic Architectures
+
+*Mateo Petel*
+
 ## Abstract
 
 Neural architectures are frequently characterized through capacity, training procedure, benchmark performance, parameter count, and scaling behavior. Those descriptors omit a structural dimension that matters for Compositional Intelligence. A model family encodes commitments about the objects it represents, the transformations it preserves, the symmetries it exploits, the memory regimes it supports, the interfaces it exposes, and the validators that can be applied to its outputs. These commitments affect sample efficiency, extrapolation, interpretability, runtime cost, validation design, and deployment failure modes.

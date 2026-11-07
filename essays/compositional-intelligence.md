@@ -1,3 +1,7 @@
+# Compositional Intelligence
+
+*Mateo Petel*
+
 ## Abstract
 
 Generative AI is often evaluated through output quality, benchmark performance, and local task performance. Those measures register useful capability, although they leave under-specified the condition that matters for cumulative knowledge and agentic deployment. A generated object has standing when a structured world can check it, align it with an intended source, compose it with existing objects, reuse it under declared conditions, warrant it at an appropriate epistemic level, or authorize action under controlled effects.

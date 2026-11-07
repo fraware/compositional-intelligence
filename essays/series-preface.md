@@ -1,3 +1,7 @@
+# Series Preface
+
+*Mateo Petel*
+
 Generative AI produces artifacts that enter increasingly complex intellectual and operational environments. Proof sketches enter formal mathematical systems. Programs enter codebases governed by interfaces and invariants. Scientific protocols enter experimental workflows governed by measurement, controls, and evidential standards. Agents issue tool calls and modify persistent state. Each setting raises a question extending beyond the quality of an isolated response. How does a generated object acquire a defensible status inside the world that will use it?
 
 **Compositional Intelligence** proposes a research program centered on that question. Its objects are typed artifacts in structured worlds. The program studies how such artifacts are constructed, checked, aligned with their sources, transformed, composed, warranted, reused, and executed under appropriate authority. Prediction quality, benchmark accuracy, and local task success retain their roles as evidence. The proposed framework adds evaluation of artifact status, preservation of relevant structure, and consequences of downstream use.

@@ -1,3 +1,7 @@
+# Effectful and Conceptual Intelligence
+
+*Mateo Petel*
+
 ## Abstract
 
 Language-model agents now operate through interfaces that alter state, including tools, files, databases, browsers, calendars, code execution, workflow systems, and embodied environments. This shift changes the evaluation target. A text response can often receive review before downstream use. An agent action changes internal, computational, social, economic, or physical state. The relevant object is therefore the typed, warranted, effectful trace connecting instruction, authority, execution, validation, and consequence.
