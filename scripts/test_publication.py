@@ -58,8 +58,11 @@ class PublicationMetadataTests(unittest.TestCase):
         """Canonical manuscript schemas must retain readable line structure."""
         counts = {
             "compositional-intelligence": 7,
-            "lambek-machines": 2,
-            "typed-generativity": 1,
+            "lambek-machines": 4,
+            "typed-generativity": 4,
+            "semantic-participation": 1,
+            "quantitative-curry-howard": 1,
+            "effectful-and-conceptual-intelligence": 2,
         }
         for slug, expected in counts.items():
             source = (publication.ROOT / "essays" / f"{slug}.md").read_text(encoding="utf-8")
