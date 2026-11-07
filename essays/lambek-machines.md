@@ -126,7 +126,7 @@ The proposal is positioned among established literatures without absorbing their
 
 ## 3. Formal core - the Lambek Machine schema {#3-formal-core-the-lambek-machine-schema}
 
-The formal core is a typed compositional pipeline for a declared grammar and its interpretation. Let the ordered lexical context be Γ_L = (τ₁, ..., τₙ), where τᵢ is the assigned category of word wᵢ. A grammatical derivation π establishes Γ_L ⊢ S under a specified Lambek, pregroup, or other explicitly chosen calculus <span class="citation-group">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Reference 1 — The Mathematics of Sentence Structure">1</a>, <a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>. Exchange or other structural rules are available only where that calculus admits them. A semantic interpretation of the categories and derivations <span class="citation-group">[<a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span> supplies ⟦π⟧; the resulting meaning is evaluated against an independently declared target and acceptance rule. Neural supertag predictions alone establish neither derivability nor correct semantic interpretation. This is a specification of observable structure, not a claim about transformer internals. The associative Lambek calculus L uses ordered antecedent sequences, and its nonassociative variants impose distinct structural restrictions. Each language evaluation track must identify its calculus, admissible structural rules, semantic model, and comparison oracle.
+The formal core is a typed compositional pipeline for a declared grammar and its interpretation. Let the ordered lexical context be $\Gamma_L=(\tau_1,\ldots,\tau_n)$, where $\tau_i$ is the assigned category of word $w_i$. A grammatical derivation $\pi$ establishes $\Gamma_L\vdash S$ under a specified Lambek, pregroup, or other explicitly chosen calculus <span class="citation-group">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Reference 1 — The Mathematics of Sentence Structure">1</a>, <a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span>. Exchange or other structural rules are available only where that calculus admits them. A semantic interpretation of the categories and derivations <span class="citation-group">[<a class="citation-link" href="#ref-DisCoCat2010" aria-label="Reference 3 — Mathematical Foundations for a Compositional Distributional Model of Meaning">3</a>]</span> supplies ⟦π⟧; the resulting meaning is evaluated against an independently declared target and acceptance rule. Neural supertag predictions alone establish neither derivability nor correct semantic interpretation. This is a specification of observable structure, not a claim about transformer internals. The associative Lambek calculus L uses ordered antecedent sequences, and its nonassociative variants impose distinct structural restrictions. Each language evaluation track must identify its calculus, admissible structural rules, semantic model, and comparison oracle.
 
 <figure class="formal-pipeline" aria-labelledby="lambek-pipeline-caption">
 <ol class="lifecycle-stages">
@@ -259,7 +259,7 @@ The hierarchy constrains publication claims. Evidence for L1 supports diagnostic
 
 ## 6. Functorial Language Consistency {#6-functorial-language-consistency}
 
-Functorial Language Consistency instantiates the two-path benchmark for a declared linguistic transformation f and semantic representation. The source sentence x and its transformed form f(x) are interpreted by task-specific transports T_0 and T_1, while g acts on the original semantic representation. The benchmark compares T_1(f(x)) with g(T_0(x)) under a specified target-side relation R, which must distinguish denotational equivalence, directional entailment, and other task-specific criteria.
+Functorial Language Consistency instantiates the two-path benchmark for a declared linguistic transformation f and semantic representation. The source sentence $x$ and its transformed form $f(x)$ are interpreted by task-specific transports $T_0$ and $T_1$, while $g$ acts on the original semantic representation. The benchmark compares $T_1(f(x))$ with $g(T_0(x))$ under a specified target-side relation $R$, which must distinguish denotational equivalence, directional entailment, and other task-specific criteria.
 
 <figure class="path-comparison" aria-labelledby="lambek-square-caption">
 <div class="path-route">
@@ -448,67 +448,43 @@ The Lambek-specific claim is credible only when the L-conditions improve downstr
 
 ### 9.1 Lambek benchmark item {#9-1-lambek-benchmark-item}
 
+```text
 lambek_benchmark_item:
-
 id: string
-
 sentence: string
-
 transformation:
-
-family: paraphrase \| scope \| attachment \| voice \| relative_clause \| coordination \| negation \| modality
-
-transformed_sentence: string
-
-intended_semantic_effect: string
-
-tokens: list\[string\]
-
-gold_or_reference_supertags: list\[string\]
-
+  family: paraphrase | scope | attachment | voice | relative_clause | coordination | negation | modality
+  transformed_sentence: string
+  intended_semantic_effect: string
+tokens: list[string]
+gold_or_reference_supertags: list[string]
 structured_category_representation: object
-
-derivation_or_reduction: object \| null
-
+derivation_or_reduction: object | null
 semantic_target:
-
-representation_type: logical_form \| graph \| query \| semantic_roles \| other
-
-value: object
-
+  representation_type: logical_form | graph | query | semantic_roles | other
+  value: object
 target_transformation: object
-
 equivalence_regime: string
-
 validator_or_review_protocol: string
-
-failure_labels: list\[string\]
+failure_labels: list[string]
+```
 
 ### 9.2 Model output record {#9-2-model-output-record}
 
+```text
 lambek_model_output:
-
 item_id: string
-
 model_id: string
-
 condition: string
-
-predicted_supertags: list\[string\]
-
-predicted_structure: object \| null
-
-predicted_reduction: object \| null
-
+predicted_supertags: list[string]
+predicted_structure: object | null
+predicted_reduction: object | null
 predicted_semantic_artifact: object
-
 transformed_predicted_semantic_artifact: object
-
-path_agreement_result: accept \| reject \| adjudicate
-
-diagnostics: list\[string\]
-
-repair_trace: string \| null
+path_agreement_result: accept | reject | adjudicate
+diagnostics: list[string]
+repair_trace: string | null
+```
 
 ### 9.3 Error taxonomy {#9-3-error-taxonomy}
 

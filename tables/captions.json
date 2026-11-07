@@ -55,7 +55,7 @@
     "typed-generativity": [
       {
         "caption": "Contributions to the typed-generation proposal",
-        "source_sha256": "28ff68d598e0ff233df7f0a33af68339fcb0ae4326cfd32342e77a318e10acf8"
+        "source_sha256": "f40a0bd0c4270c415d8a7ac9d0ba0c0bac710a13110f91e28726cd539c41cccd"
       },
       {
         "caption": "Suggested reading paths by audience",
@@ -63,7 +63,7 @@
       },
       {
         "caption": "Variables and probability semantics of the typed-generation schema",
-        "source_sha256": "c7add23fe3dfec9358ba563148ad9b4816b0160855d16a7554e50963b351d897"
+        "source_sha256": "479143556f2719d51669ace87d3234037a44a37ea897150ab45c7d3341487cf3"
       },
       {
         "caption": "Underspecified prompts and alternative target types",
@@ -287,7 +287,7 @@
     "quantitative-curry-howard": [
       {
         "caption": "Contributions and claim status of Quantitative Curry–Howard",
-        "source_sha256": "d5d501e69f85555637e612f8d3c8082125ab6db6cea5a64a2e6dc92bdcde1b7f"
+        "source_sha256": "371cf349de3634cdc165220b68461ccdf6a78e324ef215a8b2dfe816d2f43589"
       },
       {
         "caption": "Suggested reading paths by audience",
@@ -325,7 +325,7 @@
     "effectful-and-conceptual-intelligence": [
       {
         "caption": "Contributions to the proposed effectful-agent framework",
-        "source_sha256": "81110990a3ca425d5127f9b61b667d75175a46fd392a2571f1f3b8ad17510b95"
+        "source_sha256": "9ee922b9f74240540395925a41f4ed20b69e4f413e3b01da4a5363a4ad952985"
       },
       {
         "caption": "Suggested reading paths by audience",

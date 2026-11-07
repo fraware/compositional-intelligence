@@ -112,6 +112,15 @@ def main() -> int:
                                     return {
                                         displayMath: math.length,
                                         mathScrolls: article.querySelectorAll(".math-scroll").length,
+                                        invalidInlineMath: [...article.querySelectorAll('math[display="inline"]')]
+                                          .filter(e => {
+                                            const r = e.getBoundingClientRect();
+                                            const p = e.closest("p,li,blockquote");
+                                            const pr = p ? p.getBoundingClientRect() : null;
+                                            return r.width < 4 || r.height < 4 ||
+                                              r.width > window.innerWidth + 1 ||
+                                              (pr && r.right > pr.right + 4 && !e.closest(".table-scroll"));
+                                          }).length,
                                         invisibleMath: math.filter(e => {
                                             const r = e.getBoundingClientRect();
                                             return r.width < 4 || r.height < 4 ||
@@ -132,8 +141,8 @@ def main() -> int:
                                 }""")
                                 if media is None or media["displayMath"] != media["mathScrolls"]:
                                     failures.append(f"{width}px {rel}: missing MathML scroll wrappers")
-                                elif media["invisibleMath"]:
-                                    failures.append(f"{width}px {rel}: invisible mathematics")
+                                elif media["invisibleMath"] or media["invalidInlineMath"]:
+                                    failures.append(f"{width}px {rel}: clipped or invisible mathematics {media}")
                                 if media and (media["invalidFigures"] or media["unnamedImages"] or media["overflowingMediaRoots"]):
                                     failures.append(f"{width}px {rel}: media accessibility/layout {media}")
                                 table_structure = page.evaluate("""() => ({
@@ -199,6 +208,13 @@ def main() -> int:
                                     for index, equation in enumerate(page.locator(".math-scroll").all(), start=1):
                                         equation.screenshot(
                                             path=str(screenshots / f"{width}-{label}-equation-{index:02d}.png")
+                                        )
+                                    inline_paragraphs = page.locator(
+                                        '.article-content p:has(math[display="inline"])'
+                                    )
+                                    for index, paragraph in enumerate(inline_paragraphs.all()[:3], start=1):
+                                        paragraph.screenshot(
+                                            path=str(screenshots / f"{width}-{label}-inline-{index:02d}.png")
                                         )
                                     for index, figure in enumerate(page.locator(".article-content figure").all(), start=1):
                                         figure.screenshot(

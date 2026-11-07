@@ -205,8 +205,8 @@ def main() -> int:
     total_figures = 0
     expected_media = {
         "compositional-intelligence": (6, 2),
-        "semantic-participation": (1, 0),
-        "typed-generativity": (1, 0),
+        "semantic-participation": (2, 0),
+        "typed-generativity": (3, 0),
         "functorial-consistency": (1, 0),
         "lambek-machines": (1, 2),
         "algebraic-architectures": (1, 0),

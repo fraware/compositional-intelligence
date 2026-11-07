@@ -6,7 +6,7 @@
 
 Language-model agents now operate through interfaces that alter state, including tools, files, databases, browsers, calendars, code execution, workflow systems, and embodied environments. This shift changes the evaluation target. A text response can often receive review before downstream use. An agent action changes internal, computational, social, economic, or physical state. The relevant object is therefore the typed, warranted, effectful trace connecting instruction, authority, execution, validation, and consequence.
 
-This essay proposes a type-and-effect record for consequential agent behavior. Its judgment, Gamma; M; E; C \|- a : Pre -\> Post ! eps @ rho, records instruction context, memory, environment, capabilities, requested action, preconditions, postconditions, declared effects and risk-authority obligations. It specifies an auditable candidate action and its governing checks. Execution-time enforcement additionally depends on actual permission gates, state observations, handlers and post-execution validation. Record completeness and enforcement effectiveness are independently testable properties.
+This essay proposes a type-and-effect record for consequential agent behavior. Its typed-action judgment records instruction context, memory, environment, capabilities, requested action, preconditions, postconditions, declared effects and risk-authority obligations; its mathematical form is specified in Section 3. It specifies an auditable candidate action and its governing checks. Execution-time enforcement additionally depends on actual permission gates, state observations, handlers and post-execution validation. Record completeness and enforcement effectiveness are independently testable properties.
 
 The framework is grounded in Hoare-style pre/post reasoning, planning formalisms, monadic semantics, algebraic effects and handlers <span class="citation-group">[<a class="citation-link" href="#ref-Hoare1969" aria-label="Reference 1 — An Axiomatic Basis for Computer Programming">1</a>, <a class="citation-link" href="#ref-PDDL1998" aria-label="Reference 2 — PDDL—The Planning Domain Definition Language, Version 1.2">2</a>, <a class="citation-link" href="#ref-Moggi1989" aria-label="Reference 3 — Computational Lambda-Calculus and Monads">3</a>, <a class="citation-link" href="#ref-PlotkinPretnar2013" aria-label="Reference 4 — Handling Algebraic Effects">4</a>]</span>. Agent security and trajectory-judge evaluation supply distinct empirical antecedents <span class="citation-group">[<a class="citation-link" href="#ref-AgentDojo2024" aria-label="Reference 5 — AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents">5</a>, <a class="citation-link" href="#ref-AgentRewardBench2025" aria-label="Reference 6 — AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories">6</a>]</span>. AgentDojo studies prompt-injection attack and defense. AgentRewardBench assesses judgments of web-agent trajectories, including task success and side effects. Tool use, memory writes, and authorization controls are separate targets of the proposed ledger. Its contribution is an accounting layer for consequential agent behavior. Actions, tool calls, memory writes, plan steps, skill invocations, and concept transfers are represented with declared effects, authority source, provenance, validators, compensation paths, and permitted downstream use.
 
@@ -31,7 +31,7 @@ The claim is falsifiable. Typed effect records matter only where they improve ac
 <tr class="odd">
 <td>C1</td>
 <td>Typed-action judgment</td>
-<td>Gamma; M; E; C |- a : Pre -&gt; Post ! eps @ rho records action, context, memory, environment, capability, pre/post conditions, effects, risk, authority, and validation obligations.</td>
+<td><span class="inline-notation">Γ; M; E; C ⊢<sub>spec</sub> a : Pre → Post ! ε @ ρ</span> records action, context, memory, environment, capability, pre/post conditions, effects, risk, authority, and validation obligations.</td>
 </tr>
 <tr class="even">
 <td>C2</td>
@@ -321,11 +321,17 @@ The taxonomy is extensible, but its first use is diagnostic. It blocks the commo
 
 Effect records become execution controls only if a trusted component mediates each consequential operation at its execution boundary. That component checks the actual capability, policy and user authorization against the pending action and current state, then permits, denies or escalates the operation. A logged decision by an untrusted agent is audit evidence, not enforcement. The ledger records the enforcement identity and policy version, capability scope, precondition evidence, observed poststate and protected frame conditions. External writes and asynchronous actions require explicit race, partial-failure and irreversibility handling; denial or human escalation is appropriate where authorization cannot be established.
 
-handler(eps, rho, Pre, C, E) -\> authorize \| deny \| ask \| sandbox \| escalate
+```text
+handler(eps, rho, Pre, C, E)
+  -> authorize | deny | ask | sandbox | escalate
+```
 
 Validators supply the post-execution counterpart to handlers. They compare postconditions with observed state, check frame conditions, record diagnostics, and decide whether repair, rollback, escalation, or human review is required. Their output is part of the artifact record for the trace, so a claimed completion without validation remains an unverified state-transition claim.
 
-validator(Post, observed_state_delta, frame_conditions) -\> pass \| fail \| partial \| unknown
+```text
+validator(Post, observed_state_delta, frame_conditions)
+  -> pass | fail | partial | unknown
+```
 
 Authority is a typed resource distinct from interface access. A callable tool supplies a capability channel; policy, user intent, risk class, and institutional procedure determine whether the action is permitted. The ledger therefore records authority source, capability scope, approval status, and escalation criteria as separate fields, giving reviewers a path from instruction to authorization decision.
 

@@ -6,7 +6,13 @@
 
 Typed Generativity is the generation layer of the Compositional Intelligence series. Semantic Participation asks when generated outputs count as artifacts in structured worlds. Typed Generativity asks how generation should be analyzed once the requested product is treated as a candidate artifact instead of a bare token sequence. The central claim is that many high-value generative tasks are usefully modeled as probabilistic construction of candidate inhabitants of inferred target types.
 
-Typed Generativity proposes an operational decomposition of candidate generation. Under a normalized joint model distribution over declared target labels A and candidate representations t, P_theta(A,t \| c) = P_theta(A \| c) P_theta(t \| A,c), where c denotes generator context. This is the probability chain rule, not a model-specific theorem. Candidate representations include outputs later rejected by a validator. In a formal object language, a separate environment Δ and target type τ govern Δ ⊢ t : τ, with the correspondence from label A to type τ explicitly declared. Schema-governed and semi-formal tasks need independent validators or annotation protocols. Internal type-like representations remain an untested empirical hypothesis. The probabilistic factorization holds for any normalized joint law and supplies no evidence of a literal internal infer-then-generate mechanism. A mechanism claim needs independent intervention or causal evidence. The proposed Type-First Prompting Harness should compare diagnostic and downstream gains against information-, token-, and checker-exposure-matched controls. Pre-generation target commitments and labels reconstructed from outputs are distinct observations.
+Typed Generativity proposes an operational decomposition of candidate generation. Under a normalized joint model distribution over declared target labels $A$ and candidate representations $t$, with generator context $c$, the probability mass factors as
+
+$$
+P_{\theta}(A,t\mid c)=P_{\theta}(A\mid c)\,P_{\theta}(t\mid A,c).
+$$
+
+This is the probability chain rule, not a model-specific theorem. Candidate representations include outputs later rejected by a validator. In a formal object language, a separate environment $\Delta$ and target type $\tau$ govern $\Delta\vdash t:\tau$, with the correspondence from label $A$ to type $\tau$ explicitly declared. Schema-governed and semi-formal tasks need independent validators or annotation protocols. Internal type-like representations remain an untested empirical hypothesis. The probabilistic factorization holds for any normalized joint law and supplies no evidence of a literal internal infer-then-generate mechanism. A mechanism claim needs independent intervention or causal evidence. The proposed Type-First Prompting Harness should compare diagnostic and downstream gains against information-, token-, and checker-exposure-matched controls. Pre-generation target commitments and labels reconstructed from outputs are distinct observations.
 
 The essay separates three levels of typed generation. Typed output concerns artifacts checked after generation. Typed decoding concerns generation constrained by a schema, grammar, type, tool interface, or parser. Typed latent cognition names the stronger hypothesis that a system internally represents requested object structure in type-like ways before or during generation. The first two levels support immediate evaluation. The third requires targeted evidence from interventions, probes, ambiguity datasets, and failure clustering.
 
@@ -33,7 +39,7 @@ The companion evaluation object is the Type-First Prompting Harness v0.3. It tes
 <tr class="odd">
 <td>C1</td>
 <td>Generation schema</td>
-<td>Where a normalized joint distribution is defined: P_theta(A,t | c) = P_theta(A | c) P_theta(t | A,c). Validation and formal typing are separate.</td>
+<td>Where a normalized joint distribution is defined: <span class="inline-notation">P<sub>θ</sub>(A,t | c) = P<sub>θ</sub>(A | c) P<sub>θ</sub>(t | A,c)</span>. Validation and formal typing are separate.</td>
 </tr>
 <tr class="even">
 <td>C2</td>
@@ -120,7 +126,13 @@ Typed Generativity converts the external standard of Semantic Participation into
 
 The proposal models a class of generative tasks as inference over target-class labels followed by production of candidate representations. A candidate is submitted to independent validation, review, repair, and semantic participation assessment; successful type inhabitation is an outcome of checking, not a premise of sampling.
 
-generator context c → infer target label A → propose candidate t → validate under task rules (Δ ⊢ t : τ where formally applicable) → assess ParticipationStatus for the proposed use
+The proposed sequence is:
+
+1. Interpret the generator context $c$.
+2. Infer a target-class label $A$.
+3. Produce a candidate representation $t$.
+4. Validate under the declared task rules (including $\Delta\vdash t:\tau$ for formal object languages).
+5. Assess Semantic Participation for the proposed use.
 
 In proof assistants and type-directed program synthesis, a target proposition, type, or refinement specification is explicit under a declared formal environment <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 1 — The Lean Language Reference">1</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 2 — Theorem Proving in Lean 4">2</a>, <a class="citation-link" href="#ref-Polikarpova2016" aria-label="Reference 3 — Program Synthesis from Polymorphic Refinement Types">3</a>]</span>. For tool use, interface definitions constrain valid arguments and actions; Toolformer studies model-selected API calls <span class="citation-group">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Reference 4 — Toolformer: Language Models Can Teach Themselves to Use Tools">4</a>]</span>. Structured output may likewise be checked against an application-defined schema. Explanation, planning, scientific protocol design, and structured writing are exploratory domains proposed in this essay. Treating their targets as latent types is a modeling hypothesis that needs domain-specific validation and evaluation.
 
@@ -134,7 +146,7 @@ $$
 P_{\theta}(A,t \mid c) = P_{\theta}(A \mid c)\,P_{\theta}(t \mid A,c).
 $$
 
-Let c denote a generation context and Ω_c a finite or countable tagged candidate space of pairs (A,t), with target-class label A and candidate representation t. A normalized joint probability mass P_theta(A,t | c) satisfies P_theta(A,t | c) = P_theta(A | c) P_theta(t | A,c) for classes with P_theta(A | c) > 0. At zero marginal probability, the joint law leaves the conditional distribution undetermined. Invalid and malformed candidates remain in the sampling space. In formally checkable tasks, a declared partial mapping μ_c(A) = τ associates eligible target classes with object-language types, and a separate parser and checker assess Δ ⊢ parse(t) : τ where defined. Schema-governed and semi-formal tasks use separately declared validation or annotation protocols. The factorization is the probability chain rule; its empirical usefulness and any type-inference mechanism remain independent questions.
+Let c denote a generation context and Ω_c a finite or countable tagged candidate space of pairs (A,t), with target-class label A and candidate representation t. The normalized joint mass $P_{\theta}(A,t\mid c)$ satisfies the displayed factorization wherever $P_{\theta}(A\mid c)>0$. At zero marginal probability, the joint law leaves the conditional distribution undetermined. Invalid and malformed candidates remain in the sampling space. In formally checkable tasks, a declared partial mapping $\mu_c(A)=\tau$ associates eligible target classes with object-language types, and a separate parser and checker assess $\Delta\vdash\operatorname{parse}(t):\tau$ where defined. Schema-governed and semi-formal tasks use separately declared validation or annotation protocols. The factorization is the probability chain rule; its empirical usefulness and any type-inference mechanism remain independent questions.
 
 
 
@@ -153,8 +165,8 @@ Let c denote a generation context and Ω_c a finite or countable tagged candidat
 </thead>
 <tbody>
 <tr class="odd">
-<td>Gamma</td>
-<td>Context available to the system</td>
+<td><var>c</var></td>
+<td>Generator context available to the system</td>
 <td>Prompt, retrieved lemmas, tool schema, codebase, prior interaction</td>
 </tr>
 <tr class="even">
@@ -168,12 +180,12 @@ Let c denote a generation context and Ω_c a finite or countable tagged candidat
 <td>Proof script, function, explanation, protocol, plan, tool call</td>
 </tr>
 <tr class="even">
-<td>theta</td>
+<td><var>θ</var></td>
 <td>Model or system</td>
 <td>LLM, theorem prover, code model, agent policy, decoding system</td>
 </tr>
 <tr class="odd">
-<td>P_theta</td>
+<td><var>P<sub>θ</sub></var></td>
 <td>Normalized joint probability mass over tagged target-class and candidate pairs in the displayed schema</td>
 <td>Normalized sampling distribution over pairs (A,t); ranking and search scores need a separate interpretation</td>
 </tr>
@@ -489,19 +501,21 @@ The Type-First Prompting Harness is an evaluation design. It tests whether expli
 
 ### 7.1 Dataset schema {#7-1-dataset-schema}
 
-type_first_item:\
-task_id: string\
-domain: code \| lean_math \| explanation \| scientific_protocol \| planning \| tool_use\
-prompt: string\
-intended_target_type: string\
-candidate_target_types: list\[string\]\
-constraints: list\[string\]\
-invalid_target_type_examples: list\[string\]\
-valid_inhabitant_criteria: list\[string\]\
-checker_or_validator: string\
-human_review_fields: list\[string\]\
-ambiguity_status: explicit \| latent \| unresolved\
+```text
+type_first_item:
+task_id: string
+domain: code | lean_math | explanation | scientific_protocol | planning | tool_use
+prompt: string
+intended_target_type: string
+candidate_target_types: list[string]
+constraints: list[string]
+invalid_target_type_examples: list[string]
+valid_inhabitant_criteria: list[string]
+checker_or_validator: string
+human_review_fields: list[string]
+ambiguity_status: explicit | latent | unresolved
 semantic_participation_target: string
+```
 
 ### 7.2 Metrics {#7-2-metrics}
 
@@ -617,29 +631,33 @@ Typed Generativity requires two lightweight records. The target_type_record reco
 
 
 
-target_type_record:\
-task_id: string\
-context_summary: string\
-candidate_target_types: list\[string\]\
-selected_target_type: string\
-selection_rationale: string\
-constraints: list\[string\]\
-invalid_target_examples: list\[string\]\
-validator_or_review_method: string\
-ambiguity_status: explicit \| latent \| unresolved\
-downstream_environment: string\
-\
-candidate_inhabitant_record:\
-task_id: string\
-selected_target_type: string\
-candidate: string \| object\
-validation_status: unchecked \| checked \| failed \| partial \| reviewed\
-validator: string\
-alignment_status: aligned \| uncertain \| misaligned\
-repair_trace: string \| null\
-epistemic_type: string\
-permitted_use: list\[string\]\
-transformation_tests: list\[string\]
+```text
+target_type_record:
+task_id: string
+context_summary: string
+candidate_target_types: list[string]
+selected_target_type: string
+selection_rationale: string
+constraints: list[string]
+invalid_target_examples: list[string]
+validator_or_review_method: string
+ambiguity_status: explicit | latent | unresolved
+downstream_environment: string
+```
+
+```text
+candidate_inhabitant_record:
+task_id: string
+selected_target_type: string
+candidate: string | object
+validation_status: unchecked | checked | failed | partial | reviewed
+validator: string
+alignment_status: aligned | uncertain | misaligned
+repair_trace: string | null
+epistemic_type: string
+permitted_use: list[string]
+transformation_tests: list[string]
+```
 
 ## 9. Relation to the state of the art {#9-relation-to-the-state-of-the-art}
 
@@ -841,7 +859,11 @@ Typed Generativity supplies the candidate-production component of Compositional 
 
 The next essay asks whether those generated objects preserve structure. Once a model constructs a candidate proof, program, semantic parse, protocol, or plan, the central test is path agreement across source and target representations under an explicit equivalence regime. Typed Generativity supplies the candidate object. Functorial Consistency supplies the evaluation square.
 
-Typed Generativity: P_theta(A,t \| c) = P_theta(A \| c) P_theta(t \| A,c), for a declared normalized joint model. Formal typing, where applicable, uses Δ ⊢ t : τ. Functorial Consistency: T_1(f(x)) R g(T_0(x)), under a declared relation, orientation, and comparison procedure.
+Typed Generativity uses the normalized joint factorization above, while formal typing, where applicable, uses the independent judgment $\Delta\vdash t:\tau$. Functorial Consistency compares the transported paths under a declared relation, orientation, and validation procedure:
+
+$$
+T_1(f(x))\mathrel{R}g(T_0(x)).
+$$
 
 ## Appendix A. Claim levels {#appendix-a-claim-levels}
 

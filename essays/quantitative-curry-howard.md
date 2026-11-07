@@ -6,9 +6,9 @@
 
 Classical Curry-Howard gives an exact relation among propositions, types, proofs, and programs. Contemporary AI reasoning systems operate in the candidate layer surrounding that exact relation. They rank tactics prior to kernel acceptance, optimize relaxed logical objectives prior to hard validation, attach probabilities to model-relative scientific claims, generate code prior to tests and static analysis, and emit reasoning traces whose evidential status requires separate faithfulness checks. Quantitative Curry-Howard names this candidate-layer interface between typed validity and learned scoring.
 
-Quantitative Curry--Howard proposes a candidate-layer record Γ ⊢\_θ t : A ▷ Q. This is an operational annotation: system θ proposes candidate t for declared target label A under generator context Γ, with evidence record Q. The annotation is not a type-checking derivation. For a formal object language, a separate typing environment Δ and type τ determine independent acceptance through Δ ⊢ t : τ, with the correspondence between A and τ specified. Search rankings, soft satisfaction values, estimated probabilities, and reviewed confidence carry different semantics and validator targets.
+Quantitative Curry–Howard proposes a candidate-layer record $\Gamma\vdash_{\theta}t:A\triangleright Q$. This is an operational annotation: system θ proposes candidate t for declared target label A under generator context Γ, with evidence record Q. The annotation is not a type-checking derivation. For a formal object language, a separate typing environment $\Delta$ and type $\tau$ determine independent acceptance through $\Delta\vdash t:\tau$, with the correspondence between A and τ specified. Search rankings, soft satisfaction values, estimated probabilities, and reviewed confidence carry different semantics and validator targets.
 
-Classical Curry–Howard relates a formal proof term to a judgment in a declared calculus. Quantitative search scores, relaxed logical satisfaction, probability estimates, and reviewer-facing warrants are separate evidence types. For a probability-valued warrant q in [0,1], the proposed record declares its binary target event Z, reference population D, observation process, and permitted decision role. Population calibration would mean E_D[Z | q] = q wherever the conditional expectation is defined; the claim must be assessed using held-out outcomes, subgroup diagnostics, and distribution-shift checks. The warrant remains advisory pending that evidence. A formal acceptance judgment Δ ⊢ t : τ remains independent of numerical warrant scores, including scores exhibiting pooled calibration.
+Classical Curry–Howard relates a formal proof term to a judgment in a declared calculus. Quantitative search scores, relaxed logical satisfaction, probability estimates, and reviewer-facing warrants are separate evidence types. For a probability-valued warrant q in [0,1], the proposed record declares its binary target event Z, reference population D, observation process, and permitted decision role. Population calibration would mean $\mathbb{E}_D[Z\mid q]=q$ wherever the conditional expectation is defined; the claim must be assessed using held-out outcomes, subgroup diagnostics, and distribution-shift checks. The warrant remains advisory pending that evidence. A formal acceptance judgment $\Delta\vdash t:\tau$ remains independent of numerical warrant scores, including scores exhibiting pooled calibration.
 
 ## Contribution summary
 
@@ -31,7 +31,7 @@ Classical Curry–Howard relates a formal proof term to a judgment in a declared
 <tr class="odd">
 <td>C1</td>
 <td>Quantitative judgment form</td>
-<td>Gamma |-_theta t : A |&gt; Q records a candidate typed artifact with an attached quantitative evidence record.</td>
+<td><span class="inline-notation">Γ ⊢<sub>θ</sub> t : A ▷ Q</span> records a candidate typed artifact with an attached quantitative evidence record.</td>
 </tr>
 <tr class="even">
 <td>C2</td>
@@ -152,31 +152,28 @@ $$
 \Gamma\vdash_{\theta}t:A\triangleright Q.
 $$
 
-Under operational generator context Γ, system θ proposes a candidate representation t for target-class label A and attaches quantitative evidence record Q. The record states the target event or quantity, score meaning, calibration status, uncertainty, validator outcome, provenance, and permissible use. In formal tasks, accepted inhabitation is independently checked as Δ ⊢ t : τ under an explicit label-to-type mapping. Neither the annotation nor the numerical score constitutes a proof.
+Under operational generator context Γ, system θ proposes a candidate representation t for target-class label A and attaches quantitative evidence record Q. The record states the target event or quantity, score meaning, calibration status, uncertainty, validator outcome, provenance, and permissible use. In formal tasks, accepted inhabitation is independently checked as $\Delta\vdash t:\tau$ under an explicit label-to-type mapping. Neither the annotation nor the numerical score constitutes a proof.
 
-> Q = (score, probability, uncertainty, margin, loss, calibration, validation_status,
->
-> diagnostics, repair_distance, epistemic_type, permitted_use)
+```text
+Q = (
+  score, probability, uncertainty, margin, loss,
+  calibration, validation_status, diagnostics,
+  repair_distance, epistemic_type, permitted_use
+)
+```
 
 A quantitative record is interpretable only relative to its declared score meaning. A probability claim identifies the random event, conditioning information, target population and validator used to observe outcomes. Calibration is an empirical property assessed on separate labeled data under a stated distribution and evaluation protocol, not a label conferred by recording a confidence value. Search logits, rank scores, soft logical satisfaction values and losses do not automatically represent probabilities of proof validity. Where hard validation is absent or reviewers disagree, record the uncertainty and the limitations of the resulting warrant explicitly.
 
 The operational pipeline is sequential in implementation and typed in interpretation.
 
-> infer target A
->
-> construct candidate t
->
-> score candidate under theta
->
-> validate where available
->
-> calibrate scores against outcomes
->
-> repair failures using diagnostics
->
-> assign epistemic type
->
-> record permitted use
+1. Infer target $A$.
+2. Construct candidate $t$.
+3. Score the candidate under system $\theta$.
+4. Validate where available.
+5. Calibrate scores against outcomes.
+6. Repair failures using diagnostics.
+7. Assign an epistemic type.
+8. Record permitted use.
 
 Each step can fail independently. Target inference can be wrong even when the score is high. A valid candidate can receive low confidence. A calibrated score can predict acceptance without predicting future reuse. The value of the record lies in preserving these distinctions for evaluation and review.
 

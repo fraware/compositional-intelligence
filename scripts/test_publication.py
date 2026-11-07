@@ -176,5 +176,38 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertIn('aria-labelledby="table-1-caption"', rendered)
 
 
+    def test_notation_guard_excludes_mathml_and_preformatted_records(self) -> None:
+        """MathML annotations and code records are not misread as broken prose."""
+        from verify_notation import BROKEN, VisibleNotation
+
+        parser = VisibleNotation()
+        parser.feed(
+            '<p>Readable expression <math><semantics>'
+            '<mi>x</mi><annotation encoding="application/x-tex">P_theta'
+            '</annotation></semantics></math>.</p>'
+            '<pre><code>P_theta(A,t | c)</code></pre>'
+        )
+        parser.close()
+        self.assertFalse(any(
+            expression.search(fragment)
+            for fragment in parser.visible
+            for expression in BROKEN.values()
+        ))
+        self.assertEqual(len(parser.records), 1)
+
+    def test_notation_guard_catches_raw_mathematical_transcriptions(self) -> None:
+        """An escaped or ASCII-only formula in displayed prose must fail."""
+        from verify_notation import BROKEN, VisibleNotation
+
+        parser = VisibleNotation()
+        parser.feed("<p>P_theta(A,t | c) is the joint probability.</p>")
+        parser.close()
+        self.assertTrue(any(
+            expression.search(fragment)
+            for fragment in parser.visible
+            for expression in BROKEN.values()
+        ))
+
+
 if __name__ == "__main__":
     unittest.main()

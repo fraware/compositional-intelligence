@@ -306,35 +306,39 @@ The record should remain compact in low-risk settings and richer in high-stakes 
 
 Semantic membership is represented as an operational criterion over a target artifact, source intention, and preservation record.
 
-> ParticipationStatus_E(a,b,rho,u) records the outcome of the declared environment\'s admission policy for artifact a, source intention b, preservation record rho, and proposed use u. It is accepted only if expression, successful validation or an accepted expert review, source alignment, compositional interface fit, warrant appropriate to the epistemic type, reuse eligibility where the requested use entails reuse, and permitted use all receive affirmative decisions. It is rejected on a decisive failed obligation and unresolved where required evidence remains missing or inconclusive. Reviewability alone establishes eligibility for review, not admission. This three-valued aggregate is an operational protocol whose outcomes depend on the specified environment and review policy.
+> $\operatorname{ParticipationStatus}_E(a,b,\rho,u)$ records the outcome of the declared environment\'s admission policy for artifact a, source intention b, preservation record rho, and proposed use u. It is accepted only if expression, successful validation or an accepted expert review, source alignment, compositional interface fit, warrant appropriate to the epistemic type, reuse eligibility where the requested use entails reuse, and permitted use all receive affirmative decisions. It is rejected on a decisive failed obligation and unresolved where required evidence remains missing or inconclusive. Reviewability alone establishes eligibility for review, not admission. This three-valued aggregate is an operational protocol whose outcomes depend on the specified environment and review policy.
 
-Here a is the target artifact, b is the source intention or source artifact, and rho is the preservation record. The criterion is environment-relative. A theorem can fit one formal development and fail in another through imports, definitions, naming conventions, abstraction choices, and maintainability norms. A dataset can fit one scientific workflow and fail in another through consent conditions, preprocessing, instrument differences, and statistical assumptions.
+Here $a$ is the target artifact, $b$ is the source intention or source artifact, and $\rho$ is the preservation record. The criterion is environment-relative. A theorem can fit one formal development and fail in another through imports, definitions, naming conventions, abstraction choices, and maintainability norms. A dataset can fit one scientific workflow and fail in another through consent conditions, preprocessing, instrument differences, and statistical assumptions.
 
 ### 5.4 Semantic transport {#5-4-semantic-transport}
 
 Semantic transport is the movement of an artifact between environments with a preservation record. It records the semantic cost of translation, specialization, generalization, encoding, formalization, or institutional migration.
 
-> T : (a, E_s) -\> (b, E_t, rho_T)\
-> \
-> TransportRecord rho_T = {\
-> source_artifact\
-> target_artifact\
-> source_environment\
-> target_environment\
-> objects_preserved\
-> transformations_preserved\
-> assumptions_added\
-> assumptions_removed_or_weakened\
-> generality_change\
-> definitions_selected\
-> examples_preserved\
-> counterexamples_excluded\
-> validation_path\
-> alignment_status\
-> epistemic_type\
-> permitted_use\
-> reviewer_notes\
-> }
+$$
+T:(a,E_s)\longrightarrow(b,E_t,\rho_T).
+$$
+
+```text
+TransportRecord rho_T = {
+  source_artifact
+  target_artifact
+  source_environment
+  target_environment
+  objects_preserved
+  transformations_preserved
+  assumptions_added
+  assumptions_removed_or_weakened
+  generality_change
+  definitions_selected
+  examples_preserved
+  counterexamples_excluded
+  validation_path
+  alignment_status
+  epistemic_type
+  permitted_use
+  reviewer_notes
+}
+```
 
 Transport records prepare the ground for Functorial Consistency. Essay 3 asks whether source-side transformations and target-side transformations agree under an explicit equivalence regime. Essay 1 supplies the membership record that makes those transformations reviewable.
 
@@ -644,7 +648,7 @@ The first pilot should use 100 to 150 items distributed across mathematics trans
 
 Semantic Participation supplies the membership criterion. Functorial Consistency supplies the transformation test. A semantic environment specifies what counts as an artifact, which validators apply, which epistemic type is warranted, and which uses are permitted. A commutation-square benchmark then asks whether transformations preserve structure across source and target representations.
 
-> Under environment version E_v and admission-policy version π, Adm_{E_v,π}(a,b,ρ,u) records accepted, rejected, or unresolved admission of artifact a for proposed use u, source intention b, and preservation evidence ρ. The policy identifies mandatory obligations, judgment authorities, evidence freshness, and the precedence of decisive failures. Acceptance records affirmative discharge of all mandatory obligations, including expression, validation or approved expert review, source alignment, compositional interface fit, epistemic warrant, and permitted use; reuse eligibility is a mandatory obligation only for proposed uses involving reuse. A decisive mandatory failure yields rejection; missing, stale, conflicting, or inconclusive evidence yields an unresolved outcome under the declared precedence rule. An empty obligation set yields unresolved status except where π explicitly authorizes vacuous admission. Review eligibility is recorded independently. The earlier Boolean Member_E(a) denotes accepted status only relative to specified environment, policy, and use versions.
+> Under environment version $E_v$ and admission-policy version $\pi$, $\operatorname{Adm}_{E_v,\pi}(a,b,\rho,u)$ records accepted, rejected, or unresolved admission of artifact a for proposed use u, source intention b, and preservation evidence ρ. The policy identifies mandatory obligations, judgment authorities, evidence freshness, and the precedence of decisive failures. Acceptance records affirmative discharge of all mandatory obligations, including expression, validation or approved expert review, source alignment, compositional interface fit, epistemic warrant, and permitted use; reuse eligibility is a mandatory obligation only for proposed uses involving reuse. A decisive mandatory failure yields rejection; missing, stale, conflicting, or inconclusive evidence yields an unresolved outcome under the declared precedence rule. An empty obligation set yields unresolved status except where π explicitly authorizes vacuous admission. Review eligibility is recorded independently. The earlier Boolean Member_E(a) denotes accepted status only relative to specified environment, policy, and use versions.
 
 The transport record rho_T is the bridge. It records source artifact, target artifact, environments, transformations preserved, assumptions changed, generality changes, validators, alignment status, epistemic type, and permitted use. Functorial Consistency can use that record to classify non-commutation, type drift, assumption loss, generality collapse, overstrengthening, spurious equivalence, and validator mismatch.
 
