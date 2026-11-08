@@ -123,11 +123,11 @@ def verify_table_catalog(markdown: str, captions: list[dict[str, str]], title: s
             raise ValueError(f"{title}: table {index} lacks a meaningful description")
 
 
-def render_tables(body: str, captions: list[dict[str, str]]) -> str:
+def render_tables(body: str, captions: list[dict[str, str]], *, preserve_source_labels: bool = False) -> str:
     """Render validated native tables with intact sectioning and readable captions.
 
-    Existing manuscript labels become the visible caption's table number.
-    The source-bound descriptive caption supplies the accessible table name.
+    Preserve exact author-supplied labels for the synthesis essay.
+    Elsewhere source-bound descriptions supply accessible table names.
     Column counts are retained for responsive layout and browser assertions.
     """
     counter = 0
@@ -135,7 +135,7 @@ def render_tables(body: str, captions: list[dict[str, str]]) -> str:
     position = 0
     tokens = re.compile(r"<h[23]\b[^>]*>.*?</h[23]>|<table\b[^>]*>.*?</table>", re.S | re.I)
     preceding_label = re.compile(
-        r"<p>Table(?:\s+([A-Za-z]?\d+[A-Za-z]?))?\.\s*[^<]*</p>\s*$", re.I
+        r"<p>(Table(?:\s+([A-Za-z]?\d+[A-Za-z]?))?\.\s*[^<]*)</p>\s*$", re.I
     )
     for match in tokens.finditer(body):
         before = body[position:match.start()]
@@ -150,7 +150,8 @@ def render_tables(body: str, captions: list[dict[str, str]]) -> str:
             raise ValueError("Rendered table exceeds source-bound caption catalogue")
         description = captions[counter - 1]["caption"]
         label_match = preceding_label.search(before)
-        number = label_match.group(1) if label_match and label_match.group(1) else str(counter)
+        number = label_match.group(2) if label_match and label_match.group(2) else str(counter)
+        original_label = html.unescape(label_match.group(1)).strip() if label_match else None
         if label_match:
             before = before[:label_match.start()] + "\n"
         result.append(before)
@@ -176,7 +177,11 @@ def render_tables(body: str, captions: list[dict[str, str]]) -> str:
         )
         if re.search(r"<caption\b", token, re.I):
             raise ValueError(f"Table {counter} unexpectedly contains a prior caption")
-        caption_text = "Table " + str(number) + ". " + description
+        caption_text = (original_label if preserve_source_labels and original_label
+                        else "Table " + str(number) + ". " + description)
+        visible_caption = (esc(original_label) if preserve_source_labels and original_label
+                           else f'<span class="table-caption-number">Table {esc(number)}</span> '
+                           + esc(description))
         # The visual caption is outside the scroll region, so its complete
         # wording stays in view on narrow screens. Native table caption
         # semantics remain available to assistive technology.
@@ -201,8 +206,7 @@ def render_tables(body: str, captions: list[dict[str, str]]) -> str:
 
         result.append(
             f'<p id="table-{counter}-caption" class="table-display-caption">'
-            f'<span class="table-caption-number">Table {esc(number)}</span> '
-            f'{esc(description)}</p>\n'
+            f'{visible_caption}</p>\n'
             f'<div class="table-scroll" data-columns="{columns}" tabindex="0" '
             f'role="group" aria-labelledby="table-{counter}-caption">'
             + "\n" + token + "\n</div>\n"
@@ -337,7 +341,10 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
     verify_table_catalog(source_body, table_captions, expected_title)
     command = ["pandoc", "--from=markdown+raw_html", "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
-    body = render_schema_blocks(render_tables(render_math(rendered.stdout.rstrip() + "\n"), table_captions))
+    body = render_schema_blocks(render_tables(
+        render_math(rendered.stdout.rstrip() + "\n"), table_captions,
+        preserve_source_labels=(expected_title == "Compositional Intelligence"),
+    ))
     for ident in MARKDOWN_SECTION.findall(source_body):
         if f'id="{ident}"' not in body:
             raise ValueError(f"Missing rendered heading anchor {ident!r}: {expected_title}")
