@@ -300,8 +300,8 @@ def render_synthesis_table_math(body: str) -> str:
         ),
     )
     for original, tex, mathml in formulae:
-        cell = "<td>" + original + "</td>"
-        if body.count(cell) != 1:
+        cell = re.compile(r"<td>\s*" + re.escape(original) + r"\s*</td>")
+        if len(cell.findall(body)) != 1:
             raise ValueError(f"Synthesis formula cell changed or repeated: {original}")
         semantic = (
             '<td class="formula-cell"><math display="inline" '
@@ -310,7 +310,7 @@ def render_synthesis_table_math(body: str) -> str:
             '<annotation encoding="application/x-tex">' + esc(tex) +
             '</annotation></semantics></math></td>'
         )
-        body = body.replace(cell, semantic, 1)
+        body = cell.sub(lambda match: semantic, body, count=1)
     return body
 
 
