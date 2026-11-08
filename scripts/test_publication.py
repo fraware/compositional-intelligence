@@ -189,6 +189,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn("Figure. From output to artifact.", rendered)
         self.assertIn("Figure. Functorial Consistency square.", rendered)
         self.assertIn('aria-label="transport T downward"', rendered)
+        self.assertIn('class="ci-commuting-mobile-grid"', rendered)
+        self.assertEqual(rendered.count('class="ci-square-object"'), 4)
+        self.assertEqual(rendered.count('class="ci-square-arrow'), 4)
         self.assertNotIn("<p><strong>output -&gt;", rendered)
         with self.assertRaises(ValueError):
             render_synthesis_figures(rendered)

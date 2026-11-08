@@ -118,6 +118,10 @@ def main() -> int:
                                           .filter(e => e.scrollWidth > e.clientWidth + 2).length,
                                         invalidInlineMath: [...article.querySelectorAll('math[display="inline"]')]
                                           .filter(e => {
+                                            const sourceSquare = e.closest(".ci-commuting .table-scroll");
+                                            if (sourceSquare && getComputedStyle(sourceSquare).display === "none") {
+                                              return false;
+                                            }
                                             const r = e.getBoundingClientRect();
                                             const p = e.closest("p,li,blockquote");
                                             const pr = p ? p.getBoundingClientRect() : null;
@@ -162,6 +166,29 @@ def main() -> int:
                                             break
                                 if media and (media["invalidFigures"] or media["unnamedImages"] or media["overflowingMediaRoots"]):
                                     failures.append(f"{width}px {rel}: media accessibility/layout {media}")
+                                if rel == "essays/compositional-intelligence.html":
+                                    square = page.evaluate("""() => {
+                                        const source = document.querySelector(".ci-commuting .table-scroll");
+                                        const mobile = document.querySelector(".ci-commuting-mobile");
+                                        const grid = mobile?.querySelector(".ci-commuting-mobile-grid");
+                                        if (!source || !mobile || !grid) return null;
+                                        const bounds = grid.getBoundingClientRect();
+                                        return {
+                                            sourceVisible: getComputedStyle(source).display !== "none",
+                                            mobileVisible: getComputedStyle(mobile).display !== "none",
+                                            objects: grid.querySelectorAll(".ci-square-object").length,
+                                            arrows: grid.querySelectorAll(".ci-square-arrow").length,
+                                            withinViewport: bounds.left >= -1 &&
+                                                bounds.right <= innerWidth + 1
+                                        };
+                                    }""")
+                                    if (square is None or square["objects"] != 4 or
+                                        square["arrows"] != 4 or not square["withinViewport"] or
+                                        (width <= 650 and
+                                         (not square["mobileVisible"] or square["sourceVisible"])) or
+                                        (width > 650 and
+                                         (square["mobileVisible"] or not square["sourceVisible"]))):
+                                        failures.append(f"{width}px {rel}: inadequate mobile commuting square {square}")
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
                                       .filter(w => {
@@ -179,8 +206,13 @@ def main() -> int:
                                         if (getComputedStyle(label).display === "none" ||
                                             label.getBoundingClientRect().height > 2 ||
                                             label.getBoundingClientRect().width > 2) return true;
+                                        const compactSquare = t.id === "table-5" &&
+                                            !!t.closest(".ci-commuting") &&
+                                            !!document.querySelector(".ci-commuting-mobile") &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
-                                            t.getBoundingClientRect().width < 550) return true;
+                                            t.getBoundingClientRect().width < 550 &&
+                                            !compactSquare) return true;
                                         return false;
                                       }).length
                                 })""")

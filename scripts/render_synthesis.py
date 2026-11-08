@@ -92,10 +92,30 @@ def _square_figure(match: re.Match[str]) -> str:
         '<td><span class="ci-down-arrow" aria-label="transport T downward">'
         '<span aria-hidden="true">↓</span> <var aria-hidden="true">T</var></span></td>'
     )
+    # A source-equivalent compact grid prevents horizontal clipping at phone
+    # widths. Split mathematical symbols across markup nodes to preserve a
+    # static, accessible fallback when the full table is visually suppressed.
+    mobile = (
+        '<div class="ci-commuting-mobile" role="group" '
+        'aria-label="Source and target transformation paths">'
+        '<div class="ci-commuting-mobile-grid">'
+        '<span class="ci-square-object">source object <var>x</var></span>'
+        '<span class="ci-square-arrow">→ <var>f</var></span>'
+        '<span class="ci-square-object">transformed source '
+        '<var>f</var>(<var>x</var>)</span>'
+        '<span class="ci-square-arrow ci-square-down">↓ <var>T</var></span>'
+        '<span class="ci-square-spacer" aria-hidden="true"></span>'
+        '<span class="ci-square-arrow ci-square-down">↓ <var>T</var></span>'
+        '<span class="ci-square-object">target object <var>T</var>(<var>x</var>)</span>'
+        '<span class="ci-square-arrow">→ <var>g</var></span>'
+        '<span class="ci-square-object">transformed target '
+        '<var>g</var>(<var>T</var>(<var>x</var>))</span>'
+        '</div></div>'
+    )
     return (
         '<figure class="ci-source-figure ci-commuting" '
         'aria-labelledby="ci-commuting-caption">'
-        + match.group("label") + table
+        + match.group("label") + table + mobile
         + '<figcaption id="ci-commuting-caption">' + match.group("caption") +
         "</figcaption></figure>"
     )
