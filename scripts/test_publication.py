@@ -73,6 +73,40 @@ class PublicationMetadataTests(unittest.TestCase):
         raw = '<p>Term <math display="inline"><mi>x</mi></math>.</p>'
         self.assertEqual(publication.render_math(raw), raw)
 
+
+    def test_original_synthesis_subtitle_is_retained(self) -> None:
+        """The source subtitle is shown without adding a new editorial deck."""
+        self.assertEqual(
+            publication.ORIGINAL_ARTICLE_SUBTITLES["compositional-intelligence"],
+            "Typed Artifacts, Structured Worlds, and Effectful AI",
+        )
+
+    def test_synthesis_math_cells_are_semantic_and_source_preserving(self) -> None:
+        """Render exactly four synopsis judgments without altering Markdown."""
+        source = (publication.ROOT / "essays" / "compositional-intelligence.md").read_text(
+            encoding="utf-8"
+        )
+        raw_cells = (
+            "w_i -&gt; tau_i -&gt; pi -&gt; pi",
+            "A |= S",
+            '<span class="inline-notation">Γ ⊢<sub>θ</sub> t : A ▷ Q</span>',
+            "Γ; M; E; C ⊢_spec a : Pre → Post ! ε @ ρ",
+        )
+        for cell in raw_cells:
+            self.assertEqual(source.count("<td>" + cell + "</td>"), 1)
+        rendered = publication.render_synthesis_table_math(
+            "".join("<td>" + cell + "</td>" for cell in raw_cells)
+        )
+        self.assertEqual(rendered.count('<math display="inline"'), 4)
+        self.assertEqual(rendered.count('encoding="application/x-tex"'), 4)
+        self.assertIn("<mo>⊨</mo>", rendered)
+        self.assertIn("<msub><mo>⊢</mo><mtext>spec</mtext></msub>", rendered)
+        for cell in raw_cells:
+            self.assertNotIn("<td>" + cell + "</td>", rendered)
+        with self.assertRaisesRegex(ValueError, "formula cell changed"):
+            publication.render_synthesis_table_math("<table></table>")
+
+
     def test_figures_have_explicit_source_captions(self) -> None:
         """The conceptual diagrams are self-describing rather than plaintext pseudo-figures."""
         for slug, count in [("compositional-intelligence", 2), ("lambek-machines", 2)]:
