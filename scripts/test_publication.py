@@ -30,6 +30,24 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertNotIn("reading/", publication.render_sitemap())
         self.assertFalse((publication.ROOT / "reading" / "guide.json").exists())
 
+
+    def test_preface_math_and_editorial_labels(self) -> None:
+        """The preface uses semantic mathematics and retains minimal homepage copy."""
+        source = (publication.ROOT / "essays" / "series-preface.md").read_text(
+            encoding="utf-8"
+        )
+        home = (publication.ROOT / "docs" / "index.html").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn(".math-text", source)
+        self.assertEqual(source.count("$$"), 2)
+        self.assertIn(r"\Delta\vdash\operatorname{parse}(t):\tau", source)
+        self.assertIn(r"$T_1(f(x))$", source)
+        self.assertIn(r"$g(T_0(x))$", source)
+        self.assertNotIn("Orientation</p>", home)
+        self.assertNotIn("The aims, scope, and conceptual sequence", home)
+        self.assertNotIn("Orientation", publication.ESSAYS[1][2])
+
     def test_original_preface_retained_and_added_study_removed(self) -> None:
         """Publish Essay 0 while excluding the later site-only demonstration."""
         self.assertIn("series-preface", [row[0] for row in publication.ESSAYS])
