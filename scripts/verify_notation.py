@@ -33,6 +33,8 @@ def main() -> int:
             problems.append(f"{slug}: source differs from the converted original")
             continue
         body, _ = build_site.source_to_body(source, title, [])
+        if slug == "compositional-intelligence":
+            body = build_site.render_synthesis_figures(body)
         body = build_site.enhance_scientific_presentation(body)
         page = published.read_text(encoding="utf-8")
         if body not in page:
