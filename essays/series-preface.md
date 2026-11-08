@@ -25,7 +25,9 @@ $
 P_{\theta}(A,t\mid c) &= P_{\theta}(A\mid c)\\
 &\quad\cdot P_{\theta}(t\mid A,c).
 \end{aligned}
-$ The generator context $c$ is distinct from the formal typing environment; $A$ denotes a target-class label and $t$ denotes a candidate that can fail validation. Formal acceptance uses the independent judgment $\Delta\vdash\operatorname{parse}(t):\tau$ under an explicit mapping from the target label to type τ. Semi-formal tasks need declared validators, and claims about latent type-like representations remain empirical hypotheses.
+$
+
+The generator context $c$ is distinct from the formal typing environment; $A$ denotes a target-class label and $t$ denotes a candidate that can fail validation. Formal acceptance uses the independent judgment $\Delta\vdash\operatorname{parse}(t):\tau$ under an explicit mapping from the target label to type τ. Semi-formal tasks need declared validators, and claims about latent type-like representations remain empirical hypotheses.
 
 **Functorial Consistency** studies the preservation of relevant relations under transformations. The evaluation pattern compares two well-typed routes through a source-to-target transformation. For source operation $f:X\to X^{\prime}$, transports $T_0:X\to Y$ and $T_1:X^{\prime}\to Y^{\prime}$, and target operation $g:Y\to Y^{\prime}$, a declared relation $R$ compares $T_1(f(x))$ and $g(T_0(x))$. The validator and relation determine the result and its evidentiary status. This is a proposed family of path-agreement tests. Mathematical functoriality introduces additional identity and composition obligations.
 
