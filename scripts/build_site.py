@@ -309,9 +309,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
 
 def render_sitemap() -> str:
     """Generate the public sitemap from the same declared publication inventory."""
-    paths = [""] + [f"essays/{row[0]}.html" for row in ESSAYS] + [
-        "studies/commuting-square.html"
-    ]
+    paths = [""] + [f"essays/{row[0]}.html" for row in ESSAYS]
     root = ElementTree.Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
     for path in paths:
         item = ElementTree.SubElement(root, "url")
@@ -366,7 +364,7 @@ def main() -> None:
             build(second)
             if file_digests(output) != file_digests(second):
                 raise RuntimeError("Non-deterministic publication output detected")
-    print(f"Built {len(ESSAYS)} essays, one concept study into {output}")
+    print(f"Built {len(ESSAYS)} essays into {output}")
 
 
 if __name__ == "__main__":

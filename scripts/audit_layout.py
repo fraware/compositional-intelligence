@@ -2,7 +2,7 @@
 """Check desktop/mobile publication rendering in a real Chromium browser.
 
 This audit checks horizontal document overflow, article headings, JavaScript
-errors, anchor navigation, and the finite study's live behavior. Screenshots
+errors, and anchor navigation. Screenshots
 are retained as a separate CI artifact for human visual inspection.
 """
 
@@ -222,12 +222,6 @@ def main() -> int:
                                 page.evaluate("window.scrollTo(0, 0)")
                                 page.wait_for_timeout(60)
                                 page.screenshot(path=str(screenshots / f"{width}-{label}.png"))
-                            if rel == "studies/commuting-square.html":
-                                page.locator("#transport").select_option("collapsed")
-                                if page.locator("#domain-agreement").inner_text() != "16/16":
-                                    failures.append(f"{width}px study: agreement failed")
-                                if page.locator("#domain-adequacy").inner_text() != "4/16":
-                                    failures.append(f"{width}px study: adequacy failed")
                     finally:
                         context.close()
             finally:
@@ -243,7 +237,7 @@ def main() -> int:
         print(f"FAIL: {failure}")
     if failures:
         return 1
-    print(f"PASS: {len(paths)} pages at 320, 375, 768, and 1440px; semantic tables, MathML, figures, study interactions; screenshots saved")
+    print(f"PASS: {len(paths)} pages at 320, 375, 768, and 1440px; semantic tables, MathML, and figures; screenshots saved")
     return 0
 
 

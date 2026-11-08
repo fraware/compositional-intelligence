@@ -30,6 +30,15 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertNotIn("reading/", publication.render_sitemap())
         self.assertFalse((publication.ROOT / "reading" / "guide.json").exists())
 
+    def test_original_preface_retained_and_added_study_removed(self) -> None:
+        """Publish Essay 0 while excluding the later site-only demonstration."""
+        self.assertIn("series-preface", [row[0] for row in publication.ESSAYS])
+        self.assertTrue((publication.ROOT / "essays" / "series-preface.md").is_file())
+        self.assertNotIn("commuting-square", publication.render_sitemap())
+        self.assertNotIn("studies/", publication.render_sitemap())
+        self.assertFalse((publication.ROOT / "docs" / "studies" / "commuting-square.html").exists())
+        self.assertFalse((publication.ROOT / "docs" / "studies" / "commuting-square.mjs").exists())
+
     def test_appendix_schemas_are_preformatted_in_manuscripts(self) -> None:
         """Canonical manuscript schemas must retain readable line structure."""
         counts = {

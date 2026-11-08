@@ -193,8 +193,8 @@ def main() -> int:
     check_manifest(issues)
     pages = sorted(SITE.rglob("*.html"))
     essays = sorted((ROOT / "essays").glob("*.md"))
-    if len(pages) != 11 or len(essays) != 9:
-        issues.append(f"Expected 11 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
+    if len(pages) != 10 or len(essays) != 9:
+        issues.append(f"Expected 10 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
     if not (SITE / "index.html").is_file() or not (SITE / ".nojekyll").is_file():
         issues.append("Missing HTML entrypoint or .nojekyll")
     documents = {p: parse_html(p) for p in pages}
@@ -225,7 +225,7 @@ def main() -> int:
             issues.append(f"Canonical/OG URL mismatch: {relative}")
         if doc.unsafe_attributes:
             issues.append(f"Unexpected event handler in {relative}")
-        allowed_scripts = [("./commuting-square.mjs", "module")] if relative == "studies/commuting-square.html" else []
+        allowed_scripts: list[tuple[str, str]] = []
         if doc.script_sources != allowed_scripts:
             issues.append(f"Unexpected script inclusion in {relative}")
         duplicates = [id_ for id_, n in collections.Counter(doc.ids).items() if n > 1]
@@ -296,7 +296,7 @@ def main() -> int:
         try:
             root = ElementTree.parse(sitemap).getroot()
             urls = [x.text for x in root.findall(f".//{namespace}loc")]
-            if len(urls) != 11 or set(urls) != canonical_set:
+            if len(urls) != 10 or set(urls) != canonical_set:
                 issues.append("Sitemap URLs differ from public HTML canonicals")
         except ElementTree.ParseError as exc:
             issues.append(f"Invalid sitemap: {exc}")
