@@ -163,7 +163,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
     def test_independent_docx_audit_text_extraction(self) -> None:
         """The optional original-DOCX audit excludes generated table labels."""
         reader = Paragraphs()
-        example = "A generated theorem requires a stated target, explicit assumptions, and a validator."
+        example = "An AI-generated theorem requires a precisely stated formal target, explicit assumptions, appropriate dependencies, and an independent validation procedure before downstream reuse."
         reader.feed('<p>' + example + '</p>')
         reader.feed('<p class="table-display-caption">' + example + '</p>')
         self.assertEqual(reader.values, [example])
