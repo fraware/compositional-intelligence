@@ -50,6 +50,10 @@ _TOKEN = re.compile("|".join(
     for key in sorted(_UNIQUE, key=len, reverse=True)
 ))
 _TEXT = re.compile(r"(?<=>)([^<]+)(?=<)", re.S)
+_HIDDEN_LABEL = re.compile(
+    r'<p\b[^>]*class="table-display-caption"[^>]*>[\s\S]*?</p>'
+    r'|<caption\b[^>]*class="visually-hidden"[^>]*>[\s\S]*?</caption>'
+)
 _ONLY_MATH = re.compile(r"<p>\s*(<math\b[^>]*>(?:(?!</p>)[\s\S])*?</math>)([.]?)\s*</p>")
 _P = re.compile(r"^<p>([\s\S]*?)</p>$")
 _BR = re.compile(r"<br\s*/?>", re.I)
@@ -90,6 +94,17 @@ def render_source_math(body: str) -> str:
         chunks.append(escape(plain[start:], quote=False))
         return "".join(chunks)
 
+    # The manuscript-derived accessible table labels are not rendered prose.
+    # Keep them unmodified; putting MathML inside visually hidden captions can
+    # create zero-size formula elements and duplicate speech output.
+    hidden: list[str] = []
+
+    def conceal(match: re.Match[str]) -> str:
+        index = len(hidden)
+        hidden.append(match.group())
+        return '<source-caption-slot data-index="' + str(index) + '"></source-caption-slot>'
+
+    body = _HIDDEN_LABEL.sub(conceal, body)
     body = _TEXT.sub(replace_node, body)
 
     def display(match: re.Match[str]) -> str:
@@ -102,7 +117,11 @@ def render_source_math(body: str) -> str:
             math + match.group(2) + "</div>"
         )
 
-    return _ONLY_MATH.sub(display, body)
+    body = _ONLY_MATH.sub(display, body)
+    for index, text in enumerate(hidden):
+        slot = '<source-caption-slot data-index="' + str(index) + '"></source-caption-slot>'
+        body = body.replace(slot, text)
+    return body
 
 
 def _schema(lines: list[str]) -> str:

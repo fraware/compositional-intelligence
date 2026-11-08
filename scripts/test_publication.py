@@ -147,6 +147,18 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn("The comparison uses ", enhanced)
 
 
+    def test_hidden_table_labels_keep_literal_source_notation(self) -> None:
+        """Only readable manuscript content receives mathematical markup."""
+        text = (
+            '<p class="table-display-caption">P_theta(t : A | Gamma)</p>'
+            '<caption class="visually-hidden">P_theta(t : A | Gamma)</caption>'
+            '<p>P_theta(t : A | Gamma)</p>'
+        )
+        rendered = render_source_math(text)
+        self.assertEqual(rendered.count("<math "), 1)
+        self.assertIn('<p class="table-display-caption">P_theta(t : A | Gamma)</p>', rendered)
+        self.assertIn('<caption class="visually-hidden">P_theta(t : A | Gamma)</caption>', rendered)
+
 
 if __name__ == "__main__":
     unittest.main()
