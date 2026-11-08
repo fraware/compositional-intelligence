@@ -156,6 +156,41 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertIn('<caption class="visually-hidden">', output)
         self.assertIn('aria-labelledby="table-1-caption"', output)
 
+    def test_synthesis_preserves_authored_table_titles(self) -> None:
+        """Original table captions are presented verbatim without editorial substitutions."""
+        source = (
+            "<p>Table. Output failures and missing artifact conditions.</p>\n"
+            "<table><thead><tr><th>Domain</th></tr></thead>"
+            "<tbody><tr><td>Formalization</td></tr></tbody></table>"
+        )
+        rendered = publication.render_tables(
+            source,
+            [{"caption": "Examples of local success and missing artifact conditions"}],
+            preserve_source_labels=True,
+        )
+        original = "Table. Output failures and missing artifact conditions."
+        self.assertEqual(rendered.count(original), 2)  # visible and native caption
+        self.assertNotIn("Examples of local success", rendered)
+        self.assertIn('class="table-display-caption">' + original + '</p>', rendered)
+        self.assertIn('<caption class="visually-hidden">' + original + '</caption>', rendered)
+        self.assertIn('aria-labelledby="table-1-caption"', rendered)
+
+    def test_synthesis_unlabelled_tables_retain_accessible_captions(self) -> None:
+        """Original unlabeled appendix tables keep a useful accessible name."""
+        source = (
+            "<h3 id=\"claim-levels\">Claim levels</h3>"
+            "<table><thead><tr><th>Level</th></tr></thead>"
+            "<tbody><tr><td>L1</td></tr></tbody></table>"
+        )
+        rendered = publication.render_tables(
+            source,
+            [{"caption": "Claim levels and their publication treatment"}],
+            preserve_source_labels=True,
+        )
+        self.assertIn("Table 1</span> Claim levels", rendered)
+        self.assertIn('<caption class="visually-hidden">', rendered)
+
+
     def test_malformed_table_without_section_is_rejected(self) -> None:
         """The publication must reject missing thead instead of emitting malformed HTML."""
         with self.assertRaisesRegex(ValueError, "intact semantic header"):
