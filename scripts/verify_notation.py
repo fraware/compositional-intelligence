@@ -33,6 +33,7 @@ def main() -> int:
             problems.append(f"{slug}: source differs from the converted original")
             continue
         body, _ = build_site.source_to_body(source, title, [])
+        body = build_site.enhance_scientific_presentation(body)
         page = published.read_text(encoding="utf-8")
         if body not in page:
             problems.append(f"{slug}: displayed essay body differs from source HTML")
@@ -44,7 +45,7 @@ def main() -> int:
         for problem in problems:
             print("FAIL:", problem)
         return 1
-    print(f"PASS: {len(originals)} uploaded V3 manuscripts match their published essay bodies")
+    print(f"PASS: {len(originals)} hashed publication sources match their typeset HTML bodies")
     return 0
 
 

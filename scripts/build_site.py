@@ -22,6 +22,8 @@ import tempfile
 from pathlib import Path
 from xml.etree import ElementTree
 
+from render_science import enhance_scientific_presentation
+
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://fraware.github.io/compositional-intelligence/"
 PANDOC_VERSION = "3.1.13"
@@ -371,6 +373,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     body, digest = source_to_body(manuscript, title, table_captions)
     if slug == "compositional-intelligence" and "AUTHORITATIVE-DOCX SHA256" not in manuscript:
         body = render_synthesis_table_math(body)
+    body = enhance_scientific_presentation(body)
     before = ESSAYS[position - 1] if position > 0 else None
     after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None
     prev_link = (f'<div class="previous"><span>Previous</span><a href="{esc(before[0])}.html">{esc(before[1])}</a></div>'

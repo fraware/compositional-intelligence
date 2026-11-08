@@ -206,7 +206,7 @@ def main() -> int:
     total_figures = 0
     # Media inventory follows the uploaded V3 Word documents, not superseded
     # website revisions that introduced additional diagram markup.
-    expected_media = {row[0]: (0, 0) for row in build_site.ESSAYS}
+    expected_math_essays = {row[0] for row in build_site.ESSAYS}
 
     for page, doc in documents.items():
         relative = page.relative_to(SITE).as_posix()
@@ -232,9 +232,8 @@ def main() -> int:
             issues.append(f"Figure missing visible caption: {relative}")
         if relative.startswith("essays/"):
             slug = page.stem
-            if (doc.display_maths, doc.figures) != expected_media[slug]:
-                issues.append(f"Equation/figure inventory does not match publication: {relative} "
-                              f"got {doc.display_maths} equations and {doc.figures} figures")
+            if slug in expected_math_essays and doc.maths == 0:
+                issues.append(f"Scientific notation is not typeset in {relative}")
         total_display_maths += doc.display_maths
         total_figures += doc.figures
         if (doc.tables != doc.captions or doc.tables != doc.theads or

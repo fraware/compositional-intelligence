@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Regression checks for the author-supplied V3 manuscript source.
 
-The originals are identified by their SHA-256 digests in sources/originals.json.
-Each essay's publication fragment is a direct Pandoc DOCX-to-HTML conversion,
-with frontmatter omitted and purely structural HTML added for accessibility.
+The original DOCX identifiers and hashes are recorded in sources/originals.json.
+Tests bind the committed publication sources to their recorded hashes and
+validate deterministic presentation. They do not independently read DOCX bytes.
 """
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ import re
 import unittest
 
 import build_site as publication
+from render_science import FORMULAE, enhance_scientific_presentation, render_source_math
 
 
 class ManuscriptFidelityTests(unittest.TestCase):
@@ -94,6 +95,40 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     passage,
                     (publication.ROOT / "essays" / f"{slug}.md").read_text(encoding="utf-8"),
                 )
+
+    def test_semantic_math_for_each_source(self) -> None:
+        """Whitelisted mathematics is typeset and annotated in every essay."""
+        for slug, title, _, _ in publication.ESSAYS:
+            with self.subTest(slug=slug):
+                source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+                    encoding="utf-8"
+                )
+                body, _ = publication.source_to_body(source, title, [])
+                enhanced = enhance_scientific_presentation(body)
+                self.assertGreater(enhanced.count("<math "), 0)
+                self.assertIn('encoding="application/x-tex"', enhanced)
+                self.assertIn('alttext="', enhanced)
+                self.assertEqual(enhanced, enhance_scientific_presentation(body))
+
+    def test_whitelist_does_not_rewrite_unrecognized_content(self) -> None:
+        """Tag attributes and other equations remain untouched."""
+        source = '<p data-note="P_theta(t : A | Gamma)">Unknown_X(z) + 1</p>'
+        self.assertEqual(render_source_math(source), source)
+        converted = render_source_math("<p>P_theta(t : A | Gamma).</p>")
+        self.assertIn('alttext="P_theta(t : A | Gamma)"', converted)
+        self.assertIn('class="math-scroll"', converted)
+        self.assertIn('display="block"', converted)
+
+    def test_record_fields_have_preserved_source_order(self) -> None:
+        """DOCX paragraph-encoded fields become one readable record."""
+        source = ("<p>artifact_record:</p>\n<p>id: string</p>\n"
+                  "<p>kind: string</p>\n<p>validation_status: string</p>\n"
+                  "<p>repair: string</p>")
+        formatted = enhance_scientific_presentation(source)
+        self.assertIn('class="record-schema"', formatted)
+        self.assertIn("artifact_record:\nid: string\nkind: string", formatted)
+        self.assertIn("repair: string</code>", formatted)
+        self.assertEqual(len(FORMULAE), len(dict(FORMULAE)))
 
 
 if __name__ == "__main__":
