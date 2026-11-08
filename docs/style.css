@@ -303,3 +303,13 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   overflow-wrap:anywhere;
 }
 .article-content > pre code { font:inherit; white-space:inherit; }
+
+
+/* Synthesis table: semantic inline formulas remain intact within horizontal scrolling. */
+.article-content .formula-cell { white-space:nowrap; }
+.article-content .formula-cell math[display="inline"] {
+  display:inline-block;
+  max-width:none;
+  white-space:nowrap;
+  vertical-align:middle;
+}
