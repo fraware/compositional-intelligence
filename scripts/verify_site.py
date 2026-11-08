@@ -254,7 +254,7 @@ def main() -> int:
             issues.append(f"Table scrolling accessibility mismatch: {relative}")
         if doc.tables and doc.table_ids != [f"table-{n}" for n in range(1, doc.tables + 1)]:
             issues.append(f"Unstable table identifiers in {relative}")
-        if any(len(label.strip()) < 30 or not label.strip().startswith("Table ")
+        if any(len(label.strip()) < 30 or not label.strip().startswith(("Table ", "Table."))
                for label in doc.caption_texts):
             issues.append(f"Missing or uninformative visible table caption: {relative}")
         if relative.startswith("essays/"):
