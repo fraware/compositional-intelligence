@@ -212,7 +212,7 @@ def main() -> int:
         "algebraic-architectures": (1, 0),
         "quantitative-curry-howard": (3, 0),
         "effectful-and-conceptual-intelligence": (3, 0),
-        "series-preface": (0, 0),
+        "series-preface": (1, 0),
     }
 
     for page, doc in documents.items():
