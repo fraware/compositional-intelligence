@@ -48,6 +48,12 @@ ESSAYS = [
      "07 · Action", "Agent action, authority, effects, and conceptual transfer."),
 ]
 
+
+# The synthesis article's subtitle is retained verbatim from the original manuscript.
+ORIGINAL_ARTICLE_SUBTITLES = {
+    "compositional-intelligence": "Typed Artifacts, Structured Worlds, and Effectful AI",
+}
+
 HEADINGS = re.compile(r"<h([23])\b[^>]*\bid=\"([^\"]+)\"[^>]*>(.*?)</h\1>", re.S)
 TABLE = re.compile(r"<table\b[^>]*>[\s\S]*?</table>", re.I)
 TABLE_NAME = re.compile(r"^Table\s+([A-Za-z]?\d+[A-Za-z]?)\.\s*(.+?)\s*$", re.I)
@@ -256,6 +262,59 @@ def render_math(body: str) -> str:
     return pattern.sub(wrap, body)
 
 
+
+def render_synthesis_table_math(body: str) -> str:
+    """Typeset the four original synopsis-table judgments as semantic MathML.
+
+    The canonical manuscript keeps its original source transcription and SHA.
+    This strictly presentation-only conversion acts on exact source cell text,
+    rejecting edits that would need a renewed scientific interpretation.
+    """
+    formulae = (
+        (
+            "w_i -&gt; tau_i -&gt; pi -&gt; pi",
+            r"w_i \to \tau_i \to \pi \to \pi",
+            "<msub><mi>w</mi><mi>i</mi></msub><mo>→</mo>"
+            "<msub><mi>τ</mi><mi>i</mi></msub><mo>→</mo>"
+            "<mi>π</mi><mo>→</mo><mi>π</mi>",
+        ),
+        (
+            "A |= S",
+            r"A \models S",
+            "<mi>A</mi><mo>⊨</mo><mi>S</mi>",
+        ),
+        (
+            '<span class="inline-notation">Γ ⊢<sub>θ</sub> t : A ▷ Q</span>',
+            r"\Gamma \vdash_{\theta} t : A \triangleright Q",
+            "<mi>Γ</mi><msub><mo>⊢</mo><mi>θ</mi></msub>"
+            "<mi>t</mi><mo>:</mo><mi>A</mi><mo>▷</mo><mi>Q</mi>",
+        ),
+        (
+            "Γ; M; E; C ⊢_spec a : Pre → Post ! ε @ ρ",
+            r"\Gamma; M; E; C \vdash_{\mathrm{spec}} a : \mathrm{Pre} \to \mathrm{Post}\;!\;\varepsilon @ \rho",
+            "<mi>Γ</mi><mo>;</mo><mi>M</mi><mo>;</mo><mi>E</mi><mo>;</mo>"
+            "<mi>C</mi><msub><mo>⊢</mo><mtext>spec</mtext></msub>"
+            "<mi>a</mi><mo>:</mo><mi mathvariant=\"normal\">Pre</mi>"
+            "<mo>→</mo><mi mathvariant=\"normal\">Post</mi>"
+            "<mo>!</mo><mi>ε</mi><mo>@</mo><mi>ρ</mi>",
+        ),
+    )
+    for original, tex, mathml in formulae:
+        cell = "<td>" + original + "</td>"
+        if body.count(cell) != 1:
+            raise ValueError(f"Synthesis formula cell changed or repeated: {original}")
+        semantic = (
+            '<td class="formula-cell"><math display="inline" '
+            'xmlns="http://www.w3.org/1998/Math/MathML"><semantics>'
+            '<mrow>' + mathml + '</mrow>'
+            '<annotation encoding="application/x-tex">' + esc(tex) +
+            '</annotation></semantics></math></td>'
+        )
+        body = body.replace(cell, semantic, 1)
+    return body
+
+
+
 def render_toc(body: str) -> str:
     """Construct section navigation from the exact anchors in the generated page."""
     sections = []
@@ -289,6 +348,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     """Render a manuscript with source provenance, toc, and sequential links."""
     manuscript = (ROOT / "essays" / (slug + ".md")).read_text(encoding="utf-8")
     body, digest = source_to_body(manuscript, title, table_captions)
+    if slug == "compositional-intelligence":
+        body = render_synthesis_table_math(body)
     before = ESSAYS[position - 1] if position > 0 else None
     after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None
     prev_link = (f'<div class="previous"><span>Previous</span><a href="{esc(before[0])}.html">{esc(before[1])}</a></div>'
@@ -297,10 +358,12 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
                  if after else '<div></div>')
     src_meta = f'<meta name="source-sha256" content="{digest}">\n'
     head = header(title, description, BASE + "essays/" + slug + ".html")
+    subtitle = ORIGINAL_ARTICLE_SUBTITLES.get(slug)
+    subtitle_html = '<p class="deck">' + esc(subtitle) + '</p>' if subtitle else ''
     head = head.replace("</head>", src_meta + "</head>", 1)
     return (head +
             '<article><header class="article-header"><p class="breadcrumb"><a href="../index.html">Essays</a> / ' +
-            esc(category) + '</p><h1>' + esc(title) + '</h1><p class="byline">Mateo Petel</p>' +
+            esc(category) + '</p><h1>' + esc(title) + '</h1>' + subtitle_html + '<p class="byline">Mateo Petel</p>' +
             '</header><div class="article-content" id="article-content">\n' +
             render_toc(body) + body + '</div>\n' +
             '<nav class="article-pager" aria-label="Essay navigation">' + prev_link + next_link + '</nav>' +
