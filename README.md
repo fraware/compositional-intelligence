@@ -22,6 +22,16 @@ Compositional Intelligence is a series of research essays on the creation, inter
 
 The essays advance a research program and identify questions that remain open. The scope of each mathematical and empirical claim is stated in the corresponding essay.
 
-The nine Markdown manuscripts in `essays/` are the publication sources. The static website is rendered from those sources with Pandoc 3.1.13 and the repository’s reproducible build script.
+The nine manuscripts in `essays/` contain the V3 DOCX-derived HTML publication fragments and are the authoritative website sources. The build retains their text, adds reviewed MathML typesetting and readable schema formatting, and produces a deterministic static site using Pandoc 3.1.13.
+
+The original DOCX file fingerprints are recorded in `sources/originals.json`. GitHub Actions checks the committed source hashes, HTML structure, scientific markup, links, responsive presentation, and deployment. The original Word files are deliberately absent from the public repository. Consequently, CI alone does not establish byte-for-byte correspondence with those files.
+
+An independent local source comparison is available with the original Word documents in a private directory:
+
+```sh
+python3 scripts/check_originals.py --original-dir /path/to/originals
+```
+
+This verifies the supplied DOCX hashes and reports paragraph overlap and table-count discrepancies for inspection. The comparison is diagnostic, not a proof of complete mathematical or textual equivalence.
 
 © 2026 Mateo Petel. All rights reserved.
