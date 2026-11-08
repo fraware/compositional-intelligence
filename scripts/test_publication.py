@@ -130,6 +130,19 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn("repair: string</code>", formatted)
         self.assertEqual(len(FORMULAE), len(dict(FORMULAE)))
 
+    def test_display_math_does_not_absorb_adjacent_paragraphs(self) -> None:
+        """A formula followed by prose must never engulf the next paragraph."""
+        original = (
+            "<p>P_theta(t : A | Gamma) is a source transcription.</p>"
+            "<p>The comparison uses T(f(x)) ≈ g(T(x)).</p>"
+        )
+        enhanced = render_source_math(original)
+        self.assertEqual(enhanced.count("<p>"), 2)
+        self.assertEqual(enhanced.count("</p>"), 2)
+        self.assertIn("is a source transcription.</p>", enhanced)
+        self.assertIn("The comparison uses ", enhanced)
+
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -50,7 +50,7 @@ _TOKEN = re.compile("|".join(
     for key in sorted(_UNIQUE, key=len, reverse=True)
 ))
 _TEXT = re.compile(r"(?<=>)([^<]+)(?=<)", re.S)
-_ONLY_MATH = re.compile(r"<p>\s*(<math\b[^>]*>[\s\S]*?</math>)([.]?)\s*</p>")
+_ONLY_MATH = re.compile(r"<p>\s*(<math\b[^>]*>(?:(?!</p>)[\s\S])*?</math>)([.]?)\s*</p>")
 _P = re.compile(r"^<p>([\s\S]*?)</p>$")
 _BR = re.compile(r"<br\s*/?>", re.I)
 _KEY = re.compile(r"^[a-z][a-z0-9_]*:$")
