@@ -249,7 +249,7 @@ def main() -> int:
             issues.append(f"Unstable table identifiers in {relative}")
         if any(len(label.strip()) < 30 or not label.strip().startswith(("Table ", "Table."))
                for label in doc.caption_texts):
-            issues.append(f"Missing or uninformative visible table caption: {relative}")
+            issues.append(f"Missing or uninformative accessible table caption: {relative}")
         if relative.startswith("essays/"):
             manuscript = ROOT / "essays" / page.with_suffix(".md").name
             if not manuscript.is_file():

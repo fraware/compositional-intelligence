@@ -57,6 +57,15 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     len(re.findall("<h2|<h3", body)), record["heading_count"]
                 )
 
+    def test_derived_table_labels_do_not_appear_as_manuscript_prose(self) -> None:
+        """The table names introduced for accessibility are visually suppressed."""
+        css = (publication.ROOT / "docs" / "style.css").read_text(encoding="utf-8")
+        pattern = r"\.article-content \.table-display-caption\s*\{([^}]+)\}"
+        rule = re.search(pattern, css)
+        self.assertIsNotNone(rule)
+        self.assertRegex(rule.group(1), r"position\s*:\s*absolute")
+        self.assertRegex(rule.group(1), r"clip(?:-path)?\s*:")
+
     def test_public_pages_omit_the_author_byline(self) -> None:
         for index, (slug, title, category, description) in enumerate(publication.ESSAYS):
             with self.subTest(slug=slug):

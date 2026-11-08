@@ -166,7 +166,8 @@ def main() -> int:
                                             headers.length < 1 || headers.length > count) return true;
                                         if (t.querySelector("th[ead]")) return true;
                                         if (getComputedStyle(label).display === "none" ||
-                                            label.getBoundingClientRect().height < 10) return true;
+                                            label.getBoundingClientRect().height > 2 ||
+                                            label.getBoundingClientRect().width > 2) return true;
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550) return true;
                                         return false;
