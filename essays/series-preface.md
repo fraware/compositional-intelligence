@@ -20,12 +20,12 @@ The first three essays establish the program's core sequence.
 
 **Typed Generativity** analyzes target-class inference and the generation of candidate representations. On a declared normalized joint distribution, the factorization follows the probability chain rule.
 
-$
+$$
 \begin{aligned}
 P_{\theta}(A,t\mid c) &= P_{\theta}(A\mid c)\\
 &\quad\cdot P_{\theta}(t\mid A,c).
 \end{aligned}
-$
+$$
 
 The generator context $c$ is distinct from the formal typing environment; $A$ denotes a target-class label and $t$ denotes a candidate that can fail validation. Formal acceptance uses the independent judgment $\Delta\vdash\operatorname{parse}(t):\tau$ under an explicit mapping from the target label to type τ. Semi-formal tasks need declared validators, and claims about latent type-like representations remain empirical hypotheses.
 
