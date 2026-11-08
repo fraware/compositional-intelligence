@@ -102,6 +102,8 @@ def main() -> int:
                                     typography["background"] != "rgb(250, 249, 246)"):
                                     failures.append(f"{width}px {rel}: editorial typography regression")
                             if rel.startswith("essays/"):
+                                if page.locator(".article-header .byline").count():
+                                    failures.append(f"{width}px {rel}: author byline appears beneath essay title")
                                 media = page.evaluate("""() => {
                                     const article = document.querySelector(".article-content");
                                     if (!article) return null;

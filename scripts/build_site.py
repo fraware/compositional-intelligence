@@ -370,7 +370,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     head = head.replace("</head>", src_meta + "</head>", 1)
     return (head +
             '<article><header class="article-header"><p class="breadcrumb"><a href="../index.html">Essays</a> / ' +
-            esc(category) + '</p><h1>' + esc(title) + '</h1>' + subtitle_html + '<p class="byline">Mateo Petel</p>' +
+            esc(category) + '</p><h1>' + esc(title) + '</h1>' + subtitle_html +
             '</header><div class="article-content" id="article-content">\n' +
             render_toc(body) + body + '</div>\n' +
             '<nav class="article-pager" aria-label="Essay navigation">' + prev_link + next_link + '</nav>' +

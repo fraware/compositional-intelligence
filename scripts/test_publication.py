@@ -92,6 +92,18 @@ class PublicationMetadataTests(unittest.TestCase):
         self.assertEqual(publication.render_math(raw), raw)
 
 
+    def test_essay_header_omits_visible_author_byline(self) -> None:
+        """Every essay title renders without the redundant author byline."""
+        slug, title, category, description = publication.ESSAYS[1]
+        markup = publication.render_essay(
+            slug, title, category, description,
+            position=1, table_captions=[],
+        )
+        header = markup.split('<header class="article-header">', 1)[1].split("</header>", 1)[0]
+        self.assertIn("<h1>" + title + "</h1>", header)
+        self.assertNotIn('class="byline"', header)
+        self.assertNotIn("Mateo Petel", header)
+
     def test_original_synthesis_subtitle_is_retained(self) -> None:
         """The source subtitle is shown without adding a new editorial deck."""
         self.assertEqual(
