@@ -30,8 +30,8 @@ PANDOC_VERSION = "3.1.13"
 ESSAYS = [
     ("compositional-intelligence", "Compositional Intelligence", "Synthesis",
      "A framework for the evaluation of AI-generated artifacts in structured worlds."),
-    ("series-preface", "Series Preface", "Orientation",
-     "The aims, scope, and conceptual sequence of the essay collection."),
+    ("series-preface", "Series Preface", "Preface",
+     "Compositional Intelligence studies typed artifacts and the structured worlds they enter."),
     ("semantic-participation", "Semantic Participation", "01 · Foundations",
      "Conditions under which generated artifacts become participants in structured environments."),
     ("typed-generativity", "Typed Generativity", "02 · Foundations",
