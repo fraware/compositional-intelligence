@@ -243,7 +243,7 @@ def main() -> int:
         print(f"FAIL: {failure}")
     if failures:
         return 1
-    print(f"PASS: {len(paths)} pages at 320, 375, 768, and 1440px; semantic tables, MathML, figures, reader checks, study interactions; screenshots saved")
+    print(f"PASS: {len(paths)} pages at 320, 375, 768, and 1440px; semantic tables, MathML, figures, study interactions; screenshots saved")
     return 0
 
 
