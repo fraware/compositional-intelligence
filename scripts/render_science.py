@@ -13,6 +13,9 @@ import re
 import subprocess
 
 FORMULAE: tuple[tuple[str, str], ...] = (
+    ("S = (E_s, E_t, x, f, T, g, epsilon)", r"S=(E_s,E_t,x,f,T,g,\varepsilon)"),
+    ("T(x)", r"T(x)"),
+    ("f(x)", r"f(x)"),
     ("Gamma; M; E; C |- write_memory(m) : M -> M + {m} ! memory_write @ rho",
      r"\Gamma;M;E;C\vdash\operatorname{write\_memory}(m):M\to M+\{m\}\;!\;\operatorname{memory\_write}@\rho"),
     ("Gamma; M; E; C |- pi : Pre_0 -> Post_n ! (eps_1 + ... + eps_n) @ rho",

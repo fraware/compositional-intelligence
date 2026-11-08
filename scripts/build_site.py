@@ -23,6 +23,7 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 from render_science import enhance_scientific_presentation
+from render_synthesis import render_synthesis_figures
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://fraware.github.io/compositional-intelligence/"
@@ -373,6 +374,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     body, digest = source_to_body(manuscript, title, table_captions)
     if slug == "compositional-intelligence" and "AUTHORITATIVE-DOCX SHA256" not in manuscript:
         body = render_synthesis_table_math(body)
+    if slug == "compositional-intelligence":
+        body = render_synthesis_figures(body)
     body = enhance_scientific_presentation(body)
     before = ESSAYS[position - 1] if position > 0 else None
     after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None

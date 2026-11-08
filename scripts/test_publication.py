@@ -15,6 +15,7 @@ import unittest
 import build_site as publication
 from render_science import FORMULAE, enhance_scientific_presentation, render_source_math
 from check_originals import Paragraphs, overlap, phrases, tokens
+from render_synthesis import render_synthesis_figures
 
 
 class ManuscriptFidelityTests(unittest.TestCase):
@@ -170,6 +171,36 @@ class ManuscriptFidelityTests(unittest.TestCase):
         index = phrases(tokens(example))
         self.assertEqual(overlap(example, index), 1.0)
         self.assertLess(overlap("Different provenance sentences require review and validation.", index), 0.9)
+
+
+
+    def test_flagship_figures_preserve_source_table_and_stage_text(self) -> None:
+        """The original two diagrams are exposed as captioned figures."""
+        title = "Compositional Intelligence"
+        manuscript = (publication.ROOT / "essays" / "compositional-intelligence.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(manuscript, title, [])
+        rendered = render_synthesis_figures(original)
+        self.assertEqual(rendered.count('<figure class="ci-source-figure'), 2)
+        self.assertEqual(rendered.count("<figcaption"), 2)
+        self.assertEqual(rendered.count("<table "), 10)
+        self.assertIn('id="table-5"', rendered)
+        self.assertIn("Figure. From output to artifact.", rendered)
+        self.assertIn("Figure. Functorial Consistency square.", rendered)
+        self.assertIn('aria-label="transport T downward"', rendered)
+        self.assertNotIn("<p><strong>output -&gt;", rendered)
+        with self.assertRaises(ValueError):
+            render_synthesis_figures(rendered)
+
+    def test_flagship_rendering_is_scoped_and_accessible(self) -> None:
+        """The flagship typesetting does not alter another essay's diagrams."""
+        page = publication.render_essay(*publication.ESSAYS[0], position=0, table_captions=[])
+        self.assertIn('class="ci-source-figure ci-lifecycle"', page)
+        self.assertIn('class="ci-source-figure ci-commuting"', page)
+        self.assertEqual(page.count("<figcaption"), 2)
+        self.assertIn('alttext="S = (E_s, E_t, x, f, T, g, epsilon)"', page)
+        self.assertNotIn('class="byline"', page)
 
 
 

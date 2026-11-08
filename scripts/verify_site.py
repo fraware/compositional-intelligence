@@ -207,6 +207,7 @@ def main() -> int:
     # Media inventory follows the uploaded V3 Word documents, not superseded
     # website revisions that introduced additional diagram markup.
     expected_math_essays = {row[0] for row in build_site.ESSAYS}
+    expected_figure_counts = {"compositional-intelligence": 2}
 
     for page, doc in documents.items():
         relative = page.relative_to(SITE).as_posix()
@@ -234,6 +235,8 @@ def main() -> int:
             slug = page.stem
             if slug in expected_math_essays and doc.maths == 0:
                 issues.append(f"Scientific notation is not typeset in {relative}")
+            if doc.figures != expected_figure_counts.get(slug, 0):
+                issues.append(f"Source-derived figure inventory changed in {relative}: {doc.figures}")
         total_display_maths += doc.display_maths
         total_figures += doc.figures
         if (doc.tables != doc.captions or doc.tables != doc.theads or
