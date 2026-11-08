@@ -69,7 +69,7 @@ def _mathml(source: str) -> str:
     if match is None or 'encoding="application/x-tex"' not in match.group():
         raise RuntimeError("Missing annotated MathML for " + source)
     return match.group().replace(
-        "<math ", '<math alttext="' + escape(source, quote=True) + '" ', 1
+        "<math ", '<math tabindex="0" alttext="' + escape(source, quote=True) + '" ', 1
     )
 
 
@@ -93,7 +93,9 @@ def render_source_math(body: str) -> str:
     body = _TEXT.sub(replace_node, body)
 
     def display(match: re.Match[str]) -> str:
-        math = match.group(1).replace('display="inline"', 'display="block"', 1)
+        math = (match.group(1)
+                .replace('tabindex="0" ', "", 1)
+                .replace('display="inline"', 'display="block"', 1))
         return (
             '<div class="math-scroll" role="group" tabindex="0" '
             'aria-label="Displayed mathematical expression">' +

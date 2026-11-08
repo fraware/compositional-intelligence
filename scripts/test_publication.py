@@ -118,6 +118,10 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn('alttext="P_theta(t : A | Gamma)"', converted)
         self.assertIn('class="math-scroll"', converted)
         self.assertIn('display="block"', converted)
+        css = (publication.ROOT / "docs" / "style.css").read_text(encoding="utf-8")
+        rule = re.search(r'\.article-content math\[display="inline"\]\s*\{([^}]+)\}', css)
+        self.assertIsNotNone(rule)
+        self.assertIn("overflow-x:auto", rule.group(1))
 
     def test_record_fields_have_preserved_source_order(self) -> None:
         """DOCX paragraph-encoded fields become one readable record."""

@@ -146,7 +146,13 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 .article-content math[display="inline"] {
   display:inline-block;
   max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
   vertical-align:middle;
+}
+.article-content math[display="inline"]:focus-visible {
+  outline:2px solid var(--link);
+  outline-offset:2px;
 }
 .article-content figure {
   max-width:100%;
