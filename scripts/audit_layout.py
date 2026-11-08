@@ -192,19 +192,6 @@ def main() -> int:
                                             if moved <= 0:
                                                 failures.append(f"{width}px {rel}: table cannot scroll with keyboard")
                                             break
-                            if rel == "reading/index.html":
-                                checks = page.locator(".reader-check")
-                                if checks.count() != 14:
-                                    failures.append(f"{width}px reader guide: expected 14 source-grounded questions")
-                                else:
-                                    first = checks.first.locator("details")
-                                    first.locator("summary").click()
-                                    if first.get_attribute("open") is None:
-                                        failures.append(f"{width}px reader guide: disclosure failed")
-                                    if first.locator("blockquote").count() != 1:
-                                        failures.append(f"{width}px reader guide: missing manuscript evidence")
-                                    if first.locator(".reader-source a").count() != 1:
-                                        failures.append(f"{width}px reader guide: missing source link")
                             if width in (320, 375, 1440) and rel in selected:
                                 label = rel.replace("/", "-").replace(".html", "")
                                 # Capture the actual scientific media, not only the article header.

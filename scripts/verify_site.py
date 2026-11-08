@@ -193,8 +193,8 @@ def main() -> int:
     check_manifest(issues)
     pages = sorted(SITE.rglob("*.html"))
     essays = sorted((ROOT / "essays").glob("*.md"))
-    if len(pages) != 12 or len(essays) != 9:
-        issues.append(f"Expected 12 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
+    if len(pages) != 11 or len(essays) != 9:
+        issues.append(f"Expected 11 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
     if not (SITE / "index.html").is_file() or not (SITE / ".nojekyll").is_file():
         issues.append("Missing HTML entrypoint or .nojekyll")
     documents = {p: parse_html(p) for p in pages}
@@ -217,7 +217,7 @@ def main() -> int:
 
     for page, doc in documents.items():
         relative = page.relative_to(SITE).as_posix()
-        target_canonical = URL if relative == "index.html" else URL + ("reading/" if relative == "reading/index.html" else relative)
+        target_canonical = URL if relative == "index.html" else URL + relative
         canonical_set.add(target_canonical)
         if doc.lang != "en" or doc.main != 1 or doc.h1 != 1 or doc.noindex:
             issues.append(f"Incorrect document semantics: {relative}")
@@ -296,7 +296,7 @@ def main() -> int:
         try:
             root = ElementTree.parse(sitemap).getroot()
             urls = [x.text for x in root.findall(f".//{namespace}loc")]
-            if len(urls) != 12 or set(urls) != canonical_set:
+            if len(urls) != 11 or set(urls) != canonical_set:
                 issues.append("Sitemap URLs differ from public HTML canonicals")
         except ElementTree.ParseError as exc:
             issues.append(f"Invalid sitemap: {exc}")

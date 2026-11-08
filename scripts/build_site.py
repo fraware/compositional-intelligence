@@ -60,14 +60,6 @@ def esc(value: str) -> str:
     return html.escape(value, quote=True)
 
 
-def source_link(value: str) -> str:
-    """Resolve a source-section reference in the reader-guide section metadata."""
-    slug, sep, anchor = value.partition("#")
-    if not sep or not re.fullmatch(r"[a-z0-9-]+", slug) or not re.fullmatch(r"[a-z0-9-]+", anchor):
-        raise ValueError(f"Invalid section reference: {value}")
-    return f"../essays/{slug}.html#{anchor}"
-
-
 def header(title: str, description: str, canonical: str, *, document_type: str = "article") -> str:
     """Provide a stable, privacy-preserving document head and shared navigation."""
     return f"""<!doctype html>
@@ -92,7 +84,7 @@ def header(title: str, description: str, canonical: str, *, document_type: str =
 <header class="site-header"><div class="container header-inner">
 <a class="brand" href="../index.html">Compositional Intelligence</a>
 <nav class="header-nav" aria-label="Primary navigation">
-<a href="../index.html#essays">Essays</a><a href="../reading/">Reader's Guide</a><a href="../essays/compositional-intelligence.html">The thesis</a>
+<a href="../index.html#essays">Essays</a><a href="../essays/compositional-intelligence.html">The thesis</a>
 </nav></div></header>
 <main class="container" id="main">
 """
@@ -315,102 +307,10 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
             '</article>\n' + footer())
 
 
-def validate_reader_guide(data: dict) -> None:
-    """Check that each expert-reader answer is supported by its exact manuscript section.
-
-    This test establishes source traceability, not the truth of the answer
-    or the effectiveness of the questions with actual participants.
-    """
-    expected = [row[0] for row in ESSAYS[2:]]
-    if data.get("schema_version") != 1:
-        raise ValueError("Unsupported reading guide schema")
-    entries = data.get("entries", [])
-    if [item["id"] for item in entries] != expected:
-        raise ValueError("Reading guide must match the seven essay concepts in series order")
-    for item in entries:
-        slug = item["id"]
-        source = (ROOT / "essays" / (slug + ".md")).read_text(encoding="utf-8")
-        if not isinstance(item.get("focus"), str) or len(item["focus"].strip()) < 25:
-            raise ValueError(f"Missing reader focus in {slug}")
-        if len(item.get("checks", [])) != 2:
-            raise ValueError(f"Expected two independent reader questions in {slug}")
-        for index, check in enumerate(item["checks"], start=1):
-            for key in ("question", "answer"):
-                if not isinstance(check.get(key), str) or len(check[key].strip()) < 35:
-                    raise ValueError(f"Missing {key} for {slug} question {index}")
-            evidence = check["evidence"]
-            ref, excerpt = evidence["section"], evidence["excerpt"]
-            evidence_slug, separator, anchor = ref.partition("#")
-            if not separator or evidence_slug != slug:
-                raise ValueError(f"Reading-guide source must belong to its concept: {ref}")
-            heading = re.search(
-                r"^#{2,4}\s+.*?\{#" + re.escape(anchor) + r"\}\s*$", source, re.M
-            )
-            if not heading:
-                raise ValueError(f"Unknown reading-guide section: {ref}")
-            remaining = source[heading.end():]
-            next_heading = re.search(r"^#{2,4}\s+", remaining, re.M)
-            section = remaining[:next_heading.start()] if next_heading else remaining
-            if not isinstance(excerpt, str) or len(excerpt) < 25 or excerpt not in section:
-                raise ValueError(f"Unmatched reading-guide evidence: {ref}")
-
-
-def render_reader_guide(data: dict) -> str:
-    """Render a source-anchored self-assessment without client-side scripting."""
-    names = {row[0]: row[1] for row in ESSAYS}
-    entries: list[str] = []
-    for num, item in enumerate(data["entries"], start=1):
-        checks = []
-        for index, check in enumerate(item["checks"], start=1):
-            evidence = check["evidence"]
-            reference = source_link(evidence["section"])
-            checks.append(
-                f'<li id="{esc(item["id"])}-check-{index}" class="reader-check">'
-                '<details><summary>' + esc(check["question"]) + '</summary>'
-                '<div class="reader-answer"><p><strong>Interpretation.</strong> ' + esc(check["answer"]) + '</p>'
-                '<blockquote>' + esc(evidence["excerpt"]) + '</blockquote>'
-                '<p class="reader-source"><a href="' + esc(reference) + '">Inspect the manuscript section</a></p>'
-                '</div></details></li>'
-            )
-        entries.append(
-            f'<li class="reader-entry" id="{esc(item["id"])}">'
-            '<div class="reader-entry-meta"><span class="reader-num">' + f'{num:02d}' +
-            '</span><span class="category">Expert-reader check</span></div>'
-            f'<h2>{esc(names[item["id"]])}</h2>'
-            f'<p class="reader-focus">{esc(item["focus"])}</p>'
-            '<ol class="reader-checks">' + "".join(checks) + '</ol>'
-            f'<p class="reader-essay-link"><a href="../essays/{esc(item["id"])}.html">Read the essay</a></p>'
-            '</li>'
-        )
-    intro = (
-        '<article><header class="article-header reader-header">'
-        '<p class="breadcrumb"><a href="../index.html">Essays</a> / Reader\'s Guide</p>'
-        '<p class="kicker">Fourteen source-anchored questions</p>'
-        '<h1>Reader\'s Guide</h1>'
-        '<p class="deck">Test the distinction between a proposal and the result needed to establish it.</p>'
-        '</header><div class="reader-intro">'
-        '<p>Read a question, formulate an answer, and open its explanation. '
-        'Each response includes a short passage from the associated manuscript '
-        'and a direct link to its section.</p>'
-        '<p>These are editorial self-checks grounded in the seven essays. '
-        'No external readers have been recruited or evaluated. '
-        'Passing a self-check does not validate the scientific hypothesis.</p>'
-        '</div>'
-    )
-    return (
-        header("Reader's Guide",
-               "Fourteen source-anchored expert-reader checks on the seven Compositional Intelligence essays.",
-               BASE + "reading/") +
-        intro + '<ol class="reader-entries">' + "".join(entries) + '</ol>'
-        '<p class="reader-return"><a href="../index.html#essays">Return to the essays</a></p>'
-        '</article>\n' + footer()
-    )
-
-
 def render_sitemap() -> str:
     """Generate the public sitemap from the same declared publication inventory."""
     paths = [""] + [f"essays/{row[0]}.html" for row in ESSAYS] + [
-        "studies/commuting-square.html", "reading/"
+        "studies/commuting-square.html"
     ]
     root = ElementTree.Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
     for path in paths:
@@ -435,7 +335,6 @@ def build(output: Path) -> None:
     shutil.rmtree(output / "atlas", ignore_errors=True)
     shutil.rmtree(output / "reading", ignore_errors=True)
     (output / "essays").mkdir(parents=True)
-    (output / "reading").mkdir(parents=True)
     catalogue = json.loads((ROOT / "tables" / "captions.json").read_text(encoding="utf-8"))
     if catalogue.get("schema_version") != 1 or set(catalogue["essays"]) != {row[0] for row in ESSAYS} - {"series-preface"}:
         raise ValueError("Table caption catalogue does not match the manuscript inventory")
@@ -444,9 +343,6 @@ def build(output: Path) -> None:
         (output / "essays" / (slug + ".html")).write_text(
             render_essay(*row, position=index, table_captions=catalogue["essays"].get(slug, [])),
             encoding="utf-8")
-    guide = json.loads((ROOT / "reading" / "guide.json").read_text(encoding="utf-8"))
-    validate_reader_guide(guide)
-    (output / "reading" / "index.html").write_text(render_reader_guide(guide), encoding="utf-8")
     (output / "sitemap.xml").write_text(render_sitemap(), encoding="utf-8")
 
 
@@ -470,7 +366,7 @@ def main() -> None:
             build(second)
             if file_digests(output) != file_digests(second):
                 raise RuntimeError("Non-deterministic publication output detected")
-    print(f"Built {len(ESSAYS)} essays, 14 source-linked reader checks, and one concept study into {output}")
+    print(f"Built {len(ESSAYS)} essays, one concept study into {output}")
 
 
 if __name__ == "__main__":
