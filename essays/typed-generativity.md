@@ -2,31 +2,16 @@
 
 *Mateo Petel*
 
-## Abstract
+<!-- AUTHORITATIVE-DOCX SHA256 174be720ce13dfaf0196ad51a5f35c02810fc8bd0a00356399f0ab4baf67e028; source Essay2_Typed_Generativity_V3(1).docx -->
 
-Typed Generativity is the generation layer of the Compositional Intelligence series. Semantic Participation asks when generated outputs count as artifacts in structured worlds. Typed Generativity asks how generation should be analyzed once the requested product is treated as a candidate artifact instead of a bare token sequence. The central claim is that many high-value generative tasks are usefully modeled as probabilistic construction of candidate inhabitants of inferred target types.
-
-Typed Generativity proposes an operational decomposition of candidate generation. Under a normalized joint model distribution over declared target labels $A$ and candidate representations $t$, with generator context $c$, the probability mass factors as
-
-$$
-\begin{aligned}
-P_{\theta}(A,t\mid c)
-&=P_{\theta}(A\mid c)\\
-&\phantom{=}\,\cdot P_{\theta}(t\mid A,c).
-\end{aligned}
-$$
-
-This is the probability chain rule, not a model-specific theorem. Candidate representations include outputs later rejected by a validator. In a formal object language, a separate environment $\Delta$ and target type $\tau$ govern $\Delta\vdash t:\tau$, with the correspondence from label $A$ to type $\tau$ explicitly declared. Schema-governed and semi-formal tasks need independent validators or annotation protocols. Internal type-like representations remain an untested empirical hypothesis. The probabilistic factorization holds for any normalized joint law and supplies no evidence of a literal internal infer-then-generate mechanism. A mechanism claim needs independent intervention or causal evidence. The proposed Type-First Prompting Harness should compare diagnostic and downstream gains against information-, token-, and checker-exposure-matched controls. Pre-generation target commitments and labels reconstructed from outputs are distinct observations.
-
-The essay separates three levels of typed generation. Typed output concerns artifacts checked after generation. Typed decoding concerns generation constrained by a schema, grammar, type, tool interface, or parser. Typed latent cognition names the stronger hypothesis that a system internally represents requested object structure in type-like ways before or during generation. The first two levels support immediate evaluation. The third requires targeted evidence from interventions, probes, ambiguity datasets, and failure clustering.
-
-The companion evaluation object is the Type-First Prompting Harness v0.3. It tests whether explicit target-type articulation improves generation across code, Lean or mathematics, explanation, scientific protocol design, planning, and tool-use tasks. The essay succeeds if it gives researchers a precise way to distinguish target-type failure, invalid inhabitant failure, valid non-participation, and transformation instability. It leads directly to Functorial Consistency, which asks whether generated artifacts preserve structure across representations.
-
-## Contribution summary
-
-
-
-<table>
+<h2 id="abstract">Abstract</h2>
+<p>Typed Generativity is the generation layer of the Compositional Intelligence series. Semantic Participation asks when generated outputs count as artifacts in structured worlds. Typed Generativity asks how generation should be analyzed once the requested product is treated as a candidate artifact instead of a bare token sequence. The central claim is that many high-value generative tasks are usefully modeled as probabilistic construction of candidate inhabitants of inferred target types.</p>
+<p>The core schema is P_theta(t : A | Gamma). Gamma denotes the context available to the system, including prompt, retrieved material, examples, library state, tool state, memory, system instructions, and target environment. A denotes the inferred target type or target object class. t denotes the candidate inhabitant. P_theta denotes the model distribution, ranking, or search policy over candidate inhabitants under the available context. The schema is exact in proof-assistant and typed-programming settings, operational in schema-constrained generation, and semi-formal in explanation, planning, scientific protocol design, and other structured artifact tasks.</p>
+<p>The essay separates three levels of typed generation. Typed output concerns artifacts checked after generation. Typed decoding concerns generation constrained by a schema, grammar, type, tool interface, or parser. Typed latent cognition names the stronger hypothesis that a system internally represents requested object structure in type-like ways before or during generation. The first two levels support immediate evaluation. The third requires targeted evidence from interventions, probes, ambiguity datasets, and failure clustering.</p>
+<p>The companion evaluation object is the Type-First Prompting Harness v0.3. It tests whether explicit target-type articulation improves generation across code, Lean or mathematics, explanation, scientific protocol design, planning, and tool-use tasks. The essay succeeds if it gives researchers a precise way to distinguish target-type failure, invalid inhabitant failure, valid non-participation, and transformation instability. It leads directly to Functorial Consistency, which asks whether generated artifacts preserve structure across representations.</p>
+<h2 id="contribution-summary">Contribution summary</h2>
+<p class="table-display-caption" id="table-1-caption">Table 1. ID, Contribution, Publication claim</p>
+<div aria-labelledby="table-1-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="1" id="table-1"><caption class="visually-hidden">Table 1. ID, Contribution, Publication claim</caption>
 <colgroup>
 <col style="width: 6%"/>
 <col style="width: 29%"/>
@@ -34,16 +19,16 @@ The companion evaluation object is the Type-First Prompting Harness v0.3. It tes
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>ID</strong></th>
-<th><strong>Contribution</strong></th>
-<th><strong>Publication claim</strong></th>
+<th scope="col"><strong>ID</strong></th>
+<th scope="col"><strong>Contribution</strong></th>
+<th scope="col"><strong>Publication claim</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>C1</td>
 <td>Generation schema</td>
-<td>Where a normalized joint distribution is defined: <span class="inline-notation">P<sub>θ</sub>(A,t | c) = P<sub>θ</sub>(A | c) P<sub>θ</sub>(t | A,c)</span>. Validation and formal typing are separate.</td>
+<td>P_theta(t : A | Gamma) models generation as target-type inference followed by candidate-inhabitant construction.</td>
 </tr>
 <tr class="even">
 <td>C2</td>
@@ -71,23 +56,18 @@ The companion evaluation object is the Type-First Prompting Harness v0.3. It tes
 <td>The essay uses type-theoretic vocabulary as an operational abstraction and avoids claims that language models instantiate dependent type theory.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## Reader map
-
-
-
-<table>
+</table></div>
+<h2 id="reader-map">Reader map</h2>
+<p class="table-display-caption" id="table-2-caption">Table 2. Reader, Recommended path</p>
+<div aria-labelledby="table-2-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="2" id="table-2"><caption class="visually-hidden">Table 2. Reader, Recommended path</caption>
 <colgroup>
 <col style="width: 29%"/>
 <col style="width: 70%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Reader</strong></th>
-<th><strong>Recommended path</strong></th>
+<th scope="col"><strong>Reader</strong></th>
+<th scope="col"><strong>Recommended path</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -112,53 +92,23 @@ The companion evaluation object is the Type-First Prompting Harness v0.3. It tes
 <td>Read after Essay 1 and before Essay 3</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## 1. Position in the Compositional Intelligence series {#1-position-in-the-compositional-intelligence-series}
-
-Typed Generativity occupies the transition between artifact membership and transformation-preserving evaluation. Essay 1 defines Semantic Participation as the condition under which an AI-generated object can enter a structured environment with validation, alignment, warrant, and permitted use. Essay 2 asks how the object is generated. Essay 3 then tests whether the generated object changes correctly under structured transformations.
-
-semantic membership -\> target-type inference -\> candidate inhabitant -\> transformation preservation
-
-This position determines the essay's scope. A proof, program, protocol, plan, tool call, or explanation needs dependencies, validators, assumptions, epistemic status, and permitted-use conditions in order to participate in a target environment. A generative system should therefore be evaluated by how it identifies the requested object class before it constructs a candidate. Incorrect target-type inference is one possible explanation for apparent reasoning or retrieval failures. Task-matched controls are needed to distinguish these causes.
-
-Typed Generativity converts the external standard of Semantic Participation into an internal diagnostic for generation. The wrong answer can arise from incorrect target selection, incomplete constraint extraction, invalid inhabitant construction, unstable target maintenance, or local validity without world membership. These cases require different interventions and should be separated at benchmark time.
-
-## 2. Thesis and scope control {#2-thesis-and-scope-control}
-
-The proposal models a class of generative tasks as inference over target-class labels followed by production of candidate representations. A candidate is submitted to independent validation, review, repair, and semantic participation assessment; successful type inhabitation is an outcome of checking, not a premise of sampling.
-
-The proposed sequence is:
-
-1. Interpret the generator context $c$.
-2. Infer a target-class label $A$.
-3. Produce a candidate representation $t$.
-4. Validate under the declared task rules (including $\Delta\vdash t:\tau$ for formal object languages).
-5. Assess Semantic Participation for the proposed use.
-
-In proof assistants and type-directed program synthesis, a target proposition, type, or refinement specification is explicit under a declared formal environment <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 1 — The Lean Language Reference">1</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 2 — Theorem Proving in Lean 4">2</a>, <a class="citation-link" href="#ref-Polikarpova2016" aria-label="Reference 3 — Program Synthesis from Polymorphic Refinement Types">3</a>]</span>. For tool use, interface definitions constrain valid arguments and actions; Toolformer studies model-selected API calls <span class="citation-group">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Reference 4 — Toolformer: Language Models Can Teach Themselves to Use Tools">4</a>]</span>. Structured output may likewise be checked against an application-defined schema. Explanation, planning, scientific protocol design, and structured writing are exploratory domains proposed in this essay. Treating their targets as latent types is a modeling hypothesis that needs domain-specific validation and evaluation.
-
-Typed Generativity is an operational abstraction over the object layer of generation. A code string is judged as a program. A proof script is elaborated as a formal object. A JSON response is consumed through a schema. A scientific protocol encodes controls, measurements, uncertainty, stopping criteria, analysis plans, and permitted claims. A plan encodes a state transformation under constraints. The abstraction is useful to the extent that it improves diagnosis, validation, repair, and downstream artifact use.
-
-## 3. Central schema {#3-central-schema}
-
-The central schema records generation at the level of candidate artifact construction.
-
-$$
-\begin{aligned}
-P_{\theta}(A,t\mid c)
-&=P_{\theta}(A\mid c)\\
-&\phantom{=}\,\cdot P_{\theta}(t\mid A,c).
-\end{aligned}
-$$
-
-Let c denote a generation context and Ω_c a finite or countable tagged candidate space of pairs (A,t), with target-class label A and candidate representation t. The normalized joint mass $P_{\theta}(A,t\mid c)$ satisfies the displayed factorization wherever $P_{\theta}(A\mid c)>0$. At zero marginal probability, the joint law leaves the conditional distribution undetermined. Invalid and malformed candidates remain in the sampling space. In formally checkable tasks, a declared partial mapping $\mu_c(A)=\tau$ associates eligible target classes with object-language types, and a separate parser and checker assess $\Delta\vdash\operatorname{parse}(t):\tau$ where defined. Schema-governed and semi-formal tasks use separately declared validation or annotation protocols. The factorization is the probability chain rule; its empirical usefulness and any type-inference mechanism remain independent questions.
-
-
-
-<table>
+</table></div>
+<h2 id="position-in-the-compositional-intelligence-series">1. Position in the Compositional Intelligence series</h2>
+<p>Typed Generativity occupies the transition between artifact membership and transformation-preserving evaluation. Essay 1 defines Semantic Participation as the condition under which an AI-generated object can enter a structured environment with validation, alignment, warrant, and permitted use. Essay 2 asks how the object is generated. Essay 3 then tests whether the generated object changes correctly under structured transformations.</p>
+<p>semantic membership -&gt; target-type inference -&gt; candidate inhabitant -&gt; transformation preservation</p>
+<p>This position determines the essay’s scope. A proof, program, protocol, plan, tool call, or explanation needs dependencies, validators, assumptions, epistemic status, and permitted-use conditions in order to participate in a target environment. A generative system should therefore be evaluated by how it identifies the requested object class before it constructs a candidate. Many failures attributed to weak reasoning or weak retrieval are more accurately diagnosed as failures of target-type inference.</p>
+<p>Typed Generativity converts the external standard of Semantic Participation into an internal diagnostic for generation. The wrong answer can arise from incorrect target selection, incomplete constraint extraction, invalid inhabitant construction, unstable target maintenance, or local validity without world membership. These cases require different interventions and should be separated at benchmark time.</p>
+<h2 id="thesis-and-scope-control">2. Thesis and scope control</h2>
+<p>The thesis is that many high-value AI generations can be analyzed as probabilistic construction of candidate inhabitants of inferred target types. A system receives context, infers an object class, constructs a candidate, and submits that candidate to validation, review, repair, and semantic-membership assessment.</p>
+<p>Gamma -&gt; infer A -&gt; construct t : A -&gt; validate/repair -&gt; semantic participation</p>
+<p>The claim has different status across domains. In proof assistants and typed programming languages, the target type can be explicit. In structured outputs, the schema can be supplied. In tool-use settings, the target action schema can be given by an interface. In explanation, planning, scientific protocol design, and structured writing, the target type is often latent, underspecified, and partly negotiated by context. The notation is valid only when the validation regime and claim level are stated.</p>
+<p>Typed Generativity is an operational abstraction over the object layer of generation. A code string is judged as a program. A proof script is elaborated as a formal object. A JSON response is consumed through a schema. A scientific protocol encodes controls, measurements, uncertainty, stopping criteria, analysis plans, and permitted claims. A plan encodes a state transformation under constraints. The abstraction is useful to the extent that it improves diagnosis, validation, repair, and downstream artifact use.</p>
+<h2 id="central-schema">3. Central schema</h2>
+<p>The central schema records generation at the level of candidate artifact construction.</p>
+<p>P_theta(t : A | Gamma)</p>
+<p>Gamma is the available context. It can include prompt, interaction history, retrieved material, examples, system instructions, tool state, memory, library state, source artifact, and target environment. A is the inferred target type or target object class. t is the candidate inhabitant. theta denotes the model or system. P_theta denotes a distribution, ranking, search policy, or constrained decoding process over candidate inhabitants.</p>
+<p class="table-display-caption" id="table-3-caption">Table 3. Symbol, Meaning, Example</p>
+<div aria-labelledby="table-3-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="3" id="table-3"><caption class="visually-hidden">Table 3. Symbol, Meaning, Example</caption>
 <colgroup>
 <col style="width: 11%"/>
 <col style="width: 33%"/>
@@ -166,15 +116,15 @@ Let c denote a generation context and Ω_c a finite or countable tagged candidat
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Symbol</strong></th>
-<th><strong>Meaning</strong></th>
-<th><strong>Example</strong></th>
+<th scope="col"><strong>Symbol</strong></th>
+<th scope="col"><strong>Meaning</strong></th>
+<th scope="col"><strong>Example</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><var>c</var></td>
-<td>Generator context available to the system</td>
+<td>Gamma</td>
+<td>Context available to the system</td>
 <td>Prompt, retrieved lemmas, tool schema, codebase, prior interaction</td>
 </tr>
 <tr class="even">
@@ -188,29 +138,22 @@ Let c denote a generation context and Ω_c a finite or countable tagged candidat
 <td>Proof script, function, explanation, protocol, plan, tool call</td>
 </tr>
 <tr class="even">
-<td><var>θ</var></td>
+<td>theta</td>
 <td>Model or system</td>
 <td>LLM, theorem prover, code model, agent policy, decoding system</td>
 </tr>
 <tr class="odd">
-<td><var>P<sub>θ</sub></var></td>
-<td>Normalized joint probability mass over tagged target-class and candidate pairs in the displayed schema</td>
-<td>Normalized sampling distribution over pairs (A,t); ranking and search scores need a separate interpretation</td>
+<td>P_theta</td>
+<td>Distribution, ranking, or search over candidates</td>
+<td>Sampling distribution, beam ranking, constrained decoding distribution, search policy</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The schema separates failures that ordinary output evaluation tends to collapse. A system can infer the right target type and fail to construct a valid inhabitant. It can construct a locally valid inhabitant of the wrong type. It can construct a valid object whose assumptions, dependencies, or permitted uses block Semantic Participation. This separation is the main diagnostic contribution of the essay.
-
-## 4. Latent target types and underspecified prompts {#4-latent-target-types-and-underspecified-prompts}
-
-Target types are frequently latent under natural-language prompting. The prompt "Explain compactness" can request an expert summary, undergraduate explanation, proof sketch, model-theoretic statement, topology example, historical note, or Lean formalization guide. The prompt "write the function" can request a pure function, API-compatible implementation, vectorized operation, memory-safe patch, or testable reference implementation. The prompt "design an experiment" can request a literature plan, executable protocol, statistical design, lab automation workflow, or claim-warrant record.
-
-
-
-<table>
+</table></div>
+<p>The schema separates failures that ordinary output evaluation tends to collapse. A system can infer the right target type and fail to construct a valid inhabitant. It can construct a locally valid inhabitant of the wrong type. It can construct a valid object whose assumptions, dependencies, or permitted uses block Semantic Participation. This separation is the main diagnostic contribution of the essay.</p>
+<h2 id="latent-target-types-and-underspecified-prompts">4. Latent target types and underspecified prompts</h2>
+<p>Target types are frequently latent under natural-language prompting. The prompt “Explain compactness” can request an expert summary, undergraduate explanation, proof sketch, model-theoretic statement, topology example, historical note, or Lean formalization guide. The prompt “write the function” can request a pure function, API-compatible implementation, vectorized operation, memory-safe patch, or testable reference implementation. The prompt “design an experiment” can request a literature plan, executable protocol, statistical design, lab automation workflow, or claim-warrant record.</p>
+<p class="table-display-caption" id="table-4-caption">Table 4. Prompt family, Candidate target types, Typical target-type failure</p>
+<div aria-labelledby="table-4-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="4" id="table-4"><caption class="visually-hidden">Table 4. Prompt family, Candidate target types, Typical target-type failure</caption>
 <colgroup>
 <col style="width: 18%"/>
 <col style="width: 37%"/>
@@ -218,9 +161,9 @@ Target types are frequently latent under natural-language prompting. The prompt 
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Prompt family</strong></th>
-<th><strong>Candidate target types</strong></th>
-<th><strong>Typical target-type failure</strong></th>
+<th scope="col"><strong>Prompt family</strong></th>
+<th scope="col"><strong>Candidate target types</strong></th>
+<th scope="col"><strong>Typical target-type failure</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -250,17 +193,11 @@ Target types are frequently latent under natural-language prompting. The prompt 
 <td>Lists steps without preconditions, resource dependencies, authority, or recovery path.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-A well-calibrated system should sometimes preserve ambiguity instead of forcing a single target. Target-type inference should therefore record candidate target types, selection rationale, unresolved ambiguity, invalid target examples, and validation criteria. This record improves generation only if it changes the candidate artifact or the repair path.
-
-## 5. Three levels of typed generation {#5-three-levels-of-typed-generation}
-
-
-
-<table>
+</table></div>
+<p>A well-calibrated system should sometimes preserve ambiguity instead of forcing a single target. Target-type inference should therefore record candidate target types, selection rationale, unresolved ambiguity, invalid target examples, and validation criteria. This record improves generation only if it changes the candidate artifact or the repair path.</p>
+<h2 id="three-levels-of-typed-generation">5. Three levels of typed generation</h2>
+<p class="table-display-caption" id="table-5-caption">Table 5. Level, Definition, Current status, Main test</p>
+<div aria-labelledby="table-5-caption" class="table-scroll" data-columns="4" role="group" tabindex="0"><table data-source-table="5" id="table-5"><caption class="visually-hidden">Table 5. Level, Definition, Current status, Main test</caption>
 <colgroup>
 <col style="width: 18%"/>
 <col style="width: 28%"/>
@@ -269,10 +206,10 @@ A well-calibrated system should sometimes preserve ambiguity instead of forcing 
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Level</strong></th>
-<th><strong>Definition</strong></th>
-<th><strong>Current status</strong></th>
-<th><strong>Main test</strong></th>
+<th scope="col"><strong>Level</strong></th>
+<th scope="col"><strong>Definition</strong></th>
+<th scope="col"><strong>Current status</strong></th>
+<th scope="col"><strong>Main test</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -295,34 +232,25 @@ A well-calibrated system should sometimes preserve ambiguity instead of forcing 
 <td>Do interventions, probes, ambiguity tests, and failure clusters reveal target-object representations?</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The publication version should keep these levels distinct. Level 1 and Level 2 already support practical measurement. Level 3 is the scientific frontier. Evidence for Level 3 requires more than improved formatting. It requires showing that internal representations, decoding behavior, or failure patterns track target-object structure in ways that predict validity, repair, or transformation stability.
-
-## 6. Domain examples {#6-domain-examples}
-
-### 6.1 Code generation {#6-1-code-generation}
-
-Code generation makes target-type failures visible as soon as syntax and local tests are separated from behavioral contracts and codebase membership.
-
-Prompt: write a function that removes duplicates from a list and preserves the first occurrence order.\
-A = forall alpha. List alpha -\> List alpha\
-constraints = preserves order, preserves first occurrence, removes later duplicates, pure function, stable equality semantics\
-t = candidate implementation
-
-
-
-<table>
+</table></div>
+<p>The publication version should keep these levels distinct. Level 1 and Level 2 already support practical measurement. Level 3 is the scientific frontier. Evidence for Level 3 requires more than improved formatting. It requires showing that internal representations, decoding behavior, or failure patterns track target-object structure in ways that predict validity, repair, or transformation stability.</p>
+<h2 id="domain-examples">6. Domain examples</h2>
+<h3 id="code-generation">6.1 Code generation</h3>
+<p>Code generation makes target-type failures visible as soon as syntax and local tests are separated from behavioral contracts and codebase membership.</p>
+<p>Prompt: write a function that removes duplicates from a list and preserves the first occurrence order.<br/>
+A = forall alpha. List alpha -&gt; List alpha<br/>
+constraints = preserves order, preserves first occurrence, removes later duplicates, pure function, stable equality semantics<br/>
+t = candidate implementation</p>
+<p class="table-display-caption" id="table-6-caption">Table 6. Failure, Meaning — Failure, Meaning</p>
+<div aria-labelledby="table-6-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="6" id="table-6"><caption class="visually-hidden">Table 6. Failure, Meaning — Failure, Meaning</caption>
 <colgroup>
 <col style="width: 27%"/>
 <col style="width: 72%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Failure</strong></th>
-<th><strong>Meaning</strong></th>
+<th scope="col"><strong>Failure</strong></th>
+<th scope="col"><strong>Meaning</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -343,36 +271,26 @@ t = candidate implementation
 <td>Passes local tests and violates project interface, dependency, or maintainability constraints.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-### 6.2 Lean and mathematical formalization {#6-2-lean-and-mathematical-formalization}
-
-Mathematical formalization shows why target-type inference cannot be reduced to checker acceptance. A formal statement can validate and still encode the wrong mathematical target.
-
-Prompt: formalize a theorem stating that a continuous real-valued function on a compact interval attains a maximum.\
-A = FormalTheoremStatement + optional proof obligation\
-constraints = continuity, compact interval or compact set, point in domain, maximum attained, source-target alignment\
-t = Lean theorem statement, definitions, proof sketch, or proof script
-
-The target distinction is substantive. A statement about supremum existence differs from an attainment claim by the witness point in the domain. Typed Generativity identifies the requested object before Functorial Consistency tests whether specialization, translation, and formalization preserve the relevant structure.
-
-### 6.3 Explanation {#6-3-explanation}
-
-Explanation tasks are often misdiagnosed as failures of clarity when the deeper failure is wrong target-type selection. The requested object depends on audience, allowed simplification, notation, proof status, and permitted use.
-
-
-
-<table>
+</table></div>
+<h3 id="lean-and-mathematical-formalization">6.2 Lean and mathematical formalization</h3>
+<p>Mathematical formalization shows why target-type inference cannot be reduced to checker acceptance. A formal statement can validate and still encode the wrong mathematical target.</p>
+<p>Prompt: formalize a theorem stating that a continuous real-valued function on a compact interval attains a maximum.<br/>
+A = FormalTheoremStatement + optional proof obligation<br/>
+constraints = continuity, compact interval or compact set, point in domain, maximum attained, source-target alignment<br/>
+t = Lean theorem statement, definitions, proof sketch, or proof script</p>
+<p>The target distinction is substantive. A statement about supremum existence differs from an attainment claim by the witness point in the domain. Typed Generativity identifies the requested object before Functorial Consistency tests whether specialization, translation, and formalization preserve the relevant structure.</p>
+<h3 id="explanation">6.3 Explanation</h3>
+<p>Explanation tasks are often misdiagnosed as failures of clarity when the deeper failure is wrong target-type selection. The requested object depends on audience, allowed simplification, notation, proof status, and permitted use.</p>
+<p class="table-display-caption" id="table-7-caption">Table 7. Candidate target type, Validation criterion</p>
+<div aria-labelledby="table-7-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="7" id="table-7"><caption class="visually-hidden">Table 7. Candidate target type, Validation criterion</caption>
 <colgroup>
 <col style="width: 32%"/>
 <col style="width: 67%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Candidate target type</strong></th>
-<th><strong>Validation criterion</strong></th>
+<th scope="col"><strong>Candidate target type</strong></th>
+<th scope="col"><strong>Validation criterion</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -397,28 +315,21 @@ Explanation tasks are often misdiagnosed as failures of clarity when the deeper 
 <td>Definitions, library names, theorem statement shape, and proof obligations.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-### 6.4 Scientific protocol design {#6-4-scientific-protocol-design}
-
-Scientific protocol design exposes the relation between target type and permitted claim. A surface-level answer can be fluent and still fail as a protocol if it omits controls, uncertainty, stopping criteria, or the evidential claim the protocol can support.
-
-Prompt: design an experiment to test whether molecule X is stable under condition Y.\
-A = ExperimentalProtocol(hypothesis, materials, controls, measurement, uncertainty, QC, stopping_conditions, analysis_plan, permitted_claim)
-
-
-
-<table>
+</table></div>
+<h3 id="scientific-protocol-design">6.4 Scientific protocol design</h3>
+<p>Scientific protocol design exposes the relation between target type and permitted claim. A surface-level answer can be fluent and still fail as a protocol if it omits controls, uncertainty, stopping criteria, or the evidential claim the protocol can support.</p>
+<p>Prompt: design an experiment to test whether molecule X is stable under condition Y.<br/>
+A = ExperimentalProtocol(hypothesis, materials, controls, measurement, uncertainty, QC, stopping_conditions, analysis_plan, permitted_claim)</p>
+<p class="table-display-caption" id="table-8-caption">Table 8. Failure, Meaning — Failure, Meaning</p>
+<div aria-labelledby="table-8-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="8" id="table-8"><caption class="visually-hidden">Table 8. Failure, Meaning — Failure, Meaning</caption>
 <colgroup>
 <col style="width: 27%"/>
 <col style="width: 72%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Failure</strong></th>
-<th><strong>Meaning</strong></th>
+<th scope="col"><strong>Failure</strong></th>
+<th scope="col"><strong>Meaning</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -443,27 +354,17 @@ A = ExperimentalProtocol(hypothesis, materials, controls, measurement, uncertain
 <td>Fails to state which conclusion the protocol can support.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-### 6.5 Planning and tool use {#6-5-planning-and-tool-use}
-
-Planning and tool-use tasks treat generated objects as candidate state transformations. A plan is not merely a list of steps. It is a proposed transition from current state to goal state under time, resource, authority, and recovery constraints.
-
-Prompt: plan how to prepare, run, and analyze a small experiment by tomorrow afternoon.\
-A = Plan : CurrentState -\> GoalState\
-constraints = time, resources, dependencies, authority, risk, recovery path
-
-Tool calls are candidate inhabitants of action schemas. Once execution changes state, the effect and authority layer developed later in the series adds preconditions, postconditions, handlers, rollback paths, and audit traces.
-
-## 7. Type-First Prompting Harness v0.3 {#7-type-first-prompting-harness-v0-3}
-
-The Type-First Prompting Harness is an evaluation design. It tests whether explicit target-type articulation improves generation. It should be reported as a scientific probe of Typed Generativity, not as a prompting style.
-
-
-
-<table>
+</table></div>
+<h3 id="planning-and-tool-use">6.5 Planning and tool use</h3>
+<p>Planning and tool-use tasks treat generated objects as candidate state transformations. A plan is not merely a list of steps. It is a proposed transition from current state to goal state under time, resource, authority, and recovery constraints.</p>
+<p>Prompt: plan how to prepare, run, and analyze a small experiment by tomorrow afternoon.<br/>
+A = Plan : CurrentState -&gt; GoalState<br/>
+constraints = time, resources, dependencies, authority, risk, recovery path</p>
+<p>Tool calls are candidate inhabitants of action schemas. Once execution changes state, the effect and authority layer developed later in the series adds preconditions, postconditions, handlers, rollback paths, and audit traces.</p>
+<h2 id="type-first-prompting-harness-v0.3">7. Type-First Prompting Harness v0.3</h2>
+<p>The Type-First Prompting Harness is an evaluation design. It tests whether explicit target-type articulation improves generation. It should be reported as a scientific probe of Typed Generativity, not as a prompting style.</p>
+<p class="table-display-caption" id="table-9-caption">Table 9. Condition, Instruction pattern, Purpose</p>
+<div aria-labelledby="table-9-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="9" id="table-9"><caption class="visually-hidden">Table 9. Condition, Instruction pattern, Purpose</caption>
 <colgroup>
 <col style="width: 20%"/>
 <col style="width: 43%"/>
@@ -471,9 +372,9 @@ The Type-First Prompting Harness is an evaluation design. It tests whether expli
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Condition</strong></th>
-<th><strong>Instruction pattern</strong></th>
-<th><strong>Purpose</strong></th>
+<th scope="col"><strong>Condition</strong></th>
+<th scope="col"><strong>Instruction pattern</strong></th>
+<th scope="col"><strong>Purpose</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -503,33 +404,24 @@ The Type-First Prompting Harness is an evaluation design. It tests whether expli
 <td>Tests underspecified prompts.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-### 7.1 Dataset schema {#7-1-dataset-schema}
-
-```text
-type_first_item:
-task_id: string
-domain: code | lean_math | explanation | scientific_protocol | planning | tool_use
-prompt: string
-intended_target_type: string
-candidate_target_types: list[string]
-constraints: list[string]
-invalid_target_type_examples: list[string]
-valid_inhabitant_criteria: list[string]
-checker_or_validator: string
-human_review_fields: list[string]
-ambiguity_status: explicit | latent | unresolved
-semantic_participation_target: string
-```
-
-### 7.2 Metrics {#7-2-metrics}
-
-
-
-<table>
+</table></div>
+<h3 id="dataset-schema">7.1 Dataset schema</h3>
+<p>type_first_item:<br/>
+task_id: string<br/>
+domain: code | lean_math | explanation | scientific_protocol | planning | tool_use<br/>
+prompt: string<br/>
+intended_target_type: string<br/>
+candidate_target_types: list[string]<br/>
+constraints: list[string]<br/>
+invalid_target_type_examples: list[string]<br/>
+valid_inhabitant_criteria: list[string]<br/>
+checker_or_validator: string<br/>
+human_review_fields: list[string]<br/>
+ambiguity_status: explicit | latent | unresolved<br/>
+semantic_participation_target: string</p>
+<h3 id="metrics">7.2 Metrics</h3>
+<p class="table-display-caption" id="table-10-caption">Table 10. Metric, Definition, Interpretation</p>
+<div aria-labelledby="table-10-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="10" id="table-10"><caption class="visually-hidden">Table 10. Metric, Definition, Interpretation</caption>
 <colgroup>
 <col style="width: 20%"/>
 <col style="width: 46%"/>
@@ -537,9 +429,9 @@ semantic_participation_target: string
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Metric</strong></th>
-<th><strong>Definition</strong></th>
-<th><strong>Interpretation</strong></th>
+<th scope="col"><strong>Metric</strong></th>
+<th scope="col"><strong>Definition</strong></th>
+<th scope="col"><strong>Interpretation</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -589,23 +481,14 @@ semantic_participation_target: string
 <td>Rewards calibrated uncertainty.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-### 7.3 Initial pilot {#7-3-initial-pilot}
-
-A first curated pilot should contain 150 items distributed evenly across code, Lean or mathematical formalization, explanation, scientific protocol design, planning, and tool use. This is a proposed feasibility sample for developing annotations and evaluation procedures. Its size alone establishes neither statistical power nor generalization; any comparative result needs a prespecified estimand, an appropriate uncertainty analysis, and explicit sampling assumptions. The first pilot should prioritize label quality over scale.
-
-The primary analysis should classify every failure into at least three classes: wrong target type, right target type with invalid inhabitant, and valid inhabitant with failed semantic participation. A fourth class, transformation instability, should be added when the artifact fails a Functorial Consistency test.
-
-## 8. Target-type and candidate-inhabitant records {#8-target-type-and-candidate-inhabitant-records}
-
-Typed Generativity requires two lightweight records. The target_type_record records the object inferred before generation. The candidate_inhabitant_record records the generated candidate and its validation path. Together they connect generation to membership and transformation.
-
-
-
-<table>
+</table></div>
+<h3 id="initial-pilot">7.3 Initial pilot</h3>
+<p>A first curated pilot should contain 150 items distributed evenly across code, Lean or mathematical formalization, explanation, scientific protocol design, planning, and tool use. This size supports expert annotation and still exposes initial diagnostic signal. The first pilot should prioritize label quality over scale.</p>
+<p>The primary analysis should classify every failure into at least three classes: wrong target type, right target type with invalid inhabitant, and valid inhabitant with failed semantic participation. A fourth class, transformation instability, should be added when the artifact fails a Functorial Consistency test.</p>
+<h2 id="target-type-and-candidate-inhabitant-records">8. Target-type and candidate-inhabitant records</h2>
+<p>Typed Generativity requires two lightweight records. The target_type_record records the object inferred before generation. The candidate_inhabitant_record records the generated candidate and its validation path. Together they connect generation to membership and transformation.</p>
+<p class="table-display-caption" id="table-11-caption">Table 11. Record, Core question, Primary downstream use</p>
+<div aria-labelledby="table-11-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="11" id="table-11"><caption class="visually-hidden">Table 11. Record, Core question, Primary downstream use</caption>
 <colgroup>
 <col style="width: 28%"/>
 <col style="width: 35%"/>
@@ -613,9 +496,9 @@ Typed Generativity requires two lightweight records. The target_type_record reco
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Record</strong></th>
-<th><strong>Core question</strong></th>
-<th><strong>Primary downstream use</strong></th>
+<th scope="col"><strong>Record</strong></th>
+<th scope="col"><strong>Core question</strong></th>
+<th scope="col"><strong>Primary downstream use</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -635,45 +518,34 @@ Typed Generativity requires two lightweight records. The target_type_record reco
 <td>Diagnostics, model comparison, benchmark reporting.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-```text
-target_type_record:
-task_id: string
-context_summary: string
-candidate_target_types: list[string]
-selected_target_type: string
-selection_rationale: string
-constraints: list[string]
-invalid_target_examples: list[string]
-validator_or_review_method: string
-ambiguity_status: explicit | latent | unresolved
-downstream_environment: string
-```
-
-```text
-candidate_inhabitant_record:
-task_id: string
-selected_target_type: string
-candidate: string | object
-validation_status: unchecked | checked | failed | partial | reviewed
-validator: string
-alignment_status: aligned | uncertain | misaligned
-repair_trace: string | null
-epistemic_type: string
-permitted_use: list[string]
-transformation_tests: list[string]
-```
-
-## 9. Relation to the state of the art {#9-relation-to-the-state-of-the-art}
-
-Typed Generativity draws on established areas, each with a bounded source function. Curry-Howard supplies the proof-as-inhabitant analogy. Polymorphic refinement-type-directed synthesis uses declared refinement specifications to constrain recursive program construction <span class="citation-group">[<a class="citation-link" href="#ref-Polikarpova2016" aria-label="Reference 3 — Program Synthesis from Polymorphic Refinement Types">3</a>]</span>. Lean and LeanDojo provide environments <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 1 — The Lean Language Reference">1</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 2 — Theorem Proving in Lean 4">2</a>, <a class="citation-link" href="#ref-LeanDojo2023" aria-label="Reference 5 — LeanDojo: Theorem Proving with Retrieval-Augmented Language Models">5</a>]</span> in which generated proof artifacts can be checked and proof states can be extracted or manipulated programmatically. Structured-output and schema-constrained systems supply operational typed decoding for model interfaces. Tool-use systems show that generated text can encode calls <span class="citation-group">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Reference 4 — Toolformer: Language Models Can Teach Themselves to Use Tools">4</a>]</span> whose validity depends on interface schemas and arguments.
-
-
-
-<table>
+</table></div>
+<p>target_type_record:<br/>
+task_id: string<br/>
+context_summary: string<br/>
+candidate_target_types: list[string]<br/>
+selected_target_type: string<br/>
+selection_rationale: string<br/>
+constraints: list[string]<br/>
+invalid_target_examples: list[string]<br/>
+validator_or_review_method: string<br/>
+ambiguity_status: explicit | latent | unresolved<br/>
+downstream_environment: string<br/>
+<br/>
+candidate_inhabitant_record:<br/>
+task_id: string<br/>
+selected_target_type: string<br/>
+candidate: string | object<br/>
+validation_status: unchecked | checked | failed | partial | reviewed<br/>
+validator: string<br/>
+alignment_status: aligned | uncertain | misaligned<br/>
+repair_trace: string | null<br/>
+epistemic_type: string<br/>
+permitted_use: list[string]<br/>
+transformation_tests: list[string]</p>
+<h2 id="relation-to-the-state-of-the-art">9. Relation to the state of the art</h2>
+<p>Typed Generativity draws on established areas, each with a bounded source function. Curry-Howard supplies the proof-as-inhabitant analogy. Type-directed and example-directed synthesis show how explicit types, examples, and refinements constrain program construction. Lean and LeanDojo provide environments in which generated proof artifacts can be checked and proof states can be extracted or manipulated programmatically. Structured-output and schema-constrained systems supply operational typed decoding for model interfaces. Tool-use systems show that generated text can encode calls whose validity depends on interface schemas and arguments.</p>
+<p class="table-display-caption" id="table-12-caption">Table 12. Source area, What it supports, Boundary</p>
+<div aria-labelledby="table-12-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="12" id="table-12"><caption class="visually-hidden">Table 12. Source area, What it supports, Boundary</caption>
 <colgroup>
 <col style="width: 25%"/>
 <col style="width: 39%"/>
@@ -681,9 +553,9 @@ Typed Generativity draws on established areas, each with a bounded source functi
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Source area</strong></th>
-<th><strong>What it supports</strong></th>
-<th><strong>Boundary</strong></th>
+<th scope="col"><strong>Source area</strong></th>
+<th scope="col"><strong>What it supports</strong></th>
+<th scope="col"><strong>Boundary</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -718,17 +590,11 @@ Typed Generativity draws on established areas, each with a bounded source functi
 <td>Contest performance does not establish the general Typed Generativity hypothesis.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The source boundary is strict. These literatures motivate the generation layer. They do not validate the original Type-First Prompting Harness, target_type_record, candidate_inhabitant_record, or Typed Generativity Bench.
-
-## 10. Strongest objections {#10-strongest-objections}
-
-
-
-<table>
+</table></div>
+<p>The source boundary is strict. These literatures motivate the generation layer. They do not validate the original Type-First Prompting Harness, target_type_record, candidate_inhabitant_record, or Typed Generativity Bench.</p>
+<h2 id="strongest-objections">10. Strongest objections</h2>
+<p class="table-display-caption" id="table-13-caption">Table 13. Objection, Response standard, Operational test</p>
+<div aria-labelledby="table-13-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="13" id="table-13"><caption class="visually-hidden">Table 13. Objection, Response standard, Operational test</caption>
 <colgroup>
 <col style="width: 24%"/>
 <col style="width: 42%"/>
@@ -736,9 +602,9 @@ The source boundary is strict. These literatures motivate the generation layer. 
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Objection</strong></th>
-<th><strong>Response standard</strong></th>
-<th><strong>Operational test</strong></th>
+<th scope="col"><strong>Objection</strong></th>
+<th scope="col"><strong>Response standard</strong></th>
+<th scope="col"><strong>Operational test</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -778,15 +644,10 @@ The source boundary is strict. These literatures motivate the generation layer. 
 <td>Require evidence beyond output-format improvement.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## 11. Failure taxonomy and kill criteria {#11-failure-taxonomy-and-kill-criteria}
-
-
-
-<table>
+</table></div>
+<h2 id="failure-taxonomy-and-kill-criteria">11. Failure taxonomy and kill criteria</h2>
+<p class="table-display-caption" id="table-14-caption">Table 14. Failure, Meaning, Repair path</p>
+<div aria-labelledby="table-14-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="14" id="table-14"><caption class="visually-hidden">Table 14. Failure, Meaning, Repair path</caption>
 <colgroup>
 <col style="width: 22%"/>
 <col style="width: 41%"/>
@@ -794,9 +655,9 @@ The source boundary is strict. These literatures motivate the generation layer. 
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Failure</strong></th>
-<th><strong>Meaning</strong></th>
-<th><strong>Repair path</strong></th>
+<th scope="col"><strong>Failure</strong></th>
+<th scope="col"><strong>Meaning</strong></th>
+<th scope="col"><strong>Repair path</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -841,43 +702,25 @@ The source boundary is strict. These literatures motivate the generation layer. 
 <td>Ablate length and record fields.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The proposal should be revised under the following conditions.
-
--   K1. Type-first interventions do not improve validity, alignment, repair cost, ambiguity handling, downstream usability, or transformation stability.
-
--   K2. Target-type labels fail to predict errors beyond ordinary task labels or genre labels.
-
--   K3. Human annotators cannot agree on target types after task-specific guidelines.
-
--   K4. Structured-output constraints dominate all gains, leaving no additional value for target-type inference.
-
--   K5. The harness adds annotation cost without diagnostic signal.
-
--   K6. Latent-cognition probes fail to distinguish target-object structure from surface format or topic.
-
--   K7. The framework cannot connect generated candidates to Semantic Participation or Functorial Consistency.
-
-## 12. Conclusion and transition to Functorial Consistency {#12-conclusion-and-transition-to-functorial-consistency}
-
-Typed Generativity supplies the candidate-production component of Compositional Intelligence. The framework separates target-class inference, candidate construction, independent validation, repair, semantic participation, and transformation stability, while reserving formal inhabitant status for candidates accepted under the stated type system.
-
-The next essay asks whether those generated objects preserve structure. Once a model constructs a candidate proof, program, semantic parse, protocol, or plan, the central test is path agreement across source and target representations under an explicit equivalence regime. Typed Generativity supplies the candidate object. Functorial Consistency supplies the evaluation square.
-
-Typed Generativity uses the normalized joint factorization above, while formal typing, where applicable, uses the independent judgment $\Delta\vdash t:\tau$. Functorial Consistency compares the transported paths under a declared relation, orientation, and validation procedure:
-
-$$
-T_1(f(x))\mathrel{R}g(T_0(x)).
-$$
-
-## Appendix A. Claim levels {#appendix-a-claim-levels}
-
-
-
-<table>
+</table></div>
+<p>The proposal should be revised under the following conditions.</p>
+<ul>
+<li><p>K1. Type-first interventions do not improve validity, alignment, repair cost, ambiguity handling, downstream usability, or transformation stability.</p></li>
+<li><p>K2. Target-type labels fail to predict errors beyond ordinary task labels or genre labels.</p></li>
+<li><p>K3. Human annotators cannot agree on target types after task-specific guidelines.</p></li>
+<li><p>K4. Structured-output constraints dominate all gains, leaving no additional value for target-type inference.</p></li>
+<li><p>K5. The harness adds annotation cost without diagnostic signal.</p></li>
+<li><p>K6. Latent-cognition probes fail to distinguish target-object structure from surface format or topic.</p></li>
+<li><p>K7. The framework cannot connect generated candidates to Semantic Participation or Functorial Consistency.</p></li>
+</ul>
+<h2 id="conclusion-and-transition-to-functorial-consistency">12. Conclusion and transition to Functorial Consistency</h2>
+<p>Typed Generativity supplies the generation layer of Compositional Intelligence. It reframes generation as construction of candidate inhabitants of inferred target types, with separate failure modes for target-type inference, candidate construction, validation, repair, Semantic Participation, and transformation stability.</p>
+<p>The next essay asks whether those generated objects preserve structure. Once a model constructs a candidate proof, program, semantic parse, protocol, or plan, the central test is path agreement across source and target representations under an explicit equivalence regime. Typed Generativity supplies the candidate object. Functorial Consistency supplies the evaluation square.</p>
+<p>Typed Generativity: P_theta(t : A | Gamma)<br/>
+Functorial Consistency: T(f(x)) approx g(T(x))</p>
+<h2 id="appendix-a.-claim-levels">Appendix A. Claim levels</h2>
+<p class="table-display-caption" id="table-15-caption">Table 15. Level, Meaning, Example</p>
+<div aria-labelledby="table-15-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="15" id="table-15"><caption class="visually-hidden">Table 15. Level, Meaning, Example</caption>
 <colgroup>
 <col style="width: 9%"/>
 <col style="width: 33%"/>
@@ -885,9 +728,9 @@ $$
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Level</strong></th>
-<th><strong>Meaning</strong></th>
-<th><strong>Example</strong></th>
+<th scope="col"><strong>Level</strong></th>
+<th scope="col"><strong>Meaning</strong></th>
+<th scope="col"><strong>Example</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -917,37 +760,28 @@ $$
 <td>Some systems can encode target-object structure internally beyond surface genre cues.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## Appendix B. Benchmark item schema {#appendix-b-benchmark-item-schema}
-
-```text
-typed_generativity_benchmark_item:
-id: string
-domain: string
-prompt: string
-intended_target_type: string
-candidate_target_types: list[string]
-constraints: list[string]
-invalid_target_examples: list[string]
-valid_inhabitant_criteria: list[string]
-validator: string
-semantic_participation_target: string
-transformation_tests: list[string]
-reviewer_guidelines: string
-failure_labels: list[string]
-```
-
-<section class="bibliography" aria-labelledby="references-heading">
-<h2 id="references-heading">References</h2>
-
-<ol class="references-list">
-<li id="ref-LeanRef"><span class="ref-key">[1]</span> <a href="https://lean-lang.org/doc/reference/latest/" rel="noopener noreferrer">The Lean Language Reference</a>. <span class="ref-details">Lean Community · online reference.</span></li>
-<li id="ref-TPIL4"><span class="ref-key">[2]</span> <a href="https://docs.lean-lang.org/theorem_proving_in_lean4/" rel="noopener noreferrer">Theorem Proving in Lean 4</a>. <span class="ref-details">Avigad, de Moura, Kong, and Ullrich · online textbook.</span></li>
-<li id="ref-Polikarpova2016"><span class="ref-key">[3]</span> <a href="https://dspace.mit.edu/entities/publication/c3dcde41-ff5d-442d-b1c1-4f269c8896ef" rel="noopener noreferrer">Program Synthesis from Polymorphic Refinement Types</a>. <span class="ref-details">Polikarpova, Kuraj, and Solar-Lezama · PLDI 2016, pp. 522–538.</span></li>
-<li id="ref-Toolformer2023"><span class="ref-key">[4]</span> <a href="https://proceedings.neurips.cc/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html" rel="noopener noreferrer">Toolformer: Language Models Can Teach Themselves to Use Tools</a>. <span class="ref-details">Schick et al. · NeurIPS 2023.</span></li>
-<li id="ref-LeanDojo2023"><span class="ref-key">[5]</span> <a href="https://proceedings.neurips.cc/paper_files/paper/2023/hash/4441469427094f8873d0fecb0c4e1cee-Abstract-Datasets_and_Benchmarks.html" rel="noopener noreferrer">LeanDojo: Theorem Proving with Retrieval-Augmented Language Models</a>. <span class="ref-details">Yang et al. · NeurIPS 2023.</span></li>
-</ol>
-</section>
+</table></div>
+<h2 id="appendix-b.-benchmark-item-schema">Appendix B. Benchmark item schema</h2>
+<p>typed_generativity_benchmark_item:<br/>
+id: string<br/>
+domain: string<br/>
+prompt: string<br/>
+intended_target_type: string<br/>
+candidate_target_types: list[string]<br/>
+constraints: list[string]<br/>
+invalid_target_examples: list[string]<br/>
+valid_inhabitant_criteria: list[string]<br/>
+validator: string<br/>
+semantic_participation_target: string<br/>
+transformation_tests: list[string]<br/>
+reviewer_guidelines: string<br/>
+failure_labels: list[string]</p>
+<h2 id="appendix-c.-source-use-warnings">Appendix C. Source-use warnings</h2>
+<ul>
+<li><p>Curry-Howard supports the proof-as-inhabitant analogy in formal systems; it does not establish that language models implement type theory.</p></li>
+<li><p>Type-directed and example-directed synthesis support explicit specification-guided construction; Typed Generativity adds latent target-type inference under natural-language context.</p></li>
+<li><p>Lean and LeanDojo support formal validation and proof-state interaction; they do not establish semantic alignment or downstream reuse on their own.</p></li>
+<li><p>Structured-output systems support typed decoding and schema conformance; schema conformance should be distinguished from artifact membership.</p></li>
+<li><p>Tool-use systems support interface-constrained generation; executed actions require the effect and authority controls developed later in the series.</p></li>
+<li><p>AlphaProof and related mathematical-reasoning systems motivate high-value typed construction; contest results should be cited only for their documented scope.</p></li>
+</ul>

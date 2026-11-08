@@ -12,6 +12,7 @@ import collections
 import hashlib
 from html.parser import HTMLParser
 from pathlib import Path
+import build_site
 from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree
 
@@ -203,17 +204,9 @@ def main() -> int:
     total_links = 0
     total_display_maths = 0
     total_figures = 0
-    expected_media = {
-        "compositional-intelligence": (6, 2),
-        "semantic-participation": (2, 0),
-        "typed-generativity": (3, 0),
-        "functorial-consistency": (1, 0),
-        "lambek-machines": (1, 2),
-        "algebraic-architectures": (1, 0),
-        "quantitative-curry-howard": (3, 0),
-        "effectful-and-conceptual-intelligence": (3, 0),
-        "series-preface": (1, 0),
-    }
+    # Media inventory follows the uploaded V3 Word documents, not superseded
+    # website revisions that introduced additional diagram markup.
+    expected_media = {row[0]: (0, 0) for row in build_site.ESSAYS}
 
     for page, doc in documents.items():
         relative = page.relative_to(SITE).as_posix()

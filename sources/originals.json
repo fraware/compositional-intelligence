@@ -1,0 +1,104 @@
+{
+  "format": "docx-source-fidelity-v1",
+  "documents": {
+    "compositional-intelligence": {
+      "slug": "compositional-intelligence",
+      "source_docx": "Compositional_Intelligence_Book_Manuscript_V3(1).docx",
+      "source_sha256": "0c64bcec2fc3127d1b0f5dcd45509b512e8ec5de77438c5cd780d3daa7fe176b",
+      "canonical_text_sha256": "d50546bb1a0ab7027ff4a1326a8895a15d3adbeb4c7e7ee896c634bec4cc4e7e",
+      "markdown_sha256": "14f963c1f56889de9c8904b32caaa6d8dd97f550253ad7551b43a81b3cc048ba",
+      "table_count": 10,
+      "heading_count": 28,
+      "word_count": 5366,
+      "published_markdown": "compositional-intelligence.md"
+    },
+    "series-preface": {
+      "slug": "series-preface",
+      "source_docx": "Essay0_Compositional_Intelligence_Preface_V3(1).docx",
+      "source_sha256": "1ce80674057c8c2951652bbb0e1f39bb20be1b18c03080bbe2eb1ca33f02e8c5",
+      "canonical_text_sha256": "be342533efe553ef9ba5daf489962cea780726c717e06a2aea3d1a03b35ea888",
+      "markdown_sha256": "03d2e69f54162b6519f9ef215ad7b6123a9f76fc9530992f89bc5f45a8170df2",
+      "table_count": 7,
+      "heading_count": 12,
+      "word_count": 1616,
+      "published_markdown": "series-preface.md"
+    },
+    "semantic-participation": {
+      "slug": "semantic-participation",
+      "source_docx": "Essay1_Semantic_Participation_V3(1).docx",
+      "source_sha256": "40dbb4d36d7e57258776ec5beb4b3ab296b8bd5827b6d16296bd0ad4b5e75268",
+      "canonical_text_sha256": "d68d8a266791b08930eb0f4ded8c13a78a9d097a7208ff65cdde090ecb8d24dd",
+      "markdown_sha256": "a70fc3148f54cbe562e3b8404497162c3466afea7eca954e5085c9b4e4443369",
+      "table_count": 12,
+      "heading_count": 27,
+      "word_count": 3778,
+      "published_markdown": "semantic-participation.md"
+    },
+    "typed-generativity": {
+      "slug": "typed-generativity",
+      "source_docx": "Essay2_Typed_Generativity_V3(1).docx",
+      "source_sha256": "174be720ce13dfaf0196ad51a5f35c02810fc8bd0a00356399f0ab4baf67e028",
+      "canonical_text_sha256": "2c09c904e19a282c9c04aa7ee490a0b781cf0929bf8ef4a0c86e61efcc6bbe1c",
+      "markdown_sha256": "60dfec38a0b91bc20d84aecf8ab12976c05406db59bc2b3248efcd82f2d8818c",
+      "table_count": 15,
+      "heading_count": 26,
+      "word_count": 3570,
+      "published_markdown": "typed-generativity.md"
+    },
+    "functorial-consistency": {
+      "slug": "functorial-consistency",
+      "source_docx": "Essay3_Functorial_Consistency_V3(1).docx",
+      "source_sha256": "e0c2a62b7b1c76aeda91f2fee25b3880f7f88d33c93622f71737f8e807ab3b0a",
+      "canonical_text_sha256": "b912914267bec25dc29b49cde9e3e11e40934bca6f82a1be636562e139e112ae",
+      "markdown_sha256": "8ea148ddb91152a21362f415e0e1b577c602114f083706b1d73530c176ef1767",
+      "table_count": 19,
+      "heading_count": 29,
+      "word_count": 4704,
+      "published_markdown": "functorial-consistency.md"
+    },
+    "lambek-machines": {
+      "slug": "lambek-machines",
+      "source_docx": "Essay4_Lambek_Machines_V3(1).docx",
+      "source_sha256": "d7fa42921bd8ec0664fa1f23f3462bce1e26531dee2b6ad6db7210f92f128ad0",
+      "canonical_text_sha256": "1e396adbc6ef9487e4900120245199162c59ad18a32007c8ede137ef84419f24",
+      "markdown_sha256": "52bcc22dfc911be46d31f79fd7c34eeb6faf9df6d28bc18b02636a78161b291b",
+      "table_count": 14,
+      "heading_count": 30,
+      "word_count": 4347,
+      "published_markdown": "lambek-machines.md"
+    },
+    "algebraic-architectures": {
+      "slug": "algebraic-architectures",
+      "source_docx": "Essay5_Algebraic_Architectures_V3(1).docx",
+      "source_sha256": "aa2ce689a52f15fde0ccea0276a18f3b6c7a316d98ab2a4ec965bdb41196ef20",
+      "canonical_text_sha256": "f58bc68306b0d0a5735b0400a68b25446dbcbfa7041fc9a35077cf890dc48177",
+      "markdown_sha256": "ede00bb4252ff06b031822ab5d3af9e98a6bf3ccbd5b870b09f0fb8f38881d12",
+      "table_count": 13,
+      "heading_count": 28,
+      "word_count": 4243,
+      "published_markdown": "algebraic-architectures.md"
+    },
+    "quantitative-curry-howard": {
+      "slug": "quantitative-curry-howard",
+      "source_docx": "Essay6_Quantitative_Curry_Howard_V3(1).docx",
+      "source_sha256": "be5dbebb3bfd7c0c7a8afbab0f48a614d113420d27cf2354b49b55e3dc2170cc",
+      "canonical_text_sha256": "476996de237e3e0720c69ab45cbf9f4fa7e86a9527c5276f40e4a5022ba99262",
+      "markdown_sha256": "a6bbd22b0dc08643c69f4386fd30147cd77cc8f2368ef2c77b0aadcd02c03dc9",
+      "table_count": 10,
+      "heading_count": 28,
+      "word_count": 3794,
+      "published_markdown": "quantitative-curry-howard.md"
+    },
+    "effectful-and-conceptual-intelligence": {
+      "slug": "effectful-and-conceptual-intelligence",
+      "source_docx": "Essay7_Effectful_and_Conceptual_Intelligence_V3(1).docx",
+      "source_sha256": "675f34ac5bd61d76d77b3e48880d4e34d869abc5f4d9d82d9b71212984ce1a23",
+      "canonical_text_sha256": "c428c90dd58c3e7cac508ec4e9154abddd5b6f645aeb320958614b11171ded62",
+      "markdown_sha256": "68359cba78c3396c63c7a167bd9c0715fc639267e78f68194f6fd1bca5351c00",
+      "table_count": 19,
+      "heading_count": 26,
+      "word_count": 4207,
+      "published_markdown": "effectful-and-conceptual-intelligence.md"
+    }
+  }
+}

@@ -2,21 +2,16 @@
 
 *Mateo Petel*
 
-## Abstract
+<!-- AUTHORITATIVE-DOCX SHA256 40dbb4d36d7e57258776ec5beb4b3ab296b8bd5827b6d16296bd0ad4b5e75268; source Essay1_Semantic_Participation_V3(1).docx -->
 
-AI reasoning is commonly evaluated through output quality, benchmark performance, and local task completion. Those measures remain useful, although they understate the condition required for cumulative knowledge. A proof sketch, code patch, theorem formalization, protocol, dataset, model result, or scientific claim receives epistemic status only when it can enter a structured environment with explicit validity, alignment, warrant, compositional behavior, and conditions for future use.
-
-This essay introduces semantic participation as the membership layer for AI-generated artifacts. Semantic participation is the capacity of an AI system to place candidate artifacts inside a semantic environment with recorded validation, source-target alignment, compositional role, epistemic type, and permitted use. The framework treats AI outputs as candidate artifacts whose value depends on their position in a world of definitions, dependencies, checkers, provenance, review procedures, admissible operations, and downstream consumption.
-
-Curry-Howard-Lambek supplies the conceptual architecture. Curry-Howard links propositions, types, proofs, and programs. Lambek's original syntactic calculus formalizes composition through ordered grammatical types <span class="citation-group">[<a class="citation-link" href="#ref-Lambek1958" aria-label="Reference 1 — The Mathematics of Sentence Structure">1</a>]</span>. Lean supplies the operational exemplar <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 2 — The Lean Language Reference">2</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 3 — Theorem Proving in Lean 4">3</a>]</span>, since generated proof artifacts can be elaborated, checked by a trusted kernel, inspected through proof states, integrated with Mathlib, and reviewed by maintainers. The target class is broader and includes proof assistants, verified programming languages, scientific workflow systems, laboratory automation protocols, research-object infrastructures, and institutional review environments.
-
-The essay contributes six technical objects. It defines semantic environment, ArtifactRecord, semantic membership, semantic transport, epistemic type, and library improvement delta, then turns those objects into record schemas, lifecycle contracts, benchmark protocols, case studies, and falsification criteria. The research program asks how AI systems can participate in cumulative knowledge worlds beyond the production of impressive local answers.
-
-## Contribution summary
-
-
-
-<table>
+<h2 id="abstract">Abstract</h2>
+<p>AI reasoning is commonly evaluated through output quality, benchmark performance, and local task completion. Those measures remain useful, although they understate the condition required for cumulative knowledge. A proof sketch, code patch, theorem formalization, protocol, dataset, model result, or scientific claim receives epistemic status only when it can enter a structured environment with explicit validity, alignment, warrant, compositional behavior, and conditions for future use.</p>
+<p>This essay introduces semantic participation as the membership layer for AI-generated artifacts. Semantic participation is the capacity of an AI system to place candidate artifacts inside a semantic environment with recorded validation, source-target alignment, compositional role, epistemic type, and permitted use. The framework treats AI outputs as candidate artifacts whose value depends on their position in a world of definitions, dependencies, checkers, provenance, review procedures, admissible operations, and downstream consumption.</p>
+<p>Curry-Howard-Lambek supplies the conceptual architecture. Curry-Howard links propositions, types, proofs, and programs. Lambek adds a compositional layer in which contexts, terms, substitutions, and translations receive structural interpretation. Lean supplies the operational exemplar, since generated proof artifacts can be elaborated, checked by a trusted kernel, inspected through proof states, integrated with Mathlib, and reviewed by maintainers. The target class is broader and includes proof assistants, verified programming languages, scientific workflow systems, laboratory automation protocols, research-object infrastructures, and institutional review environments.</p>
+<p>The essay contributes six technical objects. It defines semantic environment, ArtifactRecord, semantic membership, semantic transport, epistemic type, and library improvement delta, then turns those objects into record schemas, lifecycle contracts, benchmark protocols, case studies, and falsification criteria. The research program asks how AI systems can participate in cumulative knowledge worlds beyond the production of impressive local answers.</p>
+<h2 id="contribution-summary">Contribution summary</h2>
+<p class="table-display-caption" id="table-1-caption">Table 1. ID, Contribution, Publication claim</p>
+<div aria-labelledby="table-1-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="1" id="table-1"><caption class="visually-hidden">Table 1. ID, Contribution, Publication claim</caption>
 <colgroup>
 <col style="width: 6%"/>
 <col style="width: 22%"/>
@@ -24,9 +19,9 @@ The essay contributes six technical objects. It defines semantic environment, Ar
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>ID</strong></th>
-<th><strong>Contribution</strong></th>
-<th><strong>Publication claim</strong></th>
+<th scope="col"><strong>ID</strong></th>
+<th scope="col"><strong>Contribution</strong></th>
+<th scope="col"><strong>Publication claim</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -61,23 +56,18 @@ The essay contributes six technical objects. It defines semantic environment, Ar
 <td>A proposed evaluation program for source-target alignment, semantic transport, epistemic typing, and library integration.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## Reader map
-
-
-
-<table>
+</table></div>
+<h2 id="reader-map">Reader map</h2>
+<p class="table-display-caption" id="table-2-caption">Table 2. Reader, Recommended path</p>
+<div aria-labelledby="table-2-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="2" id="table-2"><caption class="visually-hidden">Table 2. Reader, Recommended path</caption>
 <colgroup>
 <col style="width: 29%"/>
 <col style="width: 70%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Reader</strong></th>
-<th><strong>Recommended path</strong></th>
+<th scope="col"><strong>Reader</strong></th>
+<th scope="col"><strong>Recommended path</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -102,29 +92,22 @@ The essay contributes six technical objects. It defines semantic environment, Ar
 <td>Read before Essay 2; return to Section 8 before Essay 3.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## 1. Position in the Compositional Intelligence series {#1-position-in-the-compositional-intelligence-series}
-
-Compositional Intelligence studies AI systems as constructors, transformers, validators, warrant-bearing mechanisms, and executors of typed artifacts inside structured worlds. Essay 1 defines the membership criterion for the series. Essay 2 analyzes target-type inference and candidate construction. Essay 3 tests transformation stability through commutation-square evaluation. Essays 4 through 7 extend the framework to language, architecture, quantitative warrant, and action.
-
-> membership -\> generation -\> transformation -\> language -\> architecture -\> warrant -\> action
-
-Semantic Participation is the entry point into the sequence. Later essays ask how artifacts are generated, transformed, architecturally supported, quantitatively warranted, and executed. This essay asks the prior membership question. An AI-generated object counts as an artifact in a serious world of knowledge, software, science, or action only after its target environment, validation status, source alignment, compositional role, epistemic type, and permitted use have been specified.
-
-## 2. Governing claim {#2-governing-claim}
-
-
-
-<table>
+</table></div>
+<h2 id="position-in-the-compositional-intelligence-series">1. Position in the Compositional Intelligence series</h2>
+<p>Compositional Intelligence studies AI systems as constructors, transformers, validators, warrant-bearing mechanisms, and executors of typed artifacts inside structured worlds. Essay 1 defines the membership criterion for the series. Essay 2 analyzes target-type inference and candidate construction. Essay 3 tests transformation stability through commutation-square evaluation. Essays 4 through 7 extend the framework to language, architecture, quantitative warrant, and action.</p>
+<blockquote>
+<p>membership -&gt; generation -&gt; transformation -&gt; language -&gt; architecture -&gt; warrant -&gt; action</p>
+</blockquote>
+<p>Semantic Participation is the entry point into the sequence. Later essays ask how artifacts are generated, transformed, architecturally supported, quantitatively warranted, and executed. This essay asks the prior membership question. An AI-generated object counts as an artifact in a serious world of knowledge, software, science, or action only after its target environment, validation status, source alignment, compositional role, epistemic type, and permitted use have been specified.</p>
+<h2 id="governing-claim">2. Governing claim</h2>
+<p class="table-display-caption" id="table-3-caption">Table 3. Governing claim — Governing claim</p>
+<div aria-labelledby="table-3-caption" class="table-scroll" data-columns="1" role="group" tabindex="0"><table data-source-table="3" id="table-3"><caption class="visually-hidden">Table 3. Governing claim — Governing claim</caption>
 <colgroup>
 <col style="width: 100%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Governing claim</strong></th>
+<th scope="col"><strong>Governing claim</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -132,23 +115,14 @@ Semantic Participation is the entry point into the sequence. Later essays ask ho
 <td>An AI output counts as an artifact when it has a recorded position inside a structured semantic environment. It must be expressible there, validated or reviewable there, aligned with its source intention, composable with relevant objects, assigned an epistemic type, and governed by permitted-use conditions.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The claim is membership-centric. A model response can be fluent, useful, and locally successful without satisfying the conditions that support cumulative use. A proof sketch requires definitions, assumptions, proof obligations, and admissible generality. A code patch requires interfaces, tests, dependencies, invariants, security assumptions, and deployment assumptions. A scientific claim requires instruments, models, samples, uncertainty, protocols, evidence, and permitted claim types. A plan requires authority, preconditions, effects, state changes, and validation.
-
-Semantic Participation changes the unit of analysis from the isolated response to the artifact-in-world. The artifact is evaluated together with its representation, dependencies, assumptions, validators, alignment record, epistemic type, and reuse path. Membership is environment-relative. A formal theorem, program, protocol, dataset, or claim can fit one structured setting and fail in another through incompatible definitions, dependencies, review standards, or downstream-use conditions.
-
-## 3. From output quality to semantic membership {#3-from-output-quality-to-semantic-membership}
-
-Output-centric evaluation asks whether a system produces a persuasive answer, passes a benchmark, solves a formal goal, or completes an isolated task. This grammar has advanced AI evaluation through comparable metrics and visible capability demonstrations. It also leaves unresolved the difference between local performance and membership in a structured world.
-
-A membership-centric grammar asks whether a generated artifact can enter an environment that controls expression, validation, alignment, composition, warrant, and reuse. The artifact must be available to the environment in a representation the environment can process; it must satisfy available checkers or review procedures; it must preserve source intention under an explicit relation; it must fit the relevant dependency and interface structure; it must support only claims licensed by its epistemic type.
-
-
-
-<table>
+</table></div>
+<p>The claim is membership-centric. A model response can be fluent, useful, and locally successful without satisfying the conditions that support cumulative use. A proof sketch requires definitions, assumptions, proof obligations, and admissible generality. A code patch requires interfaces, tests, dependencies, invariants, security assumptions, and deployment assumptions. A scientific claim requires instruments, models, samples, uncertainty, protocols, evidence, and permitted claim types. A plan requires authority, preconditions, effects, state changes, and validation.</p>
+<p>Semantic Participation changes the unit of analysis from the isolated response to the artifact-in-world. The artifact is evaluated together with its representation, dependencies, assumptions, validators, alignment record, epistemic type, and reuse path. Membership is environment-relative. A formal theorem, program, protocol, dataset, or claim can fit one structured setting and fail in another through incompatible definitions, dependencies, review standards, or downstream-use conditions.</p>
+<h2 id="from-output-quality-to-semantic-membership">3. From output quality to semantic membership</h2>
+<p>Output-centric evaluation asks whether a system produces a persuasive answer, passes a benchmark, solves a formal goal, or completes an isolated task. This grammar has advanced AI evaluation through comparable metrics and visible capability demonstrations. It also leaves unresolved the difference between local performance and membership in a structured world.</p>
+<p>A membership-centric grammar asks whether a generated artifact can enter an environment that controls expression, validation, alignment, composition, warrant, and reuse. The artifact must be available to the environment in a representation the environment can process; it must satisfy available checkers or review procedures; it must preserve source intention under an explicit relation; it must fit the relevant dependency and interface structure; it must support only claims licensed by its epistemic type.</p>
+<p class="table-display-caption" id="table-4-caption">Table 4. Domain, Local success, Membership condition</p>
+<div aria-labelledby="table-4-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="4" id="table-4"><caption class="visually-hidden">Table 4. Domain, Local success, Membership condition</caption>
 <colgroup>
 <col style="width: 17%"/>
 <col style="width: 28%"/>
@@ -156,9 +130,9 @@ A membership-centric grammar asks whether a generated artifact can enter an envi
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Domain</strong></th>
-<th><strong>Local success</strong></th>
-<th><strong>Membership condition</strong></th>
+<th scope="col"><strong>Domain</strong></th>
+<th scope="col"><strong>Local success</strong></th>
+<th scope="col"><strong>Membership condition</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -188,19 +162,12 @@ A membership-centric grammar asks whether a generated artifact can enter an envi
 <td>Authority, side effects, memory writes, rollback obligations, and audit traces are recorded.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-These cases differ operationally and expose the same record problem. A reviewer needs to know the object type, environment, dependencies, assumptions, validators, source alignment, warrant, permitted use, and repair route. Without those fields, local success can be mistaken for durable contribution.
-
-## 4. The seven thresholds {#4-the-seven-thresholds}
-
-Semantic Participation separates seven thresholds that current AI evaluation often merges into one judgment. The separation matters as each threshold supports a different downstream inference and fails through a different mechanism.
-
-
-
-<table>
+</table></div>
+<p>These cases differ operationally and expose the same record problem. A reviewer needs to know the object type, environment, dependencies, assumptions, validators, source alignment, warrant, permitted use, and repair route. Without those fields, local success can be mistaken for durable contribution.</p>
+<h2 id="the-seven-thresholds">4. The seven thresholds</h2>
+<p>Semantic Participation separates seven thresholds that current AI evaluation often merges into one judgment. The separation matters as each threshold supports a different downstream inference and fails through a different mechanism.</p>
+<p class="table-display-caption" id="table-5-caption">Table 5. Threshold, What it establishes, Membership question</p>
+<div aria-labelledby="table-5-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="5" id="table-5"><caption class="visually-hidden">Table 5. Threshold, What it establishes, Membership question</caption>
 <colgroup>
 <col style="width: 18%"/>
 <col style="width: 38%"/>
@@ -208,9 +175,9 @@ Semantic Participation separates seven thresholds that current AI evaluation oft
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Threshold</strong></th>
-<th><strong>What it establishes</strong></th>
-<th><strong>Membership question</strong></th>
+<th scope="col"><strong>Threshold</strong></th>
+<th scope="col"><strong>What it establishes</strong></th>
+<th scope="col"><strong>Membership question</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -250,113 +217,95 @@ Semantic Participation separates seven thresholds that current AI evaluation oft
 <td>Which maintenance, search, automation, and review conditions apply?</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The distinction between formal validity and semantic alignment is central. A proof assistant can check that a term inhabits a formal statement under a specified environment <span class="citation-group">[<a class="citation-link" href="#ref-LeanRef" aria-label="Reference 2 — The Lean Language Reference">2</a>, <a class="citation-link" href="#ref-TPIL4" aria-label="Reference 3 — Theorem Proving in Lean 4">3</a>]</span>. The alignment relation asks whether that formal statement preserves the intended informal claim. In mathematical formalization, this separates proving a valid theorem from proving the theorem the source intended. In science, it separates a model-relative result from an empirical claim. In code, it separates passing tests from preserving the intended interface contract.
-
-## 5. Formal core {#5-formal-core}
-
-### 5.1 Semantic environment {#5-1-semantic-environment}
-
-A semantic environment is a structured world in which artifacts can be expressed, transformed, checked, stored, diagnosed, reviewed, and reused. The definition is operational. It identifies the components that an implementation, benchmark, or review interface should expose.
-
-> SemanticEnvironment E = {\
-> Obj_E recognized objects\
-> Art_E admissible artifacts\
-> State_E structured environment state\
-> Act_E admissible actions or transformations\
-> Step_E State_E x Act_E -\> State_E + Diag_E\
-> Check_E Art_E -\> CheckResult x Diag_E\
-> Align_E Art_E x Source -\> AlignmentResult\
-> Compose_E Art_E x Context_E -\> CompositionResult\
-> Mem_E persistent environment memory\
-> Review_E human, automated, or hybrid review procedure\
-> }
-
-Proof assistants, codebases, workflow systems, semantic parsers, data repositories, and laboratory protocols instantiate these components differently. The schema requires environment-relative membership in place of a universal validation rule.
-
-### 5.2 ArtifactRecord {#5-2-artifactrecord}
-
-An ArtifactRecord packages a generated object with the fields required for membership assessment. The record is a minimal audit surface for the object, its environment, its warrant, and its permitted use.
-
-> ArtifactRecord a = {\
-> id\
-> content\
-> representation\
-> target_environment\
-> dependencies\
-> assumptions\
-> source_intention\
-> validation_path\
-> validation_status\
-> alignment_status\
-> epistemic_type\
-> compositional_role\
-> permitted_use\
-> prohibited_use\
-> repair_path\
-> review_status\
-> }
-
-The record should remain compact in low-risk settings and richer in high-stakes settings. Its value lies in changing review, repair, reuse, and downstream consumption. A record filled after the fact for cosmetic completeness has little scientific value.
-
-### 5.3 Semantic membership {#5-3-semantic-membership}
-
-Semantic membership is represented as an operational criterion over a target artifact, source intention, and preservation record.
-
-> $\operatorname{ParticipationStatus}_E(a,b,\rho,u)$ records the outcome of the declared environment\'s admission policy for artifact a, source intention b, preservation record rho, and proposed use u. It is accepted only if expression, successful validation or an accepted expert review, source alignment, compositional interface fit, warrant appropriate to the epistemic type, reuse eligibility where the requested use entails reuse, and permitted use all receive affirmative decisions. It is rejected on a decisive failed obligation and unresolved where required evidence remains missing or inconclusive. Reviewability alone establishes eligibility for review, not admission. This three-valued aggregate is an operational protocol whose outcomes depend on the specified environment and review policy.
-
-Here $a$ is the target artifact, $b$ is the source intention or source artifact, and $\rho$ is the preservation record. The criterion is environment-relative. A theorem can fit one formal development and fail in another through imports, definitions, naming conventions, abstraction choices, and maintainability norms. A dataset can fit one scientific workflow and fail in another through consent conditions, preprocessing, instrument differences, and statistical assumptions.
-
-### 5.4 Semantic transport {#5-4-semantic-transport}
-
-Semantic transport is the movement of an artifact between environments with a preservation record. It records the semantic cost of translation, specialization, generalization, encoding, formalization, or institutional migration.
-
-$$
-T:(a,E_s)\longrightarrow(b,E_t,\rho_T).
-$$
-
-```text
-TransportRecord rho_T = {
-  source_artifact
-  target_artifact
-  source_environment
-  target_environment
-  objects_preserved
-  transformations_preserved
-  assumptions_added
-  assumptions_removed_or_weakened
-  generality_change
-  definitions_selected
-  examples_preserved
-  counterexamples_excluded
-  validation_path
-  alignment_status
-  epistemic_type
-  permitted_use
-  reviewer_notes
-}
-```
-
-Transport records prepare the ground for Functorial Consistency. Essay 3 asks whether source-side transformations and target-side transformations agree under an explicit equivalence regime. Essay 1 supplies the membership record that makes those transformations reviewable.
-
-## 6. Lean as operational exemplar {#6-lean-as-operational-exemplar}
-
-Lean is the privileged example for this essay as it makes several membership dimensions visible at once. A generated proof artifact can be elaborated, type checked, inspected through proof states, connected to library dependencies, repaired through diagnostics, and reviewed by maintainers. Lean therefore illustrates the separation among fluent proof sketch, formal target, proof term, checker acceptance, library integration, source-target alignment, and future reuse.
-
-The trusted kernel establishes a strong form of formal validity for accepted artifacts relative to the formal statement and environment. The membership question extends that result by asking whether the formal statement captured the intended source claim, whether the selected definitions fit the intended mathematics, whether the artifact composes with library conventions, and whether future users can find, maintain, and reuse it.
-
-Lean is one example in a broader family. Rocq and Isabelle/HOL provide distinct theorem-proving environments <span class="citation-group">[<a class="citation-link" href="#ref-RocqDocs" aria-label="Reference 4 — Rocq Prover documentation">4</a>, <a class="citation-link" href="#ref-IsabelleDocs" aria-label="Reference 5 — Isabelle documentation (Isabelle2025-1)">5</a>]</span>. Dafny and F* provide program-verification environments with different specification and trust models <span class="citation-group">[<a class="citation-link" href="#ref-DafnyDocs" aria-label="Reference 6 — Dafny Reference Manual">6</a>, <a class="citation-link" href="#ref-FStarDocs" aria-label="Reference 7 — Proof-Oriented Programming in F*">7</a>]</span>. Alloy supports relational software modeling <span class="citation-group">[<a class="citation-link" href="#ref-AlloyDocs" aria-label="Reference 8 — Alloy language specification">8</a>]</span>; PRISM and Storm support probabilistic model checking <span class="citation-group">[<a class="citation-link" href="#ref-PrismDocs" aria-label="Reference 9 — PRISM Manual: Introduction">9</a>, <a class="citation-link" href="#ref-StormDocs" aria-label="Reference 10 — Storm: A Modern Probabilistic Model Checker">10</a>]</span>. RO-Crate 1.1 specifies research-object metadata and provenance conventions <span class="citation-group">[<a class="citation-link" href="#ref-ROCrate11" aria-label="Reference 11 — RO-Crate Metadata Specification 1.1">11</a>]</span>. Scientific workflows and laboratory automation remain proposed extensions to the Semantic Participation framework. Each proposed extension needs its own object language, validators, review criteria, authority model, and permitted-use semantics.
-
-## 7. Epistemic types {#7-epistemic-types}
-
-AI systems need an explicit grammar of warrant. Current interfaces often present theorem, conjecture, proof sketch, simulation, empirical result, causal claim, approximation, benchmark result, and reviewed claim in the same confident register. Semantic Participation treats this as an epistemic-typing problem.
-
-
-
-<table>
+</table></div>
+<p>The distinction between formal validity and semantic alignment is central. A proof assistant can check that a term inhabits a formal statement under a specified environment. The alignment relation asks whether that formal statement preserves the intended informal claim. In mathematical formalization, this separates proving a valid theorem from proving the theorem the source intended. In science, it separates a model-relative result from an empirical claim. In code, it separates passing tests from preserving the intended interface contract.</p>
+<h2 id="formal-core">5. Formal core</h2>
+<h3 id="semantic-environment">5.1 Semantic environment</h3>
+<p>A semantic environment is a structured world in which artifacts can be expressed, transformed, checked, stored, diagnosed, reviewed, and reused. The definition is operational. It identifies the components that an implementation, benchmark, or review interface should expose.</p>
+<blockquote>
+<p>SemanticEnvironment E = {<br/>
+Obj_E recognized objects<br/>
+Art_E admissible artifacts<br/>
+State_E structured environment state<br/>
+Act_E admissible actions or transformations<br/>
+Step_E State_E x Act_E -&gt; State_E + Diag_E<br/>
+Check_E Art_E -&gt; CheckResult x Diag_E<br/>
+Align_E Art_E x Source -&gt; AlignmentResult<br/>
+Compose_E Art_E x Context_E -&gt; CompositionResult<br/>
+Mem_E persistent environment memory<br/>
+Review_E human, automated, or hybrid review procedure<br/>
+}</p>
+</blockquote>
+<p>Proof assistants, codebases, workflow systems, semantic parsers, data repositories, and laboratory protocols instantiate these components differently. The schema requires environment-relative membership in place of a universal validation rule.</p>
+<h3 id="artifactrecord">5.2 ArtifactRecord</h3>
+<p>An ArtifactRecord packages a generated object with the fields required for membership assessment. The record is a minimal audit surface for the object, its environment, its warrant, and its permitted use.</p>
+<blockquote>
+<p>ArtifactRecord a = {<br/>
+id<br/>
+content<br/>
+representation<br/>
+target_environment<br/>
+dependencies<br/>
+assumptions<br/>
+source_intention<br/>
+validation_path<br/>
+validation_status<br/>
+alignment_status<br/>
+epistemic_type<br/>
+compositional_role<br/>
+permitted_use<br/>
+prohibited_use<br/>
+repair_path<br/>
+review_status<br/>
+}</p>
+</blockquote>
+<p>The record should remain compact in low-risk settings and richer in high-stakes settings. Its value lies in changing review, repair, reuse, and downstream consumption. A record filled after the fact for cosmetic completeness has little scientific value.</p>
+<h3 id="semantic-membership">5.3 Semantic membership</h3>
+<p>Semantic membership is represented as an operational criterion over a target artifact, source intention, and preservation record.</p>
+<blockquote>
+<p>Member_E(a) =<br/>
+Expressible_E(a)<br/>
+and ValidOrReviewable_E(a)<br/>
+and Aligned(a, b, rho)<br/>
+and Composable_E(a)<br/>
+and TypedWarrant_E(a)<br/>
+and Reusable_E(a)</p>
+</blockquote>
+<p>Here a is the target artifact, b is the source intention or source artifact, and rho is the preservation record. The criterion is environment-relative. A theorem can fit one formal development and fail in another through imports, definitions, naming conventions, abstraction choices, and maintainability norms. A dataset can fit one scientific workflow and fail in another through consent conditions, preprocessing, instrument differences, and statistical assumptions.</p>
+<h3 id="semantic-transport">5.4 Semantic transport</h3>
+<p>Semantic transport is the movement of an artifact between environments with a preservation record. It records the semantic cost of translation, specialization, generalization, encoding, formalization, or institutional migration.</p>
+<blockquote>
+<p>T : (a, E_s) -&gt; (b, E_t, rho_T)<br/>
+<br/>
+TransportRecord rho_T = {<br/>
+source_artifact<br/>
+target_artifact<br/>
+source_environment<br/>
+target_environment<br/>
+objects_preserved<br/>
+transformations_preserved<br/>
+assumptions_added<br/>
+assumptions_removed_or_weakened<br/>
+generality_change<br/>
+definitions_selected<br/>
+examples_preserved<br/>
+counterexamples_excluded<br/>
+validation_path<br/>
+alignment_status<br/>
+epistemic_type<br/>
+permitted_use<br/>
+reviewer_notes<br/>
+}</p>
+</blockquote>
+<p>Transport records prepare the ground for Functorial Consistency. Essay 3 asks whether source-side transformations and target-side transformations agree under an explicit equivalence regime. Essay 1 supplies the membership record that makes those transformations reviewable.</p>
+<h2 id="lean-as-operational-exemplar">6. Lean as operational exemplar</h2>
+<p>Lean is the privileged example for this essay as it makes several membership dimensions visible at once. A generated proof artifact can be elaborated, type checked, inspected through proof states, connected to library dependencies, repaired through diagnostics, and reviewed by maintainers. Lean therefore illustrates the separation among fluent proof sketch, formal target, proof term, checker acceptance, library integration, source-target alignment, and future reuse.</p>
+<p>The trusted kernel establishes a strong form of formal validity for accepted artifacts relative to the formal statement and environment. The membership question extends that result by asking whether the formal statement captured the intended source claim, whether the selected definitions fit the intended mathematics, whether the artifact composes with library conventions, and whether future users can find, maintain, and reuse it.</p>
+<p>Lean is an exemplar within a broader class. Rocq, Isabelle/HOL, Dafny, F*, Alloy, PRISM, Storm, scientific workflow systems, laboratory automation protocols, and research-object infrastructures also instantiate semantic environments with object languages, validators, records, and review practices.</p>
+<h2 id="epistemic-types">7. Epistemic types</h2>
+<p>AI systems need an explicit grammar of warrant. Current interfaces often present theorem, conjecture, proof sketch, simulation, empirical result, causal claim, approximation, benchmark result, and reviewed claim in the same confident register. Semantic Participation treats this as an epistemic-typing problem.</p>
+<p class="table-display-caption" id="table-6-caption">Table 6. Epistemic type, Meaning, Permitted use</p>
+<div aria-labelledby="table-6-caption" class="table-scroll" data-columns="4" role="group" tabindex="0"><table data-source-table="6" id="table-6"><caption class="visually-hidden">Table 6. Epistemic type, Meaning, Permitted use</caption>
 <colgroup>
 <col style="width: 22%"/>
 <col style="width: 12%"/>
@@ -365,9 +314,9 @@ AI systems need an explicit grammar of warrant. Current interfaces often present
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Epistemic type</strong></th>
-<th colspan="2"><strong>Meaning</strong></th>
-<th><strong>Permitted use</strong></th>
+<th scope="col"><strong>Epistemic type</strong></th>
+<th colspan="2" scope="col"><strong>Meaning</strong></th>
+<th scope="col"><strong>Permitted use</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -437,33 +386,24 @@ AI systems need an explicit grammar of warrant. Current interfaces often present
 <td colspan="2">Transport or alignment resolution with reviewer notes.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-Epistemic typing is stronger than provenance and weaker than proof. Provenance records origin. Proof records exact derivation in a formal or mathematical setting. Epistemic typing records the kind of warrant an artifact has and the operations it can responsibly support.
-
-## 8. Library improvement delta {#8-library-improvement-delta}
-
-A system that proves local goals can still make a weak contribution to a formal world. Formal libraries are memory systems whose value depends on theorem reuse, searchability, naming, abstraction, dependency control, automation compatibility, proof robustness, and maintainer acceptance.
-
-$$
-\Delta_L(c)=F(L+c)-F(L).
-$$
-
-This expression should be interpreted as a vector-valued diagnostic. A contribution can improve one dimension and degrade another.
-
-
-
-<table>
+</table></div>
+<p>Epistemic typing is stronger than provenance and weaker than proof. Provenance records origin. Proof records exact derivation in a formal or mathematical setting. Epistemic typing records the kind of warrant an artifact has and the operations it can responsibly support.</p>
+<h2 id="library-improvement-delta">8. Library improvement delta</h2>
+<p>A system that proves local goals can still make a weak contribution to a formal world. Formal libraries are memory systems whose value depends on theorem reuse, searchability, naming, abstraction, dependency control, automation compatibility, proof robustness, and maintainer acceptance.</p>
+<blockquote>
+<p>Delta_L(c) = F(L + c) - F(L)</p>
+</blockquote>
+<p>This expression should be interpreted as a vector-valued diagnostic. A contribution can improve one dimension and degrade another.</p>
+<p class="table-display-caption" id="table-7-caption">Table 7. Dimension, Diagnostic question</p>
+<div aria-labelledby="table-7-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="7" id="table-7"><caption class="visually-hidden">Table 7. Dimension, Diagnostic question</caption>
 <colgroup>
 <col style="width: 32%"/>
 <col style="width: 67%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Dimension</strong></th>
-<th><strong>Diagnostic question</strong></th>
+<th scope="col"><strong>Dimension</strong></th>
+<th scope="col"><strong>Diagnostic question</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -500,50 +440,39 @@ This expression should be interpreted as a vector-valued diagnostic. A contribut
 <td>Does it avoid unnecessary redundancy?</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The purpose is to evaluate candidate contributions across dimensions that matter for future reasoning. A theorem that checks and remains unfindable, overly specialized, duplicative, or difficult to maintain is a weak library contribution.
-
-## 9. Worked case studies {#9-worked-case-studies}
-
-### 9.1 Extreme Value Theorem and the gap between supremum and attainment {#9-1-extreme-value-theorem-and-the-gap-between-supremum-and-attain}
-
-Semantic transport is visible when an informal theorem moves into a formal environment. Consider the source claim.
-
-> Every continuous real-valued function on a compact interval attains a maximum.
-
-The statement includes several semantic commitments. It specifies a real-valued function, a compact interval, continuity on that interval, a witness point in the interval, and a universal comparison showing that the function value at that point is maximal.
-
-A plausible misformalization proves that the image of the interval is bounded above or has a supremum. That target is mathematically related to the source claim and loses the intended conclusion. Supremum existence is an upper-bound property. Attainment requires a witness point.
-
-> supremum existence is weaker than the existence of x such that f x is maximal on the interval\
-> \
-> expected shape\
-> exists x in Icc a b, forall y in Icc a b, f y \<= f x
-
-The transport record should expose the interval representation, compactness theorem, continuity assumption, codomain, order structure, theorem generality, and reuse path. The proof assistant can certify the formal target. The transport record assesses whether the target captures the source claim.
-
-### 9.2 From simulation-derived stability to empirical scientific claim {#9-2-from-simulation-derived-stability-to-empirical-scientific-cla}
-
-Scientific semantic transport is harder since the target environment combines literature, models, simulations, instruments, protocols, samples, measurements, statistics, uncertainty, and review. Consider the sentence.
-
-> Molecule X is likely stable.
-
-The sentence can describe a literature-supported conjecture, a model-relative prediction, a simulation-derived result, an empirical measurement, or a causal claim about stability under specified interventions. The surface sentence therefore admits several epistemic types.
-
-
-
-<table>
+</table></div>
+<p>The purpose is to evaluate candidate contributions across dimensions that matter for future reasoning. A theorem that checks and remains unfindable, overly specialized, duplicative, or difficult to maintain is a weak library contribution.</p>
+<h2 id="worked-case-studies">9. Worked case studies</h2>
+<h3 id="extreme-value-theorem-and-the-gap-between-supremum-and-attainment">9.1 Extreme Value Theorem and the gap between supremum and attainment</h3>
+<p>Semantic transport is visible when an informal theorem moves into a formal environment. Consider the source claim.</p>
+<blockquote>
+<p>Every continuous real-valued function on a compact interval attains a maximum.</p>
+</blockquote>
+<p>The statement includes several semantic commitments. It specifies a real-valued function, a compact interval, continuity on that interval, a witness point in the interval, and a universal comparison showing that the function value at that point is maximal.</p>
+<p>A plausible misformalization proves that the image of the interval is bounded above or has a supremum. That target is mathematically related to the source claim and loses the intended conclusion. Supremum existence is an upper-bound property. Attainment requires a witness point.</p>
+<blockquote>
+<p>supremum existence is weaker than the existence of x such that f x is maximal on the interval<br/>
+<br/>
+expected shape<br/>
+exists x in Icc a b, forall y in Icc a b, f y &lt;= f x</p>
+</blockquote>
+<p>The transport record should expose the interval representation, compactness theorem, continuity assumption, codomain, order structure, theorem generality, and reuse path. The proof assistant can certify the formal target. The transport record assesses whether the target captures the source claim.</p>
+<h3 id="from-simulation-derived-stability-to-empirical-scientific-claim">9.2 From simulation-derived stability to empirical scientific claim</h3>
+<p>Scientific semantic transport is harder since the target environment combines literature, models, simulations, instruments, protocols, samples, measurements, statistics, uncertainty, and review. Consider the sentence.</p>
+<blockquote>
+<p>Molecule X is likely stable.</p>
+</blockquote>
+<p>The sentence can describe a literature-supported conjecture, a model-relative prediction, a simulation-derived result, an empirical measurement, or a causal claim about stability under specified interventions. The surface sentence therefore admits several epistemic types.</p>
+<p class="table-display-caption" id="table-8-caption">Table 8. Status, Required record</p>
+<div aria-labelledby="table-8-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="8" id="table-8"><caption class="visually-hidden">Table 8. Status, Required record</caption>
 <colgroup>
 <col style="width: 31%"/>
 <col style="width: 68%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Status</strong></th>
-<th><strong>Required record</strong></th>
+<th scope="col"><strong>Status</strong></th>
+<th scope="col"><strong>Required record</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -564,19 +493,12 @@ The sentence can describe a literature-supported conjecture, a model-relative pr
 <td>Intervention, identification assumptions, mechanism, counterfactual scope, and review procedure.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The semantic-participation failure is promotion across epistemic types without additional warrant. A simulation-derived artifact can guide experimental design. It should retain model-relative status until empirical evidence supports a stronger claim.
-
-## 10. Semantic Participation Bench v0.3 {#10-semantic-participation-bench-v0-3}
-
-The benchmark agenda tests whether membership records improve diagnosis, review, repair, reuse, and permitted-use control. The first phase should use domains where validators and review procedures already exist, then expand to scientific and institutional settings where alignment and epistemic typing exert greater influence.
-
-
-
-<table>
+</table></div>
+<p>The semantic-participation failure is promotion across epistemic types without additional warrant. A simulation-derived artifact can guide experimental design. It should retain model-relative status until empirical evidence supports a stronger claim.</p>
+<h2 id="semantic-participation-bench-v0.3">10. Semantic Participation Bench v0.3</h2>
+<p>The benchmark agenda tests whether membership records improve diagnosis, review, repair, reuse, and permitted-use control. The first phase should use domains where validators and review procedures already exist, then expand to scientific and institutional settings where alignment and epistemic typing exert greater influence.</p>
+<p class="table-display-caption" id="table-9-caption">Table 9. Track, Input, Primary metric, Diagnostic value</p>
+<div aria-labelledby="table-9-caption" class="table-scroll" data-columns="4" role="group" tabindex="0"><table data-source-table="9" id="table-9"><caption class="visually-hidden">Table 9. Track, Input, Primary metric, Diagnostic value</caption>
 <colgroup>
 <col style="width: 18%"/>
 <col style="width: 22%"/>
@@ -585,10 +507,10 @@ The benchmark agenda tests whether membership records improve diagnosis, review,
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Track</strong></th>
-<th><strong>Input</strong></th>
-<th><strong>Primary metric</strong></th>
-<th><strong>Diagnostic value</strong></th>
+<th scope="col"><strong>Track</strong></th>
+<th scope="col"><strong>Input</strong></th>
+<th scope="col"><strong>Primary metric</strong></th>
+<th scope="col"><strong>Diagnostic value</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -623,48 +545,42 @@ The benchmark agenda tests whether membership records improve diagnosis, review,
 <td>Records what changed during transport.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-> semantic_participation_item:\
-> item_id\
-> domain\
-> source_artifact\
-> source_environment\
-> target_environment\
-> candidate_artifact\
-> expected_membership_conditions\
-> validators\
-> alignment_questions\
-> epistemic_type_options\
-> permitted_use_options\
-> failure_labels\
-> reviewer_protocol
-
-The first pilot should use 100 to 150 items distributed across mathematics transport, code membership, science epistemic typing, and library delta. The pilot should report local validity, alignment accuracy, epistemic-type accuracy, assumption preservation, repair cost, reviewer agreement, and diagnostic novelty.
-
-## 11. Relationship to Functorial Consistency {#11-relationship-to-functorial-consistency}
-
-Semantic Participation supplies the membership criterion. Functorial Consistency supplies the transformation test. A semantic environment specifies what counts as an artifact, which validators apply, which epistemic type is warranted, and which uses are permitted. A commutation-square benchmark then asks whether transformations preserve structure across source and target representations.
-
-> Under environment version $E_v$ and admission-policy version $\pi$, $\operatorname{Adm}_{E_v,\pi}(a,b,\rho,u)$ records accepted, rejected, or unresolved admission of artifact a for proposed use u, source intention b, and preservation evidence ρ. The policy identifies mandatory obligations, judgment authorities, evidence freshness, and the precedence of decisive failures. Acceptance records affirmative discharge of all mandatory obligations, including expression, validation or approved expert review, source alignment, compositional interface fit, epistemic warrant, and permitted use; reuse eligibility is a mandatory obligation only for proposed uses involving reuse. A decisive mandatory failure yields rejection; missing, stale, conflicting, or inconclusive evidence yields an unresolved outcome under the declared precedence rule. An empty obligation set yields unresolved status except where π explicitly authorizes vacuous admission. Review eligibility is recorded independently. The earlier Boolean Member_E(a) denotes accepted status only relative to specified environment, policy, and use versions.
-
-The transport record rho_T is the bridge. It records source artifact, target artifact, environments, transformations preserved, assumptions changed, generality changes, validators, alignment status, epistemic type, and permitted use. Functorial Consistency can use that record to classify non-commutation, type drift, assumption loss, generality collapse, overstrengthening, spurious equivalence, and validator mismatch.
-
-## 12. Strongest objections and response protocol {#12-strongest-objections-and-response-protocol}
-
-
-
-<table>
+</table></div>
+<blockquote>
+<p>semantic_participation_item:<br/>
+item_id<br/>
+domain<br/>
+source_artifact<br/>
+source_environment<br/>
+target_environment<br/>
+candidate_artifact<br/>
+expected_membership_conditions<br/>
+validators<br/>
+alignment_questions<br/>
+epistemic_type_options<br/>
+permitted_use_options<br/>
+failure_labels<br/>
+reviewer_protocol</p>
+</blockquote>
+<p>The first pilot should use 100 to 150 items distributed across mathematics transport, code membership, science epistemic typing, and library delta. The pilot should report local validity, alignment accuracy, epistemic-type accuracy, assumption preservation, repair cost, reviewer agreement, and diagnostic novelty.</p>
+<h2 id="relationship-to-functorial-consistency">11. Relationship to Functorial Consistency</h2>
+<p>Semantic Participation supplies the membership criterion. Functorial Consistency supplies the transformation test. A semantic environment specifies what counts as an artifact, which validators apply, which epistemic type is warranted, and which uses are permitted. A commutation-square benchmark then asks whether transformations preserve structure across source and target representations.</p>
+<blockquote>
+<p>Essay 1: Member_E(a) records artifact membership.<br/>
+Essay 3: T(f(x)) approx g(T(x)) tests structure preservation across paths.</p>
+</blockquote>
+<p>The transport record rho_T is the bridge. It records source artifact, target artifact, environments, transformations preserved, assumptions changed, generality changes, validators, alignment status, epistemic type, and permitted use. Functorial Consistency can use that record to classify non-commutation, type drift, assumption loss, generality collapse, overstrengthening, spurious equivalence, and validator mismatch.</p>
+<h2 id="strongest-objections-and-response-protocol">12. Strongest objections and response protocol</h2>
+<p class="table-display-caption" id="table-10-caption">Table 10. Objection, Response protocol</p>
+<div aria-labelledby="table-10-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="10" id="table-10"><caption class="visually-hidden">Table 10. Objection, Response protocol</caption>
 <colgroup>
 <col style="width: 37%"/>
 <col style="width: 62%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Objection</strong></th>
-<th><strong>Response protocol</strong></th>
+<th scope="col"><strong>Objection</strong></th>
+<th scope="col"><strong>Response protocol</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -697,23 +613,18 @@ The transport record rho_T is the bridge. It records source artifact, target art
 <td>The delta is vector-valued and review-assisted. Scalar aggregation is an optional reporting layer, not the core object.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## 13. Failure modes and kill criteria {#13-failure-modes-and-kill-criteria}
-
-
-
-<table>
+</table></div>
+<h2 id="failure-modes-and-kill-criteria">13. Failure modes and kill criteria</h2>
+<p class="table-display-caption" id="table-11-caption">Table 11. Failure mode, Meaning</p>
+<div aria-labelledby="table-11-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="11" id="table-11"><caption class="visually-hidden">Table 11. Failure mode, Meaning</caption>
 <colgroup>
 <col style="width: 32%"/>
 <col style="width: 67%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Failure mode</strong></th>
-<th><strong>Meaning</strong></th>
+<th scope="col"><strong>Failure mode</strong></th>
+<th scope="col"><strong>Meaning</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -746,80 +657,66 @@ The transport record rho_T is the bridge. It records source artifact, target art
 <td>Membership benchmarks measure ordinary accuracy instead of artifact integration.</td>
 </tr>
 </tbody>
-</table>
-
-
-
--   K1. ArtifactRecords do not improve reviewer agreement, diagnosis, repair, or reuse.
-
--   K2. Transport records do not reduce source-target alignment errors.
-
--   K3. Epistemic typing does not reduce warrant-promotion errors.
-
--   K4. Library delta fails to predict maintainer value, reuse, searchability, or automation compatibility.
-
--   K5. Human reviewers cannot use membership records to make better decisions.
-
--   K6. Semantic Participation Bench collapses into ordinary accuracy or benchmark score.
-
--   K7. Record creation costs exceed measured diagnostic or reuse gains.
-
--   K8. Formal-environment insights fail to transfer to scientific protocol and evidence settings.
-
-## 14. Conclusion {#14-conclusion}
-
-Semantic Participation is the membership core of Compositional Intelligence. It states that AI-generated objects count as serious artifacts only when they enter structured worlds with recorded validation, source-target alignment, compositional role, epistemic status, and permitted use. The framework is strongest where it changes practice through earlier failure detection, clearer validation, targeted repair, stronger library contribution, appropriate scientific warrant, and controlled downstream consumption.
-
-The essay prepares the rest of the series. Typed Generativity explains how models infer target types and construct candidate inhabitants. Functorial Consistency tests whether artifacts preserve structure under transformations. Later essays extend membership to language, architecture, warrant, and action. The result is a world-centric account of AI reasoning as construction, transformation, validation, warranting, and execution of typed artifacts inside structured environments.
-
-## Appendix A. Minimal ArtifactRecord schema {#appendix-a-minimal-artifactrecord-schema}
-
-> artifact_record:\
-> id: string\
-> kind: string\
-> content: string \| object\
-> representation: string\
-> target_environment: string\
-> dependencies: list\[string\]\
-> assumptions: list\[string\]\
-> source_intention: string\
-> validation_path: string\
-> validation_status: string\
-> alignment_status: string\
-> epistemic_type: string\
-> compositional_role: string\
-> permitted_use: list\[string\]\
-> prohibited_use: list\[string\]\
-> repair_path: string \| null\
-> review_status: string
-
-## Appendix B. Minimal TransportRecord schema {#appendix-b-minimal-transportrecord-schema}
-
-> transport_record:\
-> source_artifact: string \| object\
-> target_artifact: string \| object\
-> source_environment: string\
-> target_environment: string\
-> transformation_type: string\
-> objects_preserved: list\[string\]\
-> transformations_preserved: list\[string\]\
-> assumptions_added: list\[string\]\
-> assumptions_removed_or_weakened: list\[string\]\
-> generality_change: string\
-> definitions_selected: list\[string\]\
-> examples_preserved: list\[string\]\
-> counterexamples_excluded: list\[string\]\
-> validation_path: string\
-> alignment_status: string\
-> epistemic_type: string\
-> permitted_use: list\[string\]\
-> reviewer_notes: string
-
-## Appendix C. Claim ledger {#appendix-c-claim-ledger}
-
-
-
-<table>
+</table></div>
+<ul>
+<li><p>K1. ArtifactRecords do not improve reviewer agreement, diagnosis, repair, or reuse.</p></li>
+<li><p>K2. Transport records do not reduce source-target alignment errors.</p></li>
+<li><p>K3. Epistemic typing does not reduce warrant-promotion errors.</p></li>
+<li><p>K4. Library delta fails to predict maintainer value, reuse, searchability, or automation compatibility.</p></li>
+<li><p>K5. Human reviewers cannot use membership records to make better decisions.</p></li>
+<li><p>K6. Semantic Participation Bench collapses into ordinary accuracy or benchmark score.</p></li>
+<li><p>K7. Record creation costs exceed measured diagnostic or reuse gains.</p></li>
+<li><p>K8. Formal-environment insights fail to transfer to scientific protocol and evidence settings.</p></li>
+</ul>
+<h2 id="conclusion">14. Conclusion</h2>
+<p>Semantic Participation is the membership core of Compositional Intelligence. It states that AI-generated objects count as serious artifacts only when they enter structured worlds with recorded validation, source-target alignment, compositional role, epistemic status, and permitted use. The framework is strongest where it changes practice through earlier failure detection, clearer validation, targeted repair, stronger library contribution, appropriate scientific warrant, and controlled downstream consumption.</p>
+<p>The essay prepares the rest of the series. Typed Generativity explains how models infer target types and construct candidate inhabitants. Functorial Consistency tests whether artifacts preserve structure under transformations. Later essays extend membership to language, architecture, warrant, and action. The result is a world-centric account of AI reasoning as construction, transformation, validation, warranting, and execution of typed artifacts inside structured environments.</p>
+<h2 id="appendix-a.-minimal-artifactrecord-schema">Appendix A. Minimal ArtifactRecord schema</h2>
+<blockquote>
+<p>artifact_record:<br/>
+id: string<br/>
+kind: string<br/>
+content: string | object<br/>
+representation: string<br/>
+target_environment: string<br/>
+dependencies: list[string]<br/>
+assumptions: list[string]<br/>
+source_intention: string<br/>
+validation_path: string<br/>
+validation_status: string<br/>
+alignment_status: string<br/>
+epistemic_type: string<br/>
+compositional_role: string<br/>
+permitted_use: list[string]<br/>
+prohibited_use: list[string]<br/>
+repair_path: string | null<br/>
+review_status: string</p>
+</blockquote>
+<h2 id="appendix-b.-minimal-transportrecord-schema">Appendix B. Minimal TransportRecord schema</h2>
+<blockquote>
+<p>transport_record:<br/>
+source_artifact: string | object<br/>
+target_artifact: string | object<br/>
+source_environment: string<br/>
+target_environment: string<br/>
+transformation_type: string<br/>
+objects_preserved: list[string]<br/>
+transformations_preserved: list[string]<br/>
+assumptions_added: list[string]<br/>
+assumptions_removed_or_weakened: list[string]<br/>
+generality_change: string<br/>
+definitions_selected: list[string]<br/>
+examples_preserved: list[string]<br/>
+counterexamples_excluded: list[string]<br/>
+validation_path: string<br/>
+alignment_status: string<br/>
+epistemic_type: string<br/>
+permitted_use: list[string]<br/>
+reviewer_notes: string</p>
+</blockquote>
+<h2 id="appendix-c.-claim-ledger">Appendix C. Claim ledger</h2>
+<p class="table-display-caption" id="table-12-caption">Table 12. Claim, Level, Treatment</p>
+<div aria-labelledby="table-12-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="12" id="table-12"><caption class="visually-hidden">Table 12. Claim, Level, Treatment</caption>
 <colgroup>
 <col style="width: 48%"/>
 <col style="width: 11%"/>
@@ -827,9 +724,9 @@ The essay prepares the rest of the series. Typed Generativity explains how model
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Claim</strong></th>
-<th><strong>Level</strong></th>
-<th><strong>Treatment</strong></th>
+<th scope="col"><strong>Claim</strong></th>
+<th scope="col"><strong>Level</strong></th>
+<th scope="col"><strong>Treatment</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -864,25 +761,12 @@ The essay prepares the rest of the series. Typed Generativity explains how model
 <td>Test against maintainer judgment and reuse traces.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-
-<section class="bibliography" aria-labelledby="references-heading">
-<h2 id="references-heading">References</h2>
-
-<ol class="references-list">
-<li id="ref-Lambek1958"><span class="ref-key">[1]</span> <a href="https://doi.org/10.1080/00029890.1958.11989160" rel="noopener noreferrer">The Mathematics of Sentence Structure</a>. <span class="ref-details">Joachim Lambek · American Mathematical Monthly 65(3), 1958.</span></li>
-<li id="ref-LeanRef"><span class="ref-key">[2]</span> <a href="https://lean-lang.org/doc/reference/latest/" rel="noopener noreferrer">The Lean Language Reference</a>. <span class="ref-details">Lean Community · online reference.</span></li>
-<li id="ref-TPIL4"><span class="ref-key">[3]</span> <a href="https://docs.lean-lang.org/theorem_proving_in_lean4/" rel="noopener noreferrer">Theorem Proving in Lean 4</a>. <span class="ref-details">Avigad, de Moura, Kong, and Ullrich · online textbook.</span></li>
-<li id="ref-RocqDocs"><span class="ref-key">[4]</span> <a href="https://rocq-prover.org/docs" rel="noopener noreferrer">Rocq Prover documentation</a>. <span class="ref-details">Rocq Prover project · official documentation portal; evolving edition, accessed November 2026.</span></li>
-<li id="ref-IsabelleDocs"><span class="ref-key">[5]</span> <a href="https://isabelle.in.tum.de/website-Isabelle2025-1/documentation.html" rel="noopener noreferrer">Isabelle documentation (Isabelle2025-1)</a>. <span class="ref-details">Isabelle project · official versioned Isabelle/HOL documentation.</span></li>
-<li id="ref-DafnyDocs"><span class="ref-key">[6]</span> <a href="https://dafny.org/dafny/DafnyRef/DafnyRef.html" rel="noopener noreferrer">Dafny Reference Manual</a>. <span class="ref-details">Dafny project · official reference manual; evolving edition, accessed November 2026.</span></li>
-<li id="ref-FStarDocs"><span class="ref-key">[7]</span> <a href="https://fstar-lang.org/tutorial/book/" rel="noopener noreferrer">Proof-Oriented Programming in F*</a>. <span class="ref-details">F* project · official proof-oriented programming textbook; evolving edition.</span></li>
-<li id="ref-AlloyDocs"><span class="ref-key">[8]</span> <a href="https://alloytools.org/spec.html" rel="noopener noreferrer">Alloy language specification</a>. <span class="ref-details">Alloy Tools · official language specification; evolving edition.</span></li>
-<li id="ref-PrismDocs"><span class="ref-key">[9]</span> <a href="https://prismmodelchecker.org/manual/Main/Introduction" rel="noopener noreferrer">PRISM Manual: Introduction</a>. <span class="ref-details">PRISM project · official probabilistic model-checking manual; evolving edition.</span></li>
-<li id="ref-StormDocs"><span class="ref-key">[10]</span> <a href="https://www.stormchecker.org/" rel="noopener noreferrer">Storm: A Modern Probabilistic Model Checker</a>. <span class="ref-details">Storm project · official documentation and scope statement; evolving edition.</span></li>
-<li id="ref-ROCrate11"><span class="ref-key">[11]</span> <a href="https://www.researchobject.org/ro-crate/specification/1.1/" rel="noopener noreferrer">RO-Crate Metadata Specification 1.1</a>. <span class="ref-details">Research Object Crate community · Recommendation, 26 April 2023 · DOI:10.5281/zenodo.7867028.</span></li>
-</ol>
-</section>
+</table></div>
+<h2 id="appendix-d.-source-use-notes">Appendix D. Source-use notes</h2>
+<ul>
+<li><p>Lean Language Reference and Theorem Proving in Lean 4 support Lean-specific claims about formal checking, elaboration, tactics, and proof-assistant use. Semantic Participation remains the original membership proposal.</p></li>
+<li><p>LeanDojo supports claims about programmatic interaction with Lean, data extraction, retrieval-augmented theorem proving, and benchmarking infrastructure. It should be cited for theorem-proving infrastructure, not for semantic membership itself.</p></li>
+<li><p>AlphaProof, DeepSeek-Prover-V2, Goedel-Prover-V2, Leanabell-Prover-V2, miniF2F, PutnamBench, and related sources support the current theorem-proving landscape. Source claims should be rechecked before final publication as the area is moving quickly.</p></li>
+<li><p>Research-object, workflow, provenance, and scientific-evidence sources can support the broader environment framing. They should anchor background practices without validating the proposed ArtifactRecord schema.</p></li>
+<li><p>Functorial Consistency sources belong primarily to Essay 3. Essay 1 should refer to them only when explaining how semantic transport prepares commutation-square evaluation.</p></li>
+</ul>

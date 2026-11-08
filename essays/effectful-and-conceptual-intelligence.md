@@ -2,19 +2,15 @@
 
 *Mateo Petel*
 
-## Abstract
+<!-- AUTHORITATIVE-DOCX SHA256 675f34ac5bd61d76d77b3e48880d4e34d869abc5f4d9d82d9b71212984ce1a23; source Essay7_Effectful_and_Conceptual_Intelligence_V3(1).docx -->
 
-Language-model agents now operate through interfaces that alter state, including tools, files, databases, browsers, calendars, code execution, workflow systems, and embodied environments. This shift changes the evaluation target. A text response can often receive review before downstream use. An agent action changes internal, computational, social, economic, or physical state. The relevant object is therefore the typed, warranted, effectful trace connecting instruction, authority, execution, validation, and consequence.
-
-This essay proposes a type-and-effect record for consequential agent behavior. Its typed-action judgment records instruction context, memory, environment, capabilities, requested action, preconditions, postconditions, declared effects and risk-authority obligations; its mathematical form is specified in Section 3. It specifies an auditable candidate action and its governing checks. Execution-time enforcement additionally depends on actual permission gates, state observations, handlers and post-execution validation. Record completeness and enforcement effectiveness are independently testable properties.
-
-The framework is grounded in Hoare-style pre/post reasoning, planning formalisms, monadic semantics, algebraic effects and handlers <span class="citation-group">[<a class="citation-link" href="#ref-Hoare1969" aria-label="Reference 1 — An Axiomatic Basis for Computer Programming">1</a>, <a class="citation-link" href="#ref-PDDL1998" aria-label="Reference 2 — PDDL—The Planning Domain Definition Language, Version 1.2">2</a>, <a class="citation-link" href="#ref-Moggi1989" aria-label="Reference 3 — Computational Lambda-Calculus and Monads">3</a>, <a class="citation-link" href="#ref-PlotkinPretnar2013" aria-label="Reference 4 — Handling Algebraic Effects">4</a>]</span>. Agent security and trajectory-judge evaluation supply distinct empirical antecedents <span class="citation-group">[<a class="citation-link" href="#ref-AgentDojo2024" aria-label="Reference 5 — AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents">5</a>, <a class="citation-link" href="#ref-AgentRewardBench2025" aria-label="Reference 6 — AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories">6</a>]</span>. AgentDojo studies prompt-injection attack and defense. AgentRewardBench assesses judgments of web-agent trajectories, including task success and side effects. Tool use, memory writes, and authorization controls are separate targets of the proposed ledger. Its contribution is an accounting layer for consequential agent behavior. Actions, tool calls, memory writes, plan steps, skill invocations, and concept transfers are represented with declared effects, authority source, provenance, validators, compensation paths, and permitted downstream use.
-
-The claim is falsifiable. Typed effect records matter only where they improve action selection, authorization, validation, repair, auditability, memory quality, skill reuse, security analysis, or controlled conceptual transfer. A ledger that adds documentation without changing execution-time control has no technical role in the proposed program.
-
-
-
-<table>
+<h2 id="abstract">Abstract</h2>
+<p>Language-model agents now operate through interfaces that alter state, including tools, files, databases, browsers, calendars, code execution, workflow systems, and embodied environments. This shift changes the evaluation target. A text response can often receive review before downstream use. An agent action changes internal, computational, social, economic, or physical state. The relevant object is therefore the typed, warranted, effectful trace connecting instruction, authority, execution, validation, and consequence.</p>
+<p>This essay specifies a type-and-effect record framework for agentic AI. The central judgment is Gamma; M; E; C |- a : Pre -&gt; Post ! eps @ rho. Gamma denotes instruction and policy context, M denotes memory, E denotes environment or interface state, C denotes capability context, a denotes an action or plan step, Pre and Post denote preconditions and postconditions, eps denotes the effect row, and rho denotes risk, authority, reversibility, and validation obligations. The judgment is operational. It specifies the records, handlers, validators, rollback paths, and audit traces required for computations with consequences.</p>
+<p>The framework is grounded in Hoare-style pre/post reasoning, planning formalisms, monadic semantics, algebraic effects and handlers, effect systems, tool-use systems, memory mechanisms, long-horizon web and desktop benchmarks, and agent-security work. Its contribution is an accounting layer for consequential agent behavior. Actions, tool calls, memory writes, plan steps, skill invocations, and concept transfers are represented with declared effects, authority source, provenance, validators, compensation paths, and permitted downstream use.</p>
+<p>The claim is falsifiable. Typed effect records matter only where they improve action selection, authorization, validation, repair, auditability, memory quality, skill reuse, security analysis, or controlled conceptual transfer. A ledger that adds documentation without changing execution-time control has no technical role in the proposed program.</p>
+<p class="table-display-caption" id="table-1-caption">Table 1. ID, Contribution, Publication claim</p>
+<div aria-labelledby="table-1-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="1" id="table-1"><caption class="visually-hidden">Table 1. ID, Contribution, Publication claim</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -22,16 +18,16 @@ The claim is falsifiable. Typed effect records matter only where they improve ac
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>ID</strong></th>
-<th><strong>Contribution</strong></th>
-<th><strong>Publication claim</strong></th>
+<th scope="col"><strong>ID</strong></th>
+<th scope="col"><strong>Contribution</strong></th>
+<th scope="col"><strong>Publication claim</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>C1</td>
 <td>Typed-action judgment</td>
-<td><span class="inline-notation">Γ; M; E; C ⊢<sub>spec</sub> a : Pre → Post ! ε @ ρ</span> records action, context, memory, environment, capability, pre/post conditions, effects, risk, authority, and validation obligations.</td>
+<td>Gamma; M; E; C |- a : Pre -&gt; Post ! eps @ rho records action, context, memory, environment, capability, pre/post conditions, effects, risk, authority, and validation obligations.</td>
 </tr>
 <tr class="even">
 <td>C2</td>
@@ -59,19 +55,17 @@ The claim is falsifiable. Typed effect records matter only where they improve ac
 <td>The essay connects membership, generation, transformation, language structure, architecture specification, and quantitative warrant to action under consequences.</td>
 </tr>
 </tbody>
-</table>
-
- 
-
-<table>
+</table></div>
+<p class="table-display-caption" id="table-2-caption">Table 1. ID, Contribution, Publication claim ID Contribution Publication claim C1 Typed-action judgment Gamma; M; E; C |- a : Pre -&gt; Post ! eps @ rho records action, context, memory, environment, capability, pre/post conditions, effects, risk, authority, and validation obligations. C2 Execution-phase separation The framework separates proposal, authorization, execution, and validation, exposing failures that final task success can obscure. C3 Effect taxonomy The taxonomy distinguishes read, write, tool, memory, human, social, economic, physical, skill, security, and conceptual-transfer effects. C4 Typed Action Ledger The ledger is proposed as an execution-time accounting layer for action contracts, authority, state change, handlers, validators, rollback, and audit. C5 Effectful Agent Benchmark The benchmark design evaluates task success together with preconditions, postconditions, side effects, authority, rollback, memory quality, and audit completeness. C6 Series closure The essay connects membership, generation, transformation, language structure, architecture specification, and quantitative warrant to action under consequences.</p>
+<div aria-labelledby="table-2-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="2" id="table-2"><caption class="visually-hidden">Table 1. ID, Contribution, Publication claim ID Contribution Publication claim C1 Typed-action judgment Gamma; M; E; C |- a : Pre -&gt; Post ! eps @ rho records action, context, memory, environment, capability, pre/post conditions, effects, risk, authority, and validation obligations. C2 Execution-phase separation The framework separates proposal, authorization, execution, and validation, exposing failures that final task success can obscure. C3 Effect taxonomy The taxonomy distinguishes read, write, tool, memory, human, social, economic, physical, skill, security, and conceptual-transfer effects. C4 Typed Action Ledger The ledger is proposed as an execution-time accounting layer for action contracts, authority, state change, handlers, validators, rollback, and audit. C5 Effectful Agent Benchmark The benchmark design evaluates task success together with preconditions, postconditions, side effects, authority, rollback, memory quality, and audit completeness. C6 Series closure The essay connects membership, generation, transformation, language structure, architecture specification, and quantitative warrant to action under consequences.</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Reader</strong></th>
-<th><strong>Recommended path</strong></th>
+<th scope="col"><strong>Reader</strong></th>
+<th scope="col"><strong>Recommended path</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -96,38 +90,19 @@ The claim is falsifiable. Typed effect records matter only where they improve ac
 <td>Read after Essay 6; use Section 14 as the suite synthesis</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## 1. Position in the Compositional Intelligence series {#1-position-in-the-compositional-intelligence-series}
-
-Effectful and Conceptual Intelligence supplies the action layer of Compositional Intelligence. Earlier essays define artifact membership, target-type inference, transformation-preserving evaluation, typed linguistic composition, architecture specification, and quantitative warrant. The present essay asks how those artifacts enter execution contexts in which an agent can change memory, call tools, edit state, create commitments, or operate physical systems.
-
-membership -\> generation -\> transformation -\> language -\> architecture -\> warrant -\> action
-
-The transition from warrant to action introduces a new evaluation unit. Scores, validators, and epistemic types guide action only through an authorization surface that tests preconditions, permitted effects, validation obligations, and compensation paths. A system that generates a plausible plan has produced a candidate artifact; it has not thereby justified the state transitions needed to execute that plan.
-
-## 2. Evaluation unit for agent action {#2-evaluation-unit-for-agent-action}
-
-Agent action requires state-transition evaluation instead of response-level evaluation. A response can be inspected as a representational artifact; an action modifies a state that can influence later reasoning, external systems, social commitments, financial records, or physical processes. The evaluation target is therefore the trace by which the agent moves from instruction to consequence under a specified authority envelope.
-
-A failure in an agent trace differs from an error in a generated answer. A false tool result can enter the workflow as an observation, a false memory can contaminate later decisions, and an unauthorized message can create an obligation outside the user intent that licensed the interaction. These cases share a structural feature: the defect is located in the relation among context, authority, state change, and validation, not only in the linguistic surface of an answer.
-
-## 3. The typed-action judgment {#3-the-typed-action-judgment}
-
-The core judgment records an action as a constrained state transition. It exposes the context available to the agent, the persistent memory state, the target environment, the capabilities under which execution occurs, the action contract, the declared effects, and the risk-authority record governing authorization and validation.
-
-$$
-\begin{aligned}
-\Gamma;M;E;C&\vdash_{\mathrm{spec}} a:\\
-\mathrm{Pre}&\to\mathrm{Post}\;!\varepsilon@\rho.
-\end{aligned}
-$$
-
-
-
-<table>
+</table></div>
+<h2 id="position-in-the-compositional-intelligence-series">1. Position in the Compositional Intelligence series</h2>
+<p>Effectful and Conceptual Intelligence supplies the action layer of Compositional Intelligence. Earlier essays define artifact membership, target-type inference, transformation-preserving evaluation, typed linguistic composition, architecture specification, and quantitative warrant. The present essay asks how those artifacts enter execution contexts in which an agent can change memory, call tools, edit state, create commitments, or operate physical systems.</p>
+<p>membership -&gt; generation -&gt; transformation -&gt; language -&gt; architecture -&gt; warrant -&gt; action</p>
+<p>The transition from warrant to action introduces a new evaluation unit. Scores, validators, and epistemic types guide action only through an authorization surface that tests preconditions, permitted effects, validation obligations, and compensation paths. A system that generates a plausible plan has produced a candidate artifact; it has not thereby justified the state transitions needed to execute that plan.</p>
+<h2 id="evaluation-unit-for-agent-action">2. Evaluation unit for agent action</h2>
+<p>Agent action requires state-transition evaluation instead of response-level evaluation. A response can be inspected as a representational artifact; an action modifies a state that can influence later reasoning, external systems, social commitments, financial records, or physical processes. The evaluation target is therefore the trace by which the agent moves from instruction to consequence under a specified authority envelope.</p>
+<p>A failure in an agent trace differs from an error in a generated answer. A false tool result can enter the workflow as an observation, a false memory can contaminate later decisions, and an unauthorized message can create an obligation outside the user intent that licensed the interaction. These cases share a structural feature: the defect is located in the relation among context, authority, state change, and validation, not only in the linguistic surface of an answer.</p>
+<h2 id="the-typed-action-judgment">3. The typed-action judgment</h2>
+<p>The core judgment records an action as a constrained state transition. It exposes the context available to the agent, the persistent memory state, the target environment, the capabilities under which execution occurs, the action contract, the declared effects, and the risk-authority record governing authorization and validation.</p>
+<p>Gamma; M; E; C |- a : Pre -&gt; Post ! eps @ rho</p>
+<p class="table-display-caption" id="table-3-caption">Table 3. Symbol, Meaning, Operational role</p>
+<div aria-labelledby="table-3-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="3" id="table-3"><caption class="visually-hidden">Table 3. Symbol, Meaning, Operational role</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -135,14 +110,14 @@ $$
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Symbol</strong></th>
-<th><strong>Meaning</strong></th>
-<th><strong>Operational role</strong></th>
+<th scope="col"><strong>Symbol</strong></th>
+<th scope="col"><strong>Meaning</strong></th>
+<th scope="col"><strong>Operational role</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><var>Γ</var></td>
+<td>Gamma</td>
 <td>instruction, policy, and task context</td>
 <td>States goals, constraints, user intent, and system-level rules.</td>
 </tr>
@@ -177,29 +152,22 @@ $$
 <td>Defines the expected state after execution and the evidence needed to assert completion.</td>
 </tr>
 <tr class="even">
-<td><var>ε</var></td>
+<td>eps</td>
 <td>effect row</td>
 <td>Declares state changes and side effects.</td>
 </tr>
 <tr class="odd">
-<td><var>ρ</var></td>
+<td>rho</td>
 <td>risk-authority record</td>
 <td>Records risk level, authority source, reversibility, validation type, and escalation policy.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The judgment is an execution-accounting proposal. An operational system would use its fields to evaluate authorization before a consequential action, constrain the available capabilities, observe state changes, validate postconditions and trigger compensation where supported. Ledger completeness and enforcement effectiveness are independent evaluation dimensions. The proposed evaluation separates record coverage, decision-time authorization, execution-time violations, postcondition evidence and terminal task completion.
-
-## 4. Execution phases {#4-execution-phases}
-
-Effectful evaluation separates proposal, authorization, execution, and validation. Final task success erases these phases and therefore hides the failure mode most relevant to audit. An agent can choose the wrong operation, possess a tool without authority, execute only a partial state transition, or report completion without verifying the resulting state.
-
-
-
-<table>
+</table></div>
+<p>The judgment functions as an execution record, not as a claim that open-world agents already possess static type systems. It specifies the control points at which a runtime, evaluator, or reviewer can deny execution, request approval, sandbox an operation, validate a postcondition, or trigger rollback. Its practical value depends on that control surface.</p>
+<h2 id="execution-phases">4. Execution phases</h2>
+<p>Effectful evaluation separates proposal, authorization, execution, and validation. Final task success erases these phases and therefore hides the failure mode most relevant to audit. An agent can choose the wrong operation, possess a tool without authority, execute only a partial state transition, or report completion without verifying the resulting state.</p>
+<p class="table-display-caption" id="table-4-caption">Table 4. Phase, Question, Failure exposed</p>
+<div aria-labelledby="table-4-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="4" id="table-4"><caption class="visually-hidden">Table 4. Phase, Question, Failure exposed</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -207,9 +175,9 @@ Effectful evaluation separates proposal, authorization, execution, and validatio
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Phase</strong></th>
-<th><strong>Question</strong></th>
-<th><strong>Failure exposed</strong></th>
+<th scope="col"><strong>Phase</strong></th>
+<th scope="col"><strong>Question</strong></th>
+<th scope="col"><strong>Failure exposed</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -234,19 +202,12 @@ Effectful evaluation separates proposal, authorization, execution, and validatio
 <td>Unverified completion, state drift, failed rollback, missing evidence, or audit gap.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-This phase separation connects directly to transformation-sensitive evaluation. A plan or tool call can look locally plausible and still fail to preserve the relation between intended state transition and observed state delta. The ledger therefore compares declared preconditions, declared effects, observed changes, validated postconditions, and protected frame conditions.
-
-## 5. Effect taxonomy {#5-effect-taxonomy}
-
-Agent systems require an effect taxonomy that distinguishes operations by state impact and review obligation. A generic tool-call label erases the difference between reading a page, writing a file, committing to a social action, storing memory, or touching a physical instrument. Those effects require different authority sources, validators, rollback paths, and audit evidence.
-
-
-
-<table>
+</table></div>
+<p>This phase separation connects directly to transformation-sensitive evaluation. A plan or tool call can look locally plausible and still fail to preserve the relation between intended state transition and observed state delta. The ledger therefore compares declared preconditions, declared effects, observed changes, validated postconditions, and protected frame conditions.</p>
+<h2 id="effect-taxonomy">5. Effect taxonomy</h2>
+<p>Agent systems require an effect taxonomy that distinguishes operations by state impact and review obligation. A generic tool-call label erases the difference between reading a page, writing a file, committing to a social action, storing memory, or touching a physical instrument. Those effects require different authority sources, validators, rollback paths, and audit evidence.</p>
+<p class="table-display-caption" id="table-5-caption">Table 5. Effect class, Typical operation, Required record field</p>
+<div aria-labelledby="table-5-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="5" id="table-5"><caption class="visually-hidden">Table 5. Effect class, Typical operation, Required record field</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -254,9 +215,9 @@ Agent systems require an effect taxonomy that distinguishes operations by state 
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Effect class</strong></th>
-<th><strong>Typical operation</strong></th>
-<th><strong>Required record field</strong></th>
+<th scope="col"><strong>Effect class</strong></th>
+<th scope="col"><strong>Typical operation</strong></th>
+<th scope="col"><strong>Required record field</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -311,45 +272,26 @@ Agent systems require an effect taxonomy that distinguishes operations by state 
 <td>Preserved relations, lost relations, counterexamples, distortion risk, and permitted use.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The taxonomy is extensible, but its first use is diagnostic. It blocks the common error in which a system treats tool availability as authorization or treats a read observation as an instruction. The relevant evaluation question is whether the declared effect class matches the actual state transition and the authority relation that licensed it.
-
-## 6. Handlers, validators, and authority {#6-handlers-validators-and-authority}
-
-Effect records become execution controls only if a trusted component mediates each consequential operation at its execution boundary. That component checks the actual capability, policy and user authorization against the pending action and current state, then permits, denies or escalates the operation. A logged decision by an untrusted agent is audit evidence, not enforcement. The ledger records the enforcement identity and policy version, capability scope, precondition evidence, observed poststate and protected frame conditions. External writes and asynchronous actions require explicit race, partial-failure and irreversibility handling; denial or human escalation is appropriate where authorization cannot be established.
-
-```text
-handler(eps, rho, Pre, C, E)
-  -> authorize | deny | ask | sandbox | escalate
-```
-
-Validators supply the post-execution counterpart to handlers. They compare postconditions with observed state, check frame conditions, record diagnostics, and decide whether repair, rollback, escalation, or human review is required. Their output is part of the artifact record for the trace, so a claimed completion without validation remains an unverified state-transition claim.
-
-```text
-validator(Post, observed_state_delta, frame_conditions)
-  -> pass | fail | partial | unknown
-```
-
-Authority is a typed resource distinct from interface access. A callable tool supplies a capability channel; policy, user intent, risk class, and institutional procedure determine whether the action is permitted. The ledger therefore records authority source, capability scope, approval status, and escalation criteria as separate fields, giving reviewers a path from instruction to authorization decision.
-
-## 7. Typed Action Ledger {#7-typed-action-ledger}
-
-The Typed Action Ledger is a proposed record of consequential agent steps. Its fields distinguish a proposed action contract, the policy decision, authorized dispatch, observed effects, and subsequent validation or compensation. The ledger itself records evidence; an enforcement claim depends on a trusted mediator covering all consequential dispatch routes, current authority and capabilities, revocation or freshness checks, concurrent operations, asynchronous effects, and irreversible external actions. Recording an unauthorized dispatch supports retrospective diagnosis, while preventing that dispatch is a separate operational property. The proposal identifies these trust-boundary obligations; enforcement effectiveness and side-effect reduction remain empirical questions.
-
-
-
-<table>
+</table></div>
+<p>The taxonomy is extensible, but its first use is diagnostic. It blocks the common error in which a system treats tool availability as authorization or treats a read observation as an instruction. The relevant evaluation question is whether the declared effect class matches the actual state transition and the authority relation that licensed it.</p>
+<h2 id="handlers-validators-and-authority">6. Handlers, validators, and authority</h2>
+<p>Handlers convert effect records into execution-time control. A handler determines which effects are authorized, which checks precede execution, which capabilities are required, which state regions are modifiable, which frame conditions remain protected, and which rollback or compensation path is available after failure.</p>
+<p>handler(eps, rho, Pre, C, E) -&gt; authorize | deny | ask | sandbox | escalate</p>
+<p>Validators supply the post-execution counterpart to handlers. They compare postconditions with observed state, check frame conditions, record diagnostics, and decide whether repair, rollback, escalation, or human review is required. Their output is part of the artifact record for the trace, so a claimed completion without validation remains an unverified state-transition claim.</p>
+<p>validator(Post, observed_state_delta, frame_conditions) -&gt; pass | fail | partial | unknown</p>
+<p>Authority is a typed resource distinct from interface access. A callable tool supplies a capability channel; policy, user intent, risk class, and institutional procedure determine whether the action is permitted. The ledger therefore records authority source, capability scope, approval status, and escalation criteria as separate fields, giving reviewers a path from instruction to authorization decision.</p>
+<h2 id="typed-action-ledger">7. Typed Action Ledger</h2>
+<p>The Typed Action Ledger is the proposed accounting layer for effectful agents. It records the action contract, context, authority, state change, validation result, and downstream use conditions for each consequential step. Its function is execution-time control and audit, not retrospective documentation.</p>
+<p class="table-display-caption" id="table-6-caption">Table 6. Ledger field group, Purpose</p>
+<div aria-labelledby="table-6-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="6" id="table-6"><caption class="visually-hidden">Table 6. Ledger field group, Purpose</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Ledger field group</strong></th>
-<th><strong>Purpose</strong></th>
+<th scope="col"><strong>Ledger field group</strong></th>
+<th scope="col"><strong>Purpose</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -382,54 +324,27 @@ The Typed Action Ledger is a proposed record of consequential agent steps. Its f
 <td>Record permitted downstream use, memory-update policy, skill-library update policy, and audit status.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The ledger succeeds only when it alters system behavior or human review. If entries are produced after execution and have no influence on authorization, validation, repair, memory quality, or skill reuse, the record layer should be simplified. A useful ledger is a control surface that constrains execution and makes later reconstruction possible.
-
-## 8. Memory, tools, plans, and skills {#8-memory-tools-plans-and-skills}
-
-### 8.1 Memory as effect {#8-1-memory-as-effect}
-
-Memory writes are consequential effects. A persistent memory record can preserve validated facts and successful plans, but it can also propagate false premises into future decisions. The required record fields include source, confidence, scope, retention, privacy class, invalidation condition, and permitted use.
-
-$$
-\begin{gathered}
-\Gamma;M;E;C\vdash\\
-\operatorname{write\_memory}(m):\\
-M\to M+\{m\}\\
-!\mathrm{memory\_write}@\rho.
-\end{gathered}
-$$
-
-### 8.2 Tools as typed interfaces {#8-2-tools-as-typed-interfaces}
-
-Toolformer studies language-model selection and use of external APIs <span class="citation-group">[<a class="citation-link" href="#ref-Toolformer2023" aria-label="Reference 7 — Toolformer: Language Models Can Teach Themselves to Use Tools">7</a>]</span>. AgentDojo evaluates prompt-injection attacks against tool-using agents <span class="citation-group">[<a class="citation-link" href="#ref-AgentDojo2024" aria-label="Reference 5 — AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents">5</a>]</span>. AgentRewardBench evaluates unintended side effects of agent trajectories <span class="citation-group">[<a class="citation-link" href="#ref-AgentRewardBench2025" aria-label="Reference 6 — AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories">6</a>]</span>. Tool calls are treated here as interface actions with schemas, arguments, authority requirements, failure modes, side effects, return values, and trust conditions. Under the proposed ledger specification, a tool-result hallucination occurs if the agent claims an observation absent from the recorded tool output or attributes authority exceeding the recorded interface contract.
-
-### 8.3 Plans as state-transition programs {#8-3-plans-as-state-transition-programs}
-
-Plans are state-transition programs with dependency, contingency, and validation structure. A mature plan records initial state, resources, temporal constraints, cumulative effects, precondition checks, postcondition checks, abort conditions, rollback strategy, human approval points, and evidence ledger. Narrative plans lack the execution contract needed for high-impact settings.
-
-$$
-\begin{gathered}
-\Gamma;M;E;C\vdash\pi:\\
-\mathrm{Pre}_0\to\mathrm{Post}_n\\
-!(\varepsilon_1+\cdots+\varepsilon_n)@\rho.
-\end{gathered}
-$$
-
-
-
-<table>
+</table></div>
+<p>The ledger succeeds only when it alters system behavior or human review. If entries are produced after execution and have no influence on authorization, validation, repair, memory quality, or skill reuse, the record layer should be simplified. A useful ledger is a control surface that constrains execution and makes later reconstruction possible.</p>
+<h2 id="memory-tools-plans-and-skills">8. Memory, tools, plans, and skills</h2>
+<h3 id="memory-as-effect">8.1 Memory as effect</h3>
+<p>Memory writes are consequential effects. A persistent memory record can preserve validated facts and successful plans, but it can also propagate false premises into future decisions. The required record fields include source, confidence, scope, retention, privacy class, invalidation condition, and permitted use.</p>
+<p>Gamma; M; E; C |- write_memory(m) : M -&gt; M + {m} ! memory_write @ rho</p>
+<h3 id="tools-as-typed-interfaces">8.2 Tools as typed interfaces</h3>
+<p>Tool calls are interface actions with schemas, arguments, authority requirements, failure modes, side effects, return values, and trust conditions. Tool-result hallucination is therefore a ledger failure in which the agent claims an observation that the tool did not return, or assigns authority to a result beyond the recorded interface contract.</p>
+<h3 id="plans-as-state-transition-programs">8.3 Plans as state-transition programs</h3>
+<p>Plans are state-transition programs with dependency, contingency, and validation structure. A mature plan records initial state, resources, temporal constraints, cumulative effects, precondition checks, postcondition checks, abort conditions, rollback strategy, human approval points, and evidence ledger. Narrative plans lack the execution contract needed for high-impact settings.</p>
+<p>Gamma; M; E; C |- pi : Pre_0 -&gt; Post_n ! (eps_1 + ... + eps_n) @ rho</p>
+<p class="table-display-caption" id="table-7-caption">Table 7. Level, Plan maturity — Level, Plan maturity</p>
+<div aria-labelledby="table-7-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="7" id="table-7"><caption class="visually-hidden">Table 7. Level, Plan maturity — Level, Plan maturity</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Level</strong></th>
-<th><strong>Plan maturity</strong></th>
+<th scope="col"><strong>Level</strong></th>
+<th scope="col"><strong>Plan maturity</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -458,33 +373,23 @@ $$
 <td>Reusable plan pattern supported by execution evidence.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-### 8.4 Skills as reusable effectful programs {#8-4-skills-as-reusable-effectful-programs}
-
-Skills are reusable action patterns with contracts. A skill library can reduce repeated planning cost, but a weak skill can amplify an original failure across tasks. Reuse should require validated postconditions, scoped effects, stable dependencies, known failure cases, version ownership, and deprecation conditions.
-
-skill s : Pre -\> Post ! eps
-
-## 9. Conceptual intelligence as controlled transfer {#9-conceptual-intelligence-as-controlled-transfer}
-
-Conceptual transfer is first a proposed transformation of a reasoning artifact: an analogy or abstraction maps selected source relations into a target domain under stated assumptions. The record names the source and target domains, mapping, intended relation, known losses, counterexamples, reviewer or validator, and permitted uses. Source-domain validity does not certify target-domain correctness. The transfer becomes consequential for effect control if it changes persistent memory, guides a tool operation or authorizes an external decision. At that boundary, the target claim needs independent warrant and the action needs the authority and effect checks specified elsewhere in the series.
-
-concept_transfer : SourceDomain -\> TargetDomain
-
-
-
-<table>
+</table></div>
+<h3 id="skills-as-reusable-effectful-programs">8.4 Skills as reusable effectful programs</h3>
+<p>Skills are reusable action patterns with contracts. A skill library can reduce repeated planning cost, but a weak skill can amplify an original failure across tasks. Reuse should require validated postconditions, scoped effects, stable dependencies, known failure cases, version ownership, and deprecation conditions.</p>
+<p>skill s : Pre -&gt; Post ! eps</p>
+<h2 id="conceptual-intelligence-as-controlled-transfer">9. Conceptual intelligence as controlled transfer</h2>
+<p>Conceptual transfer is an effect on reasoning state. Agents import analogies, abstractions, schemas, and patterns across domains; this transfer can improve explanation and design, but it can also import source-domain relations that fail in the target setting. The record must identify which relations are preserved, which are lost, which counterexamples expose distortion, and which uses are permitted.</p>
+<p>concept_transfer : SourceDomain -&gt; TargetDomain</p>
+<p class="table-display-caption" id="table-8-caption">Table 8. Transfer field, Question</p>
+<div aria-labelledby="table-8-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="8" id="table-8"><caption class="visually-hidden">Table 8. Transfer field, Question</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Transfer field</strong></th>
-<th><strong>Question</strong></th>
+<th scope="col"><strong>Transfer field</strong></th>
+<th scope="col"><strong>Question</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -517,27 +422,20 @@ concept_transfer : SourceDomain -\> TargetDomain
 <td>Can the transfer support explanation, hypothesis generation, design, or execution?</td>
 </tr>
 </tbody>
-</table>
-
-
-
-Concept transfer belongs in the effect layer when it influences plans, memory, scientific hypotheses, system design, or policy recommendations. Its warrant must therefore be recorded together with permitted use. An analogy used as a mnemonic has a different evidence requirement from an analogy used to authorize an action.
-
-## 10. Security as effect control {#10-security-as-effect-control}
-
-Agent security can be analyzed as effect control under adversarial observation and authority pressure. Prompt injection, untrusted tool output, malicious webpages, credential exposure, memory poisoning, and data exfiltration all exploit confusion among observation, instruction, authority, and external write effects.
-
-
-
-<table>
+</table></div>
+<p>Concept transfer belongs in the effect layer when it influences plans, memory, scientific hypotheses, system design, or policy recommendations. Its warrant must therefore be recorded together with permitted use. An analogy used as a mnemonic has a different evidence requirement from an analogy used to authorize an action.</p>
+<h2 id="security-as-effect-control">10. Security as effect control</h2>
+<p>Agent security can be analyzed as effect control under adversarial observation and authority pressure. Prompt injection, untrusted tool output, malicious webpages, credential exposure, memory poisoning, and data exfiltration all exploit confusion among observation, instruction, authority, and external write effects.</p>
+<p class="table-display-caption" id="table-9-caption">Table 9. Security failure, Effect-control diagnosis</p>
+<div aria-labelledby="table-9-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="9" id="table-9"><caption class="visually-hidden">Table 9. Security failure, Effect-control diagnosis</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Security failure</strong></th>
-<th><strong>Effect-control diagnosis</strong></th>
+<th scope="col"><strong>Security failure</strong></th>
+<th scope="col"><strong>Effect-control diagnosis</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -570,27 +468,20 @@ Agent security can be analyzed as effect control under adversarial observation a
 <td>Reviewer cannot reconstruct context, authority, action, state delta, and validation.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The ledger turns attacks into effect-level failure labels. The important invariant is not the surface form of the attack, but the unauthorized transition from untrusted observation to action, memory, or external disclosure. This view complements dynamic agent-security benchmarks by attaching each adversarial success to a specific failure in authority, isolation, validation, or audit.
-
-## 11. Effectful Agent Benchmark v0.2 {#11-effectful-agent-benchmark-v0-2}
-
-The Effectful Agent Benchmark evaluates task completion together with effect control. Its items specify the goal, initial state, policy context, tool set, memory state, allowed effects, forbidden effects, required checks, frame conditions, required authority, rollback obligations, untrusted inputs, validators, and audit requirements.
-
-
-
-<table>
+</table></div>
+<p>The ledger turns attacks into effect-level failure labels. The important invariant is not the surface form of the attack, but the unauthorized transition from untrusted observation to action, memory, or external disclosure. This view complements dynamic agent-security benchmarks by attaching each adversarial success to a specific failure in authority, isolation, validation, or audit.</p>
+<h2 id="effectful-agent-benchmark-v0.2">11. Effectful Agent Benchmark v0.2</h2>
+<p>The Effectful Agent Benchmark evaluates task completion together with effect control. Its items specify the goal, initial state, policy context, tool set, memory state, allowed effects, forbidden effects, required checks, frame conditions, required authority, rollback obligations, untrusted inputs, validators, and audit requirements.</p>
+<p class="table-display-caption" id="table-10-caption">Table 10. Component, Benchmark obligation</p>
+<div aria-labelledby="table-10-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="10" id="table-10"><caption class="visually-hidden">Table 10. Component, Benchmark obligation</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Component</strong></th>
-<th><strong>Benchmark obligation</strong></th>
+<th scope="col"><strong>Component</strong></th>
+<th scope="col"><strong>Benchmark obligation</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -623,19 +514,17 @@ The Effectful Agent Benchmark evaluates task completion together with effect con
 <td>Unauthorized action, missing precondition, wrong postcondition, memory pollution, exfiltration, rollback failure, and audit failure.</td>
 </tr>
 </tbody>
-</table>
-
- 
-
-<table>
+</table></div>
+<p class="table-display-caption" id="table-11-caption">Table 10. Component, Benchmark obligation Component Benchmark obligation Task scenario Goal, initial state, policy context, tools, memory state, and environment snapshot. Allowed effects Effects authorized under the stated authority envelope. Forbidden effects Effects that violate policy, privacy, state scope, or risk limits. Required checks Precondition checks, approval gates, validation tests, and frame conditions. Trajectory record Observations, proposed actions, authorizations, executions, state deltas, and validations. Scoring Task success, effect precision, authority compliance, side-effect rate, rollback quality, and audit completeness. Failure labels Unauthorized action, missing precondition, wrong postcondition, memory pollution, exfiltration, rollback failure, and audit failure.</p>
+<div aria-labelledby="table-11-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="11" id="table-11"><caption class="visually-hidden">Table 10. Component, Benchmark obligation Component Benchmark obligation Task scenario Goal, initial state, policy context, tools, memory state, and environment snapshot. Allowed effects Effects authorized under the stated authority envelope. Forbidden effects Effects that violate policy, privacy, state scope, or risk limits. Required checks Precondition checks, approval gates, validation tests, and frame conditions. Trajectory record Observations, proposed actions, authorizations, executions, state deltas, and validations. Scoring Task success, effect precision, authority compliance, side-effect rate, rollback quality, and audit completeness. Failure labels Unauthorized action, missing precondition, wrong postcondition, memory pollution, exfiltration, rollback failure, and audit failure.</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Metric</strong></th>
-<th><strong>Definition</strong></th>
+<th scope="col"><strong>Metric</strong></th>
+<th scope="col"><strong>Definition</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -676,35 +565,24 @@ The Effectful Agent Benchmark evaluates task completion together with effect con
 <td>Reconstructability of action, context, authority, state delta, and validation.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The benchmark has value only if these metrics diverge from ordinary task success. A trajectory that completes the goal and violates authority, contaminates memory, changes forbidden state, skips checks, or leaves no reconstructable record should score differently from a trajectory that satisfies the same goal under admissible effects.
-
-## 12. Diagnostic cases {#12-diagnostic-cases}
-
-A repository-editing agent provides the most direct diagnostic case for the ledger. The task is locally simple, but the action surface is consequential. The agent should record issue context, modifiable files, tests to preserve, expected postconditions, and forbidden effects. A patch that resolves the visible error and changes an unrelated interface is a task-success artifact with failed frame preservation.
-
-A laboratory protocol agent shows the higher-stakes version of the same structure. Sample identity, instrument availability, permissions, controls, stopping rules, uncertainty, hazard class, and permitted claim are preconditions for action and evidence. A plausible protocol that assumes unavailable equipment, omits controls, or licenses a stronger claim than the evidence supports fails as an effectful trace even if its surface text is coherent.
-
-Calendar and email agents require separation between draft, send, schedule, and commit operations. The ledger should record recipient, authority, time-zone assumptions, conflict checks, cancellation path, and the social commitment created by the action. This case is useful precisely where low linguistic complexity coexists with consequential external effects.
-
-A web agent operating over untrusted content tests authority isolation. The system should separate observations from instructions, block untrusted content from granting authority, and label any external write effect. Prompt injection appears as a transition from read effect to unauthorized write, memory, or social effect.
-
-## 13. Objections and failure modes {#13-objections-and-failure-modes}
-
-
-
-<table>
+</table></div>
+<p>The benchmark has value only if these metrics diverge from ordinary task success. A trajectory that completes the goal and violates authority, contaminates memory, changes forbidden state, skips checks, or leaves no reconstructable record should score differently from a trajectory that satisfies the same goal under admissible effects.</p>
+<h2 id="diagnostic-cases">12. Diagnostic cases</h2>
+<p>A repository-editing agent provides the most direct diagnostic case for the ledger. The task is locally simple, but the action surface is consequential. The agent should record issue context, modifiable files, tests to preserve, expected postconditions, and forbidden effects. A patch that resolves the visible error and changes an unrelated interface is a task-success artifact with failed frame preservation.</p>
+<p>A laboratory protocol agent shows the higher-stakes version of the same structure. Sample identity, instrument availability, permissions, controls, stopping rules, uncertainty, hazard class, and permitted claim are preconditions for action and evidence. A plausible protocol that assumes unavailable equipment, omits controls, or licenses a stronger claim than the evidence supports fails as an effectful trace even if its surface text is coherent.</p>
+<p>Calendar and email agents require separation between draft, send, schedule, and commit operations. The ledger should record recipient, authority, time-zone assumptions, conflict checks, cancellation path, and the social commitment created by the action. This case is useful precisely where low linguistic complexity coexists with consequential external effects.</p>
+<p>A web agent operating over untrusted content tests authority isolation. The system should separate observations from instructions, block untrusted content from granting authority, and label any external write effect. Prompt injection appears as a transition from read effect to unauthorized write, memory, or social effect.</p>
+<h2 id="objections-and-failure-modes">13. Objections and failure modes</h2>
+<p class="table-display-caption" id="table-12-caption">Table 12. Objection, Response — Objection, Response</p>
+<div aria-labelledby="table-12-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="12" id="table-12"><caption class="visually-hidden">Table 12. Objection, Response — Objection, Response</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Objection</strong></th>
-<th><strong>Response</strong></th>
+<th scope="col"><strong>Objection</strong></th>
+<th scope="col"><strong>Response</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -741,19 +619,17 @@ A web agent operating over untrusted content tests authority isolation. The syst
 <td>Effect-level invariants remain stable across attack forms, including authority confusion, untrusted observation, forbidden composition, and missing validation.</td>
 </tr>
 </tbody>
-</table>
-
- 
-
-<table>
+</table></div>
+<p class="table-display-caption" id="table-13-caption">Table 12. Objection, Response — Objection, Response Objection Response The ledger is only logging. The ledger has value only when it affects authorization, execution, validation, repair, or audit. Static effect systems do not fit open-world agents. The proposal uses operational records, handlers, and validators, with approximate checks in domains lacking static guarantees. Human review already handles authority. Human review improves when context, authority, state delta, validation, and failure labels are explicit. The ledger slows agents down. Record depth should scale with risk; low-risk reads need lighter records than persistent writes, commitments, transactions, or physical actions. Effects are hard to enumerate. The taxonomy is extensible; the required invariant is explicit state change and authority obligation. Benchmarks reward overcautious agents. Metrics include task success, effect precision, and repair quality, so refusal alone cannot dominate. Concept transfer is too interpretive. Concept Transfer Records should be used only where transfer affects explanation, memory, planning, scientific claims, or decisions. Security attacks change quickly. Effect-level invariants remain stable across attack forms, including authority confusion, untrusted observation, forbidden composition, and missing validation.</p>
+<div aria-labelledby="table-13-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="13" id="table-13"><caption class="visually-hidden">Table 12. Objection, Response — Objection, Response Objection Response The ledger is only logging. The ledger has value only when it affects authorization, execution, validation, repair, or audit. Static effect systems do not fit open-world agents. The proposal uses operational records, handlers, and validators, with approximate checks in domains lacking static guarantees. Human review already handles authority. Human review improves when context, authority, state delta, validation, and failure labels are explicit. The ledger slows agents down. Record depth should scale with risk; low-risk reads need lighter records than persistent writes, commitments, transactions, or physical actions. Effects are hard to enumerate. The taxonomy is extensible; the required invariant is explicit state change and authority obligation. Benchmarks reward overcautious agents. Metrics include task success, effect precision, and repair quality, so refusal alone cannot dominate. Concept transfer is too interpretive. Concept Transfer Records should be used only where transfer affects explanation, memory, planning, scientific claims, or decisions. Security attacks change quickly. Effect-level invariants remain stable across attack forms, including authority confusion, untrusted observation, forbidden composition, and missing validation.</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Failure mode</strong></th>
-<th><strong>Meaning</strong></th>
+<th scope="col"><strong>Failure mode</strong></th>
+<th scope="col"><strong>Meaning</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -798,25 +674,19 @@ A web agent operating over untrusted content tests authority isolation. The syst
 <td>A reviewer cannot reconstruct why an action occurred or what changed.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## 14. Kill criteria and series synthesis {#14-kill-criteria-and-series-synthesis}
-
-### 14.1 Kill criteria {#14-1-kill-criteria}
-
-
-
-<table>
+</table></div>
+<h2 id="kill-criteria-and-series-synthesis">14. Kill criteria and series synthesis</h2>
+<h3 id="kill-criteria">14.1 Kill criteria</h3>
+<p class="table-display-caption" id="table-14-caption">Table 14. Criterion, Decision rule</p>
+<div aria-labelledby="table-14-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="14" id="table-14"><caption class="visually-hidden">Table 14. Criterion, Decision rule</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Criterion</strong></th>
-<th><strong>Decision rule</strong></th>
+<th scope="col"><strong>Criterion</strong></th>
+<th scope="col"><strong>Decision rule</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -861,25 +731,19 @@ A web agent operating over untrusted content tests authority isolation. The syst
 <td>The ledger remains documentation with no execution-time control function.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-### 14.2 Series synthesis {#14-2-series-synthesis}
-
-The suite converges on a single evaluation object: typed artifacts in structured environments, with validation, transformation stability, warrant, and effect control. Each essay supplies one layer of that object, and each layer has an associated failure mode and benchmark obligation.
-
-
-
-<table>
+</table></div>
+<h3 id="series-synthesis">14.2 Series synthesis</h3>
+<p>The suite converges on a single evaluation object: typed artifacts in structured environments, with validation, transformation stability, warrant, and effect control. Each essay supplies one layer of that object, and each layer has an associated failure mode and benchmark obligation.</p>
+<p class="table-display-caption" id="table-15-caption">Table 15. Essay, Core contribution</p>
+<div aria-labelledby="table-15-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="15" id="table-15"><caption class="visually-hidden">Table 15. Essay, Core contribution</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Essay</strong></th>
-<th><strong>Core contribution</strong></th>
+<th scope="col"><strong>Essay</strong></th>
+<th scope="col"><strong>Core contribution</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -912,27 +776,20 @@ The suite converges on a single evaluation object: typed artifacts in structured
 <td>Agent action requires authority, effects, state changes, handlers, validators, rollback, audit, and controlled transfer.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-The resulting program is world-centric in a technical sense. Intelligence is evaluated through the construction, transformation, validation, warranting, and execution of typed artifacts inside structured environments under declared effects and calibrated warrant. The program earns rigor only when records improve diagnosis, validators improve review, benchmarks reveal hidden failures, scores predict useful outcomes, and ledgers change action control.
-
-## Appendix A. Typed Action Ledger schema {#appendix-a-typed-action-ledger-schema}
-
-**typed_action_ledger**
-
-
-
-<table>
+</table></div>
+<p>The resulting program is world-centric in a technical sense. Intelligence is evaluated through the construction, transformation, validation, warranting, and execution of typed artifacts inside structured environments under declared effects and calibrated warrant. The program earns rigor only when records improve diagnosis, validators improve review, benchmarks reveal hidden failures, scores predict useful outcomes, and ledgers change action control.</p>
+<h2 id="appendix-a.-typed-action-ledger-schema">Appendix A. Typed Action Ledger schema</h2>
+<p><strong>typed_action_ledger</strong></p>
+<p class="table-display-caption" id="table-16-caption">Table 16. Field, Specification</p>
+<div aria-labelledby="table-16-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="16" id="table-16"><caption class="visually-hidden">Table 16. Field, Specification</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Field</strong></th>
-<th><strong>Specification</strong></th>
+<th scope="col"><strong>Field</strong></th>
+<th scope="col"><strong>Specification</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -969,25 +826,19 @@ The resulting program is world-centric in a technical sense. Intelligence is eva
 <td>Modifiable state and state that must remain preserved.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## Appendix B. Effectful Agent Benchmark schema {#appendix-b-effectful-agent-benchmark-schema}
-
-**effectful_agent_benchmark_item**
-
-
-
-<table>
+</table></div>
+<h2 id="appendix-b.-effectful-agent-benchmark-schema">Appendix B. Effectful Agent Benchmark schema</h2>
+<p><strong>effectful_agent_benchmark_item</strong></p>
+<p class="table-display-caption" id="table-17-caption">Table 17. Field, Specification</p>
+<div aria-labelledby="table-17-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="17" id="table-17"><caption class="visually-hidden">Table 17. Field, Specification</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Field</strong></th>
-<th><strong>Specification</strong></th>
+<th scope="col"><strong>Field</strong></th>
+<th scope="col"><strong>Specification</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -1052,25 +903,19 @@ The resulting program is world-centric in a technical sense. Intelligence is eva
 <td>Unauthorized action, missing precondition, wrong postcondition, memory pollution, exfiltration, rollback failure, audit failure, and related labels.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## Appendix C. Concept Transfer Record schema {#appendix-c-concept-transfer-record-schema}
-
-**concept_transfer_record**
-
-
-
-<table>
+</table></div>
+<h2 id="appendix-c.-concept-transfer-record-schema">Appendix C. Concept Transfer Record schema</h2>
+<p><strong>concept_transfer_record</strong></p>
+<p class="table-display-caption" id="table-18-caption">Table 18. Field, Specification</p>
+<div aria-labelledby="table-18-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="18" id="table-18"><caption class="visually-hidden">Table 18. Field, Specification</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Field</strong></th>
-<th><strong>Specification</strong></th>
+<th scope="col"><strong>Field</strong></th>
+<th scope="col"><strong>Specification</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -1131,15 +976,10 @@ The resulting program is world-centric in a technical sense. Intelligence is eva
 <td>Human, automated, or hybrid review result.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-## Appendix D. Claim ledger {#appendix-d-claim-ledger}
-
-
-
-<table>
+</table></div>
+<h2 id="appendix-d.-claim-ledger">Appendix D. Claim ledger</h2>
+<p class="table-display-caption" id="table-19-caption">Table 19. Claim, Level, Treatment</p>
+<div aria-labelledby="table-19-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="19" id="table-19"><caption class="visually-hidden">Table 19. Claim, Level, Treatment</caption>
 <colgroup>
 <col style="width: 33%"/>
 <col style="width: 33%"/>
@@ -1147,9 +987,9 @@ The resulting program is world-centric in a technical sense. Intelligence is eva
 </colgroup>
 <thead>
 <tr class="header">
-<th><strong>Claim</strong></th>
-<th><strong>Level</strong></th>
-<th><strong>Treatment</strong></th>
+<th scope="col"><strong>Claim</strong></th>
+<th scope="col"><strong>Level</strong></th>
+<th scope="col"><strong>Treatment</strong></th>
 </tr>
 </thead>
 <tbody>
@@ -1179,21 +1019,12 @@ The resulting program is world-centric in a technical sense. Intelligence is eva
 <td>Hypothesis to be tested.</td>
 </tr>
 </tbody>
-</table>
-
-
-
-
-<section class="bibliography" aria-labelledby="references-heading">
-<h2 id="references-heading">References</h2>
-
-<ol class="references-list">
-<li id="ref-Hoare1969"><span class="ref-key">[1]</span> <a href="https://doi.org/10.1145/363235.363259" rel="noopener noreferrer">An Axiomatic Basis for Computer Programming</a>. <span class="ref-details">C. A. R. Hoare · Communications of the ACM 12(10), 1969.</span></li>
-<li id="ref-PDDL1998"><span class="ref-key">[2]</span> <a href="https://homepages.inf.ed.ac.uk/mfourman/tools/propplan/pddl.pdf" rel="noopener noreferrer">PDDL—The Planning Domain Definition Language, Version 1.2</a>. <span class="ref-details">McDermott et al. · AIPS-98 technical report.</span></li>
-<li id="ref-Moggi1989"><span class="ref-key">[3]</span> <a href="https://lics.siglog.org/1989/Moggi-Computationallambda.html" rel="noopener noreferrer">Computational Lambda-Calculus and Monads</a>. <span class="ref-details">Eugenio Moggi · LICS 1989.</span></li>
-<li id="ref-PlotkinPretnar2013"><span class="ref-key">[4]</span> <a href="https://lmcs.episciences.org/705" rel="noopener noreferrer">Handling Algebraic Effects</a>. <span class="ref-details">Plotkin and Pretnar · Logical Methods in Computer Science 9(4), 2013.</span></li>
-<li id="ref-AgentDojo2024"><span class="ref-key">[5]</span> <a href="https://proceedings.nips.cc/paper_files/paper/2024/hash/97091a5177d8dc64b1da8bf3e1f6fb54-Abstract-Datasets_and_Benchmarks_Track.html" rel="noopener noreferrer">AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents</a>. <span class="ref-details">Debenedetti et al. · NeurIPS 2024.</span></li>
-<li id="ref-AgentRewardBench2025"><span class="ref-key">[6]</span> <a href="https://arxiv.org/abs/2504.08942" rel="noopener noreferrer">AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories</a>. <span class="ref-details">Lù et al. · arXiv preprint 2025.</span></li>
-<li id="ref-Toolformer2023"><span class="ref-key">[7]</span> <a href="https://proceedings.neurips.cc/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html" rel="noopener noreferrer">Toolformer: Language Models Can Teach Themselves to Use Tools</a>. <span class="ref-details">Schick et al. · NeurIPS 2023.</span></li>
-</ol>
-</section>
+</table></div>
+<h2 id="appendix-e.-source-use-notes">Appendix E. Source-use notes</h2>
+<blockquote>
+<p>- Hoare logic, PDDL, monads, algebraic effects, and effect-system sources support the technical background for preconditions, postconditions, planning effects, and computational effects. They do not establish the Typed Action Ledger proposal.</p>
+<p>- ReAct and Toolformer support the context in which language models interleave reasoning with action or learn tool-use patterns. They do not establish type-and-effect records for agents.</p>
+<p>- WebArena, OSWorld, tau-bench, AgentDojo, and AgentRewardBench support the need for richer trajectory-level evaluation. They do not validate the proposed Effectful Agent Benchmark.</p>
+<p>- Security sources support prompt-injection and untrusted-tool-result risks. The effect-control taxonomy is an original synthesis in this essay.</p>
+<p>- Conceptual-transfer records are proposed as a way to control analogy and abstraction where transfer affects explanation, planning, memory, scientific claims, or action.</p>
+</blockquote>

@@ -29,23 +29,23 @@ PANDOC_VERSION = "3.1.13"
 # Publication order, short editorial descriptions, and the original section labels.
 ESSAYS = [
     ("compositional-intelligence", "Compositional Intelligence", "Synthesis",
-     "A framework for the evaluation of AI-generated artifacts in structured worlds."),
+     "Typed Artifacts, Structured Worlds, and Effectful AI"),
     ("series-preface", "Series Preface", "Preface",
-     "Compositional Intelligence studies typed artifacts and the structured worlds they enter."),
+     "Compositional Intelligence is a proposed research program for evaluating generative AI through typed artifacts and the structured worlds those artifacts enter."),
     ("semantic-participation", "Semantic Participation", "01 · Foundations",
-     "Conditions under which generated artifacts become participants in structured environments."),
+     "AI Artifacts as Members of Formal and Scientific Worlds"),
     ("typed-generativity", "Typed Generativity", "02 · Foundations",
-     "Generation as construction of candidate artifacts with declared types."),
+     "AI Generation as Probabilistic Type Inhabitation"),
     ("functorial-consistency", "Functorial Consistency", "03 · Foundations",
-     "Evaluation of structure-preserving transformations across representations."),
+     "A Benchmark Proposal for Structure-Preserving AI"),
     ("lambek-machines", "Lambek Machines", "04 · Language",
-     "Typed composition and grammatical structure in language models."),
+     "Grammar-as-Logic and the Compositional Evaluation of Language Models"),
     ("algebraic-architectures", "Algebraic Architectures", "05 · Architectures",
-     "The relationship of neural model architecture to task structure."),
-    ("quantitative-curry-howard", "Quantitative Curry–Howard", "06 · Evidence",
-     "The status of scores, uncertainty, and evidence in typed reasoning."),
+     "Specifying Neural Models by Structure, Symmetry, Constraint, and Validation"),
+    ("quantitative-curry-howard", "Quantitative Curry-Howard", "06 · Evidence",
+     "Differentiable Logic, Probabilistic Warrant, and Trainable Proof Structure"),
     ("effectful-and-conceptual-intelligence", "Effectful and Conceptual Intelligence",
-     "07 · Action", "Agent action, authority, effects, and conceptual transfer."),
+     "07 · Action", "Type-and-Effect Records for Agents That Act"),
 ]
 
 
@@ -338,6 +338,20 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
     source_body = markdown[match.end():]
+    # The uploaded V3 Word documents are authoritative. Their Pandoc-produced
+    # HTML fragments are stored verbatim to avoid rewriting scientific prose,
+    # table cells, schemas, or formula transcriptions during publication.
+    if source_body.lstrip().startswith("<!-- AUTHORITATIVE-DOCX SHA256 "):
+        marker, sep, fragment = source_body.partition("-->")
+        if not sep or not re.match(
+            r"^<!-- AUTHORITATIVE-DOCX SHA256 [0-9a-f]{64}; source [^<>]+\.docx $",
+            marker.lstrip(),
+        ):
+            raise ValueError(f"Malformed DOCX provenance: {expected_title}")
+        body = fragment.lstrip()
+        if '<h2 id="abstract">' not in body:
+            raise ValueError(f"Missing original Abstract: {expected_title}")
+        return body, hashlib.sha256(markdown.encode("utf-8")).hexdigest()
     verify_table_catalog(source_body, table_captions, expected_title)
     command = ["pandoc", "--from=markdown+raw_html", "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
@@ -355,7 +369,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     """Render a manuscript with source provenance, toc, and sequential links."""
     manuscript = (ROOT / "essays" / (slug + ".md")).read_text(encoding="utf-8")
     body, digest = source_to_body(manuscript, title, table_captions)
-    if slug == "compositional-intelligence":
+    if slug == "compositional-intelligence" and "AUTHORITATIVE-DOCX SHA256" not in manuscript:
         body = render_synthesis_table_math(body)
     before = ESSAYS[position - 1] if position > 0 else None
     after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None
