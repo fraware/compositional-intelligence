@@ -14,6 +14,7 @@ import unittest
 
 import build_site as publication
 from render_science import FORMULAE, enhance_scientific_presentation, render_source_math
+from check_originals import Paragraphs, overlap, phrases, tokens
 
 
 class ManuscriptFidelityTests(unittest.TestCase):
@@ -158,6 +159,18 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertEqual(rendered.count("<math "), 1)
         self.assertIn('<p class="table-display-caption">P_theta(t : A | Gamma)</p>', rendered)
         self.assertIn('<caption class="visually-hidden">P_theta(t : A | Gamma)</caption>', rendered)
+
+    def test_independent_docx_audit_text_extraction(self) -> None:
+        """The optional original-DOCX audit excludes generated table labels."""
+        reader = Paragraphs()
+        example = "A generated theorem requires a stated target, explicit assumptions, and a validator."
+        reader.feed('<p>' + example + '</p>')
+        reader.feed('<p class="table-display-caption">' + example + '</p>')
+        self.assertEqual(reader.values, [example])
+        index = phrases(tokens(example))
+        self.assertEqual(overlap(example, index), 1.0)
+        self.assertLess(overlap("Different provenance sentences require review and validation.", index), 0.9)
+
 
 
 if __name__ == "__main__":
