@@ -305,7 +305,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         rendered = render_preface(enhanced)
 
         self.assertEqual(rendered.count('class="ci-lifecycle preface-lifecycle"'), 1)
-        self.assertEqual(rendered.count('class="preface-mobile-record"'), 13)
+        self.assertEqual(rendered.count('class="preface-mobile-record'), 23)
         self.assertEqual(rendered.count('<table data-source-table='), 7)
         self.assertIn("The sequence exposes the status transitions", rendered)
         self.assertEqual(rendered.count('class="table-scroll-hint preface-scroll-hint"'), 7)
@@ -323,9 +323,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
         body, _ = publication.source_to_body(original, title, [])
         rendered = render_preface(enhance_scientific_presentation(body))
-        self.assertEqual(rendered.count('data-preface-alternative="mobile"'), 2)
-        self.assertEqual(rendered.count('class="preface-mobile-record"'), 13)
-        self.assertEqual(rendered.count('class="preface-record-field"'), 33)
+        self.assertEqual(rendered.count('data-preface-alternative="mobile"'), 3)
+        self.assertEqual(rendered.count('class="preface-mobile-record'), 23)
+        self.assertEqual(rendered.count('class="preface-record-field"'), 63)
         self.assertIn('class="preface-architecture-source"', rendered)
         self.assertIn('class="preface-architecture-satisfaction"', rendered)
         self.assertIn("TaskSpec → ArchitectureType → ArchitectureInstance;", rendered)
@@ -342,7 +342,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         page = publication.render_essay(
             slug, title, category, description, 1, []
         )
-        self.assertEqual(page.count('class="preface-mobile-record"'), 13)
+        self.assertEqual(page.count('class="preface-mobile-record'), 23)
         self.assertIn("Table 5. Mathematical notation and its interpretation.", page)
         self.assertIn("Table 6. Publication steps, actions, and gates.", page)
         self.assertNotIn("Notation, Reading — Notation, Reading", page)

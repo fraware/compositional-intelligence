@@ -257,20 +257,20 @@ def main() -> int:
                                             cards, mobileDisplayed, nativeDisplayed,
                                             cuesValid: cues.every(v => v.exists),
                                             cuesVisible: cues.filter(v => v.visible).length,
-                                            expectedCues: innerWidth <= 650 ? 5 :
+                                            expectedCues: innerWidth <= 650 ? 4 :
                                                 innerWidth <= 900 ? 7 : 0
                                         };
                                     }""")
                                     if (preface["stages"] != 8 or not preface["lifecycleFits"] or
                                         preface["tables"] != 7 or preface["linkedDocuments"] != 9 or
-                                        preface["cards"] != 13 or not preface["cuesValid"] or
+                                        preface["cards"] != 23 or not preface["cuesValid"] or
                                         preface["cuesVisible"] != preface["expectedCues"] or
                                         (width <= 650 and
-                                         (preface["mobileDisplayed"] != 2 or
+                                         (preface["mobileDisplayed"] != 3 or
                                           preface["nativeDisplayed"] != 0)) or
                                         (width > 650 and
                                          (preface["mobileDisplayed"] != 0 or
-                                          preface["nativeDisplayed"] != 2))):
+                                          preface["nativeDisplayed"] != 3))):
                                         failures.append(f"{width}px {rel}: preface reading regression {preface}")
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
@@ -354,8 +354,9 @@ def main() -> int:
                                     if rel == "essays/series-preface.html":
                                         for name, selector in (
                                             ("lifecycle", ".preface-lifecycle"),
-                                            ("notation", ".preface-mobile-records:first-of-type"),
-                                            ("schemas", ".preface-mobile-records:last-of-type"),
+                                            ("reading-map", '.preface-mobile-records[aria-label="Publication order and reading links"]'),
+                                            ("notation", '.preface-mobile-records[aria-label="Mathematical notation and reading"]'),
+                                            ("schemas", '.preface-mobile-records[aria-label="Canonical schemas and artifacts"]'),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():

@@ -42,6 +42,7 @@ _ACCESSIBLE_TABLE_LABELS = (
     "Table 7. Canonical schemas and associated artifacts.",
 )
 _MOBILE_TABLES = {
+    1: (("Order", "Document", "Role"), "Publication order and reading links"),
     5: (("Notation", "Reading"), "Mathematical notation and reading"),
     7: (("Layer", "Schema", "Artifact"), "Canonical schemas and artifacts"),
 }
@@ -166,7 +167,7 @@ def _mobile_scientific_records(body: str) -> str:
         if tbody is None:
             raise ValueError(f"Table {number} source rows missing")
         rows = re.findall(r"<tr\b[^>]*>([\s\S]*?)</tr>", tbody.group(1))
-        expected = 6 if number == 5 else 7
+        expected = {1: 10, 5: 6, 7: 7}[number]
         if len(rows) != expected:
             raise ValueError(f"Table {number} row count differs from V3")
         cards: list[str] = []
@@ -200,7 +201,9 @@ def _mobile_scientific_records(body: str) -> str:
                 "</dt><dd>" + value + "</dd></div>"
                 for name, value in zip(headers, values, strict=True)
             )
-            cards.append('<dl class="preface-mobile-record">' + fields + "</dl>")
+            kind = " preface-reading-map-card" if number == 1 else ""
+            cards.append('<dl class="preface-mobile-record' + kind + '">' +
+                         fields + "</dl>")
         alternative = (
             '<section class="preface-mobile-records" aria-label="' +
             escape(label, quote=True) + '">' + "".join(cards) + "</section>"
