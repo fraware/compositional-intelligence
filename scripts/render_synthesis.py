@@ -250,9 +250,9 @@ _SOURCE_DATA_COLUMNS = {1: 3, 2: 4, 3: 3, 4: 2, 6: 2, 7: 4, 8: 4, 9: 3, 10: 2}
 _DATA_TABLE = re.compile(
     r'(?P<open><div aria-labelledby="table-(?P<n>\d+)-caption" '
     r'class="table-scroll"[^>]*>)'
-    r'(?P<table><table data-source-table="\d+" id="table-\d+">'
-    r'[\s\S]*?</table>)(?P<end></div>)'
-    r'(?P<hint>\s*<p id="table-\d+-scroll-hint" '
+    r'(?P<table><table data-source-table="(?P=n)" id="table-(?P=n)">'
+    r'(?:(?!<table\b)[\s\S])*?</table>)(?P<end></div>)'
+    r'(?P<hint>\s*<p id="table-(?P=n)-scroll-hint" '
     r'class="table-scroll-hint">[^<]*</p>)'
 )
 
