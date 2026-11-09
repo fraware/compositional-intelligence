@@ -43,6 +43,8 @@ def main() -> int:
             body = build_site.render_algebraic_architectures(body)
         if slug == "quantitative-curry-howard":
             body = build_site.render_quantitative_curry_howard(body)
+        if slug == "effectful-and-conceptual-intelligence":
+            body = build_site.render_effectful_and_conceptual_intelligence(body)
         body = build_site.enhance_scientific_presentation(body)
         if slug == "series-preface":
             body = build_site.render_preface(body)
