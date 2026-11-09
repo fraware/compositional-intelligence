@@ -696,7 +696,35 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     if number == 6 else source_fields
                 )
                 self.assertEqual(len(records), len(rows_to_copy))
-                for original_row, record in zip(rows_to_copy, records, strict=True):
+                source_heading = re.search(
+                    r"<thead>([\s\S]*?)</thead>", source_table.group()
+                )
+                self.assertIsNotNone(source_heading)
+                source_labels = [
+                    unescape(re.sub(r"<[^>]+>", "", item)).strip()
+                    for item in re.findall(
+                        r"<th\b[^>]*>([\s\S]*?)</th>",
+                        source_heading.group(1),
+                    )
+                ]
+                for record_index, (original_row, record) in enumerate(
+                    zip(rows_to_copy, records, strict=True)
+                ):
+                    record_labels = re.findall(r"<dt>([^<]+)</dt>", record)
+                    if number == 6:
+                        # Original table 6 contains two separately named
+                        # regions in one table. Its tenth row is a subheading.
+                        expected_labels = (
+                            source_labels[:3] if record_index < 9
+                            else ["Type transition", "Required control"]
+                        )
+                    else:
+                        expected_labels = source_labels
+                    self.assertEqual(
+                        record_labels, expected_labels,
+                        f"Table {number}, mobile record {record_index + 1}: "
+                        "source column labels differ"
+                    )
                     mobile_cells = re.findall(
                         r'<dd>([\s\S]*?)</dd>', record,
                     )
