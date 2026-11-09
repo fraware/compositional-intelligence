@@ -2155,7 +2155,7 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     grid-template-columns:minmax(0,1fr);
     gap:1px;
     margin:0;
-    padding:5px 0 6px;
+    padding:3px 0 4px;
   }
   .article-content .qc-schema-line code {
     font-size:13.1px;
