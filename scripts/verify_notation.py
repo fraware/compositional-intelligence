@@ -46,6 +46,8 @@ def main() -> int:
         if slug == "effectful-and-conceptual-intelligence":
             body = build_site.render_effectful_and_conceptual_intelligence(body)
         body = build_site.enhance_scientific_presentation(body)
+        if slug == "compositional-intelligence":
+            body = build_site.render_synthesis_mobile_tables(body)
         if slug == "series-preface":
             body = build_site.render_preface(body)
         if slug == "semantic-participation":
