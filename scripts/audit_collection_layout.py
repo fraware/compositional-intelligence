@@ -164,6 +164,87 @@ def check(slug: str, width: int, mode: str, values: dict) -> list[str]:
     return faults
 
 
+
+def check_homepage(page, site: Path, css: str, width: int) -> list[str]:
+    """Inspect home navigation, index completeness and computed text contrast.
+
+    Test the actual published homepage with its committed stylesheet. The
+    contrast calculation follows relative luminance, including the 3:1
+    threshold for sufficiently large text.
+    """
+    html = (site / "index.html").read_text(encoding="utf-8")
+    stylesheet = '<link rel="stylesheet" href="./style.css">'
+    if html.count(stylesheet) != 1:
+        return ["index: unexpected homepage stylesheet reference"]
+    page.emulate_media(media="screen")
+    page.set_content(
+        html.replace(stylesheet, "<style>\n" + css + "\n</style>"),
+        wait_until="load",
+    )
+    result = page.evaluate("""() => {
+        const anchors = [...document.querySelectorAll(
+            ".series-item .series-name a")];
+        const markers = [...document.querySelectorAll(
+            ".series-item .series-number")];
+        const channel = text => {
+            const values = text.match(/[\d.]+/g);
+            if (!values || values.length < 3) return null;
+            return values.slice(0, 3).map(Number);
+        };
+        const luminance = text => {
+            const rgb = channel(text);
+            if (!rgb) return NaN;
+            const linear = rgb.map(value => {
+                const c = value / 255;
+                return c <= 0.04045 ? c / 12.92 :
+                    Math.pow((c + 0.055) / 1.055, 2.4);
+            });
+            return linear[0] * 0.2126 +
+                linear[1] * 0.7152 + linear[2] * 0.0722;
+        };
+        const contrast = (a,b) => {
+            const x = luminance(a), y = luminance(b);
+            return (Math.max(x,y) + 0.05) / (Math.min(x,y) + 0.05);
+        };
+        const pageBackground = getComputedStyle(document.body).backgroundColor;
+        const weak = markers.map(marker => {
+            const style = getComputedStyle(marker);
+            const size = Number.parseFloat(style.fontSize);
+            const bold = Number.parseInt(style.fontWeight,10) >= 700;
+            const minimum = (size >= 24 || size >= 18.66 && bold) ? 3 : 4.5;
+            const ratio = contrast(style.color,pageBackground);
+            return {label:marker.textContent.trim(),ratio,minimum};
+        }).filter(item => !Number.isFinite(item.ratio) ||
+            item.ratio + 0.001 < item.minimum);
+        return {
+            links: anchors.map(a => a.getAttribute("href")),
+            unnamed: anchors.filter(a => !a.textContent.trim()).length,
+            markers: markers.length,
+            markersHiddenToAT: markers.every(
+                el => el.getAttribute("aria-hidden") === "true"),
+            contrastProblems: weak,
+            pageOverflow: document.documentElement.scrollWidth > innerWidth+1,
+            skipTarget: !!document.querySelector(
+                '.skip-link[href="#main"]') &&
+                !!document.getElementById("main"),
+        };
+    }""")
+    faults: list[str] = []
+    expected_links = [f"essays/{slug}.html" for slug in TABLES]
+    if result["links"] != expected_links:
+        faults.append(f"index {width}px: essay order or link destinations changed")
+    if result["markers"] != len(TABLES) or not result["markersHiddenToAT"]:
+        faults.append(f"index {width}px: essay markers are missing or mislabeled")
+    if result["unnamed"] or not result["skipTarget"] or result["pageOverflow"]:
+        faults.append(f"index {width}px: homepage navigation or reflow invalid")
+    if result["contrastProblems"]:
+        faults.append(
+            f"index {width}px: insufficient marker text contrast "
+            f"{result['contrastProblems']}"
+        )
+    return faults
+
+
 def check_a4(page, slug: str) -> list[str]:
     """Verify complete, nonempty physical A4 output for every published text."""
     pdf = page.pdf(
@@ -221,6 +302,12 @@ def main() -> int:
                 )
                 try:
                     page = context.new_page()
+                    if width in (320, 375, 768, 1440):
+                        problems.extend(check_homepage(page, site, css, width))
+                        if screenshots and width in (375, 1440):
+                            page.screenshot(path=str(
+                                screenshots / f"collection-home-{width}.png"
+                            ), full_page=False)
                     for slug in TABLES:
                         page.emulate_media(media="screen")
                         page.set_content(publication_html(site, slug, css),
@@ -246,7 +333,7 @@ def main() -> int:
             print("FAIL:", problem)
         return 1
     print(
-        "PASS: collection-wide layout: nine texts, 119 source tables, "
+        "PASS: collection-wide layout: homepage plus nine texts, 119 source tables, "
         "11 screen widths, three print widths, A4 documents, "
         "keyboard-scrolling and conditional table cues, anchors, "
         "headings, captions, pagination and navigation"
