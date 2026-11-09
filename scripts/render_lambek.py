@@ -34,7 +34,7 @@ CAPTIONS = {
   5:"Table 5. Linguistic transformations and semantic expectations.",
   6:"Table 6. Auxiliary supervision evaluation conditions.",
   7:"Table 7. Failure labels and meanings.",
-  8:"Table 8. Evaluation metrics.",
+  8:"Table 8. Evaluation metrics and measures.",
   9:"Table 9. Pilot evaluation tracks and recommended sizes.",
   10:"Table 10. Evidence patterns and interpretation.",
   11:"Table 11. Objections and responses.",
@@ -160,8 +160,8 @@ def pipeline(body:str)->str:
     source="\n".join('<p>'+escape(s,quote=False)+'</p>' for s,_ in PIPELINE)
     if body.count(source)!=1: raise ValueError("Original four-stage pipeline changed")
     items=''.join('<li>'+mathml(s,t)+'</li>' for s,t in PIPELINE)
-    fig=('<figure class="lm-pipeline" aria-label="Source typed composition pipeline">'
-         '<ol>'+items+'</ol></figure>')
+    fig=('<div class="lm-pipeline" role="group" aria-label="Source typed composition pipeline">'
+         '<ol>'+items+'</ol></div>')
     return body.replace(source,fig,1)
 
 
