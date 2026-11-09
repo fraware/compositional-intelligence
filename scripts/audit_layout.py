@@ -377,6 +377,24 @@ def main() -> int:
                                         const nativeDisplayed = compact.filter(e =>
                                             getComputedStyle(e).display !== "none").length;
                                         const bounds = lifecycle?.getBoundingClientRect();
+                                        const lifecycleStages = [...(lifecycle?.querySelectorAll("ol > li") ?? [])];
+                                        const flow = lifecycleStages.slice(1).every((stage,i) => {
+                                            const previous = lifecycleStages[i].getBoundingClientRect();
+                                            const next = stage.getBoundingClientRect();
+                                            return next.top > previous.bottom;
+                                        });
+                                        const arrowPositions = lifecycleStages.slice(0,-1).every((stage,i) => {
+                                            const stageBounds = stage.getBoundingClientRect();
+                                            const nextBounds = lifecycleStages[i+1].getBoundingClientRect();
+                                            const arrow = getComputedStyle(stage,"::after");
+                                            const x = stageBounds.left + Number.parseFloat(arrow.left);
+                                            const y = stageBounds.bottom - Number.parseFloat(arrow.bottom);
+                                            return arrow.content.includes("↓") &&
+                                                Number.isFinite(x) && Number.isFinite(y) &&
+                                                x > bounds.left && x < bounds.right &&
+                                                y > stageBounds.bottom &&
+                                                y <= nextBounds.top + 2;
+                                        });
                                         const dts = [...article.querySelectorAll(".preface-mobile-records dt")];
                                         const accessibleClipped = dts.filter(e => {
                                             const st = getComputedStyle(e);
@@ -399,6 +417,9 @@ def main() -> int:
                                             outOfBoundsRecords: mobileBounds.filter(b =>
                                                 b.left < -1 || b.right > innerWidth + 1).length,
                                             stages: lifecycle?.querySelectorAll("li").length ?? 0,
+                                            stageLabels: lifecycleStages.map(stage => stage.textContent.trim()),
+                                            directionalFlow: flow,
+                                            arrowsInsideSequence: arrowPositions,
                                             lifecycleFits: !!bounds && bounds.left >= -1 &&
                                                 bounds.right <= innerWidth + 1,
                                             tables: wrappers.length,
@@ -411,6 +432,12 @@ def main() -> int:
                                         };
                                     }""")
                                     if (preface["stages"] != 8 or not preface["lifecycleFits"] or
+                                        preface["stageLabels"] != [
+                                            "Output","candidate artifact","typed candidate",
+                                            "transformed artifact","validated artifact",
+                                            "warranted artifact","reusable artifact","effectful action"] or
+                                        not preface["directionalFlow"] or
+                                        not preface["arrowsInsideSequence"] or
                                         preface["tables"] != 7 or preface["linkedDocuments"] != 9 or
                                         str(preface["sourceTableNumbers"]) != "[1, 2, 3, 4, 5, 6, 7]" or
                                         str(preface["rowCounts"]) != "[10, 3, 8, 5, 6, 5, 7]" or
