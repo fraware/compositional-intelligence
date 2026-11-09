@@ -891,3 +891,40 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .sp-source-schema,
   .article-content .sp-mobile-record {break-inside:avoid}
 }
+
+
+/* Preserve the source distinction between a weaker statement and a witness. */
+.article-content .sp-proof-example {
+  margin:25px 0 35px;
+  padding:19px 0 21px;
+  border-block:1px solid var(--line);
+}
+.article-content .sp-proof-example > p:first-child {
+  margin:0 0 18px;
+  font:18px/1.7 var(--serif);
+}
+.article-content .sp-proof-example-label {
+  margin:0 0 6px;
+  color:var(--soft);
+  font:12px/1.5 var(--sans);
+  letter-spacing:.04em;
+}
+.article-content .sp-proof-example pre {
+  padding:10px 4px;
+  margin:0;
+  border:0;
+  background:transparent;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font:14px/1.65 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+.article-content .sp-proof-example code {
+  font:inherit;
+  white-space:inherit;
+}
+.article-content .sp-mobile-table-2 a {
+  text-underline-offset:.16em;
+}
+@media print {
+  .article-content .sp-proof-example {break-inside:avoid}
+}

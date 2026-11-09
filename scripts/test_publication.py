@@ -520,7 +520,10 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 )
                 self.assertIsNotNone(source_table)
                 self.assertIsNotNone(output_table)
-                self.assertEqual(source_table.group(), output_table.group())
+                published_table = output_table.group()
+                if number == 2:
+                    published_table = re.sub(r"</?a\b[^>]*>", "", published_table)
+                self.assertEqual(source_table.group(), published_table)
                 source_rows = re.findall(
                     r'<tr\b[^>]*>([\s\S]*?)</tr>',
                     re.search(
@@ -553,6 +556,11 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     mobile_cells = re.findall(
                         r'<dd>([\s\S]*?)</dd>', record,
                     )
+                    if number == 2:
+                        mobile_cells = [
+                            re.sub(r"</?a\b[^>]*>", "", cell)
+                            for cell in mobile_cells
+                        ]
                     self.assertEqual(original_row, mobile_cells)
                     copied_cells += len(mobile_cells)
         self.assertEqual(original_cells, 192)
@@ -579,6 +587,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn("ArtifactRecord a = {", output)
         self.assertIn("TransportRecord rho_T = {", output)
         self.assertIn("semantic_participation_item:", output)
+        self.assertIn('class="sp-proof-example"', output)
+        self.assertIn("expected shape", output)
+        self.assertIn("f y &lt;= f x", output)
         self.assertIn('alttext="T : (a, E_s) -&gt; (b, E_t, rho_T)"', output)
         self.assertIn('alttext="Delta_L(c) = F(L + c) - F(L)"', output)
         self.assertEqual(output.count('<table data-source-table='), 12)
@@ -593,6 +604,34 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
         self.assertIn(output, page)
         self.assertNotIn('<p class="byline">', page)
+
+
+    def test_semantic_reader_map_links_without_changing_author_text(self) -> None:
+        """Link all existing targets; retain the source's unresolved 6.1 reference."""
+        slug, title, category, description = publication.ESSAYS[2]
+        page = publication.render_essay(
+            slug, title, category, description, 2, [],
+        )
+        table = re.search(
+            r'<table data-source-table="2" id="table-2">[\s\S]*?</table>',
+            page,
+        )
+        self.assertIsNotNone(table)
+        links = re.findall(r'<a href="#([^"]+)">([^<]+)</a>', table.group())
+        self.assertEqual(len(links), 22)
+        for fragment, label in links:
+            with self.subTest(fragment=fragment):
+                self.assertIn(f'id="{fragment}"', page)
+                self.assertTrue(label.strip())
+        self.assertIn("6.1", table.group())
+        self.assertNotIn('>6.1</a>', table.group())
+        mobile = re.search(
+            r'<section class="sp-mobile-records sp-mobile-table-2" '
+            r'aria-labelledby="table-2-caption">([\s\S]*?)</section>',
+            page,
+        )
+        self.assertIsNotNone(mobile)
+        self.assertEqual(mobile.group().count('href="#'), 22)
 
 
 

@@ -331,6 +331,10 @@ def main() -> int:
                                         return {
                                             tableCount: source.length,
                                             sourceIds, observedRows,
+                                            readerPathLinks: source[1]?.querySelectorAll(
+                                                'tbody tr td:nth-child(2) a[href^="#"]').length ?? 0,
+                                            mobilePathLinks: mobile[1]?.querySelectorAll(
+                                                'a[href^="#"]').length ?? 0,
                                             mobileCount: mobile.length,
                                             cards: cards.length,
                                             fields: fields.length,
@@ -340,6 +344,7 @@ def main() -> int:
                                                 b.left < -1 || b.right > innerWidth + 1).length,
                                             sequence: article.querySelectorAll(".sp-sequence li").length,
                                             schemas: article.querySelectorAll(".sp-source-schema").length,
+                                            proofExamples: article.querySelectorAll(".sp-proof-example").length,
                                             transitionHeadings: article.querySelectorAll(
                                                 ".sp-transition-head").length,
                                             transitionCards: article.querySelectorAll(
@@ -348,10 +353,13 @@ def main() -> int:
                                     }""")
                                     if (semantic["tableCount"] != 12 or semantic["mobileCount"] != 12 or
                                         semantic["cards"] != 74 or semantic["fields"] != 190 or
+                                        semantic["readerPathLinks"] != 22 or
+                                        semantic["mobilePathLinks"] != 22 or
                                         semantic["sourceIds"] != list(range(1, 13)) or
                                         semantic["observedRows"] != [6, 5, 1, 5, 7, 13, 8, 4, 5, 7, 7, 6] or
                                         semantic["badHints"] or semantic["outOfBounds"] or
                                         semantic["sequence"] != 7 or semantic["schemas"] != 4 or
+                                        semantic["proofExamples"] != 1 or
                                         semantic["transitionHeadings"] != 1 or
                                         semantic["transitionCards"] != 4 or
                                         (width <= 650 and
@@ -470,6 +478,7 @@ def main() -> int:
                                             ("claim-ledger", ".sp-mobile-table-12"),
                                             ("sequence", ".sp-sequence"),
                                             ("membership", ".sp-criterion"),
+                                            ("proof-example", ".sp-proof-example"),
                                             ("environment", ".sp-source-schema"),
                                         ):
                                             item = page.locator(selector).first

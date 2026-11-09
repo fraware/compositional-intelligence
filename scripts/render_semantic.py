@@ -112,6 +112,88 @@ def _render_epistemic_type_table(rows: list[str]) -> str:
     return "".join(items)
 
 
+_LOCAL_SECTIONS: dict[str, str] = {
+    "1": "position-in-the-compositional-intelligence-series",
+    "2": "governing-claim",
+    "3": "from-output-quality-to-semantic-membership",
+    "4": "the-seven-thresholds",
+    "5": "formal-core",
+    "6": "lean-as-operational-exemplar",
+    "7": "epistemic-types",
+    "8": "library-improvement-delta",
+    "9": "worked-case-studies",
+    "10": "semantic-participation-bench-v0.3",
+    "11": "relationship-to-functorial-consistency",
+    "12": "strongest-objections-and-response-protocol",
+    "13": "failure-modes-and-kill-criteria",
+    "14": "conclusion",
+}
+_LOCAL_APPENDICES = {
+    "A": "appendix-a.-minimal-artifactrecord-schema",
+    "B": "appendix-b.-minimal-transportrecord-schema",
+    "C": "appendix-c.-claim-ledger",
+    "D": "appendix-d.-source-use-notes",
+}
+
+
+def _link_reader_map(body: str) -> str:
+    """Link original references only where a matching heading exists.
+
+    The V3 source mentions Section 6.1, absent from its section hierarchy.
+    Preserve this authored reference as text, not a misleading hyperlink.
+    """
+    table = re.compile(
+        r'(?P<start><table data-source-table="2" id="table-2">)'
+        r'(?P<content>[\s\S]*?)(?P<end></table>)'
+    )
+    found_tables = list(table.finditer(body))
+    if len(found_tables) != 1:
+        raise ValueError("Original Semantic Participation reader map changed")
+    match = found_tables[0]
+    content = match.group("content")
+    rows = re.compile(
+        r'(?P<lead><tr\b[^>]*>\s*<td>(?P<reader>[^<]+)</td>\s*<td>)'
+        r'(?P<route>[^<]+)(?P<tail></td>\s*</tr>)'
+    )
+    found_rows = list(rows.finditer(content))
+    if len(found_rows) != 5:
+        raise ValueError("Reader map must retain five original pathways")
+    for row in reversed(found_rows):
+        original = row.group("route")
+        reader = row.group("reader")
+        if reader == "Series reader":
+            if "Section 8" not in original:
+                raise ValueError("Series reader Section 8 target changed")
+            revised = original.replace(
+                "Section 8",
+                'Section <a href="#library-improvement-delta">8</a>', 1,
+            )
+        else:
+            if not original.startswith("Sections "):
+                raise ValueError("Reader map has unexpected path format")
+
+            def link_number(number: re.Match[str]) -> str:
+                fragment = _LOCAL_SECTIONS.get(number.group())
+                if fragment is None:
+                    return number.group()
+                return '<a href="#' + escape(fragment, quote=True) + '">' + number.group() + '</a>'
+
+            revised = re.sub(r'\b\d+(?:\.\d+)?\b', link_number, original)
+            for key, fragment in _LOCAL_APPENDICES.items():
+                revised = revised.replace(
+                    "Appendix " + key,
+                    'Appendix <a href="#' + escape(fragment, quote=True) +
+                    '">' + key + '</a>', 1,
+                )
+        content = content[:row.start("route")] + revised + content[row.end("route"):]
+    if content.count('<a href="#') != 22 or "6.1" not in content:
+        raise ValueError("Reader pathways differ from manuscript sections")
+    return (
+        body[:match.start()] + match.group("start") + content +
+        match.group("end") + body[match.end():]
+    )
+
+
 def _mobile_tables(body: str) -> str:
     """Produce twelve accessible, source-derived table views."""
     matches = list(_TABLE.finditer(body))
@@ -279,12 +361,46 @@ def _render_transport(body: str) -> str:
     return body[:m.start()] + replacement + body[m.end():]
 
 
+
+def _render_extreme_value_example(body: str) -> str:
+    """Distinguish the author's informal comparison and formal witness shape."""
+    found = [
+        m for m in _BLOCK.finditer(body)
+        if m.group("content").startswith(
+            "supremum existence is weaker than the existence of x"
+        )
+    ]
+    if len(found) != 1:
+        raise ValueError("Original Extreme Value Theorem example changed")
+    m = found[0]
+    parts = re.split(
+        r'<br\s*/?>\s*<br\s*/?>\s*expected shape\s*<br\s*/?>',
+        m.group("content"), maxsplit=1,
+    )
+    if len(parts) != 2:
+        raise ValueError("Missing authorial expected-shape separator")
+    prose = unescape(parts[0]).strip()
+    witness = unescape(parts[1]).strip()
+    if not witness.startswith("exists x in Icc a b,") or "f y <= f x" not in witness:
+        raise ValueError("Witness example differs from original notation")
+    replacement = (
+        '<div class="sp-proof-example" role="group" '
+        'aria-label="Source Extreme Value Theorem comparison">'
+        '<p>' + escape(prose) + '</p>'
+        '<p class="sp-proof-example-label">expected shape</p>'
+        '<pre><code>' + escape(witness) + '</code></pre></div>'
+    )
+    return body[:m.start()] + replacement + body[m.end():]
+
+
 def render_semantic_participation(body: str) -> str:
     """Enhance only this essay; fail closed on unexpected source structure."""
     body = _render_sequence(body)
     body = _render_membership_criterion(body)
     body = _render_transport(body)
     body = _render_schemas(body)
+    body = _render_extreme_value_example(body)
+    body = _link_reader_map(body)
     body = _mobile_tables(body)
     if body.count('data-sp-alternative="mobile"') != 12:
         raise ValueError("Missing source-derived mobile table")
