@@ -129,7 +129,7 @@ def main() -> int:
                                               return false;
                                             }
                                              const alternate = e.closest(
-                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile']"
+                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile'], .qc-mobile, .table-scroll[data-qc-alternative='mobile']"
                                              );
                                              if (alternate && getComputedStyle(alternate).display === "none") {
                                                return false;
@@ -298,6 +298,118 @@ def main() -> int:
                                          (preface["mobileDisplayed"] != 0 or
                                           preface["nativeDisplayed"] != 7))):
                                         failures.append(f"{width}px {rel}: preface reading regression {preface}")
+                                if rel == "essays/quantitative-curry-howard.html":
+                                    quantitative = page.evaluate("""() => {
+                                        const root = document.querySelector(".article-content");
+                                        const source = [...root.querySelectorAll(
+                                            ".table-scroll[data-qc-alternative='mobile']")];
+                                        const mobile = [...root.querySelectorAll(".qc-mobile")];
+                                        const hints = [...root.querySelectorAll(".qc-hint")];
+                                        const visible = e => getComputedStyle(e).display !== "none";
+                                        const seq = root.querySelector(".qc-sequence");
+                                        const stages = [...(seq?.querySelectorAll("li") ?? [])];
+                                        const mats = [...root.querySelectorAll(".qc-math")];
+                                        const schema = [...root.querySelectorAll(".qc-schema")];
+                                        const examples = [...root.querySelectorAll(".qc-example")];
+                                        const main = [...root.querySelectorAll(
+                                            ".qc-sequence,.qc-math,.qc-layers,.qc-tuple,.qc-pipeline,.qc-example,.qc-schema")];
+                                        const bounds = main.map(x => x.getBoundingClientRect());
+                                        const stageFlow = stages.slice(1).every((x,i) => {
+                                            const before = stages[i].getBoundingClientRect();
+                                            const after = x.getBoundingClientRect();
+                                            return innerWidth >= 1100
+                                                ? after.left >= before.right
+                                                : after.top >= before.bottom;
+                                        });
+                                        const stageArrows = stages.every(li => {
+                                            const number = getComputedStyle(li,"::before").content;
+                                            const arrow = getComputedStyle(li,"::after").content;
+                                            return number.includes("counter(") &&
+                                                (li === li.parentElement.lastElementChild
+                                                    ? ["normal","none"].includes(arrow)
+                                                    : arrow.includes(innerWidth >= 1100 ? "→" : "↓"));
+                                        });
+                                        const inlineMath = mats.map(x =>
+                                            x.querySelector("math")?.getAttribute("alttext"));
+                                        const mathInBounds = mats.every(x => {
+                                            const m = x.querySelector("math")?.getBoundingClientRect();
+                                            const r = x.getBoundingClientRect();
+                                            return m && m.width > 5 &&
+                                                m.left >= r.left - 1 && m.right <= r.right + 1 &&
+                                                r.left >= -1 && r.right <= innerWidth + 1;
+                                        });
+                                        return {
+                                            tables: source.length, mobile: mobile.length,
+                                            sourceShown: source.filter(visible).length,
+                                            mobileShown: mobile.filter(visible).length,
+                                            cards: root.querySelectorAll(".qc-card").length,
+                                            tableFields: root.querySelectorAll(".qc-field").length,
+                                            hints: hints.length,
+                                            shownHints: hints.filter(visible).length,
+                                            badHints: hints.filter(h =>
+                                                !h.nextElementSibling?.classList.contains("table-scroll") ||
+                                                h.nextElementSibling.getAttribute("aria-describedby") !== h.id
+                                            ).length,
+                                            stages: stages.length, stageFlow, stageArrows,
+                                            mathAlt: inlineMath,
+                                            mathInBounds,
+                                            layers: root.querySelectorAll(".qc-layer").length,
+                                            layerMath: root.querySelectorAll(".qc-layer math").length,
+                                            tuple: root.querySelectorAll(".qc-tuple p").length,
+                                            pipeline: root.querySelectorAll(".qc-pipeline li").length,
+                                            examples: examples.length,
+                                            exampleFields: root.querySelectorAll(".qc-example-field").length,
+                                            schemas: schema.length,
+                                            schemaLines: root.querySelectorAll(".qc-schema-line").length,
+                                            recordOverflow: schema.filter(e =>
+                                                e.scrollWidth > e.clientWidth + 1).length,
+                                            overflow: bounds.filter(r =>
+                                                r.left < -1 || r.right > innerWidth + 1).length,
+                                            caption: root.querySelector("#table-5-caption")?.textContent,
+                                            linked: root.querySelectorAll("#table-2 td a[href]").length,
+                                        };
+                                    }""")
+                                    if (
+                                        quantitative["tables"] != 10 or
+                                        quantitative["mobile"] != 10 or
+                                        quantitative["cards"] != 64 or
+                                        quantitative["tableFields"] != 179 or
+                                        quantitative["hints"] != 10 or
+                                        quantitative["badHints"] or
+                                        quantitative["shownHints"] !=
+                                            (0 if width <= 650 else 7) or
+                                        quantitative["stages"] != 5 or
+                                        not quantitative["stageFlow"] or
+                                        not quantitative["stageArrows"] or
+                                        quantitative["mathAlt"] != [
+                                            "Gamma |- t : A",
+                                            "Gamma |-_theta t : A |> Q",
+                                            "P_theta(tactic | proof_state)"] or
+                                        not quantitative["mathInBounds"] or
+                                        quantitative["layers"] != 3 or
+                                        quantitative["layerMath"] != 3 or
+                                        quantitative["tuple"] != 2 or
+                                        quantitative["pipeline"] != 8 or
+                                        quantitative["examples"] != 5 or
+                                        quantitative["exampleFields"] != 16 or
+                                        quantitative["schemas"] != 2 or
+                                        quantitative["schemaLines"] != 31 or
+                                        quantitative["recordOverflow"] or
+                                        quantitative["overflow"] or
+                                        quantitative["linked"] < 19 or
+                                        quantitative["caption"] !=
+                                            "Table 5. Benchmark domains, validators, and metrics." or
+                                        (width <= 650 and
+                                         (quantitative["sourceShown"] != 0 or
+                                          quantitative["mobileShown"] != 10)) or
+                                        (width > 650 and
+                                         (quantitative["sourceShown"] != 10 or
+                                          quantitative["mobileShown"] != 0))
+                                    ):
+                                        failures.append(
+                                            f"{width}px {rel}: quantitative source reading regression "
+                                            f"{quantitative}"
+                                        )
                                 if rel == "essays/algebraic-architectures.html":
                                     algebraic = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
@@ -805,7 +917,8 @@ def main() -> int:
                                                        preceding?.classList.contains("tg-scroll-hint") ||
                                                        preceding?.classList.contains("fc-scroll-hint") ||
                                                        preceding?.classList.contains("lm-hint") ||
-                                                       preceding?.classList.contains("aa-hint"))
+                                                       preceding?.classList.contains("aa-hint") ||
+                                                       preceding?.classList.contains("qc-hint"))
                                           ? preceding.previousElementSibling : preceding;
                                         if (!t || !t.tHead || !t.tBodies.length ||
                                             !t.caption || !t.caption.classList.contains("visually-hidden") ||
@@ -842,12 +955,14 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         const compactAlgebraic = !!w.dataset.aaAlternative &&
                                             getComputedStyle(w).display === "none";
+                                        const compactQuantitative = !!w.dataset.qcAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
                                             !compactSquare && !compactPreface &&
                                             !compactSemantic && !compactTyped &&
                                             !compactFunctorial && !compactLambek &&
-                                             !compactAlgebraic) return true;
+                                             !compactAlgebraic && !compactQuantitative) return true;
                                         return false;
                                       }).length
                                 })""")
@@ -940,6 +1055,26 @@ def main() -> int:
                                             ("record-pair", ".tg-record-pair"),
                                             ("harness-schema", '.tg-type-schema[aria-label="Source record type_first_item"]'),
                                             ("benchmark-schema", '.tg-type-schema[aria-label="Source record typed_generativity_benchmark_item"]'),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
+                                    if rel == "essays/quantitative-curry-howard.html":
+                                        for name, selector in (
+                                            ("series-sequence", ".qc-sequence"),
+                                            ("exact-judgment", ".qc-math"),
+                                            ("three-layers", ".qc-layers"),
+                                            ("candidate-judgment", ".qc-math:nth-of-type(2)"),
+                                            ("evidence-tuple", ".qc-tuple"),
+                                            ("evidence-pipeline", ".qc-pipeline"),
+                                            ("lean-example", '.qc-example[aria-label="Authored example lean-proof-search"]'),
+                                            ("quantitative-record", '.qc-schema[aria-label="Source record quantitative_judgment"]'),
+                                            ("benchmark-record", '.qc-schema[aria-label="Source record qch_benchmark_item"]'),
+                                            ("benchmark-table-mobile", ".qc-mobile-5"),
+                                            ("evidence-table-mobile", ".qc-mobile-3"),
+                                            ("failure-table-mobile", ".qc-mobile-7"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():
