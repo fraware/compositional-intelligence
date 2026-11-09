@@ -61,6 +61,7 @@ def measure(page) -> dict:
         const unscrollableTables = [];
         const invalidCaptions = [];
         let scrollable = 0;
+        let visibleHintCount = 0;
         for (const wrapper of tables) {
             const table = wrapper.querySelector('table');
             const previous = wrapper.previousElementSibling;
@@ -78,6 +79,7 @@ def measure(page) -> dict:
             const visible = shown(wrapper);
             const clipped = visible && wrapper.scrollWidth > wrapper.clientWidth + 2;
             const hintVisible = shown(hint);
+            if (hintVisible) visibleHintCount++;
             const id = table?.id || '(unidentified table)';
             if (visible && clipped) {
                 scrollable++;
@@ -117,6 +119,7 @@ def measure(page) -> dict:
             brokenFragments,
             invalidCaptions,
             missingHints, redundantHints, unscrollableTables, scrollable,
+            visibleHintCount,
             missingMathNames,
             pageOverflow: document.documentElement.scrollWidth > innerWidth + 1,
             bylineInArticleHeader: /Mateo Petel/.test(
@@ -153,8 +156,8 @@ def check(slug: str, width: int, mode: str, values: dict) -> list[str]:
     else:
         if values["scrollable"] and width >= 1001:
             faults.append(f"{label}: printed source table still scrolls")
-        if values["missingHints"]:
-            faults.append(f"{label}: unexpected printed scroll cue requirement")
+        if values["visibleHintCount"]:
+            faults.append(f"{label}: screen-only scroll hints appear in print")
     return faults
 
 
@@ -201,6 +204,7 @@ def main() -> int:
                 try:
                     page = context.new_page()
                     for slug in TABLES:
+                        page.emulate_media(media="screen")
                         page.set_content(publication_html(site, slug, css),
                                          wait_until="load")
                         problems.extend(check(slug, width, "screen", measure(page)))
