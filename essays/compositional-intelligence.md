@@ -471,7 +471,7 @@
 <h2 id="conclusion">Conclusion</h2>
 <p>Compositional Intelligence reframes generative AI evaluation around typed artifacts and the structured worlds those artifacts enter. The path from output to knowledge requires target-type inference, candidate construction, transformation preservation, validation, warrant, reuse, and effect control. This paper has presented a compact framework for that path and a set of records and benchmarks that could refute or refine it.</p>
 <p>The framework succeeds only if it makes AI artifacts more checkable, composable, repairable, reusable, calibrated, and accountable. Its ambition is matched by a concrete test. If the records do not change validation, repair, review, architecture choice, or action control, they should be revised or removed. If they do, Compositional Intelligence offers a practical route from fluent output to structured participation.</p>
-<h2 id="appendix-materials-from-the-synthesis-paper">Appendix materials from the synthesis paper</h2>
+<h2 id="appendix-materials-from-the-synthesis-paper">Appendix</h2>
 <h2 id="claim-levels-and-epistemic-types">Claim Levels and Epistemic Types</h2>
 <h3 id="claim-levels">Claim levels</h3>
 <p class="table-display-caption" id="table-9-caption">Table 9. Level, Meaning, Publication treatment</p>
