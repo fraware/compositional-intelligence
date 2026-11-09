@@ -856,7 +856,18 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     white-space:nowrap;
     border:0;
   }
-  .article-content .sp-mobile-table-3 .sp-record-field dt {display:none}
+  .article-content .sp-mobile-table-3 .sp-record-field dt {
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+  }
   .article-content .sp-mobile-table-3 .sp-mobile-record {
     border-top:0;
     border-left:2px solid var(--ink);
@@ -927,4 +938,69 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 }
 @media print {
   .article-content .sp-proof-example {break-inside:avoid}
+}
+
+
+/* Source-derived SemanticEnvironment field meanings. */
+.article-content .sp-environment-schema {
+  padding:15px 0 17px;
+}
+.article-content .sp-environment-schema .sp-schema-brace {
+  padding:1px 2px 12px;
+  font:14px/1.6 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+.article-content .sp-environment-schema .sp-schema-brace:last-child {
+  padding:11px 2px 0;
+}
+.article-content .sp-environment-schema .sp-schema-brace code {
+  font:inherit;
+}
+.article-content .sp-environment-fields {
+  margin:0;
+  padding:0;
+}
+.article-content .sp-environment-fields .sp-schema-entry {
+  display:grid;
+  grid-template-columns:minmax(98px,115px) minmax(0,1fr);
+  column-gap:17px;
+  padding:11px 2px;
+  margin:0;
+  border-bottom:1px solid var(--line);
+}
+.article-content .sp-environment-fields dt,
+.article-content .sp-environment-fields dt code {
+  font:14px/1.6 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  color:var(--ink);
+}
+.article-content .sp-environment-fields dd {
+  min-width:0;
+  margin:0;
+  font:15px/1.58 var(--serif);
+  overflow-wrap:break-word;
+}
+.article-content .sp-environment-fields dd code {
+  font:13.5px/1.6 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  white-space:normal;
+}
+@media (max-width:650px) {
+  .article-content .sp-environment-fields .sp-schema-entry {
+    grid-template-columns:minmax(0,1fr);
+    row-gap:3px;
+    padding:10px 2px 12px;
+  }
+  .article-content .sp-environment-fields dt,
+  .article-content .sp-environment-fields dt code {
+    font-size:13.5px;
+  }
+  .article-content .sp-environment-fields dd {
+    font-size:16px;
+  }
+  .article-content .sp-environment-fields dd code {
+    font-size:13.5px;
+  }
+}
+@media print {
+  .article-content .sp-environment-fields .sp-schema-entry {
+    break-inside:avoid;
+  }
 }

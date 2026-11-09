@@ -328,9 +328,31 @@ def main() -> int:
                                             Number(w.querySelector("table")?.dataset.sourceTable));
                                         const observedRows = mobile.map(e =>
                                             e.querySelectorAll(".sp-mobile-record").length);
+                                        const environment = [...article.querySelectorAll(
+                                            ".sp-environment-schema .sp-schema-entry"
+                                        )];
+                                        const governingLabel = article.querySelector(
+                                            ".sp-mobile-table-3 .sp-record-field dt"
+                                        );
+                                        const labelStyle = governingLabel ?
+                                            getComputedStyle(governingLabel) : null;
+                                        const compactGoverningLabel = !!labelStyle &&
+                                            labelStyle.display !== "none" &&
+                                            labelStyle.position === "absolute" &&
+                                            labelStyle.clipPath === "inset(50%)";
+                                        const table3Caption = source[2]?.querySelector(
+                                            "caption"
+                                        )?.textContent.trim();
                                         return {
                                             tableCount: source.length,
                                             sourceIds, observedRows,
+                                            environmentFields: environment.length,
+                                            environmentOverflows: environment.filter(e => {
+                                                const rect = e.getBoundingClientRect();
+                                                return rect.left < -1 || rect.right > innerWidth + 1;
+                                            }).length,
+                                            compactGoverningLabel,
+                                            table3Caption,
                                             readerPathLinks: source[1]?.querySelectorAll(
                                                 'tbody tr td:nth-child(2) a[href^="#"]').length ?? 0,
                                             mobilePathLinks: mobile[1]?.querySelectorAll(
@@ -359,6 +381,10 @@ def main() -> int:
                                         semantic["observedRows"] != [6, 5, 1, 5, 7, 13, 8, 4, 5, 7, 7, 6] or
                                         semantic["badHints"] or semantic["outOfBounds"] or
                                         semantic["sequence"] != 7 or semantic["schemas"] != 4 or
+                                        semantic["environmentFields"] != 10 or
+                                        semantic["environmentOverflows"] != 0 or
+                                        semantic["table3Caption"] != "Table 3. Governing claim." or
+                                        (width <= 650 and not semantic["compactGoverningLabel"]) or
                                         semantic["proofExamples"] != 1 or
                                         semantic["transitionHeadings"] != 1 or
                                         semantic["transitionCards"] != 4 or

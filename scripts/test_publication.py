@@ -523,7 +523,19 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 published_table = output_table.group()
                 if number == 2:
                     published_table = re.sub(r"</?a\b[^>]*>", "", published_table)
-                self.assertEqual(source_table.group(), published_table)
+                # Native captions were synthesized during conversion, not
+                # authored DOCX cells. Compare exact source structure
+                # without these publication-only accessibility descriptions.
+                def without_generated_caption(text: str) -> str:
+                    return re.sub(
+                        r'<caption class="visually-hidden">[^<]*</caption>',
+                        '<caption class="visually-hidden"></caption>',
+                        text,
+                    )
+                self.assertEqual(
+                    without_generated_caption(source_table.group()),
+                    without_generated_caption(published_table),
+                )
                 source_rows = re.findall(
                     r'<tr\b[^>]*>([\s\S]*?)</tr>',
                     re.search(
@@ -582,7 +594,10 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn('aria-label="Original membership-to-action sequence"', output)
         self.assertIn('class="sp-criterion"', output)
         self.assertIn('class="sp-transport"', output)
-        self.assertEqual(output.count('class="sp-source-schema"'), 4)
+        self.assertEqual(
+            len(re.findall(r'class="sp-source-schema(?:\s|")', output)), 4
+        )
+        self.assertEqual(output.count('class="sp-schema-entry"'), 10)
         self.assertIn("SemanticEnvironment E = {", output)
         self.assertIn("ArtifactRecord a = {", output)
         self.assertIn("TransportRecord rho_T = {", output)
@@ -632,6 +647,87 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
         self.assertIsNotNone(mobile)
         self.assertEqual(mobile.group().count('href="#'), 22)
+
+
+    def test_semantic_environment_source_field_definitions_are_exact(self) -> None:
+        """All ten technical fields retain their original names and meanings."""
+        slug, title, _, _ = publication.ESSAYS[2]
+        manuscript = (
+            publication.ROOT / "essays" / f"{slug}.md"
+        ).read_text(encoding="utf-8")
+        original, _ = publication.source_to_body(manuscript, title, [])
+        rendered = render_semantic_participation(
+            enhance_scientific_presentation(original)
+        )
+        block = re.search(
+            r'<blockquote>\s*<p>SemanticEnvironment E = \{<br\s*/?>'
+            r'([\s\S]*?)<br\s*/?>\s*\}</p>\s*</blockquote>',
+            original,
+        )
+        self.assertIsNotNone(block)
+        source_lines = [
+            unescape(line).strip()
+            for line in re.split(r"<br\s*/?>", block.group(1))
+        ]
+        formatted = re.search(
+            r'<dl class="sp-environment-fields">([\s\S]*?)</dl>',
+            rendered,
+        )
+        self.assertIsNotNone(formatted)
+        pairs = re.findall(
+            r'<div class="sp-schema-entry"><dt><code>([^<]+)</code></dt>'
+            r'<dd>([\s\S]*?)</dd></div>',
+            formatted.group(1),
+        )
+        self.assertEqual(len(pairs), 10)
+        recovered = [
+            unescape(field) + " " + unescape(
+                re.sub(r"<[^>]+>", "", meaning)
+            )
+            for field, meaning in pairs
+        ]
+        self.assertEqual(recovered, source_lines)
+
+    def test_semantic_table_captions_are_concise_and_source_neutral(self) -> None:
+        """The twelve generated captions describe the original tables once."""
+        from render_semantic import _ACCESSIBLE_TABLE_CAPTIONS
+
+        slug, title, category, description = publication.ESSAYS[2]
+        page = publication.render_essay(
+            slug, title, category, description, 2, [],
+        )
+        for number, caption in _ACCESSIBLE_TABLE_CAPTIONS.items():
+            with self.subTest(table=number):
+                self.assertEqual(
+                    page.count(
+                        f'<p class="table-display-caption" id="table-{number}-caption">'
+                        f'{caption}</p>'
+                    ), 1,
+                )
+                self.assertEqual(
+                    page.count(
+                        '<caption class="visually-hidden">' +
+                        caption + '</caption>'
+                    ), 1,
+                )
+        self.assertNotIn(
+            "Governing claim — Governing claim", page
+        )
+
+    def test_semantic_governing_claim_keeps_accessible_field_label(self) -> None:
+        """Mobile-only CSS visually clips the original label, without hiding it."""
+        css = (publication.ROOT / "docs" / "style.css").read_text(
+            encoding="utf-8"
+        )
+        rule = re.search(
+            r'\.article-content \.sp-mobile-table-3 '
+            r'\.sp-record-field dt\s*\{([^}]*)\}',
+            css,
+        )
+        self.assertIsNotNone(rule)
+        self.assertNotIn("display:none", rule.group(1))
+        self.assertIn("position:absolute", rule.group(1))
+        self.assertIn("clip-path:inset(50%)", rule.group(1))
 
 
 

@@ -52,6 +52,86 @@ _SCHEMA_STARTS = {
     "semantic_participation_item:": "Semantic Participation benchmark item",
 }
 _HINT_TEXT = "Scroll horizontally to see all table columns."
+_ACCESSIBLE_TABLE_CAPTIONS: dict[int, str] = {
+    1: "Table 1. Contribution summary.",
+    2: "Table 2. Reader map.",
+    3: "Table 3. Governing claim.",
+    4: "Table 4. Local success and semantic membership.",
+    5: "Table 5. Seven thresholds of semantic participation.",
+    6: "Table 6. Epistemic types and type transitions.",
+    7: "Table 7. Library improvement dimensions.",
+    8: "Table 8. Scientific claim status and evidence records.",
+    9: "Table 9. Semantic Participation Bench tracks.",
+    10: "Table 10. Objections and response protocol.",
+    11: "Table 11. Failure modes.",
+    12: "Table 12. Claim ledger.",
+}
+
+
+
+def _label_source_tables(body: str) -> str:
+    """Replace duplicated conversion-generated labels with concise source titles.
+
+    These captions are publication metadata added by the DOCX conversion.
+    They are not authored table cells or manuscript prose.
+    """
+    for number, caption in _ACCESSIBLE_TABLE_CAPTIONS.items():
+        paragraph = re.compile(
+            rf'<p class="table-display-caption" id="table-{number}-caption">'
+            r'[^<]*</p>'
+        )
+        match = list(paragraph.finditer(body))
+        if len(match) != 1:
+            raise ValueError(f"Table {number} generated label changed")
+        body = paragraph.sub(
+            lambda _: (
+                f'<p class="table-display-caption" id="table-{number}-caption">'
+                f'{escape(caption)}</p>'
+            ),
+            body, count=1,
+        )
+        native = re.compile(
+            rf'(?P<start><table data-source-table="{number}" id="table-{number}">'
+            r'\s*<caption class="visually-hidden">)[^<]*'
+            r'(?P<end></caption>)'
+        )
+        if len(native.findall(body)) != 1:
+            raise ValueError(f"Missing source table {number} native caption")
+        body = native.sub(
+            lambda m: m.group("start") + escape(caption) + m.group("end"),
+            body, count=1,
+        )
+    return body
+
+
+def _render_semantic_environment(lines: list[str], label: str) -> str:
+    """Present source fields and meanings together without arbitrary token wraps."""
+    if lines[0] != "SemanticEnvironment E = {" or lines[-1] != "}":
+        raise ValueError("SemanticEnvironment declaration does not match the source")
+    fields = []
+    for line in lines[1:-1]:
+        match = re.fullmatch(r"([A-Za-z][A-Za-z0-9_]*)\s+(.+)", line)
+        if match is None:
+            raise ValueError(f"Unexpected SemanticEnvironment field: {line}")
+        name, meaning = match.groups()
+        rhs = (
+            '<code class="sp-schema-type">' + escape(meaning) + '</code>'
+            if "->" in meaning else escape(meaning)
+        )
+        fields.append(
+            '<div class="sp-schema-entry"><dt><code>' + escape(name) +
+            '</code></dt><dd>' + rhs + '</dd></div>'
+        )
+    if len(fields) != 10:
+        raise ValueError("SemanticEnvironment field inventory differs from V3")
+    return (
+        '<div class="sp-source-schema sp-environment-schema" '
+        'role="group" aria-label="' + escape(label, quote=True) + '">'
+        '<div class="sp-schema-brace"><code>' + escape(lines[0]) + '</code></div>'
+        '<dl class="sp-environment-fields">' + "".join(fields) + '</dl>'
+        '<div class="sp-schema-brace"><code>' + escape(lines[-1]) + '</code></div>'
+        '</div>'
+    )
 
 
 def _plain(html: str) -> str:
@@ -280,6 +360,8 @@ def _source_schema(text_html: str, label: str) -> str:
     ]
     if len(lines) < 10:
         raise ValueError(f"Source schema {label} is missing fields")
+    if label == "SemanticEnvironment definition":
+        return _render_semantic_environment(lines, label)
     return (
         '<div class="sp-source-schema" role="group" tabindex="0" '
         'aria-label="' + escape(label, quote=True) + '">'
@@ -395,6 +477,7 @@ def _render_extreme_value_example(body: str) -> str:
 
 def render_semantic_participation(body: str) -> str:
     """Enhance only this essay; fail closed on unexpected source structure."""
+    body = _label_source_tables(body)
     body = _render_sequence(body)
     body = _render_membership_criterion(body)
     body = _render_transport(body)
