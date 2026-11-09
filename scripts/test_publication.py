@@ -1311,7 +1311,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                         self.assertIn("<li>" + part + "</li>", rendered)
                 elif i == 2:
                     formula = re.search(
-                        r'<div class="aa-spec-formula">([\s\S]*?)</div>'
+                        r'<div class="aa-spec-formula"[^>]*>([\s\S]*?)</div>'
                         r'<dl>([\s\S]*?)</dl>', rendered
                     )
                     self.assertIsNotNone(formula)
