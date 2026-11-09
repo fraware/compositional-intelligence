@@ -826,8 +826,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn("candidate_inhabitant_record:", rendered)
 
         src_record = re.search(
-            r'<div aria-label="Source record target_type_record" '
-            r'class="record-schema" role="group" tabindex="0">'
+            r'<div class="record-schema" role="group" tabindex="0" '
+            r'aria-label="Source record target_type_record">'
             r'<pre><code>([\s\S]*?)</code></pre></div>', source,
         )
         self.assertIsNotNone(src_record)
