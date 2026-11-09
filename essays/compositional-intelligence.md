@@ -682,15 +682,3 @@
 <p>distortion_risk: string</p>
 <p>permitted_use: list[string]</p>
 <p>forbidden_use: list[string]</p>
-<h2 id="source-use-warnings">Source-Use Warnings</h2>
-<ul>
-<li><p>The Lean Language Reference and Theorem Proving in Lean 4 support Lean and dependent-type-theory claims. They do not establish semantic participation.</p></li>
-<li><p>LeanDojo supports programmatic interaction, proof-data extraction, and theorem-proving infrastructure around Lean. It does not establish semantic participation.</p></li>
-<li><p>SCAN, CFQ, COGS, and SLOG support compositional-generalization context. They do not establish Functorial Consistency.</p></li>
-<li><p>FormalBench and ConsistencyChecker support transformation-sensitive evaluation context. They do not establish the commutation-square benchmark proposed here.</p></li>
-<li><p>Lambek's sentence-structure calculus, Bangalore and Joshi's supertagging work, DisCoCat, and LLM-Supertagger support language-composition context. They do not establish that Transformers implement Lambek calculus.</p></li>
-<li><p>Geometric Deep Learning, Deep Sets, Graph Networks, Transformers, Mamba, and Categorical Deep Learning support architecture context. They do not validate ArchitectureSpec.</p></li>
-<li><p>End-to-end differentiable proving, Logical Neural Networks, quasi-Borel spaces, and recent differentiable-logics work support quantitative-warrant context. They do not make soft scores into proof.</p></li>
-<li><p>Hoare logic, PDDL, Moggi's monadic semantics, and algebraic-effects work support preconditions, planning, monads, and effects. They do not establish TypedActionLedger.</p></li>
-<li><p>ReAct, Toolformer, WebArena, OSWorld, tau-bench, AgentDojo, and AgentRewardBench support tool-use and agent-evaluation context. They do not validate effect-control claims.</p></li>
-</ul>
