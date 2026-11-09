@@ -31,6 +31,7 @@ from render_functorial import render_functorial_diagram, render_functorial_table
 from render_lambek import render_lambek_machines
 from render_algebraic import render_algebraic_architectures
 from render_quantitative import render_quantitative_curry_howard
+from render_effectful import render_effectful_and_conceptual_intelligence
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://fraware.github.io/compositional-intelligence/"
@@ -392,6 +393,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_algebraic_architectures(body)
     if slug == "quantitative-curry-howard":
         body = render_quantitative_curry_howard(body)
+    if slug == "effectful-and-conceptual-intelligence":
+        body = render_effectful_and_conceptual_intelligence(body)
     body = enhance_scientific_presentation(body)
     if slug == "series-preface":
         body = render_preface(body)
