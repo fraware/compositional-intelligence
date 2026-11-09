@@ -41,6 +41,8 @@ def main() -> int:
             body = build_site.render_lambek_machines(body)
         if slug == "algebraic-architectures":
             body = build_site.render_algebraic_architectures(body)
+        if slug == "quantitative-curry-howard":
+            body = build_site.render_quantitative_curry_howard(body)
         body = build_site.enhance_scientific_presentation(body)
         if slug == "series-preface":
             body = build_site.render_preface(body)
