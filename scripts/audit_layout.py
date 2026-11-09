@@ -311,6 +311,10 @@ def main() -> int:
                                         const mats = [...root.querySelectorAll(".qc-math")];
                                         const schema = [...root.querySelectorAll(".qc-schema")];
                                         const examples = [...root.querySelectorAll(".qc-example")];
+                                        const tuple = root.querySelector(".qc-tuple");
+                                        const members = [...(tuple?.querySelectorAll(".qc-tuple-member") ?? [])];
+                                        const tupleBounds = tuple?.getBoundingClientRect();
+                                        const recordNames = [...root.querySelectorAll(".qc-schema-name")];
                                         const main = [...root.querySelectorAll(
                                             ".qc-sequence,.qc-math,.qc-layers,.qc-tuple,.qc-pipeline,.qc-example,.qc-schema")];
                                         const bounds = main.map(x => x.getBoundingClientRect());
@@ -355,7 +359,17 @@ def main() -> int:
                                             mathInBounds,
                                             layers: root.querySelectorAll(".qc-layer").length,
                                             layerMath: root.querySelectorAll(".qc-layer math").length,
-                                            tuple: root.querySelectorAll(".qc-tuple p").length,
+                                            tupleStart: tuple?.querySelector(".qc-tuple-start")?.textContent,
+                                            tupleEnd: tuple?.querySelector(".qc-tuple-end")?.textContent,
+                                            tupleMembers: members.map(e => e.textContent),
+                                            tupleFits: !!tupleBounds && members.every(e => {
+                                                const r = e.getBoundingClientRect();
+                                                return r.left >= tupleBounds.left - 1 &&
+                                                    r.right <= tupleBounds.right + 1 &&
+                                                    r.width > 0;
+                                            }),
+                                            schemaNamesFit: recordNames.every(e =>
+                                                e.scrollWidth <= e.clientWidth + 1),
                                             pipeline: root.querySelectorAll(".qc-pipeline li").length,
                                             examples: examples.length,
                                             exampleFields: root.querySelectorAll(".qc-example-field").length,
@@ -388,7 +402,15 @@ def main() -> int:
                                         not quantitative["mathInBounds"] or
                                         quantitative["layers"] != 3 or
                                         quantitative["layerMath"] != 3 or
-                                        quantitative["tuple"] != 2 or
+                                        quantitative["tupleStart"] != "Q = (" or
+                                        quantitative["tupleEnd"] != ")" or
+                                        quantitative["tupleMembers"] != [
+                                            "score,", "probability,", "uncertainty,", "margin,",
+                                            "loss,", "calibration,", "validation_status,",
+                                            "diagnostics,", "repair_distance,", "epistemic_type,",
+                                            "permitted_use"] or
+                                        not quantitative["tupleFits"] or
+                                        not quantitative["schemaNamesFit"] or
                                         quantitative["pipeline"] != 8 or
                                         quantitative["examples"] != 5 or
                                         quantitative["exampleFields"] != 16 or
@@ -1068,6 +1090,7 @@ def main() -> int:
                                             ("three-layers", ".qc-layers"),
                                             ("candidate-judgment", ".qc-math:nth-of-type(2)"),
                                             ("evidence-tuple", ".qc-tuple"),
+                                            ("evidence-tuple-members", ".qc-tuple-members"),
                                             ("evidence-pipeline", ".qc-pipeline"),
                                             ("lean-example", '.qc-example[aria-label="Authored example lean-proof-search"]'),
                                             ("quantitative-record", '.qc-schema[aria-label="Source record quantitative_judgment"]'),
