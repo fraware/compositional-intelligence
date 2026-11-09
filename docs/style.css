@@ -2337,7 +2337,7 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 }
 .article-content .ef-mobile,
 .article-content .ef-hint {display:none;}
-@media (min-width:651px) and (max-width:1000px) {
+@media (min-width:651px) and (max-width:828px) {
   .article-content .ef-hint:has(+ .table-scroll[data-columns="3"]) {
     display:block;
     margin:2px 0 9px;
@@ -2703,4 +2703,30 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .table-scroll[data-tg-alternative="mobile"] { display:none; }
   .article-content .tg-mobile-records { display:block; }
   .article-content .tg-scroll-hint { display:none; }
+}
+
+/* Effectful and Conceptual Intelligence: source-equivalent print fidelity. */
+@media print {
+  .article-content .table-scroll[data-ef-alternative="mobile"] {
+    display:block;
+  }
+  .article-content .table-scroll[data-ef-alternative="mobile"] table {
+    min-width:0;
+    max-width:100%;
+    width:100%;
+    table-layout:fixed;
+  }
+  .article-content .table-scroll[data-ef-alternative="mobile"] th,
+  .article-content .table-scroll[data-ef-alternative="mobile"] td {
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
+  .article-content .ef-mobile,
+  .article-content .ef-hint,
+  .article-content .ef-hint:has(+ .table-scroll[data-columns="3"]) {display:none;}
+}
+@media print and (max-width:650px) {
+  .article-content .table-scroll[data-ef-alternative="mobile"] {display:none;}
+  .article-content .ef-mobile {display:block;}
+  .article-content .ef-card {break-inside:avoid;}
 }
