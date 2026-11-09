@@ -37,6 +37,8 @@ def main() -> int:
             body = build_site.render_synthesis_figures(body)
         if slug == "functorial-consistency":
             body = build_site.render_functorial_diagram(body)
+        if slug == "lambek-machines":
+            body = build_site.render_lambek_machines(body)
         body = build_site.enhance_scientific_presentation(body)
         if slug == "series-preface":
             body = build_site.render_preface(body)
