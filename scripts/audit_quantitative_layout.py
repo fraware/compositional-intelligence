@@ -13,7 +13,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-WIDTHS = (320, 375, 650, 651, 768, 1440)
+WIDTHS = (320, 375, 650, 651, 768, 1000, 1001, 1440)
 PIPELINE = (
     "infer target A",
     "construct candidate t",
@@ -92,6 +92,18 @@ def inspect(page) -> dict:
             visibleRecordOverflow: displays.filter(el =>
                 el.classList.contains("qc-mobile") &&
                 el.scrollWidth > el.clientWidth + 1).length,
+            nativePrintOverflow: sources.filter(shown).flatMap(el => {
+                const table = el.querySelector("table");
+                const outer = el.getBoundingClientRect();
+                const inner = table?.getBoundingClientRect();
+                if (!inner || inner.width > outer.width + 2 ||
+                    inner.right > outer.right + 2 ||
+                    table.scrollWidth > table.clientWidth + 2 ||
+                    el.scrollWidth > el.clientWidth + 2) {
+                    return [table?.id ?? "missing-table"];
+                }
+                return [];
+            }),
             pageOverflow: document.documentElement.scrollWidth > innerWidth + 1,
         };
     }""")
@@ -145,6 +157,11 @@ def check(width: int, mode: str, result: dict) -> list[str]:
         errors.append(f"{label}: document overflows the viewport")
     if mode == "print" and result["hintShown"]:
         errors.append(f"{label}: screen-only scroll hint leaked into print")
+    if mode == "print" and result["nativePrintOverflow"]:
+        errors.append(
+            f"{label}: native source tables exceed their printable reading column "
+            f"{result['nativePrintOverflow']}"
+        )
     return errors
 
 
@@ -181,7 +198,7 @@ def main() -> int:
                         )
                     page.emulate_media(media="print")
                     errors.extend(check(width, "print", inspect(page)))
-                    if screenshots is not None and width in (320, 1440):
+                    if screenshots is not None and width in (320, 1000, 1001, 1440):
                         target = (
                             ".qc-mobile-5" if width <= 1000 else
                             '.table-scroll[data-qc-alternative="mobile"]:has(#table-5)'
@@ -198,7 +215,7 @@ def main() -> int:
             print("FAIL:", error)
         return 1
     print(
-        "PASS: Quantitative Curry-Howard: six screen and print widths, "
+        "PASS: Quantitative Curry-Howard: eight screen and print widths, "
         "eight source-ordered steps, 10 native tables, "
         "64 mobile records and 179 data fields"
     )
