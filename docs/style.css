@@ -2208,12 +2208,11 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 .article-content .ef-sequence ol {
   display:grid;
   grid-template-columns:minmax(0,1fr);
-  gap:16px;
+  gap:22px;
   margin:0;
-  padding:0 0 0 19px;
+  padding:0;
   list-style:none;
   counter-reset:ef-stage;
-  border-left:1px solid var(--line);
 }
 .article-content .ef-sequence li {
   position:relative;
@@ -2237,8 +2236,8 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 .article-content .ef-sequence li:not(:last-child)::after {
   content:"↓";
   position:absolute;
-  bottom:-17px;
-  left:-26px;
+  bottom:-21px;
+  left:calc(50% - 7px);
   font:14px/1 var(--serif);
   color:var(--soft);
   pointer-events:none;
@@ -2291,16 +2290,12 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     margin:26px 0 8px;
     font-size:14px;
   }
-  .article-content .ef-sequence ol {padding-left:14px;}
   .article-content .ef-sequence li {
     grid-template-columns:31px minmax(0,1fr);
     gap:8px;
     min-height:54px;
     padding:8px 9px;
     font-size:15px;
-  }
-  .article-content .ef-sequence li:not(:last-child)::after {
-    left:-21px;
   }
   .article-content .ef-math {
     min-height:63px;
@@ -2351,6 +2346,28 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .ef-mobile-17 .ef-field:first-child dd,
   .article-content .ef-mobile-18 .ef-field:first-child dd {
     font:14px/1.52 var(--sans);
+  }
+  /* The schema cards already identify their original Field / Specification roles
+     in the underlying definition lists. Avoid repeating those headers visually. */
+  .article-content .ef-mobile-16 .ef-field dt,
+  .article-content .ef-mobile-17 .ef-field dt,
+  .article-content .ef-mobile-18 .ef-field dt {
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+  }
+  .article-content .ef-mobile-16 .ef-field + .ef-field,
+  .article-content .ef-mobile-17 .ef-field + .ef-field,
+  .article-content .ef-mobile-18 .ef-field + .ef-field {margin-top:7px;}
+  .article-content .ef-mobile-19 .ef-field:first-child dd {
+    font:16px/1.6 var(--serif);
   }
 }
 @media print {
