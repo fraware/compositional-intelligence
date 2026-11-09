@@ -53,18 +53,18 @@ _SCHEMA_STARTS = {
 }
 _HINT_TEXT = "Scroll horizontally to see all table columns."
 _ACCESSIBLE_TABLE_CAPTIONS: dict[int, str] = {
-    1: "Table 1. Contribution summary.",
-    2: "Table 2. Reader map.",
-    3: "Table 3. Governing claim.",
-    4: "Table 4. Local success and semantic membership.",
-    5: "Table 5. Seven thresholds of semantic participation.",
-    6: "Table 6. Epistemic types and type transitions.",
-    7: "Table 7. Library improvement dimensions.",
-    8: "Table 8. Scientific claim status and evidence records.",
-    9: "Table 9. Semantic Participation Bench tracks.",
-    10: "Table 10. Objections and response protocol.",
-    11: "Table 11. Failure modes.",
-    12: "Table 12. Claim ledger.",
+    1: "Table 1. Contributions and publication claims.",
+    2: "Table 2. Recommended reading paths by audience.",
+    3: "Table 3. Governing claim for semantic artifact membership.",
+    4: "Table 4. Local success and semantic membership conditions.",
+    5: "Table 5. Seven semantic participation thresholds and membership questions.",
+    6: "Table 6. Epistemic types, permitted uses, and type transitions.",
+    7: "Table 7. Dimensions for assessing library improvement.",
+    8: "Table 8. Scientific claim status and required evidence records.",
+    9: "Table 9. Semantic Participation Bench evaluation tracks.",
+    10: "Table 10. Objections and corresponding response protocols.",
+    11: "Table 11. Failure modes and their diagnostic interpretations.",
+    12: "Table 12. Claim levels and their publication treatment.",
 }
 
 

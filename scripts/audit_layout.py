@@ -383,7 +383,7 @@ def main() -> int:
                                         semantic["sequence"] != 7 or semantic["schemas"] != 4 or
                                         semantic["environmentFields"] != 10 or
                                         semantic["environmentOverflows"] != 0 or
-                                        semantic["table3Caption"] != "Table 3. Governing claim." or
+                                        semantic["table3Caption"] != "Table 3. Governing claim for semantic artifact membership." or
                                         (width <= 650 and not semantic["compactGoverningLabel"]) or
                                         semantic["proofExamples"] != 1 or
                                         semantic["transitionHeadings"] != 1 or
