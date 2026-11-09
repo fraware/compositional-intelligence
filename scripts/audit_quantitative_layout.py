@@ -93,11 +93,11 @@ def inspect(page) -> dict:
 def check(width: int, mode: str, result: dict) -> list[str]:
     """Report independent failures without masking earlier failures."""
     errors: list[str] = []
-    narrow = width <= 650
+    compact = width <= (1000 if mode == "print" else 650)
     label = f"{mode} at {width}px"
-    expected_source = 0 if narrow else 10
-    expected_mobile = 10 if narrow else 0
-    expected_hints = 7 if mode == "screen" and not narrow else 0
+    expected_source = 0 if compact else 10
+    expected_mobile = 10 if compact else 0
+    expected_hints = 7 if mode == "screen" and width > 650 else 0
     for field, expected in (
         ("sourceCount", 10),
         ("sourceRows", 64),
@@ -166,7 +166,7 @@ def main() -> int:
                     errors.extend(check(width, "print", inspect(page)))
                     if screenshots is not None and width in (320, 1440):
                         target = (
-                            ".qc-mobile-5" if width <= 650 else
+                            ".qc-mobile-5" if width <= 1000 else
                             '.table-scroll[data-qc-alternative="mobile"]:has(#table-5)'
                         )
                         page.locator(target).screenshot(
