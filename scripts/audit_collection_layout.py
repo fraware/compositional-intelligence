@@ -245,6 +245,50 @@ def check_homepage(page, site: Path, css: str, width: int) -> list[str]:
     return faults
 
 
+
+def check_expanded_text_spacing(page, slug: str, width: int) -> list[str]:
+    """Check scientific mobile records with user-increased text spacing.
+
+    The style is temporary and does not modify the published document.
+    Native horizontally scrollable source tables are excluded.
+    """
+    measurement = page.evaluate("""() => {
+        const style = document.createElement('style');
+        style.textContent =
+            '.article-content {letter-spacing:0.12em !important;' +
+            'word-spacing:0.16em !important;}' +
+            '.article-content p {margin-bottom:2em !important;}';
+        document.head.append(style);
+        try {
+            const visible = el => {
+                for (let node=el;node;node=node.parentElement) {
+                    const s=getComputedStyle(node);
+                    if (s.display==='none'||s.visibility==='hidden') return false;
+                }
+                return true;
+            };
+            const fieldOverflow = [...document.querySelectorAll(
+                '.article-content [class*="mobile"] dd'
+            )].filter(visible).filter(el =>
+                el.clientWidth>4 && el.scrollWidth>el.clientWidth+2
+            ).map(el => el.textContent.trim().slice(0,65));
+            return {
+                documentOverflow: document.documentElement.scrollWidth >
+                    innerWidth+1,
+                fieldOverflow,
+            };
+        } finally {
+            style.remove();
+        }
+    }""")
+    if measurement["documentOverflow"] or measurement["fieldOverflow"]:
+        return [
+            f"{slug} {width}px: expanded text spacing overflows "
+            f"{measurement}"
+        ]
+    return []
+
+
 def check_a4(page, slug: str) -> list[str]:
     """Verify complete, nonempty physical A4 output for every published text."""
     pdf = page.pdf(
@@ -323,6 +367,11 @@ def main() -> int:
                                                   measure(page)))
                             if width == 1440:
                                 problems.extend(check_a4(page, slug))
+                        if width in (320, 375):
+                            page.emulate_media(media="screen")
+                            problems.extend(check_expanded_text_spacing(
+                                page, slug, width
+                            ))
                     page.close()
                 finally:
                     context.close()
@@ -336,7 +385,7 @@ def main() -> int:
         "PASS: collection-wide layout: homepage plus nine texts, 119 source tables, "
         "11 screen widths, three print widths, A4 documents, "
         "keyboard-scrolling and conditional table cues, anchors, "
-        "headings, captions, pagination and navigation"
+        "headings, captions, pagination, text spacing and navigation"
     )
     return 0
 
