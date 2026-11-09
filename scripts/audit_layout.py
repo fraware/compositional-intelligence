@@ -222,6 +222,65 @@ def main() -> int:
                                 if media and (media["invalidFigures"] or media["unnamedImages"] or media["overflowingMediaRoots"]):
                                     failures.append(f"{width}px {rel}: media accessibility/layout {media}")
                                 if rel == "essays/compositional-intelligence.html":
+                                    lifecycle = page.evaluate("""() => {
+                                        const fig = document.querySelector(".ci-lifecycle");
+                                        const items = [...(fig?.querySelectorAll("ol > li") ?? [])];
+                                        const bounds = fig?.getBoundingClientRect();
+                                        const expected = [
+                                            "output","candidate artifact","typed candidate",
+                                            "transformed artifact","validated artifact",
+                                            "warranted artifact","reusable artifact",
+                                            "effectful action"
+                                        ];
+                                        const onPhone = innerWidth <= 650;
+                                        const arrows = items.slice(0,-1).every((item,i) => {
+                                            const next = items[i+1].getBoundingClientRect();
+                                            const r = item.getBoundingClientRect();
+                                            const pseudo = getComputedStyle(item,"::after");
+                                            const dx = Number.parseFloat(pseudo.left);
+                                            const bottom = Number.parseFloat(pseudo.bottom);
+                                            const y = r.bottom - bottom;
+                                            const x = r.left + dx;
+                                            return pseudo.content.includes("↓") &&
+                                                Number.isFinite(y) && Number.isFinite(x) &&
+                                                x > bounds.left && x < bounds.right &&
+                                                y > r.bottom && y <= next.top + 1;
+                                        });
+                                        const vertical = items.slice(1).every((item,i) => {
+                                            const prior = items[i].getBoundingClientRect();
+                                            const current = item.getBoundingClientRect();
+                                            return current.top > prior.bottom;
+                                        });
+                                        return {
+                                            stages: items.map(x => x.textContent.trim()),
+                                            figcaption: fig?.querySelector("figcaption")?.textContent,
+                                            mobileVertical: vertical,
+                                            mobileArrows: arrows,
+                                            withinViewport: !!bounds && bounds.left >= 0 &&
+                                                bounds.right <= innerWidth + 1,
+                                            clipped: items.filter(x => {
+                                                const r = x.getBoundingClientRect();
+                                                return r.left < bounds.left - 1 ||
+                                                    r.right > bounds.right + 1;
+                                            }).length,
+                                        };
+                                    }""")
+                                    if (lifecycle["stages"] != [
+                                            "output","candidate artifact","typed candidate",
+                                            "transformed artifact","validated artifact",
+                                            "warranted artifact","reusable artifact",
+                                            "effectful action"] or
+                                        not lifecycle["withinViewport"] or
+                                        lifecycle["clipped"] or
+                                        "conceptual instead of strictly linear" not in
+                                            (lifecycle["figcaption"] or "") or
+                                        (width <= 650 and
+                                         (not lifecycle["mobileVertical"] or
+                                          not lifecycle["mobileArrows"]))):
+                                        failures.append(
+                                            f"{width}px {rel}: authored lifecycle sequence regression {lifecycle}"
+                                        )
+                                if rel == "essays/compositional-intelligence.html":
                                     square = page.evaluate("""() => {
                                         const source = document.querySelector(".ci-commuting .table-scroll");
                                         const mobile = document.querySelector(".ci-commuting-mobile");
