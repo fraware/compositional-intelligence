@@ -2538,3 +2538,48 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     break-inside:avoid;
   }
 }
+
+
+/* Semantic Participation: preserve the authored membership-to-action arrows
+   without introducing a misleading row-wrap transition on narrow screens. */
+.article-content .sp-sequence ol {
+  grid-template-columns:minmax(0,1fr);
+  max-width:640px;
+  margin-inline:auto;
+  gap:19px;
+}
+.article-content .sp-sequence li {
+  position:relative;
+  display:grid;
+  grid-template-columns:40px minmax(0,1fr);
+  align-items:center;
+  column-gap:12px;
+  min-height:60px;
+  padding:9px 15px;
+  font-size:17px;
+}
+.article-content .sp-sequence li::before {
+  display:block;
+  margin:0;
+}
+.article-content .sp-sequence li:not(:last-child)::after {
+  content:"↓";
+  position:absolute;
+  bottom:-19px;
+  left:calc(50% - 7px);
+  font:15px/1 var(--serif);
+  color:var(--soft);
+  pointer-events:none;
+}
+@media (max-width:650px) {
+  .article-content .sp-sequence ol { grid-template-columns:minmax(0,1fr); }
+  .article-content .sp-sequence li {
+    grid-template-columns:34px minmax(0,1fr);
+    min-height:57px;
+    padding:8px 12px;
+    font-size:16px;
+  }
+}
+@media print {
+  .article-content .sp-sequence li { break-inside:avoid; }
+}
