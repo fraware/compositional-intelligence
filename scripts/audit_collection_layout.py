@@ -10,6 +10,7 @@ tested separately from the emulated print viewport.
 from __future__ import annotations
 
 import argparse
+import re
 from io import BytesIO
 from pathlib import Path
 
@@ -184,6 +185,14 @@ def check_a4(page, slug: str) -> list[str]:
         printed_text.append(text)
         if not text.strip():
             errors.append(f"{slug}: blank A4 page {index + 1}")
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        if index < len(reader.pages) - 1 and lines and re.match(
+            r"^Table(?:\s+\d+)?\.\s+\S", lines[-1]
+        ):
+            errors.append(
+                f"{slug}: printed table caption stranded at bottom of "
+                f"A4 page {index + 1}: {lines[-1]}"
+            )
     joined = " ".join(printed_text).lower()
     for instruction in ("scroll horizontally", "scroll sideways", "swipe or scroll"):
         if instruction in joined:
@@ -240,7 +249,7 @@ def main() -> int:
         "PASS: collection-wide layout: nine texts, 119 source tables, "
         "11 screen widths, three print widths, A4 documents, "
         "keyboard-scrolling and conditional table cues, anchors, "
-        "headings, captions and navigation"
+        "headings, captions, pagination and navigation"
     )
     return 0
 
