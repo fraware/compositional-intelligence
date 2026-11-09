@@ -2376,3 +2376,59 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .ef-sequence,.article-content .ef-math,
   .article-content .ef-card {break-inside:avoid;}
 }
+
+
+/* Collection-wide mobile parity for the nine flagship scientific data tables.
+   Their source HTML remains the desktop and print representation. */
+.article-content .ci-data-mobile { display:none; }
+@media (min-width:651px) and (max-width:1000px) {
+  .article-content .table-scroll[data-ci-alternative="mobile"][data-columns="4"] + .table-scroll-hint {
+    display:block;
+  }
+}
+@media (max-width:650px) {
+  .article-content .table-scroll[data-ci-alternative="mobile"],
+  .article-content .table-scroll[data-ci-alternative="mobile"] + .table-scroll-hint {
+    display:none;
+  }
+  .article-content .ci-data-mobile {
+    display:block;
+    margin:7px 0 33px;
+  }
+  .article-content .ci-data-card {
+    margin:0;
+    padding:17px 0 18px;
+    border-top:1px solid var(--line);
+  }
+  .article-content .ci-data-card:last-child { border-bottom:1px solid var(--line); }
+  .article-content .ci-data-field + .ci-data-field { margin-top:13px; }
+  .article-content .ci-data-field dt {
+    margin:0 0 4px;
+    color:var(--soft);
+    font:12px/1.5 var(--sans);
+  }
+  .article-content .ci-data-field dd {
+    min-width:0;
+    max-width:100%;
+    margin:0;
+    font:16px/1.56 var(--serif);
+    overflow-wrap:anywhere;
+  }
+  .article-content .ci-data-field:first-child dd {
+    font:18px/1.47 var(--display);
+    color:var(--ink);
+  }
+  .article-content .ci-data-mobile-2 .ci-data-field:first-child dd,
+  .article-content .ci-data-mobile-3 .ci-data-field:first-child dd,
+  .article-content .ci-data-mobile-9 .ci-data-field:first-child dd {
+    font:14px/1.52 var(--sans);
+  }
+  .article-content .ci-data-field math {
+    max-width:100%;
+  }
+}
+@media print {
+  .article-content .table-scroll[data-ci-alternative="mobile"] { display:block; }
+  .article-content .table-scroll[data-ci-alternative="mobile"] + .table-scroll-hint,
+  .article-content .ci-data-mobile { display:none; }
+}
