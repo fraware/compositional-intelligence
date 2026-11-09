@@ -8,7 +8,7 @@ validate deterministic presentation. They do not independently read DOCX bytes.
 from __future__ import annotations
 
 import hashlib
-from html import unescape
+from html import escape, unescape
 from html.parser import HTMLParser
 import json
 import re
