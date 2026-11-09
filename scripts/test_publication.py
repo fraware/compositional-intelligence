@@ -854,7 +854,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
             re.findall(r'<p>(Prompt:[\s\S]*?)</p>', source),
             re.findall(
                 r'<div class="tg-domain-example"[^>]*>'
-                r'([\s\S]*?)</div></div>', rendered,
+                r'[\s\S]*?</div></div>', rendered,
             ),
             strict=True,
         ):
