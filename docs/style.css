@@ -2214,6 +2214,19 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 }
 @media print {
   .article-content .table-scroll[data-qc-alternative="mobile"] {display:block;}
+  /* Override screen-only table minimums. Otherwise four-column tables
+     extend beyond the printable content area at desktop print widths. */
+  .article-content .table-scroll[data-qc-alternative="mobile"] table {
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    table-layout:fixed;
+  }
+  .article-content .table-scroll[data-qc-alternative="mobile"] th,
+  .article-content .table-scroll[data-qc-alternative="mobile"] td {
+    min-width:0;
+    overflow-wrap:anywhere;
+  }
   .article-content .qc-mobile,.article-content .qc-hint {display:none;}
   .article-content .qc-hint:has(+ .table-scroll[data-columns="3"]),
   .article-content .qc-hint:has(+ .table-scroll[data-columns="4"]) {display:none;}
