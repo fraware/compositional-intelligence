@@ -2426,6 +2426,20 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .ci-data-field math {
     max-width:100%;
   }
+  /* The first value already titles each mobile record. Preserve its source
+     header for screen readers without repeating that label visually. */
+  .article-content .ci-data-field:first-child dt {
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+  }
 }
 @media print {
   .article-content .table-scroll[data-ci-alternative="mobile"] { display:block; }
