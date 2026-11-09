@@ -820,36 +820,44 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertEqual(rendered.count('<div class="tg-domain-example"'), 4)
         self.assertEqual(rendered.count('class="tg-example-line"'), 13)
         self.assertEqual(rendered.count('class="tg-record-pair"'), 1)
-        self.assertEqual(rendered.count('class="record-schema tg-source-record"'), 2)
-        self.assertEqual(rendered.count('class="record-schema"'), 2)
-        self.assertIn("target_type_record:", rendered)
-        self.assertIn("candidate_inhabitant_record:", rendered)
+        self.assertEqual(rendered.count('class="tg-type-schema"'), 4)
+        self.assertEqual(rendered.count('class="tg-schema-field"'), 45)
 
-        src_record = re.search(
+        originals = re.findall(
             r'<div class="record-schema" role="group" tabindex="0" '
-            r'aria-label="Source record target_type_record">'
+            r'aria-label="Source record [^"]+">'
             r'<pre><code>([\s\S]*?)</code></pre></div>', source,
         )
-        self.assertIsNotNone(src_record)
-        split = '\n\ncandidate_inhabitant_record:\n'
-        a, b = src_record.group(1).split(split)
-        target = re.search(
-            r'<div aria-label="Source record target_type_record" '
-            r'class="record-schema tg-source-record" role="group" tabindex="0">'
-            r'<pre><code>([\s\S]*?)</code></pre></div>', rendered,
+        self.assertEqual(len(originals), 3)
+        first, second, third = originals
+        target, candidate = second.split('\n\ncandidate_inhabitant_record:\n')
+        expected = {
+            "type_first_item": first,
+            "target_type_record": target,
+            "candidate_inhabitant_record": "candidate_inhabitant_record:\n" + candidate,
+            "typed_generativity_benchmark_item": third,
+        }
+        actual = re.findall(
+            r'<div class="tg-type-schema" role="group" '
+            r'aria-label="Source record ([^"]+)">'
+            r'<div class="tg-schema-title"><code>([^<]+)</code></div>'
+            r'<dl class="tg-schema-fields">([\s\S]*?)</dl></div>',
+            rendered,
         )
-        candidate = re.search(
-            r'<div aria-label="Source record candidate_inhabitant_record" '
-            r'class="record-schema tg-source-record" role="group" tabindex="0">'
-            r'<pre><code>([\s\S]*?)</code></pre></div>', rendered,
-        )
-        self.assertIsNotNone(target)
-        self.assertIsNotNone(candidate)
-        self.assertEqual(target.group(1), a)
-        self.assertEqual(
-            candidate.group(1),
-            'candidate_inhabitant_record:\n' + b,
-        )
+        self.assertEqual(len(actual), 4)
+        self.assertEqual({label for label, _, _ in actual}, set(expected))
+        for label, heading, fields_html in actual:
+            with self.subTest(record=label):
+                fields = re.findall(
+                    r'<div class="tg-schema-field"><dt><code>([^<]+)</code></dt>'
+                    r'<dd><code>([^<]+)</code></dd></div>',
+                    fields_html,
+                )
+                recovered = unescape(heading) + '\n' + '\n'.join(
+                    unescape(field) + ' ' + unescape(value)
+                    for field, value in fields
+                )
+                self.assertEqual(recovered, expected[label])
         for source_case, published_case in zip(
             re.findall(r'<p>(Prompt:[\s\S]*?)</p>', source),
             re.findall(

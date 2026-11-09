@@ -318,6 +318,91 @@ def _mobile_tables(body: str) -> str:
     return body
 
 
+
+_SCHEMA_FIELDS: dict[str, tuple[str, ...]] = {
+    "type_first_item": (
+        "task_id", "domain", "prompt", "intended_target_type",
+        "candidate_target_types", "constraints", "invalid_target_type_examples",
+        "valid_inhabitant_criteria", "checker_or_validator",
+        "human_review_fields", "ambiguity_status",
+        "semantic_participation_target",
+    ),
+    "target_type_record": (
+        "task_id", "context_summary", "candidate_target_types",
+        "selected_target_type", "selection_rationale", "constraints",
+        "invalid_target_examples", "validator_or_review_method",
+        "ambiguity_status", "downstream_environment",
+    ),
+    "candidate_inhabitant_record": (
+        "task_id", "selected_target_type", "candidate",
+        "validation_status", "validator", "alignment_status",
+        "repair_trace", "epistemic_type", "permitted_use",
+        "transformation_tests",
+    ),
+    "typed_generativity_benchmark_item": (
+        "id", "domain", "prompt", "intended_target_type",
+        "candidate_target_types", "constraints", "invalid_target_examples",
+        "valid_inhabitant_criteria", "validator",
+        "semantic_participation_target", "transformation_tests",
+        "reviewer_guidelines", "failure_labels",
+    ),
+}
+
+
+def _format_source_schemas(body: str) -> str:
+    """Typeset each exact source record as a field/type definition list.
+
+    Keep the original source text in the manuscript. Re-render only four
+    source-bound declarations, rejecting unexpected field names and counts.
+    """
+    pattern = re.compile(
+        r'<div [^>]*class="record-schema(?: tg-source-record)?"[^>]*>'
+        r'<pre><code>(?P<source>[\s\S]*?)</code></pre></div>'
+    )
+    matches = list(pattern.finditer(body))
+    if len(matches) != len(_SCHEMA_FIELDS):
+        raise ValueError(
+            f"Typed Generativity record inventory changed: {len(matches)}"
+        )
+    recovered: set[str] = set()
+    for match in reversed(matches):
+        lines = match.group("source").split("\n")
+        heading = lines[0]
+        if not heading.endswith(":"):
+            raise ValueError("Source record declaration is missing its name")
+        key = heading[:-1]
+        if key not in _SCHEMA_FIELDS or key in recovered:
+            raise ValueError(f"Unknown or repeated typed source record: {key}")
+        recovered.add(key)
+        fields: list[str] = []
+        observed: list[str] = []
+        for line in lines[1:]:
+            label, separator, value = line.partition(": ")
+            if not separator or not label or not value:
+                raise ValueError(f"Malformed field in source record {key}: {line}")
+            observed.append(label)
+            fields.append(
+                '<div class="tg-schema-field"><dt><code>' +
+                escape(unescape(label + ":")) + '</code></dt><dd><code>' +
+                escape(unescape(value)) + '</code></dd></div>'
+            )
+        if tuple(observed) != _SCHEMA_FIELDS[key]:
+            raise ValueError(
+                f"Fields in source record {key} differ from V3 source"
+            )
+        replacement = (
+            '<div class="tg-type-schema" role="group" '
+            'aria-label="Source record ' + escape(key, quote=True) + '">'
+            '<div class="tg-schema-title"><code>' + escape(heading) +
+            '</code></div><dl class="tg-schema-fields">' +
+            ''.join(fields) + '</dl></div>'
+        )
+        body = body[:match.start()] + replacement + body[match.end():]
+    if recovered != set(_SCHEMA_FIELDS):
+        raise ValueError("Typed Generativity record definitions are incomplete")
+    return body
+
+
 def render_typed_generativity(body: str) -> str:
     """Render the V3 Typed Generativity text without modifying its manuscript."""
     body = _source_captions(body)
@@ -325,5 +410,6 @@ def render_typed_generativity(body: str) -> str:
     body = _render_sequences(body)
     body = _render_examples(body)
     body = _separate_source_records(body)
+    body = _format_source_schemas(body)
     body = _mobile_tables(body)
     return body

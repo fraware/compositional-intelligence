@@ -441,7 +441,15 @@ def main() -> int:
                                             exampleFields: article.querySelectorAll(".tg-example-line").length,
                                             recordPairs: article.querySelectorAll(".tg-record-pair").length,
                                             splitRecords: article.querySelectorAll(
-                                                ".tg-record-pair .tg-source-record").length
+                                                ".tg-record-pair .tg-type-schema").length,
+                                            typeSchemas: article.querySelectorAll(".tg-type-schema").length,
+                                            typeFields: article.querySelectorAll(".tg-schema-field").length,
+                                            schemaOverflows: [...article.querySelectorAll(
+                                                ".tg-schema-field"
+                                            )].filter(e => {
+                                                const rect = e.getBoundingClientRect();
+                                                return rect.left < -1 || rect.right > innerWidth + 1;
+                                            }).length
                                         };
                                     }""")
                                     expected_rows = [6, 5, 5, 5, 3, 4, 5, 5, 5, 9, 3, 6, 7, 8, 5]
@@ -453,6 +461,8 @@ def main() -> int:
                                         typed["sequenceCount"] != 2 or typed["sequenceStages"] != 9 or
                                         typed["examples"] != 4 or typed["exampleFields"] != 13 or
                                         typed["recordPairs"] != 1 or typed["splitRecords"] != 2 or
+                                        typed["typeSchemas"] != 4 or typed["typeFields"] != 45 or
+                                        typed["schemaOverflows"] != 0 or
                                         typed["outOfBounds"] != 0 or
                                         (width <= 650 and (
                                             typed["sourceVisible"] != 0 or typed["mobileVisible"] != 15 or
@@ -595,6 +605,8 @@ def main() -> int:
                                             ("lifecycle", ".tg-sequence"),
                                             ("domain-example", ".tg-domain-example"),
                                             ("record-pair", ".tg-record-pair"),
+                                            ("harness-schema", '.tg-type-schema[aria-label="Source record type_first_item"]'),
+                                            ("benchmark-schema", '.tg-type-schema[aria-label="Source record typed_generativity_benchmark_item"]'),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():

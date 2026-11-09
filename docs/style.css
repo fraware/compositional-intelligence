@@ -1163,3 +1163,67 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     break-inside:avoid;
   }
 }
+
+
+/* Typed Generativity: align source record names with exact declared types. */
+.article-content .tg-type-schema {
+  margin:25px 0 32px;
+  padding:14px 0 17px;
+  border-block:1px solid var(--line);
+}
+.article-content .tg-type-schema .tg-schema-title {
+  margin:0 0 13px;
+  font:14px/1.6 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+.article-content .tg-type-schema .tg-schema-title code {font:inherit}
+.article-content .tg-schema-fields {
+  margin:0;
+  padding:0;
+}
+.article-content .tg-schema-fields .tg-schema-field {
+  display:grid;
+  grid-template-columns:minmax(165px,240px) minmax(0,1fr);
+  gap:15px;
+  margin:0;
+  padding:9px 0;
+  border-bottom:1px solid var(--line);
+}
+.article-content .tg-schema-fields .tg-schema-field:last-child {
+  border-bottom:0;
+}
+.article-content .tg-schema-fields dt,
+.article-content .tg-schema-fields dt code {
+  margin:0;
+  color:var(--ink);
+  font:13.5px/1.5 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+.article-content .tg-schema-fields dd {
+  min-width:0;
+  margin:0;
+  overflow-wrap:break-word;
+}
+.article-content .tg-schema-fields dd code {
+  white-space:normal;
+  overflow-wrap:break-word;
+  font:13.5px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+.article-content .tg-record-pair .tg-type-schema + .tg-type-schema {
+  margin-top:25px;
+}
+@media (max-width:650px) {
+  .article-content .tg-schema-fields .tg-schema-field {
+    grid-template-columns:minmax(0,1fr);
+    gap:4px;
+    padding:10px 0 12px;
+  }
+  .article-content .tg-schema-fields dt,
+  .article-content .tg-schema-fields dt code {
+    font-size:13px;
+  }
+  .article-content .tg-schema-fields dd code {
+    font-size:13px;
+  }
+}
+@media print {
+  .article-content .tg-schema-fields .tg-schema-field {break-inside:avoid}
+}
