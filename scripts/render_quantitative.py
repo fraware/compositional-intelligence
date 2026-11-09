@@ -77,6 +77,46 @@ RECORDS = (
     ("appendix-a.-quantitative_judgment-schema", "quantitative_judgment:", 20),
     ("appendix-b.-benchmark-item-schema", "qch_benchmark_item:", 13),
 )
+# Exact authored appendix records. Any field or type change needs renewed review.
+RECORD_FIELDS = {
+    "quantitative_judgment:": (
+        "artifact_id: string",
+        "context: string",
+        "target: string",
+        "candidate: string",
+        "model_or_system: string",
+        "score: number | string | null",
+        "score_semantics: string",
+        "probability: number | null",
+        "uncertainty: string | null",
+        "loss_or_margin: string | null",
+        "validator_target: string",
+        "calibration_status: string",
+        "validation_status: string",
+        "diagnostics: string",
+        "repair_distance: string | null",
+        "epistemic_type: string",
+        "permitted_use: list[string]",
+        "forbidden_use: list[string]",
+        "reviewer_notes: string | null",
+    ),
+    "qch_benchmark_item:": (
+        "id: string",
+        "domain: string",
+        "source_context: string",
+        "target_type: string",
+        "candidate_artifact: string",
+        "quantitative_record: quantitative_judgment",
+        "validator: string",
+        "validation_outcome: string",
+        "repair_trace: string | null",
+        "ground_truth_epistemic_type: string",
+        "permitted_use_label: list[string]",
+        "failure_labels: list[string]",
+    ),
+}
+
+
 SEQ = (
     "artifact membership",
     "target-type inference",
@@ -305,7 +345,8 @@ def _example(lines: list[str], name: str) -> str:
 
 
 def _record(lines: list[str], name: str, count: int) -> str:
-    if len(lines) != count or lines[0] != name:
+    if (len(lines) != count or lines[0] != name or
+            tuple(lines[1:]) != RECORD_FIELDS[name]):
         raise ValueError(f"Original source record {name} changed")
     fields = []
     for line in lines[1:]:
