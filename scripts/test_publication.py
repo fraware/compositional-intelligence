@@ -19,6 +19,7 @@ from render_science import FORMULAE, enhance_scientific_presentation, render_sou
 from check_originals import Paragraphs, overlap, phrases, tokens
 from render_synthesis import render_synthesis_figures
 from render_preface import render_preface
+from render_semantic import render_semantic_participation, _HEADERS, _ROW_COUNTS
 
 
 
@@ -491,6 +492,107 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 self.assertEqual(normalized_source, normalized_mobile)
                 total_fields += sum(len(row) for row in mobile_rows)
         self.assertEqual(total_fields, 118)
+
+
+    def test_semantic_participation_mobile_tables_are_source_equivalent(self) -> None:
+        """All original cells survive, and every mobile cell is copied verbatim."""
+        slug, title, _, _ = publication.ESSAYS[2]
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(source, title, [])
+        enhanced = enhance_scientific_presentation(original)
+        rendered = render_semantic_participation(enhanced)
+        self.assertEqual(rendered.count('data-sp-alternative="mobile"'), 12)
+        self.assertEqual(rendered.count('<dl class="sp-mobile-record'), 74)
+        self.assertEqual(rendered.count('class="sp-record-field"'), 190)
+        original_cells = 0
+        copied_cells = 0
+        for number in range(1, 13):
+            with self.subTest(table=number):
+                source_table = re.search(
+                    rf'<table data-source-table="{number}" id="table-{number}">'
+                    r'[\s\S]*?</table>', enhanced,
+                )
+                output_table = re.search(
+                    rf'<table data-source-table="{number}" id="table-{number}">'
+                    r'[\s\S]*?</table>', rendered,
+                )
+                self.assertIsNotNone(source_table)
+                self.assertIsNotNone(output_table)
+                self.assertEqual(source_table.group(), output_table.group())
+                source_rows = re.findall(
+                    r'<tr\b[^>]*>([\s\S]*?)</tr>',
+                    re.search(
+                        r'<tbody>([\s\S]*?)</tbody>', source_table.group()
+                    ).group(1),
+                )
+                self.assertEqual(len(source_rows), _ROW_COUNTS[number])
+                source_fields = [
+                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>', row)
+                    for row in source_rows
+                ]
+                original_cells += sum(len(row) for row in source_fields)
+                mobile = re.search(
+                    rf'<section class="sp-mobile-records sp-mobile-table-{number}" '
+                    rf'aria-labelledby="table-{number}-caption">'
+                    r'([\s\S]*?)</section>',
+                    rendered,
+                )
+                self.assertIsNotNone(mobile)
+                records = re.findall(
+                    r'<dl class="sp-mobile-record[^"]*">([\s\S]*?)</dl>',
+                    mobile.group(1),
+                )
+                rows_to_copy = (
+                    [row for i, row in enumerate(source_fields) if i != 9]
+                    if number == 6 else source_fields
+                )
+                self.assertEqual(len(records), len(rows_to_copy))
+                for original_row, record in zip(rows_to_copy, records, strict=True):
+                    mobile_cells = re.findall(
+                        r'<dd>([\s\S]*?)</dd>', record,
+                    )
+                    self.assertEqual(original_row, mobile_cells)
+                    copied_cells += len(mobile_cells)
+        self.assertEqual(original_cells, 192)
+        self.assertEqual(copied_cells, 190)
+        self.assertIn('class="sp-transition-head"', rendered)
+        self.assertIn("Type transition", rendered)
+        self.assertIn("Required control", rendered)
+
+    def test_semantic_participation_formal_objects_remain_source_bound(self) -> None:
+        """Author's sequence, memberships and schema fields stay legible."""
+        slug, title, category, description = publication.ESSAYS[2]
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        body, _ = publication.source_to_body(source, title, [])
+        enhanced = enhance_scientific_presentation(body)
+        output = render_semantic_participation(enhanced)
+        self.assertEqual(output.count('class="sp-sequence"'), 1)
+        self.assertIn('aria-label="Original membership-to-action sequence"', output)
+        self.assertIn('class="sp-criterion"', output)
+        self.assertIn('class="sp-transport"', output)
+        self.assertEqual(output.count('class="sp-source-schema"'), 4)
+        self.assertIn("SemanticEnvironment E = {", output)
+        self.assertIn("ArtifactRecord a = {", output)
+        self.assertIn("TransportRecord rho_T = {", output)
+        self.assertIn("semantic_participation_item:", output)
+        self.assertIn('alttext="T : (a, E_s) -&gt; (b, E_t, rho_T)"', output)
+        self.assertIn('alttext="Delta_L(c) = F(L + c) - F(L)"', output)
+        self.assertEqual(output.count('<table data-source-table='), 12)
+        self.assertEqual(
+            len(re.findall(r'<h2\b|<h3\b', output)),
+            self.documents[slug]["heading_count"],
+        )
+        with self.assertRaises(ValueError):
+            render_semantic_participation(output)
+        page = publication.render_essay(
+            slug, title, category, description, 2, [],
+        )
+        self.assertIn(output, page)
+        self.assertNotIn('<p class="byline">', page)
 
 
 

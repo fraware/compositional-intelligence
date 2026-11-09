@@ -129,7 +129,7 @@ def main() -> int:
                                               return false;
                                             }
                                              const alternate = e.closest(
-                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile']"
+                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile']"
                                              );
                                              if (alternate && getComputedStyle(alternate).display === "none") {
                                                return false;
@@ -297,12 +297,77 @@ def main() -> int:
                                          (preface["mobileDisplayed"] != 0 or
                                           preface["nativeDisplayed"] != 7))):
                                         failures.append(f"{width}px {rel}: preface reading regression {preface}")
+                                if rel == "essays/semantic-participation.html":
+                                    semantic = page.evaluate("""() => {
+                                        const article = document.querySelector(".article-content");
+                                        const source = [...article.querySelectorAll(
+                                            ".table-scroll[data-sp-alternative='mobile']"
+                                        )];
+                                        const mobile = [...article.querySelectorAll(
+                                            ".sp-mobile-records"
+                                        )];
+                                        const cards = [...article.querySelectorAll(
+                                            ".sp-mobile-record"
+                                        )];
+                                        const fields = [...article.querySelectorAll(
+                                            ".sp-record-field"
+                                        )];
+                                        const visibleMobile = mobile.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const visibleSource = source.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const bounds = cards.filter(e =>
+                                            getComputedStyle(e.closest(".sp-mobile-records")).display !== "none"
+                                        ).map(e => e.getBoundingClientRect());
+                                        const hints = [...article.querySelectorAll(".sp-scroll-hint")];
+                                        const badHints = hints.filter(h =>
+                                            !h.nextElementSibling?.classList.contains("table-scroll") ||
+                                            h.nextElementSibling?.getAttribute("aria-describedby") !== h.id
+                                        ).length;
+                                        const sourceIds = source.map(w =>
+                                            Number(w.querySelector("table")?.dataset.sourceTable));
+                                        const observedRows = mobile.map(e =>
+                                            e.querySelectorAll(".sp-mobile-record").length);
+                                        return {
+                                            tableCount: source.length,
+                                            sourceIds, observedRows,
+                                            mobileCount: mobile.length,
+                                            cards: cards.length,
+                                            fields: fields.length,
+                                            visibleMobile, visibleSource,
+                                            badHints,
+                                            outOfBounds: bounds.filter(b =>
+                                                b.left < -1 || b.right > innerWidth + 1).length,
+                                            sequence: article.querySelectorAll(".sp-sequence li").length,
+                                            schemas: article.querySelectorAll(".sp-source-schema").length,
+                                            transitionHeadings: article.querySelectorAll(
+                                                ".sp-transition-head").length,
+                                            transitionCards: article.querySelectorAll(
+                                                ".sp-transition-record").length
+                                        };
+                                    }""")
+                                    if (semantic["tableCount"] != 12 or semantic["mobileCount"] != 12 or
+                                        semantic["cards"] != 74 or semantic["fields"] != 190 or
+                                        semantic["sourceIds"] != list(range(1, 13)) or
+                                        semantic["observedRows"] != [6, 5, 1, 5, 7, 13, 8, 4, 5, 7, 7, 6] or
+                                        semantic["badHints"] or semantic["outOfBounds"] or
+                                        semantic["sequence"] != 7 or semantic["schemas"] != 4 or
+                                        semantic["transitionHeadings"] != 1 or
+                                        semantic["transitionCards"] != 4 or
+                                        (width <= 650 and
+                                         (semantic["visibleMobile"] != 12 or semantic["visibleSource"] != 0)) or
+                                        (width > 650 and
+                                         (semantic["visibleMobile"] != 0 or semantic["visibleSource"] != 12))):
+                                        failures.append(
+                                            f"{width}px {rel}: invalid semantic participation reading layout {semantic}"
+                                        )
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
                                       .filter(w => {
                                         const t = w.querySelector("table");
                                         const preceding = w.previousElementSibling;
-                                        const label = preceding?.classList.contains("preface-scroll-hint")
+                                        const label = (preceding?.classList.contains("preface-scroll-hint") ||
+                                                       preceding?.classList.contains("sp-scroll-hint"))
                                           ? preceding.previousElementSibling : preceding;
                                         if (!t || !t.tHead || !t.tBodies.length ||
                                             !t.caption || !t.caption.classList.contains("visually-hidden") ||
@@ -329,9 +394,12 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         const compactPreface = !!w.dataset.prefaceAlternative &&
                                             getComputedStyle(w).display === "none";
+                                        const compactSemantic = !!w.dataset.spAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
-                                            !compactSquare && !compactPreface) return true;
+                                            !compactSquare && !compactPreface &&
+                                            !compactSemantic) return true;
                                         return false;
                                       }).length
                                 })""")
@@ -386,6 +454,23 @@ def main() -> int:
                                             ("notation", '.preface-mobile-records[aria-label="Mathematical notation and reading"]'),
                                             ("publication", '.preface-mobile-records[aria-label="Publication steps and gates"]'),
                                             ("schemas", '.preface-mobile-records[aria-label="Canonical schemas and artifacts"]'),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
+                                    if rel == "essays/semantic-participation.html":
+                                        for name, selector in (
+                                            ("contributions", ".sp-mobile-table-1"),
+                                            ("governing-claim", ".sp-mobile-table-3"),
+                                            ("thresholds", ".sp-mobile-table-5"),
+                                            ("epistemic-types", ".sp-mobile-table-6"),
+                                            ("bench", ".sp-mobile-table-9"),
+                                            ("claim-ledger", ".sp-mobile-table-12"),
+                                            ("sequence", ".sp-sequence"),
+                                            ("membership", ".sp-criterion"),
+                                            ("environment", ".sp-source-schema"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():

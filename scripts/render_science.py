@@ -13,6 +13,9 @@ import re
 import subprocess
 
 FORMULAE: tuple[tuple[str, str], ...] = (
+    ("Delta_L(c) = F(L + c) - F(L)", r"\Delta_L(c)=F(L+c)-F(L)"),
+    ("T : (a, E_s) -> (b, E_t, rho_T)",
+     r"T:(a,E_s)\to(b,E_t,\rho_T)"),
     ("TaskSpec -> ArchitectureType -> ArchitectureInstance, A |= S",
      r"\mathrm{TaskSpec}\to\mathrm{ArchitectureType}\to\mathrm{ArchitectureInstance},\quad A\models S"),
     ("Gamma; M; E; C ⊢ a : Pre -> Post ! epsilon @ rho",
