@@ -1165,12 +1165,60 @@ class ManuscriptFidelityTests(unittest.TestCase):
             with self.subTest(schema=anchor):
                 section = re.search(
                     rf'<h[23] id="{re.escape(anchor)}">[^<]+</h[23]>\s*'
-                    r'<div class="lm-schema"[^>]*><pre><code>([\s\S]*?)'
-                    r'</code></pre></div>', rendered
+                    r'<div class="lm-schema"[^>]*>'
+                    r'<p class="lm-schema-heading">([\s\S]*?)</p>'
+                    r'<ol class="lm-schema-lines">([\s\S]*?)</ol></div>',
+                    rendered
                 )
                 self.assertIsNotNone(section)
-                self.assertEqual(len(section.group(1).split("\n")), count)
-                self.assertTrue(section.group(1).startswith(first))
+                original_section = re.search(
+                    rf'<h[23] id="{re.escape(anchor)}">[^<]+</h[23]>\s*'
+                    r'((?:<p>[^<]*</p>\s*)+)',
+                    original
+                )
+                self.assertIsNotNone(original_section)
+                original_lines = [
+                    unescape(line) for line in
+                    re.findall(r'<p>([^<]*)</p>', original_section.group(1))
+                ]
+                self.assertEqual(len(original_lines), count)
+                lines = [
+                    unescape(re.sub(r'<[^>]+>', '', section.group(1))),
+                    *[
+                        unescape(re.sub(r'<[^>]+>', '', line))
+                        for line in re.findall(
+                            r'<li class="lm-schema-line [^"]+">([\s\S]*?)</li>',
+                            section.group(2)
+                        )
+                    ],
+                ]
+                self.assertEqual(lines, original_lines)
+                self.assertEqual(lines[0], first)
+        for original_lines in (
+            ("forall student, exists book, read(student, book)",
+             "exists book, forall student, read(student, book)"),
+            ("instrument(observe, microscope)",
+             "modifier(cell, microscope)"),
+        ):
+            with self.subTest(comparison=original_lines[0]):
+                self.assertIn(
+                    "<p>" + original_lines[0] + "</p>\n<p>" +
+                    original_lines[1] + "</p>",
+                    original
+                )
+                self.assertIn(
+                    '<div class="lm-diagnostic-line"><code>' +
+                    original_lines[0] + "</code></div>",
+                    rendered
+                )
+                self.assertIn(
+                    '<div class="lm-diagnostic-line"><code>' +
+                    original_lines[1] + "</code></div>",
+                    rendered
+                )
+        self.assertEqual(page.count('class="lm-diagnostic-pair"'), 2)
+        self.assertEqual(page.count('class="lm-diagnostic-line"'), 4)
+        self.assertEqual(page.count('class="lm-schema-line '), 65)
         cells_checked = 0
         for n in range(1, 15):
             with self.subTest(table=n):
