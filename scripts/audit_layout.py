@@ -129,7 +129,7 @@ def main() -> int:
                                               return false;
                                             }
                                              const alternate = e.closest(
-                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile']"
+                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile']"
                                              );
                                              if (alternate && getComputedStyle(alternate).display === "none") {
                                                return false;
@@ -395,13 +395,82 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: invalid semantic participation reading layout {semantic}"
                                         )
+                                if rel == "essays/typed-generativity.html":
+                                    typed = page.evaluate("""() => {
+                                        const article = document.querySelector(".article-content");
+                                        const source = [...article.querySelectorAll(
+                                            ".table-scroll[data-tg-alternative='mobile']"
+                                        )];
+                                        const mobile = [...article.querySelectorAll(".tg-mobile-records")];
+                                        const records = [...article.querySelectorAll(".tg-mobile-record")];
+                                        const fields = [...article.querySelectorAll(".tg-record-field")];
+                                        const cues = [...article.querySelectorAll(".tg-scroll-hint")];
+                                        const bounds = records.filter(r =>
+                                            getComputedStyle(r.closest(".tg-mobile-records")).display !== "none"
+                                        ).map(r => r.getBoundingClientRect());
+                                        const sourceVisible = source.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const mobileVisible = mobile.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const scrollHintsVisible = cues.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const badCues = cues.filter(e =>
+                                            !e.nextElementSibling?.classList.contains("table-scroll") ||
+                                            e.nextElementSibling?.getAttribute("aria-describedby") !== e.id
+                                        ).length;
+                                        const originalPaths = source[1]?.querySelectorAll(
+                                            'tbody tr td:nth-child(2) a[href^="#"]'
+                                        ).length ?? 0;
+                                        const mobilePaths = mobile[1]?.querySelectorAll(
+                                            'a[href^="#"]'
+                                        ).length ?? 0;
+                                        return {
+                                            sourceIds: source.map(e =>
+                                                Number(e.querySelector("table")?.dataset.sourceTable)),
+                                            rows: mobile.map(e =>
+                                                e.querySelectorAll(".tg-mobile-record").length),
+                                            sourceVisible, mobileVisible,
+                                            records: records.length, fields: fields.length,
+                                            hints: cues.length, scrollHintsVisible, badCues,
+                                            originalPaths, mobilePaths,
+                                            outOfBounds: bounds.filter(b =>
+                                                b.left < -1 || b.right > innerWidth + 1).length,
+                                            sequenceCount: article.querySelectorAll(".tg-sequence").length,
+                                            sequenceStages: article.querySelectorAll(".tg-sequence li").length,
+                                            examples: article.querySelectorAll(".tg-domain-example").length,
+                                            exampleFields: article.querySelectorAll(".tg-example-line").length,
+                                            recordPairs: article.querySelectorAll(".tg-record-pair").length,
+                                            splitRecords: article.querySelectorAll(
+                                                ".tg-record-pair .tg-source-record").length
+                                        };
+                                    }""")
+                                    expected_rows = [6, 5, 5, 5, 3, 4, 5, 5, 5, 9, 3, 6, 7, 8, 5]
+                                    if (typed["sourceIds"] != list(range(1, 16)) or
+                                        typed["rows"] != expected_rows or
+                                        typed["records"] != 81 or typed["fields"] != 227 or
+                                        typed["hints"] != 15 or typed["badCues"] != 0 or
+                                        typed["originalPaths"] != 22 or typed["mobilePaths"] != 22 or
+                                        typed["sequenceCount"] != 2 or typed["sequenceStages"] != 9 or
+                                        typed["examples"] != 4 or typed["exampleFields"] != 13 or
+                                        typed["recordPairs"] != 1 or typed["splitRecords"] != 2 or
+                                        typed["outOfBounds"] != 0 or
+                                        (width <= 650 and (
+                                            typed["sourceVisible"] != 0 or typed["mobileVisible"] != 15 or
+                                            typed["scrollHintsVisible"] != 0)) or
+                                        (width > 650 and (
+                                            typed["sourceVisible"] != 15 or typed["mobileVisible"] != 0 or
+                                            typed["scrollHintsVisible"] != (15 if width <= 1000 else 0)))):
+                                        failures.append(
+                                            f"{width}px {rel}: typed generation reading regression {typed}"
+                                        )
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
                                       .filter(w => {
                                         const t = w.querySelector("table");
                                         const preceding = w.previousElementSibling;
                                         const label = (preceding?.classList.contains("preface-scroll-hint") ||
-                                                       preceding?.classList.contains("sp-scroll-hint"))
+                                                       preceding?.classList.contains("sp-scroll-hint") ||
+                                                       preceding?.classList.contains("tg-scroll-hint"))
                                           ? preceding.previousElementSibling : preceding;
                                         if (!t || !t.tHead || !t.tBodies.length ||
                                             !t.caption || !t.caption.classList.contains("visually-hidden") ||
@@ -430,10 +499,12 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         const compactSemantic = !!w.dataset.spAlternative &&
                                             getComputedStyle(w).display === "none";
+                                        const compactTyped = !!w.dataset.tgAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
                                             !compactSquare && !compactPreface &&
-                                            !compactSemantic) return true;
+                                            !compactSemantic && !compactTyped) return true;
                                         return false;
                                       }).length
                                 })""")
@@ -506,6 +577,24 @@ def main() -> int:
                                             ("membership", ".sp-criterion"),
                                             ("proof-example", ".sp-proof-example"),
                                             ("environment", ".sp-source-schema"),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
+                                    if rel == "essays/typed-generativity.html":
+                                        for name, selector in (
+                                            ("contributions", ".tg-mobile-table-1"),
+                                            ("reader-map", ".tg-mobile-table-2"),
+                                            ("symbols", ".tg-mobile-table-3"),
+                                            ("levels", ".tg-mobile-table-5"),
+                                            ("metrics", ".tg-mobile-table-10"),
+                                            ("objections", ".tg-mobile-table-13"),
+                                            ("claims", ".tg-mobile-table-15"),
+                                            ("lifecycle", ".tg-sequence"),
+                                            ("domain-example", ".tg-domain-example"),
+                                            ("record-pair", ".tg-record-pair"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():

@@ -40,6 +40,8 @@ def main() -> int:
             body = build_site.render_preface(body)
         if slug == "semantic-participation":
             body = build_site.render_semantic_participation(body)
+        if slug == "typed-generativity":
+            body = build_site.render_typed_generativity(body)
         page = published.read_text(encoding="utf-8")
         if body not in page:
             problems.append(f"{slug}: displayed essay body differs from source HTML")

@@ -20,6 +20,7 @@ from check_originals import Paragraphs, overlap, phrases, tokens
 from render_synthesis import render_synthesis_figures
 from render_preface import render_preface
 from render_semantic import render_semantic_participation, _HEADERS, _ROW_COUNTS
+from render_typed import render_typed_generativity, _HEADERS as TG_HEADERS, _ROW_COUNTS as TG_ROWS
 
 
 
@@ -728,6 +729,181 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertNotIn("display:none", rule.group(1))
         self.assertIn("position:absolute", rule.group(1))
         self.assertIn("clip-path:inset(50%)", rule.group(1))
+
+
+    def test_typed_generativity_preserves_every_source_table_cell(self) -> None:
+        """All 227 Word-derived data cells are reproduced exactly on phones."""
+        slug, title, category, description = publication.ESSAYS[3]
+        manuscript = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(manuscript, title, [])
+        source = enhance_scientific_presentation(original)
+        page = publication.render_essay(
+            slug, title, category, description, 3, []
+        )
+        self.assertEqual(page.count('data-tg-alternative="mobile"'), 15)
+        self.assertEqual(page.count('<dl class="tg-mobile-record">'), 81)
+        self.assertEqual(page.count('class="tg-record-field"'), 227)
+        self.assertEqual(sum(TG_ROWS.values()), 81)
+        self.assertEqual(len(TG_HEADERS), 15)
+
+        total_source = 0
+        total_mobile = 0
+        for n in range(1, 16):
+            with self.subTest(table=n):
+                pattern = (
+                    rf'<table data-source-table="{n}" id="table-{n}">'
+                    r'[\s\S]*?</table>'
+                )
+                original_table = re.search(pattern, source)
+                published_table = re.search(pattern, page)
+                self.assertIsNotNone(original_table)
+                self.assertIsNotNone(published_table)
+                src_html = original_table.group()
+                out_html = published_table.group()
+                if n == 2:
+                    out_html = re.sub(r'</?a\b[^>]*>', '', out_html)
+                def without_generated_caption(html: str) -> str:
+                    return re.sub(
+                        r'<caption class="visually-hidden">[^<]*</caption>',
+                        '<caption class="visually-hidden"></caption>', html,
+                    )
+                self.assertEqual(
+                    without_generated_caption(src_html),
+                    without_generated_caption(out_html),
+                )
+                source_body = re.search(r'<tbody>([\s\S]*?)</tbody>', src_html)
+                self.assertIsNotNone(source_body)
+                rows = re.findall(
+                    r'<tr\b[^>]*>([\s\S]*?)</tr>', source_body.group(1)
+                )
+                self.assertEqual(len(rows), TG_ROWS[n])
+                cells = [
+                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>', row)
+                    for row in rows
+                ]
+                total_source += sum(len(row) for row in cells)
+                mobile = re.search(
+                    rf'<section class="tg-mobile-records tg-mobile-table-{n}" '
+                    rf'aria-labelledby="table-{n}-caption">'
+                    r'([\s\S]*?)</section>', page,
+                )
+                self.assertIsNotNone(mobile)
+                cards = re.findall(
+                    r'<dl class="tg-mobile-record">([\s\S]*?)</dl>',
+                    mobile.group(1),
+                )
+                self.assertEqual(len(cards), len(rows))
+                for original_cells, card in zip(cells, cards, strict=True):
+                    values = re.findall(r'<dd>([\s\S]*?)</dd>', card)
+                    if n == 2:
+                        values = [
+                            re.sub(r'</?a\b[^>]*>', '', value)
+                            for value in values
+                        ]
+                    self.assertEqual(original_cells, values)
+                    total_mobile += len(values)
+        self.assertEqual(total_source, 227)
+        self.assertEqual(total_mobile, 227)
+
+    def test_typed_generativity_structural_readability(self) -> None:
+        """Original sequences, domain cases, and record schemas remain exact."""
+        slug, title, category, description = publication.ESSAYS[3]
+        manuscript = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(manuscript, title, [])
+        source = enhance_scientific_presentation(original)
+        rendered = render_typed_generativity(source)
+        self.assertEqual(rendered.count('class="tg-sequence"'), 2)
+        self.assertEqual(rendered.count('<div class="tg-domain-example"'), 4)
+        self.assertEqual(rendered.count('class="tg-example-line"'), 13)
+        self.assertEqual(rendered.count('class="tg-record-pair"'), 1)
+        self.assertEqual(rendered.count('class="record-schema tg-source-record"'), 2)
+        self.assertEqual(rendered.count('class="record-schema"'), 2)
+        self.assertIn("target_type_record:", rendered)
+        self.assertIn("candidate_inhabitant_record:", rendered)
+
+        src_record = re.search(
+            r'<div aria-label="Source record target_type_record" '
+            r'class="record-schema" role="group" tabindex="0">'
+            r'<pre><code>([\s\S]*?)</code></pre></div>', source,
+        )
+        self.assertIsNotNone(src_record)
+        split = '\n\ncandidate_inhabitant_record:\n'
+        a, b = src_record.group(1).split(split)
+        target = re.search(
+            r'<div aria-label="Source record target_type_record" '
+            r'class="record-schema tg-source-record" role="group" tabindex="0">'
+            r'<pre><code>([\s\S]*?)</code></pre></div>', rendered,
+        )
+        candidate = re.search(
+            r'<div aria-label="Source record candidate_inhabitant_record" '
+            r'class="record-schema tg-source-record" role="group" tabindex="0">'
+            r'<pre><code>([\s\S]*?)</code></pre></div>', rendered,
+        )
+        self.assertIsNotNone(target)
+        self.assertIsNotNone(candidate)
+        self.assertEqual(target.group(1), a)
+        self.assertEqual(
+            candidate.group(1),
+            'candidate_inhabitant_record:\n' + b,
+        )
+        for source_case, published_case in zip(
+            re.findall(r'<p>(Prompt:[\s\S]*?)</p>', source),
+            re.findall(
+                r'<div class="tg-domain-example"[^>]*>'
+                r'([\s\S]*?)</div></div>', rendered,
+            ),
+            strict=True,
+        ):
+            source_lines = re.split(r'<br\s*/?>\s*', source_case)
+            rendered_lines = re.findall(
+                r'<div class="tg-example-line">([\s\S]*?)</div>',
+                published_case,
+            )
+            self.assertEqual(source_lines, rendered_lines)
+
+        page = publication.render_essay(
+            slug, title, category, description, 3, [],
+        )
+        self.assertIn(rendered, page)
+        with self.assertRaises(ValueError):
+            render_typed_generativity(rendered)
+
+    def test_typed_reader_map_links_only_existing_targets(self) -> None:
+        """Link actual destinations without fabricating the source's Section 7.4."""
+        slug, title, category, description = publication.ESSAYS[3]
+        page = publication.render_essay(
+            slug, title, category, description, 3, [],
+        )
+        table = re.search(
+            r'<table data-source-table="2" id="table-2">[\s\S]*?</table>',
+            page,
+        )
+        self.assertIsNotNone(table)
+        anchors = re.findall(
+            r'<a href="#([^"]+)">([^<]+)</a>', table.group(),
+        )
+        self.assertEqual(len(anchors), 22)
+        for fragment, text in anchors:
+            with self.subTest(target=fragment):
+                self.assertIn(f'id="{fragment}"', page)
+                self.assertTrue(text)
+        self.assertIn(
+            '<a href="semantic-participation.html">Essay 1</a>',
+            table.group(),
+        )
+        self.assertIn(
+            '<a href="functorial-consistency.html">Essay 3</a>',
+            table.group(),
+        )
+        self.assertIn("7.4", table.group())
+        self.assertNotIn(">7.4</a>", table.group())
+        self.assertEqual(
+            page.count('class="tg-scroll-hint"'), 15,
+        )
 
 
 
