@@ -1727,6 +1727,27 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     'encoding="application/x-tex"', formula,
                     f"MathML missing semantic annotation at {i}"
                 )
+            # A semantic regression in the earlier version dropped one "|"
+            # across the explicit line breaks in each alternative list.
+            for index, count in ((1, 4), (2, 3)):
+                formula = formulas[index]
+                annotation = re.search(
+                    r'<annotation encoding="application/x-tex">'
+                    r'([\s\S]*?)</annotation>', formula
+                )
+                self.assertIsNotNone(annotation)
+                self.assertEqual(
+                    unescape(annotation.group(1)).count(r"\mid"),
+                    count,
+                    f"Lost an original alternative separator at MathML {index + 1}"
+                )
+                visible_alternatives = re.findall(
+                    r'<(?:mi|mo)>∣</(?:mi|mo)>', formula
+                )
+                self.assertEqual(
+                    len(visible_alternatives), count,
+                    f"MathML rendering lost a source alternative at {index + 1}"
+                )
 
         with self.subTest("source-use notes"):
             original_notes = re.search(
