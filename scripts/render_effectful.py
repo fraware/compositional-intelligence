@@ -101,7 +101,7 @@ EXPRESSION_TEX = {
         r"\begin{gathered}"
         r"\operatorname{handler}(\varepsilon,\rho,\mathrm{Pre},C,E)\to\\"
         r"\operatorname{authorize}\mid\operatorname{deny}\mid\operatorname{ask}\\"
-        r"\operatorname{sandbox}\mid\operatorname{escalate}"
+        r"\mid\operatorname{sandbox}\mid\operatorname{escalate}"
         r"\end{gathered}"
     ),
     "validator(Post, observed_state_delta, frame_conditions) -> pass | fail | partial | unknown": (
@@ -110,7 +110,7 @@ EXPRESSION_TEX = {
         r"\mathrm{observed\_state\_delta},\\"
         r"\mathrm{frame\_conditions})\to\\"
         r"\operatorname{pass}\mid\operatorname{fail}\\"
-        r"\operatorname{partial}\mid\operatorname{unknown}"
+        r"\mid\operatorname{partial}\mid\operatorname{unknown}"
         r"\end{gathered}"
     ),
     "Gamma; M; E; C |- write_memory(m) : M -> M + {m} ! memory_write @ rho": (
