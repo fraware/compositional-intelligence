@@ -1516,20 +1516,31 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     )
                 elif i == 4:
                     record = re.search(
-                        r'<div class="qc-tuple"[^>]*>([\s\S]*?)</div>',
+                        r'<div class="qc-tuple"[^>]*>'
+                        r'<div class="qc-tuple-start">(.*?)</div>'
+                        r'<div class="qc-tuple-members">([\s\S]*?)</div>'
+                        r'<div class="qc-tuple-end">(.*?)</div>'
+                        r'</div>',
                         rendered
                     )
                     self.assertIsNotNone(record)
+                    self.assertEqual(record.group(1), "Q = (")
+                    self.assertEqual(record.group(3), ")")
+                    fields = [
+                        unescape(re.sub(r"<[^>]+>", "", value))
+                        for value in re.findall(
+                            r'<span class="qc-tuple-member"><code>'
+                            r'([\s\S]*?)</code></span>',record.group(2)
+                        )
+                    ]
+                    self.assertEqual(len(fields), 11)
                     self.assertEqual(
-                        [
-                            unescape(re.sub(r"<[^>]+>", "", value))
-                            for value in re.findall(
-                                r'<p><code>([\s\S]*?)</code></p>',
-                                record.group(1)
-                            )
-                        ],
-                        lines,
+                        ", ".join(field.removesuffix(",") for field in fields),
+                        lines[0].removeprefix("Q = (") + " " +
+                        lines[1].removesuffix(")")
                     )
+                    self.assertTrue(all(field.endswith(",") for field in fields[:-1]))
+                    self.assertFalse(fields[-1].endswith(","))
                 elif i == 5:
                     self.assertEqual(tuple(lines), quantitative.PIPELINE)
                     pipe = re.search(
@@ -1645,6 +1656,26 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertEqual(cell_count,179)
         with self.assertRaises(ValueError):
             quantitative.render_quantitative_curry_howard(rendered)
+        # The publication renderer must refuse any source-field drift.
+        corrupted_tuple = original.replace(
+            "Q = (score, probability, uncertainty, margin, loss, calibration, "
+            "validation_status,",
+            "Q = (score, probability, uncertainty, margin, loss, calibration, "
+            "unrecognized_status,",
+            1
+        )
+        self.assertNotEqual(original, corrupted_tuple)
+        with self.assertRaises(ValueError):
+            quantitative.render_quantitative_curry_howard(corrupted_tuple)
+        corrupted_record = original.replace(
+            "<p>calibration_status: string</p>",
+            "<p>calibration_status: number</p>",
+            1
+        )
+        self.assertNotEqual(original, corrupted_record)
+        with self.assertRaises(ValueError):
+            quantitative.render_quantitative_curry_howard(corrupted_record)
+
 
 
 if __name__ == "__main__":
