@@ -1118,7 +1118,7 @@ def main() -> int:
                                             }""")
                                             if (source_print["source"] != 12 or
                                                 source_print["shown"] != 12 or
-                                                source_print["sourceRows"] != 79 or
+                                                source_print["sourceRows"] != 75 or
                                                 source_print["alternates"] != 12 or
                                                 source_print["alternateShown"] != 0 or
                                                 source_print["hintsShown"] != 0 or
