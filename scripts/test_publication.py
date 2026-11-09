@@ -764,6 +764,26 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 out_html = published_table.group()
                 if n == 2:
                     out_html = re.sub(r'</?a\b[^>]*>', '', out_html)
+
+                def strip_source_symbol_math(html: str) -> str:
+                    return re.sub(
+                        r'<math display="inline" alttext="([^"]+)">'
+                        r'<semantics>[\s\S]*?</semantics></math>',
+                        lambda match: unescape(match.group(1)),
+                        html,
+                    )
+
+                if n == 3:
+                    original_symbol_math = re.findall(
+                        r'<td><math display="inline" alttext="([^"]+)">',
+                        out_html,
+                    )
+                    self.assertEqual(
+                        original_symbol_math,
+                        ["Gamma", "A", "t", "theta", "P_theta"],
+                    )
+                    out_html = strip_source_symbol_math(out_html)
+
                 def without_generated_caption(html: str) -> str:
                     return re.sub(
                         r'<caption class="visually-hidden">[^<]*</caption>',
@@ -802,6 +822,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
                             re.sub(r'</?a\b[^>]*>', '', value)
                             for value in values
                         ]
+                    if n == 3:
+                        values = [strip_source_symbol_math(value) for value in values]
                     self.assertEqual(original_cells, values)
                     total_mobile += len(values)
         self.assertEqual(total_source, 227)
@@ -912,6 +934,56 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertEqual(
             page.count('class="tg-scroll-hint"'), 15,
         )
+
+
+    def test_typed_symbol_math_retains_original_transcriptions(self) -> None:
+        """Each source symbol is readable as mathematics, never renamed."""
+        slug, title, category, description = publication.ESSAYS[3]
+        page = publication.render_essay(
+            slug, title, category, description, 3, [],
+        )
+        symbols = ["Gamma", "A", "t", "theta", "P_theta"]
+        table = re.search(
+            r'<table data-source-table="3" id="table-3">[\s\S]*?</table>',
+            page,
+        )
+        mobile = re.search(
+            r'<section class="tg-mobile-records tg-mobile-table-3" '
+            r'aria-labelledby="table-3-caption">[\s\S]*?</section>',
+            page,
+        )
+        self.assertIsNotNone(table)
+        self.assertIsNotNone(mobile)
+        for label, html in (("table", table.group()), ("mobile", mobile.group())):
+            with self.subTest(location=label):
+                tokens = re.findall(
+                    r'<math display="inline" alttext="([^"]+)">',
+                    html,
+                )
+                self.assertEqual(tokens, symbols)
+                self.assertEqual(
+                    html.count('encoding="application/x-tex"'), 5
+                )
+                self.assertIn('<mi>Γ</mi>', html)
+                self.assertIn('<mi>θ</mi>', html)
+                self.assertIn(
+                    '<msub><mi>P</mi><mi>θ</mi></msub>', html,
+                )
+
+    def test_typed_long_record_heading_keeps_one_line_on_320px(self) -> None:
+        """Prevent another orphan colon in the longest technical schema title."""
+        stylesheet = (publication.ROOT / "docs" / "style.css").read_text(
+            encoding="utf-8"
+        )
+        match = re.search(
+            r'@media\s*\(max-width:375px\)\s*\{[\s\S]*?'
+            r'\.article-content \.tg-type-schema'
+            r'\[aria-label="Source record typed_generativity_benchmark_item"\]'
+            r' \.tg-schema-title\s*\{([^}]*)\}',
+            stylesheet,
+        )
+        self.assertIsNotNone(match)
+        self.assertIn("font-size:clamp(12.5px,3.9vw,14px)", match.group(1))
 
 
 

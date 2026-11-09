@@ -424,6 +424,18 @@ def main() -> int:
                                         const mobilePaths = mobile[1]?.querySelectorAll(
                                             'a[href^="#"]'
                                         ).length ?? 0;
+                                        const symbolSource = [...(source[2]?.querySelectorAll(
+                                            'tbody tr td:first-child math[alttext]') ?? []
+                                        )].map(m => m.getAttribute("alttext"));
+                                        const symbolMobile = [...(mobile[2]?.querySelectorAll(
+                                            '.tg-record-field:first-child dd math[alttext]') ?? []
+                                        )].map(m => m.getAttribute("alttext"));
+                                        const benchmarkTitle = article.querySelector(
+                                            '.tg-type-schema[aria-label="Source record typed_generativity_benchmark_item"] .tg-schema-title code'
+                                        );
+                                        const textRange = document.createRange();
+                                        if (benchmarkTitle) textRange.selectNodeContents(benchmarkTitle);
+                                        const titleBounds = benchmarkTitle?.getBoundingClientRect();
                                         return {
                                             sourceIds: source.map(e =>
                                                 Number(e.querySelector("table")?.dataset.sourceTable)),
@@ -433,6 +445,12 @@ def main() -> int:
                                             records: records.length, fields: fields.length,
                                             hints: cues.length, scrollHintsVisible, badCues,
                                             originalPaths, mobilePaths,
+                                            symbolSource, symbolMobile,
+                                            benchmarkTitleLines: benchmarkTitle ?
+                                                textRange.getClientRects().length : 0,
+                                            benchmarkTitleOverflow: !!titleBounds &&
+                                                (titleBounds.left < -1 ||
+                                                 titleBounds.right > innerWidth + 1),
                                             outOfBounds: bounds.filter(b =>
                                                 b.left < -1 || b.right > innerWidth + 1).length,
                                             sequenceCount: article.querySelectorAll(".tg-sequence").length,
@@ -458,6 +476,10 @@ def main() -> int:
                                         typed["records"] != 81 or typed["fields"] != 227 or
                                         typed["hints"] != 15 or typed["badCues"] != 0 or
                                         typed["originalPaths"] != 22 or typed["mobilePaths"] != 22 or
+                                        typed["symbolSource"] != ["Gamma", "A", "t", "theta", "P_theta"] or
+                                        typed["symbolMobile"] != ["Gamma", "A", "t", "theta", "P_theta"] or
+                                        typed["benchmarkTitleLines"] != 1 or
+                                        typed["benchmarkTitleOverflow"] or
                                         typed["sequenceCount"] != 2 or typed["sequenceStages"] != 9 or
                                         typed["examples"] != 4 or typed["exampleFields"] != 13 or
                                         typed["recordPairs"] != 1 or typed["splitRecords"] != 2 or

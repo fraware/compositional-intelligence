@@ -1227,3 +1227,16 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 @media print {
   .article-content .tg-schema-fields .tg-schema-field {break-inside:avoid}
 }
+
+
+/* Typed Generativity: mathematically typeset original schema symbols. */
+.article-content #table-3 tbody td:first-child math,
+.article-content .tg-mobile-table-3 .tg-record-field:first-child dd math {
+  font-size:1.12em;
+}
+/* The longest original record identifier must keep its colon on the same line. */
+@media (max-width:375px) {
+  .article-content .tg-type-schema[aria-label="Source record typed_generativity_benchmark_item"] .tg-schema-title {
+    font-size:clamp(12.5px,3.9vw,14px);
+  }
+}

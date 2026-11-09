@@ -185,6 +185,49 @@ def _link_reading_paths(body: str) -> str:
     return body[:match.start()] + match.group("open") + content + match.group("close") + body[match.end():]
 
 
+_SYMBOLS: dict[str, tuple[str, str]] = {
+    "Gamma": ("<mi>Γ</mi>", r"\Gamma"),
+    "A": ("<mi>A</mi>", "A"),
+    "t": ("<mi>t</mi>", "t"),
+    "theta": ("<mi>θ</mi>", r"\theta"),
+    "P_theta": ("<msub><mi>P</mi><mi>θ</mi></msub>", r"P_{\theta}"),
+}
+
+
+def _typeset_source_symbols(body: str) -> str:
+    """Typeset five authored symbol cells with reversible source transcriptions.
+
+    Source tokens remain in the MathML alttext attributes. LaTeX annotations
+    identify the symbols for accessible mathematical rendering and inspection.
+    Every source table, row, and paragraph remains unchanged.
+    """
+    pattern = re.compile(
+        r'(?P<start><table data-source-table="3" id="table-3">)'
+        r'(?P<content>[\s\S]*?)(?P<end></table>)'
+    )
+    found = list(pattern.finditer(body))
+    if len(found) != 1:
+        raise ValueError("Typed Generativity source symbol table changed")
+    match = found[0]
+    content = match.group("content")
+    for original, (mathml, latex) in _SYMBOLS.items():
+        literal = "<td>" + original + "</td>"
+        if content.count(literal) != 1:
+            raise ValueError(f"Missing or repeated original source symbol {original}")
+        replacement = (
+            '<td><math display="inline" alttext="' +
+            escape(original, quote=True) +
+            '"><semantics>' + mathml +
+            '<annotation encoding="application/x-tex">' +
+            escape(latex) + '</annotation></semantics></math></td>'
+        )
+        content = content.replace(literal, replacement, 1)
+    return (
+        body[:match.start()] + match.group("start") + content +
+        match.group("end") + body[match.end():]
+    )
+
+
 def _render_sequences(body: str) -> str:
     """Typeset the two exact arrow-separated source sequences."""
     for first, stages in _STAGE_SEQUENCES.items():
@@ -407,6 +450,7 @@ def render_typed_generativity(body: str) -> str:
     """Render the V3 Typed Generativity text without modifying its manuscript."""
     body = _source_captions(body)
     body = _link_reading_paths(body)
+    body = _typeset_source_symbols(body)
     body = _render_sequences(body)
     body = _render_examples(body)
     body = _separate_source_records(body)
