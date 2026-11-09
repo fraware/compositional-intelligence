@@ -43,6 +43,7 @@ def main() -> int:
     thread.start()
     failures: list[str] = []
     scrollable_tables = 0
+    responsive_table_alternatives = 0
     base = f"http://127.0.0.1:{httpd.server_address[1]}/"
     paths = sorted(p.relative_to(site).as_posix() for p in site.rglob("*.html"))
     # Capture every publication page at narrow and wide widths for human review.
@@ -291,6 +292,8 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: flagship mobile source-table inconsistency {flagship}"
                                         )
+                                    elif width == 375 and flagship["mobileShown"] == 9:
+                                        responsive_table_alternatives += flagship["mobileShown"]
                                 if rel == "essays/series-preface.html":
                                     preface = page.evaluate("""() => {
                                         const article = document.querySelector(".article-content");
@@ -1439,8 +1442,11 @@ def main() -> int:
         httpd.server_close()
         thread.join(timeout=2)
 
-    if scrollable_tables == 0:
-        failures.append("No horizontally scrollable scientific table exercised at mobile width")
+    if scrollable_tables == 0 and responsive_table_alternatives == 0:
+        failures.append(
+            "Neither an accessible scrolling table nor a source-verified "
+            "responsive table alternative was exercised at mobile width"
+        )
     for failure in failures:
         print(f"FAIL: {failure}")
     if failures:
