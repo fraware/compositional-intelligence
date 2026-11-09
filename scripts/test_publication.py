@@ -1453,5 +1453,199 @@ class ManuscriptFidelityTests(unittest.TestCase):
             algebraic.render_algebraic_architectures(rendered)
 
 
+
+    def test_quantitative_source_bound_presentation(self) -> None:
+        """Quantitative judgments and every cell/record retain exact source text."""
+        import render_quantitative as quantitative
+
+        slug, title, category, description = publication.ESSAYS[7]
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(source, title, [])
+        rendered = quantitative.render_quantitative_curry_howard(original)
+        page = publication.render_essay(slug, title, category, description, 7, [])
+        self.assertEqual(page.count('class="qc-sequence"'), 1)
+        self.assertEqual(page.count('class="qc-math"'), 3)
+        self.assertEqual(page.count('class="qc-layers"'), 1)
+        self.assertEqual(page.count('class="qc-layer"'), 3)
+        self.assertEqual(page.count('class="qc-tuple"'), 1)
+        self.assertEqual(page.count('class="qc-pipeline"'), 1)
+        self.assertEqual(page.count('class="qc-example"'), 5)
+        self.assertEqual(page.count('class="qc-example-field"'), 16)
+        self.assertEqual(page.count('class="qc-schema"'), 2)
+        self.assertEqual(page.count('class="qc-schema-line"'), 31)
+        self.assertEqual(page.count('data-qc-alternative="mobile"'), 10)
+        self.assertEqual(page.count('class="qc-card"'), 64)
+        self.assertEqual(page.count('class="qc-field"'), 179)
+        self.assertIn(
+            '<a href="#quantitative-search-over-formal-objects">5.1</a>',
+            rendered
+        )
+        self.assertIn(
+            '<a href="#probabilistic-scientific-claim">8.3</a>',
+            rendered
+        )
+
+        original_blocks = list(quantitative.BLOCK.finditer(original))
+        self.assertEqual(len(original_blocks), 14)
+        for i, block in enumerate(original_blocks):
+            lines = quantitative._blocks(block.group("lines"))
+            with self.subTest(source_block=i + 1):
+                if i == 0:
+                    self.assertEqual(tuple(lines[0].split(" -> ")), quantitative.SEQ)
+                    for stage in quantitative.SEQ:
+                        self.assertIn("<li>" + stage + "</li>", rendered)
+                elif i == 1 or i == 3 or i == 6:
+                    self.assertEqual(len(lines), 1)
+                    self.assertIn(
+                        'alttext="' + lines[0].replace(">", "&gt;") + '"',
+                        rendered
+                    )
+                elif i == 2:
+                    layer = re.findall(
+                        r'<div class="qc-layer"><dt>([^<]*)</dt>'
+                        r'<dd>([\s\S]*?)</dd></div>', rendered
+                    )
+                    self.assertEqual(len(layer), 3)
+                    self.assertEqual(
+                        [label + ": " + unescape(re.search(
+                            r'alttext="([^"]+)"', value
+                        ).group(1)) for label, value in layer],
+                        lines
+                    )
+                elif i == 4:
+                    record = re.search(
+                        r'<div class="qc-tuple"[^>]*>([\s\S]*?)</div>',
+                        rendered
+                    )
+                    self.assertIsNotNone(record)
+                    self.assertEqual(
+                        [
+                            unescape(re.sub(r"<[^>]+>", "", value))
+                            for value in re.findall(
+                                r'<p><code>([\s\S]*?)</code></p>',
+                                record.group(1)
+                            )
+                        ],
+                        lines,
+                    )
+                elif i == 5:
+                    self.assertEqual(tuple(lines), quantitative.PIPELINE)
+                    pipe = re.search(
+                        r'<div class="qc-pipeline"[^>]*><ol>([\s\S]*?)'
+                        r'</ol></div>', rendered
+                    )
+                    self.assertIsNotNone(pipe)
+                    self.assertEqual(
+                        re.findall(r"<li>([^<]+)</li>", pipe.group(1)),
+                        lines
+                    )
+                elif i <= 11:
+                    anchor = quantitative.EXAMPLES[i - 7]
+                    example = re.search(
+                        r'<dl class="qc-example" aria-label="Authored example ' +
+                        re.escape(anchor) + r'">([\s\S]*?)</dl>', rendered
+                    )
+                    self.assertIsNotNone(example)
+                    entries = re.findall(
+                        r'<div class="qc-example-field"><dt>([^<]+)</dt>'
+                        r'<dd>([^<]+)</dd></div>', example.group(1)
+                    )
+                    self.assertEqual(
+                        [key + " = " + unescape(value) for key, value in entries],
+                        lines
+                    )
+                else:
+                    anchor, heading, length = quantitative.RECORDS[i - 12]
+                    self.assertEqual(len(lines), length)
+                    schema = re.search(
+                        r'<div class="qc-schema" role="group" '
+                        r'aria-label="Source record ' +
+                        re.escape(heading[:-1]) +
+                        r'">([\s\S]*?)</ol></div>', rendered
+                    )
+                    self.assertIsNotNone(schema)
+                    first = re.search(
+                        r'<p class="qc-schema-heading">([\s\S]*?)</p>',
+                        schema.group(1)
+                    )
+                    self.assertIsNotNone(first)
+                    clean = lambda value: unescape(
+                        re.sub(r"<[^>]+>", "", value)
+                    )
+                    recovered = [clean(first.group(1))]
+                    recovered += [
+                        clean(value) for value in re.findall(
+                            r'<li class="qc-schema-line">([\s\S]*?)</li>',
+                            schema.group(1)
+                        )
+                    ]
+                    self.assertEqual(recovered, lines)
+
+        cell_count = 0
+        for n in range(1, 11):
+            with self.subTest(source_table=n):
+                pattern = (
+                    rf'<table data-source-table="{n}" id="table-{n}">'
+                    r'[\s\S]*?</table>'
+                )
+                original_table = re.search(pattern, original)
+                rendered_table = re.search(pattern, rendered)
+                self.assertIsNotNone(original_table)
+                self.assertIsNotNone(rendered_table)
+
+                def neutralize(markup: str) -> str:
+                    markup = re.sub(
+                        r'<caption class="visually-hidden">[^<]*</caption>',
+                        '<caption></caption>', markup
+                    )
+                    return re.sub(
+                        r'<a href="[^"]+">([^<]+)</a>', r'\1', markup
+                    )
+
+                self.assertEqual(
+                    neutralize(original_table.group()),
+                    neutralize(rendered_table.group()),
+                )
+                tbody = re.search(
+                    r'<tbody>([\s\S]*?)</tbody>',original_table.group()
+                )
+                self.assertIsNotNone(tbody)
+                source_rows = re.findall(
+                    r'<tr\b[^>]*>([\s\S]*?)</tr>',tbody.group(1)
+                )
+                self.assertEqual(len(source_rows),quantitative.ROWS[n - 1])
+                source_values = [
+                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>',row)
+                    for row in source_rows
+                ]
+                alt = re.search(
+                    rf'<section class="qc-mobile qc-mobile-{n}" '
+                    rf'aria-labelledby="table-{n}-caption">'
+                    r'([\s\S]*?)</section>',rendered
+                )
+                self.assertIsNotNone(alt)
+                cards = re.findall(
+                    r'<dl class="qc-card">([\s\S]*?)</dl>',alt.group(1)
+                )
+                self.assertEqual(len(cards),len(source_rows))
+                for original_row,card in zip(source_values,cards,strict=True):
+                    copied = re.findall(r'<dd>([\s\S]*?)</dd>',card)
+                    self.assertEqual(
+                        original_row,
+                        [re.sub(r'<a href="[^"]+">([^<]+)</a>',r'\1',value)
+                         for value in copied],
+                    )
+                    cell_count += len(copied)
+                self.assertIn(
+                    f'id="table-{n}-caption">' + quantitative.CAPTIONS[n],
+                    rendered,
+                )
+        self.assertEqual(cell_count,179)
+        with self.assertRaises(ValueError):
+            quantitative.render_quantitative_curry_howard(rendered)
+
+
 if __name__ == "__main__":
     unittest.main()
