@@ -222,8 +222,37 @@ def _specification(lines: list[str]) -> str:
         'aria-label="Authored ArchitectureSpec tuple and fields">'
         '<div class="aa-spec-formula" role="group" tabindex="0" '
         'aria-label="ArchitectureSpec formula">' + formula + "</div>"
+        '<p class="aa-math-cue">Scroll horizontally to read the full equation.</p>'
         '<dl>' + "".join(items) + "</dl></section>"
     )
+
+
+_SET_LAW = "F({x_1,...,x_n}) = F({x_perm(1),...,x_perm(n)})"
+
+
+def _permutation_law(value: str) -> str:
+    """Show the exact source equality as two responsive MathML operands.
+
+    The original subscripts are retained through source annotations. Visual
+    line wrapping occurs at the equality sign, never inside an operand.
+    """
+    if value != _SET_LAW:
+        raise ValueError("The authored set-invariance equality changed")
+    lhs, rhs = value.split(" = ", 1)
+    left = mathml(lhs, r"F(\{x_1,\ldots,x_n\})")
+    right = mathml(
+        rhs,
+        r"F(\{x_{\operatorname{perm}(1)},\ldots,"
+        r"x_{\operatorname{perm}(n)}\})",
+    )
+    return (
+        '<span class="aa-law" role="group" '
+        'aria-label="Authored permutation-invariance equality">'
+        '<span class="aa-law-side">' + left + '</span>'
+        '<span class="aa-law-side"><span class="aa-law-equals">=</span>' +
+        right + '</span></span>'
+    )
+
 
 
 def _example(lines: list[str], identifier: str) -> str:
@@ -235,9 +264,13 @@ def _example(lines: list[str], identifier: str) -> str:
         if match is None:
             raise ValueError(f"Unexpected worked example field in {identifier}")
         name, value = match.groups()
+        if identifier == "sets" and name == "Required law":
+            shown = _permutation_law(value)
+        else:
+            shown = escape(value)
         fields.append(
             '<div class="aa-example-field"><dt>' + escape(name) + '</dt>'
-            '<dd>' + escape(value) + "</dd></div>"
+            '<dd>' + shown + "</dd></div>"
         )
     return (
         '<dl class="aa-example" aria-label="Authored worked example ' +
