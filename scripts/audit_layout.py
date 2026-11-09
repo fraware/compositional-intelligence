@@ -129,7 +129,7 @@ def main() -> int:
                                               return false;
                                             }
                                              const alternate = e.closest(
-                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile'], .qc-mobile, .table-scroll[data-qc-alternative='mobile']"
+                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile'], .qc-mobile, .table-scroll[data-qc-alternative='mobile'], .ef-mobile, .table-scroll[data-ef-alternative='mobile']"
                                              );
                                              if (alternate && getComputedStyle(alternate).display === "none") {
                                                return false;
@@ -298,6 +298,118 @@ def main() -> int:
                                          (preface["mobileDisplayed"] != 0 or
                                           preface["nativeDisplayed"] != 7))):
                                         failures.append(f"{width}px {rel}: preface reading regression {preface}")
+                                if rel == "essays/effectful-and-conceptual-intelligence.html":
+                                    effectful = page.evaluate("""() => {
+                                        const root = document.querySelector(".article-content");
+                                        const source = [...root.querySelectorAll(
+                                            ".table-scroll[data-ef-alternative='mobile']")];
+                                        const mobile = [...root.querySelectorAll(".ef-mobile")];
+                                        const captions = [...root.querySelectorAll(".ef-caption")];
+                                        const hints = [...root.querySelectorAll(".ef-hint")];
+                                        const visible = e => getComputedStyle(e).display !== "none";
+                                        const seq = root.querySelector(".ef-sequence");
+                                        const stages = [...(seq?.querySelectorAll("li") ?? [])];
+                                        const formulas = [...root.querySelectorAll(".ef-math")];
+                                        const notes = [...root.querySelectorAll(".ef-source-notes li")];
+                                        const main = [...root.querySelectorAll(
+                                            ".ef-sequence,.ef-math,.ef-source-notes")];
+                                        const topBounds = main.map(x => x.getBoundingClientRect());
+                                        const flow = stages.slice(1).every((item,i) => {
+                                            const previous = stages[i].getBoundingClientRect();
+                                            const next = item.getBoundingClientRect();
+                                            return next.top >= previous.bottom;
+                                        });
+                                        const arrows = stages.every(item => {
+                                            const number = getComputedStyle(item, "::before").content;
+                                            const arrow = getComputedStyle(item, "::after").content;
+                                            return number.includes("counter(") &&
+                                                (item === item.parentElement.lastElementChild ?
+                                                    ["none","normal"].includes(arrow) :
+                                                    arrow.includes("↓"));
+                                        });
+                                        const mathBounds = formulas.every(box => {
+                                            const r = box.getBoundingClientRect();
+                                            const m = box.querySelector("math")?.getBoundingClientRect();
+                                            return !!m && m.width > 10 && m.height > 10 &&
+                                                m.left >= r.left - 1 && m.right <= r.right + 1 &&
+                                                m.top >= r.top - 1 && m.bottom <= r.bottom + 1;
+                                        });
+                                        const cardOverflow = [...root.querySelectorAll(
+                                            ".ef-card,.ef-field,.ef-field dd")].filter(el =>
+                                                el.scrollWidth > el.clientWidth + 1).length;
+                                        return {
+                                            native: source.length, mobile: mobile.length,
+                                            nativeShown: source.filter(visible).length,
+                                            mobileShown: mobile.filter(visible).length,
+                                            captions: captions.length,
+                                            captionsShown: captions.filter(visible).length,
+                                            cards: root.querySelectorAll(".ef-card").length,
+                                            fields: root.querySelectorAll(".ef-field").length,
+                                            hints: hints.length,
+                                            hintsShown: hints.filter(visible).length,
+                                            badHints: hints.filter(h =>
+                                                !h.nextElementSibling?.classList.contains("table-scroll") ||
+                                                h.nextElementSibling.getAttribute("aria-describedby") !== h.id
+                                            ).length,
+                                            caption2: root.querySelector("#table-2-caption")?.textContent,
+                                            caption11: root.querySelector("#table-11-caption")?.textContent,
+                                            caption13: root.querySelector("#table-13-caption")?.textContent,
+                                            linked: root.querySelectorAll("#table-2 td a[href]").length,
+                                            stages: stages.length, flow, arrows,
+                                            math: formulas.length,
+                                            mathAlt: formulas.map(e =>
+                                                e.querySelector("math")?.getAttribute("alttext")),
+                                            mathBounds,
+                                            notes: notes.length,
+                                            noteBullets: notes.every(n =>
+                                                getComputedStyle(n, "::before").content.includes("•")),
+                                            cardOverflow,
+                                            overflow: topBounds.filter(b =>
+                                                b.left < -1 || b.right > innerWidth + 1).length,
+                                        };
+                                    }""")
+                                    if (effectful["native"] != 19 or
+                                        effectful["mobile"] != 19 or
+                                        effectful["cards"] != 154 or
+                                        effectful["fields"] != 342 or
+                                        effectful["captions"] != 19 or
+                                        effectful["captionsShown"] != 19 or
+                                        effectful["hints"] != 19 or
+                                        effectful["badHints"] or
+                                        effectful["hintsShown"] !=
+                                            (5 if width == 768 else 0) or
+                                        effectful["caption2"] !=
+                                            "Table 2. Recommended reading paths." or
+                                        effectful["caption11"] !=
+                                            "Table 11. Benchmark evaluation metrics." or
+                                        effectful["caption13"] !=
+                                            "Table 13. Effectful execution failure taxonomy." or
+                                        effectful["linked"] < 17 or
+                                        effectful["stages"] != 7 or
+                                        not effectful["flow"] or not effectful["arrows"] or
+                                        effectful["math"] != 7 or
+                                        effectful["mathAlt"] != [
+                                            "Gamma; M; E; C |- a : Pre -> Post ! eps @ rho",
+                                            "handler(eps, rho, Pre, C, E) -> authorize | deny | ask | sandbox | escalate",
+                                            "validator(Post, observed_state_delta, frame_conditions) -> pass | fail | partial | unknown",
+                                            "Gamma; M; E; C |- write_memory(m) : M -> M + {m} ! memory_write @ rho",
+                                            "Gamma; M; E; C |- pi : Pre_0 -> Post_n ! (eps_1 + ... + eps_n) @ rho",
+                                            "skill s : Pre -> Post ! eps",
+                                            "concept_transfer : SourceDomain -> TargetDomain"] or
+                                        not effectful["mathBounds"] or
+                                        effectful["notes"] != 5 or
+                                        not effectful["noteBullets"] or
+                                        effectful["cardOverflow"] or effectful["overflow"] or
+                                        (width <= 650 and (
+                                            effectful["nativeShown"] != 0 or
+                                            effectful["mobileShown"] != 19)) or
+                                        (width > 650 and (
+                                            effectful["nativeShown"] != 19 or
+                                            effectful["mobileShown"] != 0))
+                                    ):
+                                        failures.append(
+                                            f"{width}px {rel}: effectful publication regression {effectful}"
+                                        )
                                 if rel == "essays/quantitative-curry-howard.html":
                                     quantitative = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
@@ -940,7 +1052,8 @@ def main() -> int:
                                                        preceding?.classList.contains("fc-scroll-hint") ||
                                                        preceding?.classList.contains("lm-hint") ||
                                                        preceding?.classList.contains("aa-hint") ||
-                                                       preceding?.classList.contains("qc-hint"))
+                                                       preceding?.classList.contains("qc-hint") ||
+                                                       preceding?.classList.contains("ef-hint"))
                                           ? preceding.previousElementSibling : preceding;
                                         if (!t || !t.tHead || !t.tBodies.length ||
                                             !t.caption || !t.caption.classList.contains("visually-hidden") ||
@@ -979,12 +1092,15 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         const compactQuantitative = !!w.dataset.qcAlternative &&
                                             getComputedStyle(w).display === "none";
+                                        const compactEffectful = !!w.dataset.efAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
                                             !compactSquare && !compactPreface &&
                                             !compactSemantic && !compactTyped &&
                                             !compactFunctorial && !compactLambek &&
-                                             !compactAlgebraic && !compactQuantitative) return true;
+                                             !compactAlgebraic && !compactQuantitative &&
+                                             !compactEffectful) return true;
                                         return false;
                                       }).length
                                 })""")
@@ -1077,6 +1193,29 @@ def main() -> int:
                                             ("record-pair", ".tg-record-pair"),
                                             ("harness-schema", '.tg-type-schema[aria-label="Source record type_first_item"]'),
                                             ("benchmark-schema", '.tg-type-schema[aria-label="Source record typed_generativity_benchmark_item"]'),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
+                                    if rel == "essays/effectful-and-conceptual-intelligence.html":
+                                        for name, selector in (
+                                            ("series-sequence", ".ef-sequence"),
+                                            ("typed-action-math", ".ef-math-1"),
+                                            ("handler-math", ".ef-math-2"),
+                                            ("validator-math", ".ef-math-3"),
+                                            ("memory-math", ".ef-math-4"),
+                                            ("plan-math", ".ef-math-5"),
+                                            ("skills-math", ".ef-math-6"),
+                                            ("transfer-math", ".ef-math-7"),
+                                            ("effect-taxonomy", ".ef-mobile-5"),
+                                            ("phase-table", ".ef-mobile-4"),
+                                            ("source-notes", ".ef-source-notes"),
+                                            ("ledger-schema", ".ef-mobile-16"),
+                                            ("benchmark-schema", ".ef-mobile-17"),
+                                            ("concept-transfer-schema", ".ef-mobile-18"),
+                                            ("metrics-table", ".ef-mobile-11"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():
