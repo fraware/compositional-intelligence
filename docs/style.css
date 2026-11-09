@@ -1675,19 +1675,15 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   border-block:1px solid var(--line);
 }
 .article-content .aa-spec-formula {
+  display:flex;
+  justify-content:center;
   max-width:100%;
   margin:0 0 17px;
   padding:0 3px 14px;
-  overflow-x:auto;
-  white-space:nowrap;
+  overflow:visible;
+  white-space:normal;
 }
-.article-content .aa-spec-formula math {font-size:1.08em;}
-.article-content .aa-math-cue {
-  display:none;
-  margin:3px 0 14px;
-  color:var(--soft);
-  font:italic 13px/1.5 var(--serif);
-}
+.article-content .aa-spec-formula math {font-size:1.08em;max-width:100%;}
 .article-content .aa-specification dl,
 .article-content .aa-example {padding:0;}
 .article-content .aa-specification dl {margin:0;}
@@ -1800,7 +1796,6 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     font-size:14px;
   }
   .article-content .aa-spec-formula math {font-size:.92em;}
-  .article-content .aa-math-cue {display:block;}
   .article-content .aa-spec-field {
     grid-template-columns:60px minmax(0,1fr);
     gap:11px;
@@ -1812,7 +1807,7 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     gap:3px;
   }
   .article-content .aa-record-line {
-    grid-template-columns:minmax(110px,43%) minmax(0,1fr);
+    grid-template-columns:minmax(132px,49%) minmax(0,1fr);
     gap:9px;
     padding:10px 0;
   }
