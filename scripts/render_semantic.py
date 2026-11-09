@@ -264,12 +264,12 @@ def _render_transport(body: str) -> str:
         raise ValueError("Semantic transport definition changed")
     m = found[0]
     parts = re.split(r'<br\s*/?>\s*<br\s*/?>', m.group("content"), maxsplit=1)
-    if len(parts) != 2 or not parts[1].startswith("TransportRecord rho_T = {"):
+    if len(parts) != 2 or not parts[1].lstrip().startswith("TransportRecord rho_T = {"):
         raise ValueError("Transport definition no longer matches source structure")
     mapping = parts[0].strip()
     if 'alttext="T : (a, E_s) -&gt; (b, E_t, rho_T)"' not in mapping:
         raise ValueError("Transport source mapping changed")
-    record = _source_schema(parts[1], "TransportRecord definition")
+    record = _source_schema(parts[1].strip(), "TransportRecord definition")
     replacement = (
         '<div class="sp-transport" role="group" '
         'aria-label="Semantic transport with preservation record">'
