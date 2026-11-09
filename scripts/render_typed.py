@@ -230,8 +230,8 @@ def _render_examples(body: str) -> str:
 def _separate_source_records(body: str) -> str:
     """Separate the two original record definitions in Section 8."""
     record = re.compile(
-        r'(?P<outer><div aria-label="Source record target_type_record" '
-        r'class="record-schema" role="group" tabindex="0"><pre><code>'
+        r'(?P<outer><div class="record-schema" role="group" tabindex="0" '
+        r'aria-label="Source record target_type_record"><pre><code>'
         r'(?P<text>[\s\S]*?)</code></pre></div>)'
     )
     matches = list(record.finditer(body))
