@@ -327,6 +327,35 @@ def main() -> int:
                                                     ["none","normal"].includes(arrow) :
                                                     arrow.includes("↓"));
                                         });
+                                        const arrowsInFlow = stages.slice(0,-1).every((item,i) => {
+                                            const current = item.getBoundingClientRect();
+                                            const next = stages[i+1].getBoundingClientRect();
+                                            const sequence = seq.getBoundingClientRect();
+                                            const arrow = getComputedStyle(item,"::after");
+                                            const left = Number.parseFloat(arrow.left);
+                                            const bottom = Number.parseFloat(arrow.bottom);
+                                            const x = current.left + left;
+                                            const y = current.bottom - bottom;
+                                            return Number.isFinite(x) && Number.isFinite(y) &&
+                                                x > sequence.left + 2 &&
+                                                x < sequence.right - 10 &&
+                                                y > current.bottom + 2 &&
+                                                y <= next.top + 2;
+                                        });
+                                        const alternatives = formulas.map(box =>
+                                            [...box.querySelectorAll("math mi,math mo")]
+                                                .filter(node => node.textContent.trim() === "∣")
+                                                .length
+                                        );
+                                        const labels = [...root.querySelectorAll(
+                                            ".ef-mobile-16 .ef-field dt,"+
+                                            ".ef-mobile-17 .ef-field dt,"+
+                                            ".ef-mobile-18 .ef-field dt")];
+                                        const schemaLabelsVisuallyHidden = labels.every(label => {
+                                            const style = getComputedStyle(label);
+                                            return style.position === "absolute" &&
+                                                style.clipPath === "inset(50%)";
+                                        });
                                         const mathBounds = formulas.every(box => {
                                             const r = box.getBoundingClientRect();
                                             const m = box.querySelector("math")?.getBoundingClientRect();
@@ -356,6 +385,9 @@ def main() -> int:
                                             caption13: root.querySelector("#table-13-caption")?.textContent,
                                             linked: root.querySelectorAll("#table-2 td a[href]").length,
                                             stages: stages.length, flow, arrows,
+                                            arrowsInFlow, alternatives,
+                                            schemaLabels: labels.length,
+                                            schemaLabelsVisuallyHidden,
                                             math: formulas.length,
                                             mathAlt: formulas.map(e =>
                                                 e.querySelector("math")?.getAttribute("alttext")),
@@ -387,6 +419,11 @@ def main() -> int:
                                         effectful["linked"] < 17 or
                                         effectful["stages"] != 7 or
                                         not effectful["flow"] or not effectful["arrows"] or
+                                        not effectful["arrowsInFlow"] or
+                                        effectful["alternatives"] != [0,4,3,0,0,0,0] or
+                                        effectful["schemaLabels"] != 74 or
+                                        (width <= 650 and
+                                         not effectful["schemaLabelsVisuallyHidden"]) or
                                         effectful["math"] != 7 or
                                         effectful["mathAlt"] != [
                                             "Gamma; M; E; C |- a : Pre -> Post ! eps @ rho",
