@@ -316,6 +316,13 @@ def main() -> int:
                                             cards: root.querySelectorAll(".lm-card").length,
                                             fields: root.querySelectorAll(".lm-field").length,
                                             records: root.querySelectorAll(".lm-schema").length,
+                                            schemaLines: root.querySelectorAll(".lm-schema-line").length,
+                                            diagnosticPairs: root.querySelectorAll(".lm-diagnostic-pair").length,
+                                            diagnosticLines: root.querySelectorAll(".lm-diagnostic-line").length,
+                                            hints: root.querySelectorAll(".lm-hint").length,
+                                            visibleHints: [...root.querySelectorAll(".lm-hint")].filter(visible).length,
+                                            schemaOverflows: [...root.querySelectorAll(".lm-schema")].filter(
+                                                e => e.scrollWidth > e.clientWidth + 1).length,
                                             pipeline: root.querySelectorAll(".lm-pipeline li").length,
                                             sequence: root.querySelectorAll(".lm-sequence li").length,
                                             nodes: root.querySelectorAll(".lm-node").length,
@@ -328,7 +335,15 @@ def main() -> int:
                                     }""")
                                     if (lambek["source"] != 14 or lambek["mobile"] != 14 or
                                         lambek["cards"] != 98 or lambek["fields"] != 237 or
-                                        lambek["records"] != 4 or lambek["pipeline"] != 4 or
+                                        lambek["records"] != 4 or
+                                        lambek["schemaLines"] != 65 or
+                                        lambek["diagnosticPairs"] != 2 or
+                                        lambek["diagnosticLines"] != 4 or
+                                        lambek["hints"] != 14 or
+                                        lambek["schemaOverflows"] or
+                                        lambek["visibleHints"] !=
+                                            (0 if width <= 650 else 6 if width <= 1000 else 1) or
+                                        lambek["pipeline"] != 4 or
                                         lambek["sequence"] != 4 or lambek["nodes"] != 4 or
                                         lambek["arrows"] != 4 or lambek["overflow"] or
                                         lambek["caption"] !=
@@ -795,6 +810,22 @@ def main() -> int:
                                             ("record-pair", ".tg-record-pair"),
                                             ("harness-schema", '.tg-type-schema[aria-label="Source record type_first_item"]'),
                                             ("benchmark-schema", '.tg-type-schema[aria-label="Source record typed_generativity_benchmark_item"]'),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
+                                    if rel == "essays/lambek-machines.html":
+                                        for name, selector in (
+                                            ("composition-sequence", ".lm-sequence"),
+                                            ("typed-pipeline", ".lm-pipeline"),
+                                            ("commuting-square", ".lm-square-figure"),
+                                            ("scope-alternatives", ".lm-diagnostic-pair"),
+                                            ("benchmark-schema", '.lm-schema[aria-label="Source record lambek_benchmark_item"]'),
+                                            ("machine-schema", '.lm-schema[aria-label="Source record lambek_machine_record"]'),
+                                            ("pilot-table-mobile", ".lm-mobile-9"),
+                                            ("levels-table-mobile", ".lm-mobile-4"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():
