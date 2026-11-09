@@ -384,6 +384,97 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertNotIn('id="table-5-scroll-hint"', markup)
 
 
+
+    def test_collection_navigation_metadata_and_browser_titles(self) -> None:
+        """Use a consistent site tab title; retain unique canonical essay URLs."""
+        for index, (slug, title, category, description) in enumerate(publication.ESSAYS):
+            with self.subTest(slug=slug):
+                page = publication.render_essay(
+                    slug, title, category, description,
+                    position=index, table_captions=[]
+                )
+                self.assertEqual(
+                    re.findall(r"<title>([^<]*)</title>", page),
+                    ["Compositional Intelligence"]
+                )
+                self.assertEqual(
+                    re.findall(r'<meta property="og:title" content="([^"]+)"',page),
+                    [escape(title)]
+                )
+                self.assertEqual(
+                    re.findall(r'<link rel="canonical" href="([^"]+)"',page),
+                    [publication.BASE + f"essays/{slug}.html"]
+                )
+                self.assertEqual(page.count('class="article-toc"'), 1)
+                self.assertEqual(page.count('aria-label="Essay navigation"'), 1)
+                self.assertNotIn('class="byline"', page)
+                self.assertEqual(page.count("<h1>"), 1)
+
+    def test_flagship_source_exact_mobile_table_parity(self) -> None:
+        """All nine source data tables have lossless mobile records; square stays intact."""
+        import render_synthesis
+
+        slug, title, category, description = publication.ESSAYS[0]
+        manuscript = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(manuscript, title, [])
+        scientific = enhance_scientific_presentation(
+            render_synthesis_figures(original)
+        )
+        styled = render_synthesis.render_synthesis_mobile_tables(scientific)
+        page = publication.render_essay(slug,title,category,description,0,[])
+        self.assertIn(styled,page)
+        self.assertEqual(page.count('class="ci-data-mobile ci-data-mobile-'),9)
+        self.assertEqual(page.count('class="ci-data-card"'),52)
+        self.assertEqual(page.count('class="ci-data-field"'),151)
+        self.assertEqual(page.count('data-ci-alternative="mobile"'),9)
+        self.assertEqual(page.count('class="ci-commuting-mobile"'),1)
+        total_rows=total_cells=0
+        for number in (1,2,3,4,6,7,8,9,10):
+            with self.subTest(table=number):
+                source_table = re.search(
+                    rf'<table data-source-table="{number}" id="table-{number}">'
+                    r'[\s\S]*?</table>', scientific
+                )
+                published_table = re.search(
+                    rf'<table data-source-table="{number}" id="table-{number}">'
+                    r'[\s\S]*?</table>', styled
+                )
+                self.assertIsNotNone(source_table)
+                self.assertIsNotNone(published_table)
+                self.assertEqual(source_table.group(),published_table.group())
+                rows = re.findall(
+                    r'<tr\b[^>]*>([\s\S]*?)</tr>',
+                    re.search(
+                        r'<tbody>([\s\S]*?)</tbody>',source_table.group()
+                    ).group(1)
+                )
+                expected = [
+                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>',row)
+                    for row in rows
+                ]
+                cards = re.search(
+                    rf'<section class="ci-data-mobile ci-data-mobile-{number}" '
+                    rf'aria-labelledby="table-{number}-caption">'
+                    r'([\s\S]*?)</section>',styled
+                )
+                self.assertIsNotNone(cards)
+                mobile_rows = re.findall(
+                    r'<dl class="ci-data-card">([\s\S]*?)</dl>',cards.group(1)
+                )
+                self.assertEqual(len(mobile_rows),len(expected))
+                for row,card in zip(expected,mobile_rows,strict=True):
+                    self.assertEqual(
+                        row,
+                        re.findall(r'<dd>([\s\S]*?)</dd>',card)
+                    )
+                    total_cells+=len(row)
+                total_rows+=len(mobile_rows)
+        self.assertEqual((total_rows,total_cells),(52,151))
+        with self.assertRaises(ValueError):
+            render_synthesis.render_synthesis_mobile_tables(styled)
+
     def test_preface_original_lifecycle_and_order_are_readable(self) -> None:
         """The V3 preface lifecycle and the nine existing essays are navigable."""
         slug, title, category, description = publication.ESSAYS[1]
