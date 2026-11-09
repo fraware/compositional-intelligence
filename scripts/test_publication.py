@@ -1283,7 +1283,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertEqual(page.count('class="aa-sequence"'), 2)
         self.assertEqual(page.count('class="aa-spec-field"'), 9)
         self.assertEqual(page.count('class="aa-law"'), 1)
-        self.assertEqual(page.count('class="aa-math-cue"'), 1)
+        self.assertEqual(page.count('class="aa-math-cue"'), 0)
         self.assertEqual(page.count('class="aa-example"'), 6)
         self.assertEqual(page.count('class="aa-example-field"'), 21)
         self.assertEqual(page.count('class="aa-record"'), 3)
@@ -1314,14 +1314,16 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 elif i == 2:
                     formula = re.search(
                         r'<div class="aa-spec-formula"[^>]*>([\s\S]*?)</div>'
-                        r'<p class="aa-math-cue">Scroll horizontally to read '
-                        r'the full equation.</p><dl>([\s\S]*?)</dl>',
+                        r'<dl>([\s\S]*?)</dl>',
                         rendered
                     )
                     self.assertIsNotNone(formula)
                     self.assertIn(
                         'alttext="' + lines[0] + '"', formula.group(1)
                     )
+                    self.assertEqual(formula.group(1).count("<mtr>"), 2)
+                    self.assertIn("<mi>Σ</mi>", formula.group(1))
+                    self.assertIn("<mi>Φ</mi>", formula.group(1))
                     fields = re.findall(
                         r'<div class="aa-spec-field"><dt>(.*?)</dt>'
                         r'<dd>(.*?)</dd></div>', formula.group(2)
