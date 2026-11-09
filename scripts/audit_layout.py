@@ -337,7 +337,7 @@ def main() -> int:
                                             const arrow = getComputedStyle(li, "::after").content;
                                             return number.includes("counter(") &&
                                                 (li === li.parentElement.lastElementChild ?
-                                                    arrow === "none" : arrow.includes(
+                                                    ["none", "normal"].includes(arrow) : arrow.includes(
                                                         innerWidth >= 1100 ? "→" : "↓"));
                                         });
                                         return {
