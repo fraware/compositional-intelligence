@@ -129,7 +129,7 @@ def main() -> int:
                                               return false;
                                             }
                                              const alternate = e.closest(
-                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile']"
+                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile']"
                                              );
                                              if (alternate && getComputedStyle(alternate).display === "none") {
                                                return false;
@@ -138,8 +138,9 @@ def main() -> int:
                                             const p = e.closest("p,li,blockquote");
                                             const pr = p ? p.getBoundingClientRect() : null;
                                             return r.width < 4 || r.height < 4 ||
-                                              r.width > window.innerWidth + 1 ||
-                                              (pr && r.right > pr.right + 4 && !e.closest(".table-scroll"));
+                                              (r.width > window.innerWidth + 1 && !e.closest(".aa-spec-formula")) ||
+                                              (pr && r.right > pr.right + 4 &&
+                                                !e.closest(".table-scroll,.aa-spec-formula"));
                                           }).length,
                                         invisibleMath: math.filter(e => {
                                             const r = e.getBoundingClientRect();
@@ -297,6 +298,73 @@ def main() -> int:
                                          (preface["mobileDisplayed"] != 0 or
                                           preface["nativeDisplayed"] != 7))):
                                         failures.append(f"{width}px {rel}: preface reading regression {preface}")
+                                if rel == "essays/algebraic-architectures.html":
+                                    algebraic = page.evaluate("""() => {
+                                        const root = document.querySelector(".article-content");
+                                        const source = [...root.querySelectorAll(
+                                            ".table-scroll[data-aa-alternative='mobile']")];
+                                        const mobile = [...root.querySelectorAll(".aa-mobile")];
+                                        const hints = [...root.querySelectorAll(".aa-hint")];
+                                        const visible = e => getComputedStyle(e).display !== "none";
+                                        const main = [...root.querySelectorAll(
+                                            ".aa-sequence,.aa-specification,.aa-example,.aa-record")];
+                                        const overflow = main.filter(e => {
+                                            const b = e.getBoundingClientRect();
+                                            return b.left < -1 || b.right > innerWidth + 1;
+                                        }).length;
+                                        const records = [...root.querySelectorAll(".aa-record")];
+                                        return {
+                                            source: source.length, mobile: mobile.length,
+                                            sourceShown: source.filter(visible).length,
+                                            mobileShown: mobile.filter(visible).length,
+                                            cards: root.querySelectorAll(".aa-card").length,
+                                            tableFields: root.querySelectorAll(".aa-field").length,
+                                            hints: hints.length,
+                                            visibleHints: hints.filter(visible).length,
+                                            badHints: hints.filter(h => {
+                                                const next = h.nextElementSibling;
+                                                return !next?.classList.contains("table-scroll") ||
+                                                    next.getAttribute("aria-describedby") !== h.id;
+                                            }).length,
+                                            sequences: root.querySelectorAll(".aa-sequence").length,
+                                            stages: root.querySelectorAll(".aa-sequence li").length,
+                                            specification: root.querySelectorAll(".aa-specification").length,
+                                            symbols: root.querySelectorAll(".aa-spec-field").length,
+                                            formula: root.querySelectorAll(
+                                                '.aa-spec-formula math[alttext="ArchitectureSpec = (O, T, Sigma, L, G, R, Phi, E, V)"]'
+                                            ).length,
+                                            formulaKeyboard: root.querySelector(".aa-spec-formula")?.tabIndex,
+                                            examples: root.querySelectorAll(".aa-example").length,
+                                            exampleFields: root.querySelectorAll(".aa-example-field").length,
+                                            records: records.length,
+                                            recordLines: root.querySelectorAll(".aa-record-line").length,
+                                            recordOverflows: records.filter(e =>
+                                                e.scrollWidth > e.clientWidth + 1).length,
+                                            caption: root.querySelector("#table-11-caption")?.textContent,
+                                            overflow,
+                                        };
+                                    }""")
+                                    if (algebraic["source"] != 13 or algebraic["mobile"] != 13 or
+                                        algebraic["cards"] != 93 or algebraic["tableFields"] != 231 or
+                                        algebraic["hints"] != 13 or algebraic["badHints"] or
+                                        algebraic["visibleHints"] != (0 if width <= 650 else 7) or
+                                        algebraic["sequences"] != 2 or algebraic["stages"] != 8 or
+                                        algebraic["specification"] != 1 or algebraic["symbols"] != 9 or
+                                        algebraic["formula"] != 1 or algebraic["formulaKeyboard"] != 0 or
+                                        algebraic["examples"] != 6 or algebraic["exampleFields"] != 21 or
+                                        algebraic["records"] != 3 or algebraic["recordLines"] != 71 or
+                                        algebraic["recordOverflows"] or algebraic["overflow"] or
+                                        algebraic["caption"] !=
+                                            "Table 11. Kill criteria and decision rules." or
+                                        (width <= 650 and
+                                         (algebraic["sourceShown"] != 0 or
+                                          algebraic["mobileShown"] != 13)) or
+                                        (width > 650 and
+                                         (algebraic["sourceShown"] != 13 or
+                                          algebraic["mobileShown"] != 0))):
+                                        failures.append(
+                                            f"{width}px {rel}: Algebraic publication regression {algebraic}"
+                                        )
                                 if rel == "essays/lambek-machines.html":
                                     lambek = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
@@ -810,6 +878,24 @@ def main() -> int:
                                             ("record-pair", ".tg-record-pair"),
                                             ("harness-schema", '.tg-type-schema[aria-label="Source record type_first_item"]'),
                                             ("benchmark-schema", '.tg-type-schema[aria-label="Source record typed_generativity_benchmark_item"]'),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
+                                    if rel == "essays/algebraic-architectures.html":
+                                        for name, selector in (
+                                            ("series-stages", ".aa-sequence"),
+                                            ("architecture-stages", ".aa-sequence:last-of-type"),
+                                            ("architecture-specification", ".aa-specification"),
+                                            ("sets-example", '.aa-example[aria-label="Authored worked example sets"]'),
+                                            ("atomistic-example", '.aa-example[aria-label="Authored worked example molecules-and-3d-atomistic-systems"]'),
+                                            ("architecture-record", '.aa-record[aria-label="Source record architecture_spec"]'),
+                                            ("mismatch-report", '.aa-record[aria-label="Source record architecture_mismatch_report"]'),
+                                            ("evaluation-regimes-mobile", ".aa-mobile-3"),
+                                            ("protocol-mobile", ".aa-mobile-7"),
+                                            ("kill-criteria-mobile", ".aa-mobile-11"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():
