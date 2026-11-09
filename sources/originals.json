@@ -6,11 +6,12 @@
       "source_docx": "Compositional_Intelligence_Book_Manuscript_V3(1).docx",
       "source_sha256": "0c64bcec2fc3127d1b0f5dcd45509b512e8ec5de77438c5cd780d3daa7fe176b",
       "canonical_text_sha256": "d50546bb1a0ab7027ff4a1326a8895a15d3adbeb4c7e7ee896c634bec4cc4e7e",
-      "markdown_sha256": "14f963c1f56889de9c8904b32caaa6d8dd97f550253ad7551b43a81b3cc048ba",
+      "markdown_sha256": "29e5f60fb35898184267147206b2f1b2cc3efdf29647599b47c7f25d8550fd41",
       "table_count": 10,
-      "heading_count": 28,
+      "heading_count": 27,
       "word_count": 5366,
-      "published_markdown": "compositional-intelligence.md"
+      "published_markdown": "compositional-intelligence.md",
+      "publication_status": "Author-edited following the original V3 DOCX conversion; original DOCX fingerprint retained"
     },
     "series-preface": {
       "slug": "series-preface",

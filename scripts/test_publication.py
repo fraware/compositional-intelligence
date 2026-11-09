@@ -16,6 +16,7 @@ import build_site as publication
 from render_science import FORMULAE, enhance_scientific_presentation, render_source_math
 from check_originals import Paragraphs, overlap, phrases, tokens
 from render_synthesis import render_synthesis_figures
+from render_preface import render_preface
 
 
 class ManuscriptFidelityTests(unittest.TestCase):
@@ -291,6 +292,62 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     f'id="table-{number}-scroll-hint"', markup
                 )
         self.assertNotIn('id="table-5-scroll-hint"', markup)
+
+
+    def test_preface_original_lifecycle_and_order_are_readable(self) -> None:
+        """The V3 preface lifecycle and the nine existing essays are navigable."""
+        slug, title, category, description = publication.ESSAYS[1]
+        original = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        body, _ = publication.source_to_body(original, title, [])
+        enhanced = enhance_scientific_presentation(body)
+        rendered = render_preface(enhanced)
+
+        self.assertEqual(rendered.count('class="ci-lifecycle preface-lifecycle"'), 1)
+        self.assertEqual(rendered.count('class="preface-mobile-record"'), 13)
+        self.assertEqual(rendered.count('<table data-source-table='), 7)
+        self.assertIn("The sequence exposes the status transitions", rendered)
+        self.assertEqual(rendered.count('class="table-scroll-hint preface-scroll-hint"'), 7)
+        for target_slug, _, _, _ in publication.ESSAYS:
+            with self.subTest(target=target_slug):
+                self.assertIn(f'href="{target_slug}.html"', rendered)
+        with self.assertRaises(ValueError):
+            render_preface(rendered)
+
+    def test_preface_math_tables_have_original_cells_and_mobile_readings(self) -> None:
+        """The phone view retains every notation row and its scientific meaning."""
+        slug, title, _, _ = publication.ESSAYS[1]
+        original = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        body, _ = publication.source_to_body(original, title, [])
+        rendered = render_preface(enhance_scientific_presentation(body))
+        self.assertEqual(rendered.count('data-preface-alternative="mobile"'), 2)
+        self.assertEqual(rendered.count('class="preface-mobile-record"'), 13)
+        self.assertEqual(rendered.count('class="preface-record-field"'), 33)
+        self.assertIn('class="preface-architecture-source"', rendered)
+        self.assertIn('class="preface-architecture-satisfaction"', rendered)
+        self.assertIn("TaskSpec → ArchitectureType → ArchitectureInstance;", rendered)
+        self.assertIn('id="table-5"', rendered)
+        self.assertIn('id="table-7"', rendered)
+        self.assertEqual(rendered.count('class="visually-hidden"'), 7)
+
+    def test_preface_accessible_captions_and_unchanged_source(self) -> None:
+        """Captions added by conversion remain metadata, not invented prose."""
+        slug, title, category, description = publication.ESSAYS[1]
+        source_file = publication.ROOT / "essays" / f"{slug}.md"
+        digest = hashlib.sha256(source_file.read_bytes()).hexdigest()
+        self.assertEqual(digest, self.documents[slug]["markdown_sha256"])
+        page = publication.render_essay(
+            slug, title, category, description, 1, []
+        )
+        self.assertEqual(page.count('class="preface-mobile-record"'), 13)
+        self.assertIn("Table 5. Mathematical notation and its interpretation.", page)
+        self.assertIn("Table 6. Publication steps, actions, and gates.", page)
+        self.assertNotIn("Notation, Reading — Notation, Reading", page)
+        self.assertIn('aria-label="Original eight-stage artifact lifecycle"', page)
+        self.assertNotIn('<p class="byline">', page)
 
 
 

@@ -512,3 +512,66 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   flex:none;
   white-space:nowrap;
 }
+
+
+/* Series Preface: original lifecycle, navigable reading map, mobile notation. */
+.article-content .preface-lifecycle { margin:23px 0 30px; }
+.article-content .preface-lifecycle ol { margin:0; }
+.article-content .preface-lifecycle li { min-height:82px; }
+.article-content .preface-scroll-hint,
+.article-content .preface-mobile-records { display:none; }
+@media (max-width:900px) {
+  .article-content .preface-scroll-hint {
+    display:block;
+    margin:6px 0 10px;
+    color:var(--muted);
+    font:italic 13px/1.5 var(--serif);
+  }
+}
+@media (max-width:650px) {
+  .article-content .table-scroll[data-preface-alternative="mobile"],
+  .article-content .preface-scroll-hint[data-mobile-alternative="true"] {
+    display:none;
+  }
+  .article-content .preface-mobile-records {
+    display:block;
+    margin:2px 0 36px;
+  }
+  .article-content .preface-mobile-record {
+    margin:0;
+    padding:15px 0 16px;
+    border-top:1px solid var(--line);
+  }
+  .article-content .preface-mobile-record:last-child {
+    border-bottom:1px solid var(--line);
+  }
+  .article-content .preface-record-field + .preface-record-field {
+    margin-top:14px;
+  }
+  .article-content .preface-record-field dt {
+    margin-bottom:4px;
+    color:var(--soft);
+    font:12px/1.5 var(--sans);
+    letter-spacing:.035em;
+  }
+  .article-content .preface-record-field dd {
+    max-width:100%;
+    margin:0;
+    font:16px/1.5 var(--serif);
+    overflow-wrap:anywhere;
+  }
+  .article-content .preface-record-field dd math[display="inline"] {
+    max-width:100%;
+    overflow-x:auto;
+    vertical-align:middle;
+  }
+  .article-content .preface-architecture-source,
+  .article-content .preface-architecture-satisfaction {
+    display:block;
+  }
+  .article-content .preface-architecture-source {
+    margin-bottom:5px;
+    overflow-wrap:normal;
+  }
+  .article-content .preface-architecture-satisfaction { margin-top:5px; }
+}

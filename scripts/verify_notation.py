@@ -36,6 +36,8 @@ def main() -> int:
         if slug == "compositional-intelligence":
             body = build_site.render_synthesis_figures(body)
         body = build_site.enhance_scientific_presentation(body)
+        if slug == "series-preface":
+            body = build_site.render_preface(body)
         page = published.read_text(encoding="utf-8")
         if body not in page:
             problems.append(f"{slug}: displayed essay body differs from source HTML")

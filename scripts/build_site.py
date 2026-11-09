@@ -24,6 +24,7 @@ from xml.etree import ElementTree
 
 from render_science import enhance_scientific_presentation
 from render_synthesis import render_synthesis_figures
+from render_preface import render_preface
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://fraware.github.io/compositional-intelligence/"
@@ -378,6 +379,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     if slug == "compositional-intelligence":
         body = render_synthesis_figures(body)
     body = enhance_scientific_presentation(body)
+    if slug == "series-preface":
+        body = render_preface(body)
     before = ESSAYS[position - 1] if position > 0 else None
     after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None
     prev_link = (f'<div class="previous"><span>Previous</span><a href="{esc(before[0])}.html">{esc(before[1])}</a></div>'

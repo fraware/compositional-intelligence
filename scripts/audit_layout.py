@@ -128,6 +128,12 @@ def main() -> int:
                                             if (sourceSquare && getComputedStyle(sourceSquare).display === "none") {
                                               return false;
                                             }
+                                             const alternate = e.closest(
+                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile']"
+                                             );
+                                             if (alternate && getComputedStyle(alternate).display === "none") {
+                                               return false;
+                                             }
                                             const r = e.getBoundingClientRect();
                                             const p = e.closest("p,li,blockquote");
                                             const pr = p ? p.getBoundingClientRect() : null;
@@ -218,11 +224,61 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: unusable table scroll instructions {cues}"
                                         )
+                                if rel == "essays/series-preface.html":
+                                    preface = page.evaluate("""() => {
+                                        const article = document.querySelector(".article-content");
+                                        const lifecycle = article?.querySelector(".preface-lifecycle");
+                                        const wrappers = [...article.querySelectorAll(".table-scroll")];
+                                        const mobile = [...article.querySelectorAll(".preface-mobile-records")];
+                                        const compact = wrappers.filter(w => w.dataset.prefaceAlternative === "mobile");
+                                        const linked = wrappers[0]?.querySelectorAll('tbody tr td:nth-child(2) a');
+                                        const cues = wrappers.map(w => {
+                                            const hint = w.previousElementSibling;
+                                            return {
+                                                exists: !!hint && hint.classList.contains("preface-scroll-hint") &&
+                                                    hint.id === w.getAttribute("aria-describedby"),
+                                                visible: !!hint && getComputedStyle(hint).display !== "none" &&
+                                                    hint.getBoundingClientRect().height >= 10
+                                            };
+                                        });
+                                        const cards = mobile.reduce((n, e) => n +
+                                            e.querySelectorAll(".preface-mobile-record").length, 0);
+                                        const mobileDisplayed = mobile.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const nativeDisplayed = compact.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const bounds = lifecycle?.getBoundingClientRect();
+                                        return {
+                                            stages: lifecycle?.querySelectorAll("li").length ?? 0,
+                                            lifecycleFits: !!bounds && bounds.left >= -1 &&
+                                                bounds.right <= innerWidth + 1,
+                                            tables: wrappers.length,
+                                            linkedDocuments: linked?.length ?? 0,
+                                            cards, mobileDisplayed, nativeDisplayed,
+                                            cuesValid: cues.every(v => v.exists),
+                                            cuesVisible: cues.filter(v => v.visible).length,
+                                            expectedCues: innerWidth <= 650 ? 5 :
+                                                innerWidth <= 900 ? 7 : 0
+                                        };
+                                    }""")
+                                    if (preface["stages"] != 8 or not preface["lifecycleFits"] or
+                                        preface["tables"] != 7 or preface["linkedDocuments"] != 9 or
+                                        preface["cards"] != 13 or not preface["cuesValid"] or
+                                        preface["cuesVisible"] != preface["expectedCues"] or
+                                        (width <= 650 and
+                                         (preface["mobileDisplayed"] != 2 or
+                                          preface["nativeDisplayed"] != 0)) or
+                                        (width > 650 and
+                                         (preface["mobileDisplayed"] != 0 or
+                                          preface["nativeDisplayed"] != 2))):
+                                        failures.append(f"{width}px {rel}: preface reading regression {preface}")
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
                                       .filter(w => {
                                         const t = w.querySelector("table");
-                                        const label = w.previousElementSibling;
+                                        const preceding = w.previousElementSibling;
+                                        const label = preceding?.classList.contains("preface-scroll-hint")
+                                          ? preceding.previousElementSibling : preceding;
                                         if (!t || !t.tHead || !t.tBodies.length ||
                                             !t.caption || !t.caption.classList.contains("visually-hidden") ||
                                             !label || !label.classList.contains("table-display-caption") ||
@@ -246,9 +302,11 @@ def main() -> int:
                                             !!t.closest(".ci-commuting") &&
                                             !!document.querySelector(".ci-commuting-mobile") &&
                                             getComputedStyle(w).display === "none";
+                                        const compactPreface = !!w.dataset.prefaceAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
-                                            !compactSquare) return true;
+                                            !compactSquare && !compactPreface) return true;
                                         return false;
                                       }).length
                                 })""")
@@ -293,6 +351,17 @@ def main() -> int:
                                         figure.screenshot(
                                             path=str(screenshots / f"{width}-{label}-figure-{index:02d}.png")
                                         )
+                                    if rel == "essays/series-preface.html":
+                                        for name, selector in (
+                                            ("lifecycle", ".preface-lifecycle"),
+                                            ("notation", ".preface-mobile-records:first-of-type"),
+                                            ("schemas", ".preface-mobile-records:last-of-type"),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
                                     first_table = page.locator(".table-scroll").first
                                     if first_table.count():
                                         first_table.evaluate("(e) => { e.scrollLeft = 0; }")
