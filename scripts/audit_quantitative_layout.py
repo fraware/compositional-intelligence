@@ -116,7 +116,8 @@ def check(width: int, mode: str, result: dict) -> list[str]:
     label = f"{mode} at {width}px"
     expected_source = 0 if compact else 10
     expected_mobile = 10 if compact else 0
-    expected_hints = 7 if mode == "screen" and width > 650 else 0
+    expected_hints = (7 if mode == "screen" and 651 <= width <= 828
+                      else 1 if mode == "screen" and width > 828 else 0)
     for field, expected in (
         ("sourceCount", 10),
         ("sourceRows", 64),
