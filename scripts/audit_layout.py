@@ -104,6 +104,46 @@ def main() -> int:
                             if rel.startswith("essays/"):
                                 if page.locator(".article-header .byline").count():
                                     failures.append(f"{width}px {rel}: author byline appears beneath essay title")
+                                identity = page.evaluate("""() => {
+                                    const article = document.querySelector("article");
+                                    const heading = article?.querySelector(".article-header h1");
+                                    const toc = article?.querySelector(".article-toc");
+                                    const pager = article?.querySelector(".article-pager");
+                                    const names = [...article?.querySelectorAll(
+                                        ".article-content h2[id],.article-content h3[id]") ?? []];
+                                    const canon = document.querySelector('link[rel="canonical"]');
+                                    const og = document.querySelector('meta[property="og:title"]');
+                                    const main = document.getElementById("main");
+                                    const skip = document.querySelector(".skip-link");
+                                    const geometry = heading?.getBoundingClientRect();
+                                    return {
+                                        tab: document.title,
+                                        og: og?.content,
+                                        heading: heading?.textContent.trim(),
+                                        canonical: canon?.href,
+                                        uniqueHeadings: names.length > 0 &&
+                                            new Set(names.map(e => e.id)).size === names.length,
+                                        tocPresent: !!toc, pagerPresent: !!pager,
+                                        skipValid: !!skip && !!main && skip.getAttribute("href")==="#main",
+                                        headingInBounds: !!geometry && geometry.left >= 0 &&
+                                            geometry.right <= innerWidth + 1,
+                                        headingFont: heading && getComputedStyle(heading).fontFamily,
+                                        articleWidth: article?.getBoundingClientRect().width
+                                    };
+                                }""")
+                                if (identity["tab"] != "Compositional Intelligence" or
+                                    identity["og"] != identity["heading"] or
+                                    identity["canonical"] != "https://fraware.github.io/compositional-intelligence/" + rel or
+                                    not identity["uniqueHeadings"] or
+                                    not identity["tocPresent"] or
+                                    not identity["pagerPresent"] or
+                                    not identity["skipValid"] or
+                                    not identity["headingInBounds"] or
+                                    "Baskerville" not in identity["headingFont"] or
+                                    identity["articleWidth"] > 811):
+                                    failures.append(
+                                        f"{width}px {rel}: inconsistent publication identity or navigation {identity}"
+                                    )
                                 media = page.evaluate("""() => {
                                     const article = document.querySelector(".article-content");
                                     if (!article) return null;
@@ -129,7 +169,7 @@ def main() -> int:
                                               return false;
                                             }
                                              const alternate = e.closest(
-                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile'], .qc-mobile, .table-scroll[data-qc-alternative='mobile'], .ef-mobile, .table-scroll[data-ef-alternative='mobile']"
+                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile'], .qc-mobile, .table-scroll[data-qc-alternative='mobile'], .ef-mobile, .table-scroll[data-ef-alternative='mobile'], .ci-data-mobile, .table-scroll[data-ci-alternative='mobile']"
                                              );
                                              if (alternate && getComputedStyle(alternate).display === "none") {
                                                return false;
@@ -204,26 +244,52 @@ def main() -> int:
                                          (square["mobileVisible"] or not square["sourceVisible"]))):
                                         failures.append(f"{width}px {rel}: inadequate mobile commuting square {square}")
                                 if rel == "essays/compositional-intelligence.html":
-                                    cues = page.evaluate("""() => {
-                                        const wrappers = [...document.querySelectorAll(
-                                            ".article-content .table-scroll"
-                                        )].filter(w => w.querySelector("table")?.id !== "table-5");
+                                    flagship = page.evaluate("""() => {
+                                        const article = document.querySelector(".article-content");
+                                        const wrappers = [...article.querySelectorAll(
+                                            '.table-scroll[data-ci-alternative="mobile"]')];
+                                        const alternatives = [...article.querySelectorAll(".ci-data-mobile")];
+                                        const visible = element =>
+                                            getComputedStyle(element).display !== "none";
+                                        const horizontalHints = wrappers.map(w => w.nextElementSibling);
+                                        const cardOverflow = [...article.querySelectorAll(
+                                            ".ci-data-card,.ci-data-field,.ci-data-field dd")].filter(
+                                            el => el.scrollWidth > el.clientWidth + 1).length;
+                                        const mathOutliers = [...article.querySelectorAll(
+                                            '.ci-data-mobile math')].filter(e => {
+                                            const r=e.getBoundingClientRect();
+                                            const p=e.closest(".ci-data-card")?.getBoundingClientRect();
+                                            return visible(e.closest(".ci-data-mobile")) &&
+                                                (!p || r.left < p.left - 1 || r.right > p.right + 1);
+                                        }).length;
                                         return {
-                                            count: wrappers.length,
-                                            invalid: wrappers.filter(w => {
-                                                const hint = w.nextElementSibling;
-                                                if (!hint || !hint.classList.contains("table-scroll-hint") ||
-                                                    w.getAttribute("aria-describedby") !== hint.id ||
-                                                    !hint.textContent.includes("all columns")) return true;
-                                                const visible = getComputedStyle(hint).display !== "none" &&
-                                                    hint.getBoundingClientRect().height >= 10;
-                                                return innerWidth <= 650 ? !visible : visible;
-                                            }).length
+                                            source: wrappers.length,
+                                            mobile: alternatives.length,
+                                            sourceShown: wrappers.filter(visible).length,
+                                            mobileShown: alternatives.filter(visible).length,
+                                            cards: article.querySelectorAll(".ci-data-card").length,
+                                            fields: article.querySelectorAll(".ci-data-field").length,
+                                            badHints: horizontalHints.filter((h,i) =>
+                                                !h || !h.classList.contains("table-scroll-hint") ||
+                                                wrappers[i].getAttribute("aria-describedby") !== h.id ||
+                                                !h.textContent.includes("all columns")).length,
+                                            hintsShown: horizontalHints.filter(h => h && visible(h)).length,
+                                            mobileCaptionLinks: alternatives.filter(e =>
+                                                document.getElementById(e.getAttribute("aria-labelledby"))).length,
+                                            cardOverflow, mathOutliers
                                         };
                                     }""")
-                                    if cues["count"] != 9 or cues["invalid"]:
+                                    if (flagship["source"] != 9 or flagship["mobile"] != 9 or
+                                        flagship["cards"] != 52 or flagship["fields"] != 151 or
+                                        flagship["badHints"] or flagship["mobileCaptionLinks"] != 9 or
+                                        flagship["cardOverflow"] or flagship["mathOutliers"] or
+                                        flagship["hintsShown"] != (3 if width == 768 else 0) or
+                                        (width <= 650 and
+                                         (flagship["sourceShown"] != 0 or flagship["mobileShown"] != 9)) or
+                                        (width > 650 and
+                                         (flagship["sourceShown"] != 9 or flagship["mobileShown"] != 0))):
                                         failures.append(
-                                            f"{width}px {rel}: unusable table scroll instructions {cues}"
+                                            f"{width}px {rel}: flagship mobile source-table inconsistency {flagship}"
                                         )
                                 if rel == "essays/series-preface.html":
                                     preface = page.evaluate("""() => {
@@ -1116,6 +1182,8 @@ def main() -> int:
                                         } else if (bounds.height > 2 || bounds.width > 2) {
                                             return true;
                                         }
+                                        const compactFlagship = !!w.dataset.ciAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         const compactSquare = t.id === "table-5" &&
                                             !!t.closest(".ci-commuting") &&
                                             !!document.querySelector(".ci-commuting-mobile") &&
@@ -1138,7 +1206,7 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
-                                            !compactSquare && !compactPreface &&
+                                            !compactSquare && !compactFlagship && !compactPreface &&
                                             !compactSemantic && !compactTyped &&
                                             !compactFunctorial && !compactLambek &&
                                              !compactAlgebraic && !compactQuantitative &&
@@ -1258,6 +1326,19 @@ def main() -> int:
                                             ("benchmark-schema", ".ef-mobile-17"),
                                             ("concept-transfer-schema", ".ef-mobile-18"),
                                             ("metrics-table", ".ef-mobile-11"),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
+                                    if rel == "essays/compositional-intelligence.html":
+                                        for name, selector in (
+                                            ("mobile-data-1", ".ci-data-mobile-1"),
+                                            ("mobile-data-2", ".ci-data-mobile-2"),
+                                            ("mobile-data-7", ".ci-data-mobile-7"),
+                                            ("mobile-data-8", ".ci-data-mobile-8"),
+                                            ("mobile-data-10", ".ci-data-mobile-10"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():
