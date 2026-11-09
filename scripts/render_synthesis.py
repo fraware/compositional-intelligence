@@ -188,6 +188,43 @@ def _improve_source_table_labels(body: str) -> str:
     return body
 
 
+
+_SCROLLABLE_TABLES = (1, 2, 3, 4, 6, 7, 8, 9, 10)
+_SCROLL_HINT = "Swipe or scroll sideways to view all columns."
+
+
+def _label_scrollable_source_tables(body: str) -> str:
+    """Add a mobile-only, accessible scroll cue to each actual data table.
+
+    The source-derived commuting square has its own compact mobile grid and
+    therefore has no instruction suggesting sideways scrolling.
+    """
+    for number in _SCROLLABLE_TABLES:
+        pattern = re.compile(
+            rf'(?P<wrapper><div aria-labelledby="table-{number}-caption" '
+            r'class="table-scroll" data-columns="\d+" role="group" '
+            r'tabindex="0"><table\b[\s\S]*?</table></div>)'
+        )
+        matches = list(pattern.finditer(body))
+        if len(matches) != 1:
+            raise ValueError(
+                f"Expected one source scientific table {number}, found {len(matches)}"
+            )
+        wrapper = matches[0].group("wrapper")
+        described = wrapper.replace(
+            'tabindex="0">',
+            f'tabindex="0" aria-describedby="table-{number}-scroll-hint">',
+            1,
+        )
+        hint = (
+            f'<p id="table-{number}-scroll-hint" '
+            'class="table-scroll-hint">' + escape(_SCROLL_HINT) + '</p>'
+        )
+        match = matches[0]
+        body = body[:match.start()] + described + hint + body[match.end():]
+    return body
+
+
 def render_synthesis_figures(body: str) -> str:
     """Render precisely two figures, rejecting ambiguous source conversions."""
     lifecycle = list(_LIFECYCLE.finditer(body))
@@ -200,6 +237,7 @@ def render_synthesis_figures(body: str) -> str:
     body = _LIFECYCLE.sub(_lifecycle_figure, body, count=1)
     body = _SQUARE.sub(_square_figure, body, count=1)
     body = _improve_source_table_labels(body)
+    body = _label_scrollable_source_tables(body)
     if body.count('<figure class="ci-source-figure') != 2:
         raise ValueError("Flagship source figures were not rendered exactly")
     return body

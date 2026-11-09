@@ -196,6 +196,28 @@ def main() -> int:
                                         (width > 650 and
                                          (square["mobileVisible"] or not square["sourceVisible"]))):
                                         failures.append(f"{width}px {rel}: inadequate mobile commuting square {square}")
+                                if rel == "essays/compositional-intelligence.html":
+                                    cues = page.evaluate("""() => {
+                                        const wrappers = [...document.querySelectorAll(
+                                            ".article-content .table-scroll"
+                                        )].filter(w => w.querySelector("table")?.id !== "table-5");
+                                        return {
+                                            count: wrappers.length,
+                                            invalid: wrappers.filter(w => {
+                                                const hint = w.nextElementSibling;
+                                                if (!hint || !hint.classList.contains("table-scroll-hint") ||
+                                                    w.getAttribute("aria-describedby") !== hint.id ||
+                                                    !hint.textContent.includes("all columns")) return true;
+                                                const visible = getComputedStyle(hint).display !== "none" &&
+                                                    hint.getBoundingClientRect().height >= 10;
+                                                return innerWidth <= 650 ? !visible : visible;
+                                            }).length
+                                        };
+                                    }""")
+                                    if cues["count"] != 9 or cues["invalid"]:
+                                        failures.append(
+                                            f"{width}px {rel}: unusable table scroll instructions {cues}"
+                                        )
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
                                       .filter(w => {

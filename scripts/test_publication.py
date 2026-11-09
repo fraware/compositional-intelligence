@@ -271,6 +271,28 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
 
 
+    def test_flagship_mobile_tables_have_discoverable_scroll_cues(self) -> None:
+        """Every horizontal scientific table advertises its off-screen columns."""
+        original = (
+            publication.ROOT / "essays" / "compositional-intelligence.md"
+        ).read_text(encoding="utf-8")
+        source, _ = publication.source_to_body(
+            original, "Compositional Intelligence", []
+        )
+        markup = render_synthesis_figures(source)
+        self.assertEqual(markup.count('class="table-scroll-hint"'), 9)
+        for number in (1, 2, 3, 4, 6, 7, 8, 9, 10):
+            with self.subTest(number=number):
+                self.assertIn(
+                    f'aria-describedby="table-{number}-scroll-hint"',
+                    markup,
+                )
+                self.assertIn(
+                    f'id="table-{number}-scroll-hint"', markup
+                )
+        self.assertNotIn('id="table-5-scroll-hint"', markup)
+
+
 
 if __name__ == "__main__":
     unittest.main()
