@@ -136,7 +136,7 @@ def check(slug: str, width: int, mode: str, values: dict) -> list[str]:
     for field, correct in (
         ("title", title), ("headerCount", 1), ("navCount", 3),
         ("footerCount", 1), ("tableCount", expected_tables),
-        ("uniqueIds", True), ("pageOverflow", False),
+        ("uniqueIds", True),
         ("bylineInArticleHeader", False),
     ):
         if values[field] != correct:
@@ -145,6 +145,8 @@ def check(slug: str, width: int, mode: str, values: dict) -> list[str]:
         if values[field]:
             faults.append(f"{label}: {field}={values[field]!r}")
     if mode == "screen":
+        if values["pageOverflow"]:
+            faults.append(f"{label}: horizontal page overflow")
         if values["missingHints"]:
             faults.append(f"{label}: horizontal tables lack scroll cues: "
                           f"{values['missingHints']}")
@@ -176,9 +178,16 @@ def check_a4(page, slug: str) -> list[str]:
     first = reader.pages[0].extract_text() or ""
     if title not in first:
         errors.append(f"{slug}: title missing from first A4 page")
+    printed_text = []
     for index, pdfpage in enumerate(reader.pages):
-        if not (pdfpage.extract_text() or "").strip():
+        text = pdfpage.extract_text() or ""
+        printed_text.append(text)
+        if not text.strip():
             errors.append(f"{slug}: blank A4 page {index + 1}")
+    joined = " ".join(printed_text).lower()
+    for instruction in ("scroll horizontally", "scroll sideways", "swipe or scroll"):
+        if instruction in joined:
+            errors.append(f"{slug}: screen-only instruction printed: {instruction}")
     return errors
 
 
