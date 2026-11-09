@@ -252,11 +252,22 @@ def _record(lines: list[str], expected: tuple[str, int, str]) -> str:
     items = []
     for line in lines[1:]:
         kind = "bullet" if line.startswith("- ") else "field"
-        if kind == "field" and FIELD.fullmatch(line) is None:
+        field = FIELD.fullmatch(line) if kind == "field" else None
+        if kind == "field" and field is None:
             raise ValueError(f"Invalid source record line in {anchor}: {line}")
+        if field is not None:
+            name, value = field.groups()
+            content = '<span class="aa-record-name">' + _source_code(name) + "</span>"
+            if value is not None:
+                content += (
+                    ' <span class="aa-record-value">' + _source_code(value) +
+                    "</span>"
+                )
+        else:
+            content = _source_code(line)
         items.append(
             '<li class="aa-record-line aa-record-' + kind + '">' +
-            _source_code(line) + "</li>"
+            content + "</li>"
         )
     return (
         '<div class="aa-record" role="group" aria-label="Source record ' +
