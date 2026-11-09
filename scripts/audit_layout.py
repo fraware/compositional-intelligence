@@ -363,7 +363,7 @@ def main() -> int:
                                                 item.screenshot(
                                                     path=str(screenshots / f"{width}-{label}-{name}.png")
                                                 )
-                                    first_table = page.locator(".table-scroll").first
+                                    first_table = page.locator(".table-scroll:visible").first
                                     if first_table.count():
                                         first_table.evaluate("(e) => { e.scrollLeft = 0; }")
                                         first_table.screenshot(
