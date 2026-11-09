@@ -995,6 +995,24 @@ def main() -> int:
                                         const environment = [...article.querySelectorAll(
                                             ".sp-environment-schema .sp-schema-entry"
                                         )];
+                                        const sequence = article.querySelector(".sp-sequence");
+                                        const stages = [...(sequence?.querySelectorAll("ol > li") ?? [])];
+                                        const sequenceBounds = sequence?.getBoundingClientRect();
+                                        const orderedStages = stages.slice(1).every((stage,i) => {
+                                            const previous = stages[i].getBoundingClientRect();
+                                            return stage.getBoundingClientRect().top > previous.bottom;
+                                        });
+                                        const sequenceArrows = stages.slice(0,-1).every((stage,i) => {
+                                            const stageBounds = stage.getBoundingClientRect();
+                                            const nextBounds = stages[i+1].getBoundingClientRect();
+                                            const marker = getComputedStyle(stage,"::after");
+                                            const x = stageBounds.left + Number.parseFloat(marker.left);
+                                            const y = stageBounds.bottom - Number.parseFloat(marker.bottom);
+                                            return marker.content.includes("↓") &&
+                                                Number.isFinite(x) && Number.isFinite(y) &&
+                                                x > sequenceBounds.left && x < sequenceBounds.right &&
+                                                y > stageBounds.bottom && y <= nextBounds.top + 2;
+                                        });
                                         const governingLabel = article.querySelector(
                                             ".sp-mobile-table-3 .sp-record-field dt"
                                         );
@@ -1028,7 +1046,13 @@ def main() -> int:
                                             badHints,
                                             outOfBounds: bounds.filter(b =>
                                                 b.left < -1 || b.right > innerWidth + 1).length,
-                                            sequence: article.querySelectorAll(".sp-sequence li").length,
+                                            sequence: stages.length,
+                                            sequenceLabels: stages.map(stage => stage.textContent.trim()),
+                                            sequenceFits: !!sequenceBounds &&
+                                                sequenceBounds.left >= -1 &&
+                                                sequenceBounds.right <= innerWidth + 1,
+                                            sequenceOrdered: orderedStages,
+                                            sequenceArrows,
                                             schemas: article.querySelectorAll(".sp-source-schema").length,
                                             proofExamples: article.querySelectorAll(".sp-proof-example").length,
                                             transitionHeadings: article.querySelectorAll(
@@ -1044,7 +1068,14 @@ def main() -> int:
                                         semantic["sourceIds"] != list(range(1, 13)) or
                                         semantic["observedRows"] != [6, 5, 1, 5, 7, 13, 8, 4, 5, 7, 7, 6] or
                                         semantic["badHints"] or semantic["outOfBounds"] or
-                                        semantic["sequence"] != 7 or semantic["schemas"] != 4 or
+                                        semantic["sequence"] != 7 or
+                                        semantic["sequenceLabels"] != [
+                                            "membership","generation","transformation",
+                                            "language","architecture","warrant","action"] or
+                                        not semantic["sequenceFits"] or
+                                        not semantic["sequenceOrdered"] or
+                                        not semantic["sequenceArrows"] or
+                                        semantic["schemas"] != 4 or
                                         semantic["environmentFields"] != 10 or
                                         semantic["environmentOverflows"] != 0 or
                                         semantic["table3Caption"] != "Table 3. Governing claim for semantic artifact membership." or
@@ -1059,6 +1090,45 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: invalid semantic participation reading layout {semantic}"
                                         )
+                                    if width in (375, 1440):
+                                        # Print the source science tables, never duplicate
+                                        # the mobile record representation.
+                                        page.emulate_media(media="print")
+                                        try:
+                                            source_print = page.evaluate("""() => {
+                                                const article = document.querySelector(".article-content");
+                                                const native = [...article.querySelectorAll(
+                                                    '.table-scroll[data-sp-alternative="mobile"]')];
+                                                const mobile = [...article.querySelectorAll(
+                                                    ".sp-mobile-records")];
+                                                const hints = [...article.querySelectorAll(
+                                                    ".sp-scroll-hint")];
+                                                const visible = el => getComputedStyle(el).display !== "none";
+                                                return {
+                                                    source: native.length,
+                                                    shown: native.filter(visible).length,
+                                                    sourceRows: native.reduce((n,e) =>
+                                                        n+e.querySelectorAll("tbody tr").length,0),
+                                                    alternates: mobile.length,
+                                                    alternateShown: mobile.filter(visible).length,
+                                                    hintsShown: hints.filter(visible).length,
+                                                    fields: article.querySelectorAll(
+                                                        ".sp-record-field").length,
+                                                };
+                                            }""")
+                                            if (source_print["source"] != 12 or
+                                                source_print["shown"] != 12 or
+                                                source_print["sourceRows"] != 79 or
+                                                source_print["alternates"] != 12 or
+                                                source_print["alternateShown"] != 0 or
+                                                source_print["hintsShown"] != 0 or
+                                                source_print["fields"] != 190):
+                                                failures.append(
+                                                    f"{width}px {rel}: source tables lost "
+                                                    f"or duplicated in print {source_print}"
+                                                )
+                                        finally:
+                                            page.emulate_media(media="screen")
                                 if rel == "essays/typed-generativity.html":
                                     typed = page.evaluate("""() => {
                                         const article = document.querySelector(".article-content");
