@@ -2794,3 +2794,15 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     display:block;
   }
 }
+
+/* Scrolling is a screen interaction. A4 and other printed views must contain
+   scientific content without interface instructions about horizontal scrolling. */
+@media print {
+  .article-content :is(
+    .table-scroll-hint, .preface-scroll-hint, .sp-scroll-hint,
+    .tg-scroll-hint, .fc-scroll-hint, .lm-hint, .aa-hint,
+    .qc-hint, .ef-hint
+  ) {
+    display:none !important;
+  }
+}
