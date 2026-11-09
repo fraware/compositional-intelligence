@@ -189,23 +189,98 @@ def square(body:str)->str:
     return body.replace(source,fig,1)
 
 
-def records(body:str)->str:
-    """Preserve all field lines verbatim, without guessing their nesting."""
-    for anchor,(first,count) in SCHEMAS.items():
-        pat=re.compile(
-          rf'(<h[23] id="{re.escape(anchor)}">[^<]+</h[23]>)'
-          r'\s*((?:<p>[^<]*</p>\s*)+)')
-        found=list(pat.finditer(body))
-        if len(found)!=1: raise ValueError(f"Missing technical record {anchor}")
-        x=found[0]
-        lines=[unescape(z) for z in re.findall(r'<p>([^<]*)</p>',x.group(2))]
-        if len(lines)!=count or lines[0]!=first:
-            raise ValueError(f"Unexpected field inventory in {anchor}")
-        schema=(
-          '<div class="lm-schema" role="group" tabindex="0" '
-          'aria-label="Source record '+escape(first[:-1],quote=True)+'">'
-          '<pre><code>'+escape("\n".join(lines))+'</code></pre></div>')
-        body=body[:x.start()]+x.group(1)+"\n"+schema+body[x.end():]
+def _code(text: str) -> str:
+    """Allow line breaks at source underscores without changing text content."""
+    return "<code>" + escape(text).replace("_", "_<wbr>") + "</code>"
+
+
+_FIELD_DECLARATION = re.compile(r"^([A-Za-z][A-Za-z0-9_.-]*:)(?: (.*))?$")
+
+
+def _format_source_lines(lines: list[str]) -> str:
+    """Typeset each authored line in order without inferring unmarked nesting."""
+    title = '<p class="lm-schema-heading">' + _code(lines[0]) + "</p>"
+    entries: list[str] = []
+    for line in lines[1:]:
+        field = _FIELD_DECLARATION.fullmatch(line)
+        if field:
+            name, type_text = field.groups()
+            label = '<span class="lm-schema-name">' + _code(name) + "</span>"
+            value = (
+                '<span class="lm-schema-type">' + _code(type_text) + "</span>"
+                if type_text is not None else ""
+            )
+            entries.append(
+                '<li class="lm-schema-line lm-schema-field">' +
+                label + (" " if value else "") + value + "</li>"
+            )
+        else:
+            entries.append(
+                '<li class="lm-schema-line lm-schema-literal">' +
+                _code(line) + "</li>"
+            )
+    return title + '<ol class="lm-schema-lines">' + "".join(entries) + "</ol>"
+
+
+def records(body: str) -> str:
+    """Render four source records without changing any field or literal line."""
+    for anchor, (first, count) in SCHEMAS.items():
+        pattern = re.compile(
+            rf'(<h[23] id="{re.escape(anchor)}">[^<]+</h[23]>)'
+            r'\s*((?:<p>[^<]*</p>\s*)+)'
+        )
+        matches = list(pattern.finditer(body))
+        if len(matches) != 1:
+            raise ValueError(f"Missing technical source record {anchor}")
+        match = matches[0]
+        lines = [
+            unescape(value)
+            for value in re.findall(r'<p>([^<]*)</p>', match.group(2))
+        ]
+        if len(lines) != count or lines[0] != first:
+            raise ValueError(f"Unexpected technical field inventory in {anchor}")
+        schema = (
+            '<div class="lm-schema" role="group" '
+            'aria-label="Source record ' + escape(first[:-1], quote=True) + '">'
+            + _format_source_lines(lines) + "</div>"
+        )
+        body = (
+            body[:match.start()] + match.group(1) + "\n" +
+            schema + body[match.end():]
+        )
+    return body
+
+
+_DIAGNOSTIC_PAIRS = (
+    (
+        "Authored quantifier-scope alternatives",
+        "forall student, exists book, read(student, book)",
+        "exists book, forall student, read(student, book)",
+    ),
+    (
+        "Authored prepositional-attachment alternatives",
+        "instrument(observe, microscope)",
+        "modifier(cell, microscope)",
+    ),
+)
+
+
+def diagnostic_pairs(body: str) -> str:
+    """Present original formal comparisons without normalizing their syntax."""
+    for label, first, second in _DIAGNOSTIC_PAIRS:
+        original = (
+            "<p>" + escape(first) + "</p>\n<p>" + escape(second) + "</p>"
+        )
+        if body.count(original) != 1:
+            raise ValueError(f"Original diagnostic comparison changed: {label}")
+        markup = (
+            '<div class="lm-diagnostic-pair" role="group" '
+            'aria-label="' + escape(label, quote=True) + '">'
+            '<div class="lm-diagnostic-line">' + _code(first) + "</div>"
+            '<div class="lm-diagnostic-line">' + _code(second) + "</div>"
+            "</div>"
+        )
+        body = body.replace(original, markup, 1)
     return body
 
 
@@ -250,7 +325,7 @@ def tables(body:str)->str:
 
 def render_lambek_machines(body:str)->str:
     """Convert only source-derived presentation structures."""
-    for step in (captions,reader_map,sequence,pipeline,square,records,tables):
+    for step in (captions,reader_map,sequence,pipeline,square,records,diagnostic_pairs,tables):
         body=step(body)
     if (body.count('data-lm-alternative="mobile"')!=14 or
         body.count('class="lm-card"')!=98 or
