@@ -313,6 +313,33 @@ def main() -> int:
                                             return b.left < -1 || b.right > innerWidth + 1;
                                         }).length;
                                         const records = [...root.querySelectorAll(".aa-record")];
+                                        const sequences = [...root.querySelectorAll(".aa-sequence")];
+                                        const allStages = [...root.querySelectorAll(".aa-sequence li")];
+                                        const law = root.querySelector(".aa-law");
+                                        const spec = root.querySelector(".aa-specification");
+                                        const scrollableFormula = spec?.querySelector(".aa-spec-formula");
+                                        const symbolSigma = spec?.querySelector(
+                                            ".aa-spec-field:nth-of-type(3) dt"
+                                        );
+                                        const cue = spec?.querySelector(".aa-math-cue");
+                                        const stageFlow = sequences.every(seq => {
+                                            const items = [...seq.querySelectorAll("li")];
+                                            return items.slice(1).every((item, i) => {
+                                                const previous = items[i].getBoundingClientRect();
+                                                const current = item.getBoundingClientRect();
+                                                return innerWidth >= 1100
+                                                    ? current.left >= previous.right
+                                                    : current.top >= previous.bottom;
+                                            });
+                                        });
+                                        const stageMarks = allStages.every(li => {
+                                            const number = getComputedStyle(li, "::before").content;
+                                            const arrow = getComputedStyle(li, "::after").content;
+                                            return number.includes("counter(") &&
+                                                (li === li.parentElement.lastElementChild ?
+                                                    arrow === "none" : arrow.includes(
+                                                        innerWidth >= 1100 ? "→" : "↓"));
+                                        });
                                         return {
                                             source: source.length, mobile: mobile.length,
                                             sourceShown: source.filter(visible).length,
@@ -326,18 +353,34 @@ def main() -> int:
                                                 return !next?.classList.contains("table-scroll") ||
                                                     next.getAttribute("aria-describedby") !== h.id;
                                             }).length,
-                                            sequences: root.querySelectorAll(".aa-sequence").length,
-                                            stages: root.querySelectorAll(".aa-sequence li").length,
+                                            sequences: sequences.length,
+                                            stages: allStages.length,
+                                            stageFlow, stageMarks,
                                             specification: root.querySelectorAll(".aa-specification").length,
                                             symbols: root.querySelectorAll(".aa-spec-field").length,
                                             formula: root.querySelectorAll(
                                                 '.aa-spec-formula math[alttext="ArchitectureSpec = (O, T, Sigma, L, G, R, Phi, E, V)"]'
                                             ).length,
-                                            formulaKeyboard: root.querySelector(".aa-spec-formula")?.tabIndex,
+                                            formulaKeyboard: scrollableFormula?.tabIndex,
+                                            formulaScrollable: scrollableFormula?.scrollWidth > scrollableFormula?.clientWidth + 1,
+                                            mathCueShown: cue ? visible(cue) : false,
+                                            sigmaOneLine: symbolSigma ?
+                                                symbolSigma.getBoundingClientRect().height <= 26 : false,
+                                            lawTerms: [...(law?.querySelectorAll("math") ?? [])]
+                                                .map(e => e.getAttribute("alttext")),
+                                            lawInBounds: !!law && [...law.querySelectorAll(".aa-law-side")]
+                                                .every(e => {
+                                                    const b = e.getBoundingClientRect();
+                                                    return b.left >= -1 && b.right <= innerWidth + 1;
+                                                }),
+                                            regimeTitleSize: Number.parseFloat(getComputedStyle(
+                                                root.querySelector(".aa-mobile-3 .aa-field:first-child dd")
+                                            ).fontSize),
                                             examples: root.querySelectorAll(".aa-example").length,
                                             exampleFields: root.querySelectorAll(".aa-example-field").length,
                                             records: records.length,
                                             recordLines: root.querySelectorAll(".aa-record-line").length,
+                                            firstRecordHeight: records[0]?.getBoundingClientRect().height,
                                             recordOverflows: records.filter(e =>
                                                 e.scrollWidth > e.clientWidth + 1).length,
                                             caption: root.querySelector("#table-11-caption")?.textContent,
@@ -349,8 +392,18 @@ def main() -> int:
                                         algebraic["hints"] != 13 or algebraic["badHints"] or
                                         algebraic["visibleHints"] != (0 if width <= 650 else 7) or
                                         algebraic["sequences"] != 2 or algebraic["stages"] != 8 or
+                                        !algebraic["stageFlow"] or !algebraic["stageMarks"] or
                                         algebraic["specification"] != 1 or algebraic["symbols"] != 9 or
                                         algebraic["formula"] != 1 or algebraic["formulaKeyboard"] != 0 or
+                                        algebraic["mathCueShown"] != (width <= 650) or
+                                        algebraic["lawTerms"] != [
+                                            "F({x_1,...,x_n})",
+                                            "F({x_perm(1),...,x_perm(n)})"] or
+                                        !algebraic["lawInBounds"] or
+                                        (width <= 650 and (
+                                            !algebraic["sigmaOneLine"] or
+                                            algebraic["regimeTitleSize"] < 16 or
+                                            algebraic["firstRecordHeight"] >= 2200)) or
                                         algebraic["examples"] != 6 or algebraic["exampleFields"] != 21 or
                                         algebraic["records"] != 3 or algebraic["recordLines"] != 71 or
                                         algebraic["recordOverflows"] or algebraic["overflow"] or
@@ -365,6 +418,24 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: Algebraic publication regression {algebraic}"
                                         )
+                                if rel == "essays/algebraic-architectures.html" and width in (320, 375):
+                                    formula = page.locator(".aa-spec-formula").first
+                                    dimensions = formula.evaluate(
+                                        "(e) => ({scroll:e.scrollWidth,client:e.clientWidth})"
+                                    )
+                                    if dimensions["scroll"] <= dimensions["client"] + 1:
+                                        failures.append(
+                                            f"{width}px Algebraic equation unexpectedly fits without scroll"
+                                        )
+                                    else:
+                                        formula.evaluate("(e) => { e.scrollLeft = 0; }")
+                                        formula.focus()
+                                        page.keyboard.press("ArrowRight")
+                                        page.wait_for_timeout(160)
+                                        if formula.evaluate("(e) => e.scrollLeft") <= 0:
+                                            failures.append(
+                                                f"{width}px Algebraic source formula cannot scroll with keyboard"
+                                            )
                                 if rel == "essays/lambek-machines.html":
                                     lambek = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
@@ -893,6 +964,7 @@ def main() -> int:
                                             ("series-stages", ".aa-sequence"),
                                             ("architecture-stages", ".aa-sequence:last-of-type"),
                                             ("architecture-specification", ".aa-specification"),
+                                            ("permutation-law", ".aa-law"),
                                             ("sets-example", '.aa-example[aria-label="Authored worked example sets"]'),
                                             ("atomistic-example", '.aa-example[aria-label="Authored worked example molecules-and-3d-atomistic-systems"]'),
                                             ("architecture-record", '.aa-record[aria-label="Source record architecture_spec"]'),
