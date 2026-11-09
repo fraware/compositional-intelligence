@@ -317,11 +317,13 @@ def main() -> int:
                                         const allStages = [...root.querySelectorAll(".aa-sequence li")];
                                         const law = root.querySelector(".aa-law");
                                         const spec = root.querySelector(".aa-specification");
-                                        const scrollableFormula = spec?.querySelector(".aa-spec-formula");
+                                        const formulaBox = spec?.querySelector(".aa-spec-formula");
+                                        const mathElement = formulaBox?.querySelector("math");
+                                        const formulaBounds = formulaBox?.getBoundingClientRect();
+                                        const mathBounds = mathElement?.getBoundingClientRect();
                                         const symbolSigma = spec?.querySelector(
                                             ".aa-spec-field:nth-of-type(3) dt"
                                         );
-                                        const cue = spec?.querySelector(".aa-math-cue");
                                         const stageFlow = sequences.every(seq => {
                                             const items = [...seq.querySelectorAll("li")];
                                             return items.slice(1).every((item, i) => {
@@ -361,9 +363,12 @@ def main() -> int:
                                             formula: root.querySelectorAll(
                                                 '.aa-spec-formula math[alttext="ArchitectureSpec = (O, T, Sigma, L, G, R, Phi, E, V)"]'
                                             ).length,
-                                            formulaKeyboard: scrollableFormula?.tabIndex,
-                                            formulaScrollable: scrollableFormula?.scrollWidth > scrollableFormula?.clientWidth + 1,
-                                            mathCueShown: cue ? visible(cue) : false,
+                                            formulaRows: mathElement?.querySelectorAll("mtr").length,
+                                            formulaFits: !!mathBounds && !!formulaBounds &&
+                                                mathBounds.left >= formulaBounds.left - 1 &&
+                                                mathBounds.right <= formulaBounds.right + 1 &&
+                                                mathBounds.width >= 90,
+                                            unwantedScrollCue: root.querySelectorAll(".aa-math-cue").length,
                                             sigmaOneLine: symbolSigma ?
                                                 symbolSigma.getBoundingClientRect().height <= 26 : false,
                                             lawTerms: [...(law?.querySelectorAll("math") ?? [])]
@@ -394,8 +399,8 @@ def main() -> int:
                                         algebraic["sequences"] != 2 or algebraic["stages"] != 8 or
                                         not algebraic["stageFlow"] or not algebraic["stageMarks"] or
                                         algebraic["specification"] != 1 or algebraic["symbols"] != 9 or
-                                        algebraic["formula"] != 1 or algebraic["formulaKeyboard"] != 0 or
-                                        algebraic["mathCueShown"] != (width <= 650) or
+                                        algebraic["formula"] != 1 or algebraic["formulaRows"] != 2 or
+                                        not algebraic["formulaFits"] or algebraic["unwantedScrollCue"] or
                                         algebraic["lawTerms"] != [
                                             "F({x_1,...,x_n})",
                                             "F({x_perm(1),...,x_perm(n)})"] or
@@ -418,24 +423,6 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: Algebraic publication regression {algebraic}"
                                         )
-                                if rel == "essays/algebraic-architectures.html" and width in (320, 375):
-                                    formula = page.locator(".aa-spec-formula").first
-                                    dimensions = formula.evaluate(
-                                        "(e) => ({scroll:e.scrollWidth,client:e.clientWidth})"
-                                    )
-                                    if dimensions["scroll"] <= dimensions["client"] + 1:
-                                        failures.append(
-                                            f"{width}px Algebraic equation unexpectedly fits without scroll"
-                                        )
-                                    else:
-                                        formula.evaluate("(e) => { e.scrollLeft = 0; }")
-                                        formula.focus()
-                                        page.keyboard.press("ArrowRight")
-                                        page.wait_for_timeout(160)
-                                        if formula.evaluate("(e) => e.scrollLeft") <= 0:
-                                            failures.append(
-                                                f"{width}px Algebraic source formula cannot scroll with keyboard"
-                                            )
                                 if rel == "essays/lambek-machines.html":
                                     lambek = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
