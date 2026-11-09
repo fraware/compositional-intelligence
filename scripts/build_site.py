@@ -23,7 +23,7 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 from render_science import enhance_scientific_presentation
-from render_synthesis import render_synthesis_figures
+from render_synthesis import render_synthesis_figures, render_synthesis_mobile_tables
 from render_preface import render_preface
 from render_semantic import render_semantic_participation
 from render_typed import render_typed_generativity
@@ -79,7 +79,7 @@ def esc(value: str) -> str:
 
 def header(title: str, description: str, canonical: str, *, document_type: str = "article") -> str:
     """Provide a stable, privacy-preserving document head and shared navigation."""
-    document_title = title if title == "Compositional Intelligence" else title + " · Compositional Intelligence"
+    document_title = "Compositional Intelligence"
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -396,6 +396,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     if slug == "effectful-and-conceptual-intelligence":
         body = render_effectful_and_conceptual_intelligence(body)
     body = enhance_scientific_presentation(body)
+    if slug == "compositional-intelligence":
+        body = render_synthesis_mobile_tables(body)
     if slug == "series-preface":
         body = render_preface(body)
     if slug == "semantic-participation":
