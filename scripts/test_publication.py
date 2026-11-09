@@ -1282,6 +1282,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn('class="aa-specification"', page)
         self.assertEqual(page.count('class="aa-sequence"'), 2)
         self.assertEqual(page.count('class="aa-spec-field"'), 9)
+        self.assertEqual(page.count('class="aa-law"'), 1)
+        self.assertEqual(page.count('class="aa-math-cue"'), 1)
         self.assertEqual(page.count('class="aa-example"'), 6)
         self.assertEqual(page.count('class="aa-example-field"'), 21)
         self.assertEqual(page.count('class="aa-record"'), 3)
@@ -1312,7 +1314,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 elif i == 2:
                     formula = re.search(
                         r'<div class="aa-spec-formula"[^>]*>([\s\S]*?)</div>'
-                        r'<dl>([\s\S]*?)</dl>', rendered
+                        r'<p class="aa-math-cue">Scroll horizontally to read '
+                        r'the full equation.</p><dl>([\s\S]*?)</dl>',
+                        rendered
                     )
                     self.assertIsNotNone(formula)
                     self.assertIn(
@@ -1338,10 +1342,23 @@ class ManuscriptFidelityTests(unittest.TestCase):
                         r'<div class="aa-example-field"><dt>(.*?)</dt>'
                         r'<dd>(.*?)</dd></div>', example.group(1)
                     )
-                    self.assertEqual(
-                        [unescape(name + ": " + value) for name, value in fields],
-                        lines
-                    )
+                    recovered_fields = []
+                    for name, value in fields:
+                        if identifier == "sets" and name == "Required law":
+                            operands = re.findall(
+                                r'<math[^>]*alttext="([^"]+)"',
+                                value
+                            )
+                            self.assertEqual(len(operands), 2)
+                            self.assertEqual(value.count('class="aa-law-side"'), 2)
+                            self.assertEqual(value.count('class="aa-law-equals"'), 1)
+                            recovered_value = " = ".join(
+                                unescape(part) for part in operands
+                            )
+                        else:
+                            recovered_value = unescape(value)
+                        recovered_fields.append(name + ": " + recovered_value)
+                    self.assertEqual(recovered_fields, lines)
                 else:
                     heading, count, _ = algebraic.RECORDS[i - 9]
                     self.assertEqual(len(lines), count)
