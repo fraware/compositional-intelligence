@@ -2210,9 +2210,9 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .qc-schema-line,.article-content .qc-pipeline li,
   .article-content .qc-card {break-inside:avoid;}
 }
-/* Phone-sized print settings use the 179 source-exact fields, not clipped
+/* Narrow print settings use the 179 source-exact fields, not clipped
    native tables whose column minimums exceed the available page width. */
-@media print and (max-width:650px) {
+@media print and (max-width:1000px) {
   .article-content .table-scroll[data-qc-alternative="mobile"] {display:none;}
   .article-content .qc-mobile {display:block;}
 }
