@@ -2750,3 +2750,47 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     break-inside:avoid-page;
   }
 }
+
+/* Collection-wide horizontal table guidance. The reading column is narrower
+   than a four-column source table at every desktop width; three-column source
+   tables need scrolling only at narrow tablet widths. Keep the native tables
+   keyboard-scrollable and avoid showing hints where every column fits. */
+@media screen and (min-width:651px) {
+  .article-content :is(
+    .preface-scroll-hint, .sp-scroll-hint, .tg-scroll-hint,
+    .fc-scroll-hint, .lm-hint, .aa-hint, .qc-hint, .ef-hint
+  ),
+  .article-content :is(
+    .preface-scroll-hint, .sp-scroll-hint, .tg-scroll-hint,
+    .fc-scroll-hint, .lm-hint, .aa-hint, .qc-hint, .ef-hint
+  ):has(+ .table-scroll[data-columns="3"]),
+  .article-content .table-scroll[data-columns="3"] + .table-scroll-hint {
+    display:none;
+  }
+  .article-content :is(
+    .preface-scroll-hint, .sp-scroll-hint, .tg-scroll-hint,
+    .fc-scroll-hint, .lm-hint, .aa-hint, .qc-hint, .ef-hint
+  ):has(+ .table-scroll[data-columns="4"]) {
+    display:block;
+    margin:8px 0 11px;
+    color:var(--soft);
+    font:italic 13px/1.55 var(--serif);
+  }
+  .article-content .table-scroll[data-columns="4"] + .table-scroll-hint {
+    display:block;
+  }
+}
+@media screen and (min-width:651px) and (max-width:828px) {
+  .article-content :is(
+    .preface-scroll-hint, .sp-scroll-hint, .tg-scroll-hint,
+    .fc-scroll-hint, .lm-hint, .aa-hint, .qc-hint, .ef-hint
+  ):has(+ .table-scroll[data-columns="3"]) {
+    display:block;
+    margin:8px 0 11px;
+    color:var(--soft);
+    font:italic 13px/1.55 var(--serif);
+  }
+  .article-content .table-scroll[data-columns="3"] + .table-scroll-hint {
+    display:block;
+  }
+}
