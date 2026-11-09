@@ -220,7 +220,8 @@ def _specification(lines: list[str]) -> str:
     return (
         '<section class="aa-specification" role="group" '
         'aria-label="Authored ArchitectureSpec tuple and fields">'
-        '<div class="aa-spec-formula">' + formula + "</div>"
+        '<div class="aa-spec-formula" role="group" tabindex="0" '
+        'aria-label="ArchitectureSpec formula">' + formula + "</div>"
         '<dl>' + "".join(items) + "</dl></section>"
     )
 
