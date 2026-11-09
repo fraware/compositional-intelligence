@@ -444,6 +444,19 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 self.assertIsNotNone(source_table)
                 self.assertIsNotNone(published_table)
                 self.assertEqual(source_table.group(),published_table.group())
+                source_head = re.search(
+                    r'<thead>([\s\S]*?)</thead>', source_table.group()
+                )
+                self.assertIsNotNone(source_head)
+                labels = [
+                    unescape(re.sub(r"<[^>]+>", "", value)).strip()
+                    for value in re.findall(
+                        r'<th\b[^>]*>([\s\S]*?)</th>', source_head.group(1)
+                    )
+                ]
+                self.assertEqual(
+                    len(labels), render_synthesis._SOURCE_DATA_COLUMNS[number]
+                )
                 rows = re.findall(
                     r'<tr\b[^>]*>([\s\S]*?)</tr>',
                     re.search(
@@ -468,6 +481,11 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     self.assertEqual(
                         row,
                         re.findall(r'<dd>([\s\S]*?)</dd>',card)
+                    )
+                    self.assertEqual(
+                        re.findall(r'<dt>([^<]*)</dt>',card),
+                        labels,
+                        "Mobile data labels must match every original column"
                     )
                     total_cells+=len(row)
                 total_rows+=len(mobile_rows)
