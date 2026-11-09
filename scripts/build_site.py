@@ -29,6 +29,7 @@ from render_semantic import render_semantic_participation
 from render_typed import render_typed_generativity
 from render_functorial import render_functorial_diagram, render_functorial_tables
 from render_lambek import render_lambek_machines
+from render_algebraic import render_algebraic_architectures
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://fraware.github.io/compositional-intelligence/"
@@ -386,6 +387,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_functorial_diagram(body)
     if slug == "lambek-machines":
         body = render_lambek_machines(body)
+    if slug == "algebraic-architectures":
+        body = render_algebraic_architectures(body)
     body = enhance_scientific_presentation(body)
     if slug == "series-preface":
         body = render_preface(body)
