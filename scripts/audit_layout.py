@@ -1090,9 +1090,10 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: invalid semantic participation reading layout {semantic}"
                                         )
-                                    if width in (375, 1440):
-                                        # Print the source science tables, never duplicate
-                                        # the mobile record representation.
+                                    if width in (320, 375, 768, 1440):
+                                        # For narrow print widths, the source-derived
+                                        # records preserve cell content without clipping.
+                                        # Standard-width print uses original source tables.
                                         page.emulate_media(media="print")
                                         try:
                                             source_print = page.evaluate("""() => {
@@ -1104,28 +1105,41 @@ def main() -> int:
                                                 const hints = [...article.querySelectorAll(
                                                     ".sp-scroll-hint")];
                                                 const visible = el => getComputedStyle(el).display !== "none";
+                                                const shown = [...native,...mobile].filter(visible);
                                                 return {
                                                     source: native.length,
-                                                    shown: native.filter(visible).length,
+                                                    sourceShown: native.filter(visible).length,
                                                     sourceRows: native.reduce((n,e) =>
                                                         n+e.querySelectorAll("tbody tr").length,0),
                                                     alternates: mobile.length,
                                                     alternateShown: mobile.filter(visible).length,
+                                                    cards: article.querySelectorAll(
+                                                        ".sp-mobile-record").length,
                                                     hintsShown: hints.filter(visible).length,
                                                     fields: article.querySelectorAll(
                                                         ".sp-record-field").length,
+                                                    overflowCount: shown.filter(e =>
+                                                        e.scrollWidth > e.clientWidth + 1).length,
+                                                    pageOverflow: document.documentElement.scrollWidth >
+                                                        innerWidth + 1,
                                                 };
                                             }""")
+                                            narrow_print = width <= 650
                                             if (source_print["source"] != 12 or
-                                                source_print["shown"] != 12 or
                                                 source_print["sourceRows"] != 75 or
                                                 source_print["alternates"] != 12 or
-                                                source_print["alternateShown"] != 0 or
+                                                source_print["cards"] != 74 or
                                                 source_print["hintsShown"] != 0 or
-                                                source_print["fields"] != 190):
+                                                source_print["fields"] != 190 or
+                                                source_print["overflowCount"] != 0 or
+                                                source_print["pageOverflow"] or
+                                                source_print["sourceShown"] !=
+                                                    (0 if narrow_print else 12) or
+                                                source_print["alternateShown"] !=
+                                                    (12 if narrow_print else 0)):
                                                 failures.append(
-                                                    f"{width}px {rel}: source tables lost "
-                                                    f"or duplicated in print {source_print}"
+                                                    f"{width}px {rel}: clipped, missing, or "
+                                                    f"duplicated print content {source_print}"
                                                 )
                                         finally:
                                             page.emulate_media(media="screen")
