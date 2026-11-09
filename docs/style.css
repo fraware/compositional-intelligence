@@ -2730,3 +2730,23 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .ef-mobile {display:block;}
   .article-content .ef-card {break-inside:avoid;}
 }
+
+/* Keep table captions with their data and the final source notes together on
+   printed pages. These rules affect presentation only, not the manuscript. */
+@media print {
+  .article-content .table-display-caption.ef-caption {
+    break-after:avoid-page;
+    page-break-after:avoid;
+  }
+  .article-content h2:has(+ p + .ef-caption),
+  .article-content h2:has(+ .ef-caption),
+  .article-content h3:has(+ .ef-caption),
+  .article-content h2 + p:has(+ .ef-caption) {
+    break-after:avoid-page;
+    page-break-after:avoid;
+  }
+  .article-content .ef-source-notes,
+  .article-content .ef-source-notes li {
+    break-inside:avoid-page;
+  }
+}
