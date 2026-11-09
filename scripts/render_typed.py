@@ -120,7 +120,7 @@ def _reader_targets(body: str) -> tuple[dict[str, str], dict[str, str]]:
     appendices: dict[str, str] = {}
     pattern = re.compile(r'<h[23] id="([^"]+)">([^<]+)</h[23]>')
     for fragment, text in pattern.findall(body):
-        section = re.match(r"(\d+(?:\.\d+)?)\.\s", text)
+        section = re.match(r"(\d+(?:\.\d+)?)\.?\s", text)
         if section:
             numbers[section.group(1)] = fragment
         appendix = re.match(r"Appendix ([A-Z])\.\s", text)
