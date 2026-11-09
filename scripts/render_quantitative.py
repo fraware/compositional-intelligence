@@ -248,11 +248,28 @@ def _tuple(lines: list[str]) -> str:
     )
     if tuple(lines) != expected:
         raise ValueError("Quantitative evidence tuple changed")
+    source = lines[0].removeprefix("Q = (") + " " + lines[1].removesuffix(")")
+    fields = source.split(", ")
+    expected_fields = (
+        "score", "probability", "uncertainty", "margin", "loss",
+        "calibration", "validation_status", "diagnostics",
+        "repair_distance", "epistemic_type", "permitted_use",
+    )
+    if tuple(fields) != expected_fields:
+        raise ValueError("The original quantitative evidence field order changed")
+    members = "".join(
+        '<span class="qc-tuple-member">' +
+        _code(name + ("," if i < len(fields) - 1 else "")) +
+        "</span>"
+        for i, name in enumerate(fields)
+    )
     return (
         '<div class="qc-tuple" role="group" '
-        'aria-label="Authored quantitative evidence tuple">' +
-        "".join('<p>' + _code(line) + "</p>" for line in lines) +
-        "</div>"
+        'aria-label="Authored quantitative evidence tuple">'
+        '<div class="qc-tuple-start">Q = (</div>'
+        '<div class="qc-tuple-members">' + members + '</div>'
+        '<div class="qc-tuple-end">)</div>'
+        '</div>'
     )
 
 
