@@ -2806,3 +2806,16 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     display:none !important;
   }
 }
+
+/* Keep source-authored table labels attached to their native tables in A4
+   and other printed layouts. Neither source prose nor screen layout changes. */
+@media print {
+  .article-content .table-display-caption {
+    break-after:avoid-page;
+    page-break-after:avoid;
+  }
+  .article-content .table-scroll {
+    break-before:avoid-page !important;
+    page-break-before:avoid !important;
+  }
+}
