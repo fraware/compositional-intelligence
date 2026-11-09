@@ -2583,3 +2583,12 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 @media print {
   .article-content .sp-sequence li { break-inside:avoid; }
 }
+
+
+/* Semantic Participation: the four-column on-screen scroll cue has greater
+   selector specificity than the general print rule; suppress it in print. */
+@media print {
+  .article-content .sp-scroll-hint:has(+ .table-scroll[data-columns="4"]) {
+    display:none;
+  }
+}
