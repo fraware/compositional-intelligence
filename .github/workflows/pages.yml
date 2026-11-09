@@ -37,7 +37,7 @@ jobs:
         run: python3 scripts/verify_notation.py
       - name: Install Chromium for browser QA
         run: |
-          python3 -m pip install --disable-pip-version-check playwright==1.57.0
+          python3 -m pip install --disable-pip-version-check playwright==1.57.0 pypdf==5.9.0
           python3 -m playwright install --with-deps chromium
       - name: Test desktop and mobile layout
         run: python3 scripts/audit_layout.py _site --screenshots _qa
