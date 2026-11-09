@@ -27,7 +27,7 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 .section-intro { font:15px/1.6 Arial,Helvetica,sans-serif; color:var(--soft); margin:0 0 18px; }
 .series-list { list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
 .series-item { display:grid; grid-template-columns:42px minmax(0,1fr); column-gap:15px; padding:21px 0 22px; border-bottom:1px solid var(--line); }
-.series-number { font:400 19px/1.5 var(--display); color:#82756f; padding-top:2px; }
+.series-number { font:400 19px/1.5 var(--display); color:#786b65; padding-top:2px; }
 .series-name { margin:0; font:400 29px/1.22 var(--display); letter-spacing:-.014em; }
 .series-name a { text-decoration:none; border-bottom:1px solid currentColor; }
 .series-desc { margin:10px 0 0; font:17px/1.55 var(--serif); color:#565850; max-width:670px; }
