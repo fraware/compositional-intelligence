@@ -974,7 +974,21 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     mobile.group(1),
                 )
                 self.assertEqual(len(cards), len(rows))
+                head = re.search(r"<thead>([\s\S]*?)</thead>", src_html)
+                self.assertIsNotNone(head)
+                labels = [
+                    unescape(re.sub(r"<[^>]*>", "", cell)).strip()
+                    for cell in re.findall(
+                        r"<th\b[^>]*>([\s\S]*?)</th>", head.group(1)
+                    )
+                ]
+                self.assertEqual(tuple(labels), TG_HEADERS[n])
                 for original_cells, card in zip(cells, cards, strict=True):
+                    self.assertEqual(
+                        re.findall(r"<dt>([^<]+)</dt>", card),
+                        labels,
+                        f"Typed table {n}: mobile field labels must match source headers",
+                    )
                     values = re.findall(r'<dd>([\s\S]*?)</dd>', card)
                     if n == 2:
                         values = [
