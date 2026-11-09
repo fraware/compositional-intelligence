@@ -2446,3 +2446,28 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .table-scroll[data-ci-alternative="mobile"] + .table-scroll-hint,
   .article-content .ci-data-mobile { display:none; }
 }
+
+
+/* Source-sequence fidelity: the authored lifecycle uses directed arrows.
+   On phones, one reading column preserves its eight-stage order. The source
+   caption continues to qualify this as a conceptual, non-strict lifecycle. */
+@media (max-width:650px) {
+  .article-content .ci-lifecycle ol {
+    grid-template-columns:minmax(0,1fr);
+    gap:20px;
+  }
+  .article-content .ci-lifecycle li {
+    position:relative;
+    min-height:64px;
+    padding:10px 13px;
+  }
+  .article-content .ci-lifecycle li:not(:last-child)::after {
+    content:"↓";
+    position:absolute;
+    bottom:-20px;
+    left:calc(50% - 7px);
+    font:15px/1 var(--serif);
+    color:var(--soft);
+    pointer-events:none;
+  }
+}
