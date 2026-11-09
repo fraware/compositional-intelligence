@@ -428,7 +428,7 @@ def main() -> int:
                                             cuesValid: cues.every(v => v.exists),
                                             cuesVisible: cues.filter(v => v.visible).length,
                                             expectedCues: innerWidth <= 650 ? 0 :
-                                                innerWidth <= 900 ? 7 : 0
+                                                innerWidth <= 828 ? 5 : 0
                                         };
                                     }""")
                                     if (preface["stages"] != 8 or not preface["lifecycleFits"] or
