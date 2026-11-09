@@ -1065,12 +1065,17 @@ def main() -> int:
                                             headers.length < 1 || headers.length > count) return true;
                                         if (t.querySelector("th[ead]")) return true;
                                         if (getComputedStyle(label).display === "none") return true;
-                                        const authored = label.classList.contains("source-visible-caption");
+                                        const authored = label.classList.contains("source-visible-caption") ||
+                                            label.classList.contains("ef-caption");
                                         const bounds = label.getBoundingClientRect();
                                         if (authored) {
+                                            const captionText = label.textContent.trim();
+                                            const validName = label.classList.contains("ef-caption")
+                                                ? /^Table \d+\./.test(captionText)
+                                                : captionText.startsWith("Table.");
                                             if (bounds.height < 10 ||
                                                 bounds.right > innerWidth + 2 ||
-                                                !label.textContent.trim().startsWith("Table.")) return true;
+                                                !validName) return true;
                                         } else if (bounds.height > 2 || bounds.width > 2) {
                                             return true;
                                         }
