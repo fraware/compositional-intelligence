@@ -53,7 +53,7 @@ CAPTIONS = {
     16: "Table 16. Typed Action Ledger schema.",
     17: "Table 17. Effectful Agent Benchmark schema.",
     18: "Table 18. Concept Transfer Record schema.",
-    19: "Table 19. Claim ledger.",
+    19: "Table 19. Claims, evidential levels, and treatments.",
 }
 CORRUPT_CAPTIONS = {2: "Table 1.", 11: "Table 10.", 13: "Table 12."}
 SECTION_IDS = {
