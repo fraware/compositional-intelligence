@@ -453,6 +453,46 @@ def main() -> int:
                                          (preface["mobileDisplayed"] != 0 or
                                           preface["nativeDisplayed"] != 7))):
                                         failures.append(f"{width}px {rel}: preface reading regression {preface}")
+                                    # The source tables must survive printing even if the
+                                    # viewport is at the narrow mobile breakpoint.
+                                    if width in (375, 1440):
+                                        page.emulate_media(media="print")
+                                        try:
+                                            print_view = page.evaluate("""() => {
+                                                const article = document.querySelector(".article-content");
+                                                const native = [...article.querySelectorAll(
+                                                    '.table-scroll[data-preface-alternative="mobile"]')];
+                                                const alternate = [...article.querySelectorAll(
+                                                    ".preface-mobile-records")];
+                                                const hints = [...article.querySelectorAll(
+                                                    ".preface-scroll-hint")];
+                                                const visible = element =>
+                                                    getComputedStyle(element).display !== "none";
+                                                return {
+                                                    native: native.length,
+                                                    nativeVisible: native.filter(visible).length,
+                                                    alternate: alternate.length,
+                                                    alternateVisible: alternate.filter(visible).length,
+                                                    hintsVisible: hints.filter(visible).length,
+                                                    sourceRows: native.reduce((n, wrapper) =>
+                                                        n + wrapper.querySelectorAll("tbody tr").length, 0),
+                                                    mobileDataFields: alternate.reduce((n, section) =>
+                                                        n + section.querySelectorAll("dd").length, 0),
+                                                };
+                                            }""")
+                                            if (print_view["native"] != 7 or
+                                                print_view["nativeVisible"] != 7 or
+                                                print_view["alternate"] != 7 or
+                                                print_view["alternateVisible"] != 0 or
+                                                print_view["hintsVisible"] != 0 or
+                                                print_view["sourceRows"] != 44 or
+                                                print_view["mobileDataFields"] != 118):
+                                                failures.append(
+                                                    f"{width}px {rel}: incomplete print-source "
+                                                    f"tables or duplicate mobile records {print_view}"
+                                                )
+                                        finally:
+                                            page.emulate_media(media="screen")
                                 if rel == "essays/effectful-and-conceptual-intelligence.html":
                                     effectful = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
