@@ -1265,5 +1265,174 @@ class ManuscriptFidelityTests(unittest.TestCase):
             render_lambek_machines(rendered)
 
 
+
+    def test_algebraic_source_bound_presentation(self) -> None:
+        """All 13 original tables and 12 science structures stay source-faithful."""
+        import render_algebraic as algebraic
+
+        slug, title, category, description = publication.ESSAYS[6]
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(source, title, [])
+        rendered = algebraic.render_algebraic_architectures(original)
+        page = publication.render_essay(
+            slug, title, category, description, 6, []
+        )
+        self.assertIn('class="aa-specification"', page)
+        self.assertEqual(page.count('class="aa-sequence"'), 2)
+        self.assertEqual(page.count('class="aa-spec-field"'), 9)
+        self.assertEqual(page.count('class="aa-example"'), 6)
+        self.assertEqual(page.count('class="aa-example-field"'), 21)
+        self.assertEqual(page.count('class="aa-record"'), 3)
+        self.assertEqual(page.count('class="aa-record-line '), 71)
+        self.assertEqual(page.count('data-aa-alternative="mobile"'), 13)
+        self.assertEqual(page.count('class="aa-card"'), 93)
+        self.assertEqual(page.count('class="aa-field"'), 231)
+        self.assertIn(
+            'alttext="ArchitectureSpec = (O, T, Sigma, L, G, R, Phi, E, V)"',
+            page
+        )
+        self.assertIn(
+            'id="table-11-caption">' + algebraic.CAPTIONS[11], page
+        )
+        self.assertNotIn(">6.1</a>", page)
+
+        original_structures = list(algebraic.BLOCK.finditer(original))
+        self.assertEqual(len(original_structures), 12)
+        for i, source_block in enumerate(original_structures):
+            lines = algebraic._lines(source_block.group("lines"))
+            with self.subTest(block=i + 1):
+                if i < 2:
+                    self.assertIn(
+                        'class="aa-sequence" role="group"', rendered
+                    )
+                    for part in lines[0].split(" -> "):
+                        self.assertIn("<li>" + part + "</li>", rendered)
+                elif i == 2:
+                    formula = re.search(
+                        r'<div class="aa-spec-formula">([\s\S]*?)</div>'
+                        r'<dl>([\s\S]*?)</dl>', rendered
+                    )
+                    self.assertIsNotNone(formula)
+                    self.assertIn(
+                        'alttext="' + lines[0] + '"', formula.group(1)
+                    )
+                    fields = re.findall(
+                        r'<div class="aa-spec-field"><dt>(.*?)</dt>'
+                        r'<dd>(.*?)</dd></div>', formula.group(2)
+                    )
+                    self.assertEqual(
+                        [key + " " + unescape(value) for key, value in fields],
+                        lines[1:]
+                    )
+                elif i <= 8:
+                    identifier = algebraic.EXAMPLE_IDS[i - 3]
+                    example = re.search(
+                        r'<dl class="aa-example" aria-label="Authored worked '
+                        r'example ' + re.escape(identifier) +
+                        r'">([\s\S]*?)</dl>', rendered
+                    )
+                    self.assertIsNotNone(example)
+                    fields = re.findall(
+                        r'<div class="aa-example-field"><dt>(.*?)</dt>'
+                        r'<dd>(.*?)</dd></div>', example.group(1)
+                    )
+                    self.assertEqual(
+                        [unescape(name + ": " + value) for name, value in fields],
+                        lines
+                    )
+                else:
+                    heading, count, _ = algebraic.RECORDS[i - 9]
+                    self.assertEqual(len(lines), count)
+                    self.assertEqual(lines[0], heading)
+                    block = re.search(
+                        r'<div class="aa-record" role="group" '
+                        r'aria-label="Source record ' +
+                        re.escape(heading[:-1]) +
+                        r'">([\s\S]*?)</ol></div>', rendered
+                    )
+                    self.assertIsNotNone(block)
+                    title = re.search(
+                        r'<p class="aa-record-title">([\s\S]*?)</p>',
+                        block.group(1)
+                    )
+                    self.assertIsNotNone(title)
+                    clean = lambda text: unescape(
+                        re.sub(r"<[^>]+>", "", text)
+                    )
+                    recovered = [clean(title.group(1))]
+                    recovered.extend(
+                        clean(line) for line in re.findall(
+                            r'<li class="aa-record-line aa-record-'
+                            r'(?:field|bullet)">([\s\S]*?)</li>',
+                            block.group(1)
+                        )
+                    )
+                    self.assertEqual(recovered, lines)
+
+        copied_cells = 0
+        for n in range(1, 14):
+            with self.subTest(table=n):
+                expression = (
+                    rf'<table data-source-table="{n}" id="table-{n}">'
+                    r'[\s\S]*?</table>'
+                )
+                old = re.search(expression, original)
+                new = re.search(expression, rendered)
+                self.assertIsNotNone(old)
+                self.assertIsNotNone(new)
+
+                def neutralize(markup: str) -> str:
+                    markup = re.sub(
+                        r'<caption class="visually-hidden">[^<]*</caption>',
+                        '<caption></caption>', markup
+                    )
+                    return re.sub(
+                        r'<a href="[^"]+">([^<]+)</a>', r'\1', markup
+                    )
+
+                self.assertEqual(
+                    neutralize(old.group()), neutralize(new.group())
+                )
+                tbody = re.search(r'<tbody>([\s\S]*?)</tbody>',old.group())
+                self.assertIsNotNone(tbody)
+                rows = re.findall(
+                    r'<tr\b[^>]*>([\s\S]*?)</tr>',tbody.group(1)
+                )
+                self.assertEqual(len(rows), algebraic.ROWS[n - 1])
+                original_cells = [
+                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>',row)
+                    for row in rows
+                ]
+                alternative = re.search(
+                    rf'<section class="aa-mobile aa-mobile-{n}" '
+                    rf'aria-labelledby="table-{n}-caption">'
+                    r'([\s\S]*?)</section>',rendered
+                )
+                self.assertIsNotNone(alternative)
+                cards = re.findall(
+                    r'<dl class="aa-card">([\s\S]*?)</dl>',
+                    alternative.group(1)
+                )
+                self.assertEqual(len(cards), len(rows))
+                for original_row, card in zip(
+                    original_cells,cards,strict=True
+                ):
+                    copied = re.findall(
+                        r'<dd>([\s\S]*?)</dd>',card
+                    )
+                    self.assertEqual(original_row, [
+                        re.sub(
+                            r'<a href="[^"]+">([^<]+)</a>',r'\1',value
+                        )
+                        for value in copied
+                    ])
+                    copied_cells += len(copied)
+        self.assertEqual(copied_cells, 231)
+        with self.assertRaises(ValueError):
+            algebraic.render_algebraic_architectures(rendered)
+
+
 if __name__ == "__main__":
     unittest.main()
