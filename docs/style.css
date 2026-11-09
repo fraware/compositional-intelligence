@@ -2019,21 +2019,24 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 }
 .article-content .qc-pipeline ol {
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:0 23px;
-  margin:0;
+  grid-template-columns:minmax(0,1fr);
+  gap:19px;
+  max-width:680px;
+  margin:0 auto;
   padding:0;
   list-style:none;
   counter-reset:qc-pipeline;
 }
 .article-content .qc-pipeline li {
+  position:relative;
   display:grid;
-  grid-template-columns:27px minmax(0,1fr);
+  grid-template-columns:34px minmax(0,1fr);
   gap:12px;
-  align-items:baseline;
+  align-items:center;
   min-width:0;
-  padding:14px 0 15px;
-  border-bottom:1px solid var(--line);
+  min-height:58px;
+  padding:10px 14px;
+  border:1px solid var(--line);
   font:16px/1.56 var(--serif);
   counter-increment:qc-pipeline;
 }
@@ -2041,6 +2044,15 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   content:counter(qc-pipeline,decimal-leading-zero);
   color:var(--soft);
   font:12px/1.5 var(--sans);
+}
+.article-content .qc-pipeline li:not(:last-child)::after {
+  content:"↓";
+  position:absolute;
+  bottom:-19px;
+  left:calc(50% - 7px);
+  color:var(--soft);
+  font:16px/1 var(--serif);
+  pointer-events:none;
 }
 .article-content .qc-example {
   margin:21px 0 33px;
@@ -2130,8 +2142,9 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     gap:7px 11px;
   }
   .article-content .qc-tuple-member code {font-size:12.9px;}
-  .article-content .qc-pipeline ol {
-    grid-template-columns:minmax(0,1fr);
+  .article-content .qc-pipeline li {
+    grid-template-columns:29px minmax(0,1fr);
+    padding:10px 11px;
   }
   .article-content .qc-example-field {
     grid-template-columns:34px minmax(0,1fr);
@@ -2190,9 +2203,18 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 @media print {
   .article-content .table-scroll[data-qc-alternative="mobile"] {display:block;}
   .article-content .qc-mobile,.article-content .qc-hint {display:none;}
+  .article-content .qc-hint:has(+ .table-scroll[data-columns="3"]),
+  .article-content .qc-hint:has(+ .table-scroll[data-columns="4"]) {display:none;}
   .article-content .qc-sequence,.article-content .qc-math,
-  .article-content .qc-layers,.article-content .qc-example,
-  .article-content .qc-schema {break-inside:avoid;}
+  .article-content .qc-layers,.article-content .qc-example {break-inside:avoid;}
+  .article-content .qc-schema-line,.article-content .qc-pipeline li,
+  .article-content .qc-card {break-inside:avoid;}
+}
+/* Phone-sized print settings use the 179 source-exact fields, not clipped
+   native tables whose column minimums exceed the available page width. */
+@media print and (max-width:650px) {
+  .article-content .table-scroll[data-qc-alternative="mobile"] {display:none;}
+  .article-content .qc-mobile {display:block;}
 }
 
 
