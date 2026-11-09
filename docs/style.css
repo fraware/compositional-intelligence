@@ -2520,3 +2520,21 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     break-inside:avoid;
   }
 }
+
+
+/* Series Preface print fidelity: phone-sized print settings must print the
+   complete source scientific tables, never their screen-only mobile copies. */
+@media print {
+  .article-content .table-scroll[data-preface-alternative="mobile"] {
+    display:block;
+    overflow:visible;
+  }
+  .article-content .preface-mobile-records,
+  .article-content .preface-scroll-hint,
+  .article-content .preface-scroll-hint[data-mobile-alternative="true"] {
+    display:none;
+  }
+  .article-content .preface-lifecycle {
+    break-inside:avoid;
+  }
+}
