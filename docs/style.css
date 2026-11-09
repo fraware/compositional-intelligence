@@ -599,3 +599,65 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     text-underline-offset:.12em;
   }
 }
+
+
+/* Series Preface: compact mobile records with semantic labels retained for AT. */
+@media (max-width:650px) {
+  .article-content .preface-mobile-records[aria-label="Publication order and reading links"] .preface-record-field dt,
+  .article-content .preface-mobile-records[aria-label="Mathematical notation and reading"] .preface-record-field dt,
+  .article-content .preface-mobile-records[aria-label="Core terms and definitions"] .preface-record-field dt,
+  .article-content .preface-mobile-records[aria-label="Foundational layers and questions"] .preface-record-field:first-child dt,
+  .article-content .preface-mobile-records[aria-label="Claim protocol levels and treatment"] .preface-record-field:first-child dt,
+  .article-content .preface-mobile-records[aria-label="Publication steps and gates"] .preface-record-field:first-child dt,
+  .article-content .preface-mobile-records[aria-label="Canonical schemas and artifacts"] .preface-record-field:first-child dt {
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+  }
+  .article-content .preface-reading-map-card {
+    align-items:baseline;
+    padding:16px 0 17px;
+  }
+  .article-content .preface-reading-map-card .preface-record-field:nth-child(1) dd {
+    color:var(--soft);
+    font:17px/1.5 var(--display);
+  }
+  .article-content .preface-reading-map-card .preface-record-field:nth-child(2) dd {
+    font:18px/1.45 var(--serif);
+  }
+  .article-content .preface-reading-map-card .preface-record-field:nth-child(3) {
+    margin-top:10px;
+    padding-left:54px;
+  }
+  .article-content .preface-reading-map-card .preface-record-field:nth-child(3) dd {
+    color:var(--soft);
+    font:15px/1.55 var(--serif);
+  }
+  .article-content .preface-mobile-records[aria-label="Mathematical notation and reading"] .preface-record-field:first-child dd {
+    font:19px/1.5 var(--serif);
+  }
+  .article-content .preface-mobile-records[aria-label="Mathematical notation and reading"] .preface-record-field:nth-child(2) {
+    margin-top:8px;
+  }
+  .article-content .preface-mobile-records[aria-label="Mathematical notation and reading"] .preface-record-field:nth-child(2) dd {
+    font:16px/1.58 var(--serif);
+  }
+  .article-content .preface-mobile-records[aria-label="Core terms and definitions"] .preface-record-field:first-child dd,
+  .article-content .preface-mobile-records[aria-label="Foundational layers and questions"] .preface-record-field:first-child dd,
+  .article-content .preface-mobile-records[aria-label="Claim protocol levels and treatment"] .preface-record-field:first-child dd,
+  .article-content .preface-mobile-records[aria-label="Publication steps and gates"] .preface-record-field:first-child dd,
+  .article-content .preface-mobile-records[aria-label="Canonical schemas and artifacts"] .preface-record-field:first-child dd {
+    font:19px/1.46 var(--display);
+  }
+  .article-content .preface-mobile-records[aria-label="Core terms and definitions"] .preface-record-field:nth-child(2),
+  .article-content .preface-mobile-records[aria-label="Foundational layers and questions"] .preface-record-field:nth-child(2) {
+    margin-top:9px;
+  }
+}

@@ -43,9 +43,14 @@ _ACCESSIBLE_TABLE_LABELS = (
 )
 _MOBILE_TABLES = {
     1: (("Order", "Document", "Role"), "Publication order and reading links"),
+    2: (("Layer", "Question", "Canonical schema"), "Foundational layers and questions"),
+    3: (("Term", "Definition in the series"), "Core terms and definitions"),
+    4: (("Level", "Meaning", "Treatment"), "Claim protocol levels and treatment"),
     5: (("Notation", "Reading"), "Mathematical notation and reading"),
+    6: (("Step", "Action", "Gate"), "Publication steps and gates"),
     7: (("Layer", "Schema", "Artifact"), "Canonical schemas and artifacts"),
 }
+_SOURCE_ROW_COUNTS = {1: 10, 2: 3, 3: 8, 4: 5, 5: 6, 6: 5, 7: 7}
 _SCROLL_HINT = "Scroll sideways to view all columns."
 
 
@@ -138,8 +143,9 @@ def _name_and_explain_tables(body: str) -> str:
 def _mobile_scientific_records(body: str) -> str:
     """Build small-screen definitions directly from original table cells.
 
-    Desktop retains the canonical HTML tables and native MathML. The 13
-    stacked mobile records are derived from those same source cells.
+    Desktop retains all seven canonical HTML tables and native MathML. The 44
+    mobile records are generated from their existing table cells without
+    altering manuscript prose, tables, or mathematical transcriptions.
     """
     for number, (headers, label) in _MOBILE_TABLES.items():
         pattern = re.compile(
@@ -167,7 +173,7 @@ def _mobile_scientific_records(body: str) -> str:
         if tbody is None:
             raise ValueError(f"Table {number} source rows missing")
         rows = re.findall(r"<tr\b[^>]*>([\s\S]*?)</tr>", tbody.group(1))
-        expected = {1: 10, 5: 6, 7: 7}[number]
+        expected = _SOURCE_ROW_COUNTS[number]
         if len(rows) != expected:
             raise ValueError(f"Table {number} row count differs from V3")
         cards: list[str] = []
@@ -233,4 +239,8 @@ def render_preface(body: str) -> str:
     body = _mobile_scientific_records(body)
     if body.count('class="table-scroll-hint preface-scroll-hint"') != 7:
         raise ValueError("Series Preface is missing table scrolling cues")
+    if body.count('data-preface-alternative="mobile"') != 7:
+        raise ValueError("Series Preface is missing responsive source tables")
+    if body.count('<dl class="preface-mobile-record') != sum(_SOURCE_ROW_COUNTS.values()):
+        raise ValueError("Series Preface mobile record inventory differs from V3")
     return body

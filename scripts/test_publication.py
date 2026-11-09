@@ -8,6 +8,8 @@ validate deterministic presentation. They do not independently read DOCX bytes.
 from __future__ import annotations
 
 import hashlib
+from html import unescape
+from html.parser import HTMLParser
 import json
 import re
 import unittest
@@ -17,6 +19,91 @@ from render_science import FORMULAE, enhance_scientific_presentation, render_sou
 from check_originals import Paragraphs, overlap, phrases, tokens
 from render_synthesis import render_synthesis_figures
 from render_preface import render_preface
+
+
+
+class _PrefaceCellText(HTMLParser):
+    """Extract authored table cells and mobile alternatives, retaining TeX sources."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.tables: dict[int, list[list[str]]] = {}
+        self.mobile: dict[str, list[list[str]]] = {}
+        self.table_id: int | None = None
+        self.table_rows: list[list[str]] = []
+        self.table_row: list[str] | None = None
+        self.table_cell: list[str] | None = None
+        self.section: str | None = None
+        self.section_rows: list[list[str]] = []
+        self.record: list[str] | None = None
+        self.field: list[str] | None = None
+        self.in_math = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        data = dict(attrs)
+        if tag == "table" and data.get("data-source-table"):
+            self.table_id = int(data["data-source-table"])
+            self.table_rows = []
+        if tag == "tr" and self.table_id is not None:
+            self.table_row = []
+        if tag in {"th", "td"} and self.table_row is not None:
+            self.table_cell = []
+        if tag == "section" and "preface-mobile-records" in (
+            data.get("class") or ""
+        ).split():
+            self.section = data.get("aria-label")
+            self.section_rows = []
+        if tag == "dl" and self.section is not None and "preface-mobile-record" in (
+            data.get("class") or ""
+        ).split():
+            self.record = []
+        if tag == "dd" and self.record is not None:
+            self.field = []
+        if tag == "math":
+            self.in_math = True
+            original = data.get("alttext")
+            if original is not None:
+                if self.table_cell is not None:
+                    self.table_cell.append(original)
+                if self.field is not None:
+                    self.field.append(original)
+
+    def handle_data(self, data: str) -> None:
+        if not self.in_math:
+            if self.table_cell is not None:
+                self.table_cell.append(data)
+            if self.field is not None:
+                self.field.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "math":
+            self.in_math = False
+        if tag in {"th", "td"} and self.table_cell is not None:
+            self.table_row.append("".join(self.table_cell))
+            self.table_cell = None
+        if tag == "tr" and self.table_id is not None and self.table_row is not None:
+            self.table_rows.append(self.table_row)
+            self.table_row = None
+        if tag == "table" and self.table_id is not None:
+            self.tables[self.table_id] = self.table_rows
+            self.table_id = None
+        if tag == "dd" and self.field is not None:
+            self.record.append("".join(self.field))
+            self.field = None
+        if tag == "dl" and self.record is not None:
+            self.section_rows.append(self.record)
+            self.record = None
+        if tag == "section" and self.section is not None:
+            self.mobile[self.section] = self.section_rows
+            self.section = None
+
+
+def _preface_cell(value: str, *, mobile: bool = False) -> str:
+    """Normalize rendered whitespace; the mobile arrow is the source's ->."""
+    if mobile:
+        value = value.replace("→", "->")
+        value = re.sub(r";\s*", "; ", value)
+    return re.sub(r"\s+", " ", unescape(value)).strip()
 
 
 class ManuscriptFidelityTests(unittest.TestCase):
@@ -305,7 +392,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         rendered = render_preface(enhanced)
 
         self.assertEqual(rendered.count('class="ci-lifecycle preface-lifecycle"'), 1)
-        self.assertEqual(rendered.count('<dl class="preface-mobile-record'), 23)
+        self.assertEqual(rendered.count('<dl class="preface-mobile-record'), 44)
         self.assertEqual(rendered.count('<table data-source-table='), 7)
         self.assertIn("The sequence exposes the status transitions", rendered)
         self.assertEqual(rendered.count('class="table-scroll-hint preface-scroll-hint"'), 7)
@@ -323,9 +410,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
         body, _ = publication.source_to_body(original, title, [])
         rendered = render_preface(enhance_scientific_presentation(body))
-        self.assertEqual(rendered.count('data-preface-alternative="mobile"'), 3)
-        self.assertEqual(rendered.count('<dl class="preface-mobile-record'), 23)
-        self.assertEqual(rendered.count('class="preface-record-field"'), 63)
+        self.assertEqual(rendered.count('data-preface-alternative="mobile"'), 7)
+        self.assertEqual(rendered.count('<dl class="preface-mobile-record'), 44)
+        self.assertEqual(rendered.count('class="preface-record-field"'), 118)
         self.assertIn('class="preface-architecture-source"', rendered)
         self.assertIn('class="preface-architecture-satisfaction"', rendered)
         self.assertIn("TaskSpec → ArchitectureType → ArchitectureInstance;", rendered)
@@ -342,12 +429,68 @@ class ManuscriptFidelityTests(unittest.TestCase):
         page = publication.render_essay(
             slug, title, category, description, 1, []
         )
-        self.assertEqual(page.count('<dl class="preface-mobile-record'), 23)
+        self.assertEqual(page.count('<dl class="preface-mobile-record'), 44)
         self.assertIn("Table 5. Mathematical notation and its interpretation.", page)
         self.assertIn("Table 6. Publication steps, actions, and gates.", page)
         self.assertNotIn("Notation, Reading — Notation, Reading", page)
         self.assertIn('aria-label="Original eight-stage artifact lifecycle"', page)
         self.assertNotIn('<p class="byline">', page)
+
+
+    def test_preface_all_table_cells_match_source_and_mobile_copies(self) -> None:
+        """Check every table cell, not merely table or MathML element counts."""
+        slug, title, category, description = publication.ESSAYS[1]
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(source, title, [])
+        published = publication.render_essay(
+            slug, title, category, description, 1, []
+        )
+        before = _PrefaceCellText()
+        before.feed(original)
+        after = _PrefaceCellText()
+        after.feed(published)
+        self.assertEqual(set(before.tables), set(range(1, 8)))
+        self.assertEqual(set(after.tables), set(range(1, 8)))
+        total = 0
+        for number in range(1, 8):
+            with self.subTest(table=number):
+                source_rows = before.tables[number]
+                published_rows = after.tables[number]
+                normalized = lambda rows: [
+                    [_preface_cell(cell) for cell in row] for row in rows
+                ]
+                self.assertEqual(normalized(source_rows), normalized(published_rows))
+                total += sum(len(row) for row in source_rows)
+        self.assertEqual(total, 137)
+
+        names = {
+            1: "Publication order and reading links",
+            2: "Foundational layers and questions",
+            3: "Core terms and definitions",
+            4: "Claim protocol levels and treatment",
+            5: "Mathematical notation and reading",
+            6: "Publication steps and gates",
+            7: "Canonical schemas and artifacts",
+        }
+        self.assertEqual(set(after.mobile), set(names.values()))
+        total_fields = 0
+        for number, label in names.items():
+            with self.subTest(mobile_table=number):
+                original_rows = before.tables[number][1:]
+                mobile_rows = after.mobile[label]
+                normalized_source = [
+                    [_preface_cell(cell, mobile=True) for cell in row]
+                    for row in original_rows
+                ]
+                normalized_mobile = [
+                    [_preface_cell(cell, mobile=True) for cell in row]
+                    for row in mobile_rows
+                ]
+                self.assertEqual(normalized_source, normalized_mobile)
+                total_fields += sum(len(row) for row in mobile_rows)
+        self.assertEqual(total_fields, 118)
 
 
 

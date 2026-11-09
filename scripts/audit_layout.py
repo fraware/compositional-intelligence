@@ -248,7 +248,27 @@ def main() -> int:
                                         const nativeDisplayed = compact.filter(e =>
                                             getComputedStyle(e).display !== "none").length;
                                         const bounds = lifecycle?.getBoundingClientRect();
+                                        const dts = [...article.querySelectorAll(".preface-mobile-records dt")];
+                                        const accessibleClipped = dts.filter(e => {
+                                            const st = getComputedStyle(e);
+                                            return st.position === "absolute" &&
+                                                st.clipPath === "inset(50%)" &&
+                                                st.display !== "none";
+                                        }).length;
+                                        const mobileBounds = mobile.flatMap(sec =>
+                                            [...sec.querySelectorAll(".preface-mobile-record")]
+                                            .filter(e => getComputedStyle(sec).display !== "none")
+                                            .map(e => e.getBoundingClientRect())
+                                        );
                                         return {
+                                            sourceTableNumbers: wrappers.map(w =>
+                                                Number(w.querySelector("table")?.dataset.sourceTable)),
+                                            rowCounts: mobile.map(sec =>
+                                                sec.querySelectorAll(".preface-mobile-record").length),
+                                            mobileLinks: mobile[0]?.querySelectorAll('a[href]').length,
+                                            clippedFieldLabels: accessibleClipped,
+                                            outOfBoundsRecords: mobileBounds.filter(b =>
+                                                b.left < -1 || b.right > innerWidth + 1).length,
                                             stages: lifecycle?.querySelectorAll("li").length ?? 0,
                                             lifecycleFits: !!bounds && bounds.left >= -1 &&
                                                 bounds.right <= innerWidth + 1,
@@ -257,20 +277,25 @@ def main() -> int:
                                             cards, mobileDisplayed, nativeDisplayed,
                                             cuesValid: cues.every(v => v.exists),
                                             cuesVisible: cues.filter(v => v.visible).length,
-                                            expectedCues: innerWidth <= 650 ? 4 :
+                                            expectedCues: innerWidth <= 650 ? 0 :
                                                 innerWidth <= 900 ? 7 : 0
                                         };
                                     }""")
                                     if (preface["stages"] != 8 or not preface["lifecycleFits"] or
                                         preface["tables"] != 7 or preface["linkedDocuments"] != 9 or
-                                        preface["cards"] != 23 or not preface["cuesValid"] or
+                                        str(preface["sourceTableNumbers"]) != "[1, 2, 3, 4, 5, 6, 7]" or
+                                        str(preface["rowCounts"]) != "[10, 3, 8, 5, 6, 5, 7]" or
+                                        preface["mobileLinks"] != 9 or
+                                        preface["outOfBoundsRecords"] != 0 or
+                                        preface["clippedFieldLabels"] != (78 if width <= 650 else 0) or
+                                        preface["cards"] != 44 or not preface["cuesValid"] or
                                         preface["cuesVisible"] != preface["expectedCues"] or
                                         (width <= 650 and
-                                         (preface["mobileDisplayed"] != 3 or
+                                         (preface["mobileDisplayed"] != 7 or
                                           preface["nativeDisplayed"] != 0)) or
                                         (width > 650 and
                                          (preface["mobileDisplayed"] != 0 or
-                                          preface["nativeDisplayed"] != 3))):
+                                          preface["nativeDisplayed"] != 7))):
                                         failures.append(f"{width}px {rel}: preface reading regression {preface}")
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
@@ -355,7 +380,11 @@ def main() -> int:
                                         for name, selector in (
                                             ("lifecycle", ".preface-lifecycle"),
                                             ("reading-map", '.preface-mobile-records[aria-label="Publication order and reading links"]'),
+                                            ("foundations", '.preface-mobile-records[aria-label="Foundational layers and questions"]'),
+                                            ("glossary", '.preface-mobile-records[aria-label="Core terms and definitions"]'),
+                                            ("claims", '.preface-mobile-records[aria-label="Claim protocol levels and treatment"]'),
                                             ("notation", '.preface-mobile-records[aria-label="Mathematical notation and reading"]'),
+                                            ("publication", '.preface-mobile-records[aria-label="Publication steps and gates"]'),
                                             ("schemas", '.preface-mobile-records[aria-label="Canonical schemas and artifacts"]'),
                                         ):
                                             item = page.locator(selector).first
