@@ -26,7 +26,7 @@ jobs:
         with:
           pandoc-version: '3.1.13'
       - name: Check Python syntax
-        run: python3 -m py_compile scripts/build_site.py scripts/verify_site.py scripts/verify_notation.py scripts/render_science.py scripts/render_preface.py scripts/render_semantic.py scripts/render_typed.py scripts/render_functorial.py scripts/render_lambek.py scripts/render_algebraic.py scripts/render_quantitative.py scripts/render_effectful.py scripts/audit_layout.py scripts/audit_typed_layout.py scripts/audit_quantitative_layout.py scripts/check_originals.py
+        run: python3 -m py_compile scripts/build_site.py scripts/verify_site.py scripts/verify_notation.py scripts/render_science.py scripts/render_preface.py scripts/render_semantic.py scripts/render_typed.py scripts/render_functorial.py scripts/render_lambek.py scripts/render_algebraic.py scripts/render_quantitative.py scripts/render_effectful.py scripts/audit_layout.py scripts/audit_typed_layout.py scripts/audit_quantitative_layout.py scripts/audit_effectful_layout.py scripts/check_originals.py
       - name: Test source-bound publication metadata
         run: python3 -m unittest discover -s scripts -p 'test_publication.py' -v
       - name: Build website twice and verify reproducibility
@@ -45,6 +45,8 @@ jobs:
         run: python3 scripts/audit_typed_layout.py _site --screenshots _qa
       - name: Test Quantitative Curry-Howard screen and print fidelity
         run: python3 scripts/audit_quantitative_layout.py _site --screenshots _qa
+      - name: Test Effectful and Conceptual Intelligence screen and print fidelity
+        run: python3 scripts/audit_effectful_layout.py _site --screenshots _qa
       - name: Upload visual QA screenshots
         if: always()
         uses: actions/upload-artifact@v4
