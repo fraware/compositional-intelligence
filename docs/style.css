@@ -2154,7 +2154,8 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .qc-schema-line {
     grid-template-columns:minmax(0,1fr);
     gap:1px;
-    padding:7px 0 8px;
+    margin:0;
+    padding:5px 0 6px;
   }
   .article-content .qc-schema-line code {
     font-size:13.1px;
