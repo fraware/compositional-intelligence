@@ -8,9 +8,13 @@ The authoritative manuscript and its source-bound renderer remain unchanged.
 from __future__ import annotations
 
 import argparse
+from io import BytesIO
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
+from pypdf import PdfReader
+
+from render_effectful import CAPTIONS
 
 WIDTHS = (320, 375, 650, 651, 768, 820, 828, 829, 1000, 1001, 1440)
 STAGES = ("membership", "generation", "transformation", "language",
@@ -98,6 +102,11 @@ def inspect(page) -> dict:
             nativeOverflow,
             mobileOverflow: mobile.filter(shown).filter(el =>
                 el.scrollWidth > el.clientWidth + 1).length,
+            printCaptionsStayWithTables: [...root.querySelectorAll('.ef-caption')]
+                .every(el => ['avoid','avoid-page'].includes(
+                    getComputedStyle(el).breakAfter)),
+            printNotesStayTogether: ['avoid','avoid-page'].includes(
+                getComputedStyle(root.querySelector('.ef-source-notes')).breakInside),
             pageOverflow: document.documentElement.scrollWidth > innerWidth + 1,
         };
     }""")
@@ -132,8 +141,65 @@ def failures(width: int, mode: str, actual: dict) -> list[str]:
             f"{label}: printed source tables exceed the reading column: "
             f"{actual['nativeOverflow']}"
         )
+    if mode == "print" and not actual["printCaptionsStayWithTables"]:
+        issues.append(f"{label}: table caption print-pagination policy missing")
+    if mode == "print" and not actual["printNotesStayTogether"]:
+        issues.append(f"{label}: source notes print-pagination policy missing")
     if mode == "screen" and actual["screenScroll"] != scroll_cues:
         issues.append(f"{label}: scroll guidance does not match table overflow")
+    return issues
+
+
+
+def audit_a4_document(page) -> list[str]:
+    """Verify A4 PDF pages keep every original table caption with its data.
+
+    Viewport bounds do not establish page-break fidelity. Render an A4 document
+    and inspect its extracted page text, without depending on a fixed page count.
+    """
+    pdf = page.pdf(
+        format="A4",
+        print_background=True,
+        margin={"top": "12mm", "bottom": "12mm", "left": "12mm", "right": "12mm"},
+    )
+    reader = PdfReader(BytesIO(pdf))
+    pages = [" ".join((p.extract_text() or "").split()) for p in reader.pages]
+    issues: list[str] = []
+    if not 1 <= len(pages) <= 60:
+        issues.append(f"A4: unexpected number of print pages ({len(pages)})")
+
+    for number, caption in CAPTIONS.items():
+        occurrences = [i for i, text in enumerate(pages) if caption in text]
+        if len(occurrences) != 1:
+            issues.append(
+                f"A4: Table {number} has {len(occurrences)} caption occurrences"
+            )
+            continue
+        page_index = occurrences[0]
+        following = pages[page_index].split(caption, 1)[1].strip()
+        if len(following) < 25:
+            issues.append(
+                f"A4: Table {number} caption is stranded on page {page_index + 1}"
+            )
+
+    notes_title = "Appendix E. Source-use notes"
+    note_pages = [i for i, text in enumerate(pages) if notes_title in text]
+    note_starts = (
+        "Hoare logic, PDDL, monads, algebraic effects",
+        "ReAct and Toolformer support the context",
+        "WebArena, OSWorld, tau-bench, AgentDojo",
+        "Security sources support prompt-injection and",
+        "Conceptual-transfer records are proposed as a",
+    )
+    if len(note_pages) != 1:
+        issues.append("A4: Appendix E heading is absent or duplicated")
+    else:
+        note_text = pages[note_pages[0]]
+        for fragment in note_starts:
+            if fragment not in note_text:
+                issues.append(
+                    f"A4: source-use note separated from its appendix: {fragment}"
+                )
     return issues
 
 
@@ -168,6 +234,8 @@ def main() -> int:
                         ))
                     page.emulate_media(media="print")
                     issues.extend(failures(width, "print", inspect(page)))
+                    if width == 1440:
+                        issues.extend(audit_a4_document(page))
                     if screenshots and width in (320, 1000, 1001, 1440):
                         selector = (
                             ".ef-mobile-1" if width <= 650 else
