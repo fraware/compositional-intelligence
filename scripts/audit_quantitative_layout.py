@@ -49,6 +49,7 @@ def inspect(page) -> dict:
         const pipeline = article.querySelector(".qc-pipeline");
         const steps = [...(pipeline?.querySelectorAll("ol > li") ?? [])];
         const schema = [...article.querySelectorAll(".qc-schema")];
+        const exampleLabels = [...article.querySelectorAll(".qc-example-field dt")];
         const shown = e => getComputedStyle(e).display !== "none";
         const displays = [...sources, ...alternatives].filter(shown);
         const bounds = pipeline?.getBoundingClientRect();
@@ -80,6 +81,12 @@ def inspect(page) -> dict:
             }),
             schemaCount: schema.length,
             schemaLines: article.querySelectorAll(".qc-schema-line").length,
+            exampleLabelWraps: exampleLabels.filter(el => {
+                const height = el.getBoundingClientRect().height;
+                const oneLine = Number.parseFloat(getComputedStyle(el).lineHeight);
+                return height > oneLine * 1.25;
+            }).map(el => el.textContent.trim()),
+            schemaHeight: schema[0]?.getBoundingClientRect().height ?? 0,
             schemaOverflow: schema.filter(el =>
                 el.scrollWidth > el.clientWidth + 1).length,
             visibleRecordOverflow: displays.filter(el =>
@@ -122,6 +129,16 @@ def check(width: int, mode: str, result: dict) -> list[str]:
     ):
         if not result[field]:
             errors.append(f"{label}: {field} failed")
+    if result["exampleLabelWraps"]:
+        errors.append(
+            f"{label}: source symbols wrap in example labels "
+            f"{result['exampleLabelWraps']}"
+        )
+    if width <= 375 and result["schemaHeight"] > 1500:
+        errors.append(
+            f"{label}: first appendix record consumes "
+            f"{result['schemaHeight']:.0f}px of vertical reading space"
+        )
     if result["schemaOverflow"] or result["visibleRecordOverflow"]:
         errors.append(f"{label}: schema or mobile records overflow their bounds")
     if result["pageOverflow"]:
