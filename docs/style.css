@@ -1182,7 +1182,7 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 }
 .article-content .tg-schema-fields .tg-schema-field {
   display:grid;
-  grid-template-columns:minmax(165px,240px) minmax(0,1fr);
+  grid-template-columns:minmax(180px,290px) minmax(0,1fr);
   gap:15px;
   margin:0;
   padding:9px 0;

@@ -984,6 +984,10 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
         self.assertIsNotNone(match)
         self.assertIn("font-size:clamp(12.5px,3.9vw,14px)", match.group(1))
+        self.assertIn(
+            "grid-template-columns:minmax(180px,290px) minmax(0,1fr);",
+            stylesheet,
+        )
 
 
 

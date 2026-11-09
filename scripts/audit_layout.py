@@ -436,6 +436,13 @@ def main() -> int:
                                         const textRange = document.createRange();
                                         if (benchmarkTitle) textRange.selectNodeContents(benchmarkTitle);
                                         const titleBounds = benchmarkTitle?.getBoundingClientRect();
+                                        const schemaNameWraps = [...article.querySelectorAll(
+                                            ".tg-schema-fields dt code"
+                                        )].filter(name => {
+                                            const range = document.createRange();
+                                            range.selectNodeContents(name);
+                                            return range.getClientRects().length !== 1;
+                                        }).length;
                                         return {
                                             sourceIds: source.map(e =>
                                                 Number(e.querySelector("table")?.dataset.sourceTable)),
@@ -451,6 +458,7 @@ def main() -> int:
                                             benchmarkTitleOverflow: !!titleBounds &&
                                                 (titleBounds.left < -1 ||
                                                  titleBounds.right > innerWidth + 1),
+                                            schemaNameWraps,
                                             outOfBounds: bounds.filter(b =>
                                                 b.left < -1 || b.right > innerWidth + 1).length,
                                             sequenceCount: article.querySelectorAll(".tg-sequence").length,
@@ -480,6 +488,7 @@ def main() -> int:
                                         typed["symbolMobile"] != ["Gamma", "A", "t", "theta", "P_theta"] or
                                         typed["benchmarkTitleLines"] != 1 or
                                         typed["benchmarkTitleOverflow"] or
+                                        typed["schemaNameWraps"] != 0 or
                                         typed["sequenceCount"] != 2 or typed["sequenceStages"] != 9 or
                                         typed["examples"] != 4 or typed["exampleFields"] != 13 or
                                         typed["recordPairs"] != 1 or typed["splitRecords"] != 2 or
