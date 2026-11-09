@@ -215,14 +215,14 @@ def _specification(lines: list[str]) -> str:
         )
     formula = mathml(
         lines[0],
-        r"\operatorname{ArchitectureSpec}=(O,T,\Sigma,L,G,R,\Phi,E,V)"
+        r"\begin{gathered}\operatorname{ArchitectureSpec}=\\"
+        r"(O,T,\Sigma,L,G,R,\Phi,E,V)\end{gathered}"
     )
     return (
         '<section class="aa-specification" role="group" '
         'aria-label="Authored ArchitectureSpec tuple and fields">'
-        '<div class="aa-spec-formula" role="group" tabindex="0" '
-        'aria-label="ArchitectureSpec formula">' + formula + "</div>"
-        '<p class="aa-math-cue">Scroll horizontally to read the full equation.</p>'
+        '<div class="aa-spec-formula" role="group" '
+        'aria-label="Complete ArchitectureSpec formula">' + formula + "</div>"
         '<dl>' + "".join(items) + "</dl></section>"
     )
 
