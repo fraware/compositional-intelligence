@@ -343,7 +343,7 @@ def main() -> int:
                                         flagship["cards"] != 52 or flagship["fields"] != 151 or
                                         flagship["badHints"] or flagship["mobileCaptionLinks"] != 9 or
                                         flagship["cardOverflow"] or flagship["mathOutliers"] or
-                                        flagship["hintsShown"] != (3 if width == 768 else 0) or
+                                        flagship["hintsShown"] != (6 if width == 768 else 3 if width >= 1001 else 0) or
                                         (width <= 650 and
                                          (flagship["sourceShown"] != 0 or flagship["mobileShown"] != 9)) or
                                         (width > 650 and
@@ -735,7 +735,7 @@ def main() -> int:
                                         quantitative["hints"] != 10 or
                                         quantitative["badHints"] or
                                         quantitative["shownHints"] !=
-                                            (0 if width <= 650 else 7) or
+                                            (0 if width <= 650 else 7 if width <= 828 else 1) or
                                         quantitative["stages"] != 5 or
                                         not quantitative["stageFlow"] or
                                         not quantitative["stageArrows"] or
@@ -873,7 +873,7 @@ def main() -> int:
                                     if (algebraic["source"] != 13 or algebraic["mobile"] != 13 or
                                         algebraic["cards"] != 93 or algebraic["tableFields"] != 231 or
                                         algebraic["hints"] != 13 or algebraic["badHints"] or
-                                        algebraic["visibleHints"] != (0 if width <= 650 else 7) or
+                                        algebraic["visibleHints"] != (0 if width <= 650 else 7 if width <= 828 else 0) or
                                         algebraic["sequences"] != 2 or algebraic["stages"] != 8 or
                                         not algebraic["stageFlow"] or not algebraic["stageMarks"] or
                                         algebraic["specification"] != 1 or algebraic["symbols"] != 9 or
@@ -946,7 +946,7 @@ def main() -> int:
                                         lambek["hints"] != 14 or
                                         lambek["schemaOverflows"] or
                                         lambek["visibleHints"] !=
-                                            (0 if width <= 650 else 6 if width <= 1000 else 1) or
+                                            (0 if width <= 650 else 6 if width <= 828 else 1) or
                                         lambek["pipeline"] != 4 or
                                         lambek["sequence"] != 4 or lambek["nodes"] != 4 or
                                         lambek["arrows"] != 4 or lambek["overflow"] or
@@ -1248,7 +1248,7 @@ def main() -> int:
                                             typed["scrollHintsVisible"] != 0)) or
                                         (width > 650 and (
                                             typed["sourceVisible"] != 15 or typed["mobileVisible"] != 0 or
-                                            typed["scrollHintsVisible"] != (15 if width <= 1000 else 0)))):
+                                            typed["scrollHintsVisible"] != (11 if width <= 828 else 1)))):
                                         failures.append(
                                             f"{width}px {rel}: typed generation reading regression {typed}"
                                         )
@@ -1353,7 +1353,7 @@ def main() -> int:
                                             functorial["mobileVisible"] != 0 or
                                             functorial["shownHints"] !=
                                                 (functorial["threeAndFourColumnTables"]
-                                                 if width <= 1000 else 0)))):
+                                                 if width <= 828 else 1)))):
                                         failures.append(
                                             f"{width}px {rel}: functorial source reading regression {functorial}"
                                         )
