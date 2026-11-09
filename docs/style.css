@@ -902,6 +902,19 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .sp-source-schema,
   .article-content .sp-mobile-record {break-inside:avoid}
 }
+/* At narrow print widths four-column source tables clip technical content.
+   The responsive records carry the same verified cells and column labels. */
+@media print and (max-width:650px) {
+  .article-content .table-scroll[data-sp-alternative="mobile"] {
+    display:none;
+  }
+  .article-content .sp-mobile-records {
+    display:block;
+  }
+  .article-content .sp-mobile-record {
+    break-inside:avoid;
+  }
+}
 
 
 /* Preserve the source distinction between a weaker statement and a witness. */
