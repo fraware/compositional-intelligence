@@ -26,7 +26,7 @@ jobs:
         with:
           pandoc-version: '3.1.13'
       - name: Check Python syntax
-        run: python3 -m py_compile scripts/build_site.py scripts/verify_site.py scripts/verify_notation.py scripts/render_science.py scripts/render_preface.py scripts/render_semantic.py scripts/render_typed.py scripts/render_functorial.py scripts/audit_layout.py scripts/check_originals.py
+        run: python3 -m py_compile scripts/build_site.py scripts/verify_site.py scripts/verify_notation.py scripts/render_science.py scripts/render_preface.py scripts/render_semantic.py scripts/render_typed.py scripts/render_functorial.py scripts/render_lambek.py scripts/audit_layout.py scripts/check_originals.py
       - name: Test source-bound publication metadata
         run: python3 -m unittest discover -s scripts -p 'test_publication.py' -v
       - name: Build website twice and verify reproducibility

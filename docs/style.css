@@ -1413,3 +1413,129 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     font-size:14px;
   }
 }
+
+
+/* Lambek Machines: the author's mathematics, records and tables across screens. */
+.article-content .lm-sequence,.article-content .lm-pipeline,
+.article-content .lm-square-figure {
+  margin:29px 0 35px;padding:23px 0;border-block:1px solid var(--line);
+}
+.article-content .lm-sequence ol,.article-content .lm-pipeline ol {
+  margin:0;padding:0;list-style:none;display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;
+}
+.article-content .lm-sequence li,.article-content .lm-pipeline li {
+  display:flex;flex-direction:column;justify-content:center;min-width:0;
+  min-height:91px;padding:12px 9px;margin:0;border:1px solid var(--line);
+  font:16px/1.45 var(--serif);overflow-wrap:break-word;
+}
+.article-content .lm-sequence ol {counter-reset:lm-step;}
+.article-content .lm-sequence li {counter-increment:lm-step;}
+.article-content .lm-sequence li::before {
+  content:counter(lm-step,decimal-leading-zero);display:block;
+  font:11px/1.3 var(--sans);color:var(--soft);margin-bottom:7px;
+}
+.article-content .lm-pipeline li {overflow-x:auto;text-align:center;padding-inline:5px;}
+.article-content .lm-pipeline li math {font-size:1em;}
+.article-content .lm-pipeline li + li::before {
+  content:"↓";font:16px/1.2 var(--serif);color:var(--soft);margin-bottom:5px;
+}
+.article-content .lm-square {
+  display:grid;grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr);
+  grid-template-rows:auto 42px auto;gap:4px;
+}
+.article-content .lm-node {
+  display:flex;align-items:center;justify-content:center;min-width:0;
+  min-height:96px;padding:12px 8px;border:1px solid var(--line);
+  text-align:center;font:17px/1.5 var(--serif);overflow-wrap:break-word;
+}
+.article-content .lm-tl {grid-area:1 / 1;}
+.article-content .lm-tr {grid-area:1 / 3;}
+.article-content .lm-bl {grid-area:3 / 1;}
+.article-content .lm-br {grid-area:3 / 3;}
+.article-content .lm-arrow {
+  display:flex;align-items:center;justify-content:center;
+  font:16px/1.4 var(--serif);color:var(--soft);white-space:nowrap;
+}
+.article-content .lm-ta {grid-area:1 / 2;}
+.article-content .lm-la {grid-area:2 / 1;}
+.article-content .lm-ra {grid-area:2 / 3;}
+.article-content .lm-ba {grid-area:3 / 2;}
+.article-content .lm-square-figure figcaption {
+  display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;
+  gap:7px 14px;margin:18px 0 0;padding:14px 6px 0;border-top:1px solid var(--line);
+  font:17px/1.5 var(--serif);text-align:center;
+}
+.article-content .lm-square-figure figcaption span:first-child {
+  color:var(--soft);font:12px/1.5 var(--sans);
+}
+.article-content .lm-schema {
+  margin:19px 0 30px;padding:12px 0;border-block:1px solid var(--line);
+  overflow-x:auto;
+}
+.article-content .lm-schema pre {
+  margin:0;padding:8px 2px;background:transparent;border:0;
+  overflow-x:auto;white-space:pre;
+  font:13px/1.8 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+.article-content .lm-schema code {white-space:inherit;font:inherit;}
+.article-content .lm-mobile,.article-content .lm-hint {display:none;}
+@media (min-width:651px) and (max-width:1000px) {
+  .article-content .lm-hint:has(+ .table-scroll[data-columns="3"]),
+  .article-content .lm-hint:has(+ .table-scroll[data-columns="4"]) {
+    display:block;color:var(--soft);margin:8px 0 12px;
+    font:italic 13px/1.5 var(--serif);
+  }
+}
+@media (max-width:650px) {
+  .article-content .lm-sequence ol,.article-content .lm-pipeline ol {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .article-content .lm-sequence li,.article-content .lm-pipeline li {
+    min-height:78px;padding:10px 6px;font-size:14px;
+  }
+  .article-content .lm-pipeline li math {font-size:.91em;}
+  .article-content .lm-square {
+    grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);
+    grid-template-rows:auto 37px auto;
+  }
+  .article-content .lm-node {font-size:14px;line-height:1.42;padding:9px 5px;}
+  .article-content .lm-arrow {font-size:13px;}
+  .article-content .lm-square-figure figcaption {font-size:15px;}
+  .article-content .table-scroll[data-lm-alternative="mobile"],
+  .article-content .lm-hint {display:none;}
+  .article-content .lm-mobile {display:block;margin:6px 0 36px;}
+  .article-content .lm-card {
+    margin:0;padding:17px 0 19px;border-top:1px solid var(--line);
+  }
+  .article-content .lm-card:last-child {border-bottom:1px solid var(--line);}
+  .article-content .lm-field + .lm-field {margin-top:12px;}
+  .article-content .lm-field dt {
+    margin:0 0 4px;color:var(--soft);font:12px/1.5 var(--sans);
+  }
+  .article-content .lm-field dd {
+    margin:0;min-width:0;max-width:100%;overflow-wrap:break-word;
+    font:16px/1.56 var(--serif);
+  }
+  .article-content .lm-field:first-child dd {font:18px/1.45 var(--display);}
+  .article-content .lm-mobile-1 .lm-field:first-child dd,
+  .article-content .lm-mobile-4 .lm-field:first-child dd,
+  .article-content .lm-mobile-6 .lm-field:first-child dd,
+  .article-content .lm-mobile-12 .lm-field:first-child dd {
+    font:13px/1.45 var(--sans);color:var(--soft);
+  }
+  .article-content .lm-card .lm-field:first-child dt {
+    position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+    overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);
+    white-space:nowrap;border:0;
+  }
+  .article-content .lm-schema pre {font-size:12.5px;}
+}
+@media print {
+  .article-content .table-scroll[data-lm-alternative="mobile"] {display:block;}
+  .article-content .lm-mobile,.article-content .lm-hint {display:none;}
+  .article-content .lm-sequence,.article-content .lm-pipeline,
+  .article-content .lm-square-figure,.article-content .lm-schema {
+    break-inside:avoid;
+  }
+}

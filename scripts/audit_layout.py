@@ -297,6 +297,51 @@ def main() -> int:
                                          (preface["mobileDisplayed"] != 0 or
                                           preface["nativeDisplayed"] != 7))):
                                         failures.append(f"{width}px {rel}: preface reading regression {preface}")
+                                if rel == "essays/lambek-machines.html":
+                                    lambek = page.evaluate("""() => {
+                                        const root = document.querySelector(".article-content");
+                                        const a = [...root.querySelectorAll(
+                                            ".table-scroll[data-lm-alternative='mobile']")];
+                                        const b = [...root.querySelectorAll(".lm-mobile")];
+                                        const visible = e => getComputedStyle(e).display !== "none";
+                                        const elements = [...root.querySelectorAll(
+                                            ".lm-sequence,.lm-pipeline,.lm-square-figure,.lm-schema")];
+                                        const overflow = elements.filter(e => {
+                                            const box = e.getBoundingClientRect();
+                                            return box.left < -1 ||
+                                                box.right > document.documentElement.clientWidth + 1;
+                                        }).length;
+                                        return {
+                                            source: a.length, mobile: b.length,
+                                            cards: root.querySelectorAll(".lm-card").length,
+                                            fields: root.querySelectorAll(".lm-field").length,
+                                            records: root.querySelectorAll(".lm-schema").length,
+                                            pipeline: root.querySelectorAll(".lm-pipeline li").length,
+                                            sequence: root.querySelectorAll(".lm-sequence li").length,
+                                            nodes: root.querySelectorAll(".lm-node").length,
+                                            arrows: root.querySelectorAll(".lm-arrow").length,
+                                            caption: root.querySelector("#table-9-caption").textContent,
+                                            sourceShown: a.filter(visible).length,
+                                            mobileShown: b.filter(visible).length,
+                                            overflow,
+                                        };
+                                    }""")
+                                    if (lambek["source"] != 14 or lambek["mobile"] != 14 or
+                                        lambek["cards"] != 98 or lambek["fields"] != 237 or
+                                        lambek["records"] != 4 or lambek["pipeline"] != 4 or
+                                        lambek["sequence"] != 4 or lambek["nodes"] != 4 or
+                                        lambek["arrows"] != 4 or lambek["overflow"] or
+                                        lambek["caption"] !=
+                                            "Table 9. Pilot evaluation tracks and recommended sizes." or
+                                        (width <= 650 and
+                                         (lambek["sourceShown"] != 0 or
+                                          lambek["mobileShown"] != 14)) or
+                                        (width > 650 and
+                                         (lambek["sourceShown"] != 14 or
+                                          lambek["mobileShown"] != 0))):
+                                        failures.append(
+                                            f"{width}px {rel}: Lambek presentation regression {lambek}"
+                                        )
                                 if rel == "essays/semantic-participation.html":
                                     semantic = page.evaluate("""() => {
                                         const article = document.querySelector(".article-content");

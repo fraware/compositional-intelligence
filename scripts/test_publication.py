@@ -1130,5 +1130,92 @@ class ManuscriptFidelityTests(unittest.TestCase):
 
 
 
+    def test_lambek_source_bound_presentation(self) -> None:
+        """Lambek cells, records, diagram topology and annotated math stay exact."""
+        from render_lambek import render_lambek_machines, ROWS, SCHEMAS, CAPTIONS
+        slug, title, category, description = publication.ESSAYS[5]
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(source, title, [])
+        rendered = render_lambek_machines(original)
+        page = publication.render_essay(
+            slug, title, category, description, 5, []
+        )
+        self.assertIn('class="lm-sequence"', page)
+        self.assertIn('class="lm-pipeline"', page)
+        self.assertIn('class="lm-square-figure"', page)
+        self.assertEqual(page.count('class="lm-node '), 4)
+        self.assertEqual(page.count('class="lm-arrow '), 4)
+        self.assertEqual(page.count('class="lm-schema"'), 4)
+        self.assertEqual(page.count('data-lm-alternative="mobile"'), 14)
+        self.assertEqual(page.count('class="lm-card"'), 98)
+        self.assertEqual(page.count('class="lm-field"'), 237)
+        self.assertIn('alttext="T(f(x)) approx g(T(x))"', page)
+        for transcription in (
+            "w_1, ..., w_n",
+            "-&gt; tau_1, ..., tau_n",
+            "-&gt; pi : tau_1 tensor ... tensor tau_n =&gt; S",
+            "-&gt; [[pi]](v_1, ..., v_n)",
+        ):
+            self.assertIn('alttext="' + transcription + '"', page)
+        self.assertIn('id="table-9-caption">' + CAPTIONS[9], page)
+        self.assertNotIn('>8.4</a>', page)
+        for anchor, (first, count) in SCHEMAS.items():
+            with self.subTest(schema=anchor):
+                section = re.search(
+                    rf'<h[23] id="{re.escape(anchor)}">[^<]+</h[23]>\s*'
+                    r'<div class="lm-schema"[^>]*><pre><code>([\s\S]*?)'
+                    r'</code></pre></div>', rendered
+                )
+                self.assertIsNotNone(section)
+                self.assertEqual(len(section.group(1).split("\n")), count)
+                self.assertTrue(section.group(1).startswith(first))
+        cells_checked = 0
+        for n in range(1, 15):
+            with self.subTest(table=n):
+                expression = (rf'<table data-source-table="{n}" id="table-{n}">'
+                              r'[\s\S]*?</table>')
+                old = re.search(expression, original)
+                new = re.search(expression, rendered)
+                self.assertIsNotNone(old)
+                self.assertIsNotNone(new)
+                def neutralize(html: str) -> str:
+                    html = re.sub(
+                        r'<caption class="visually-hidden">[^<]*</caption>',
+                        '<caption></caption>', html
+                    )
+                    return re.sub(r'<a href="[^"]+">([^<]+)</a>', r'\1', html)
+                self.assertEqual(neutralize(old.group()), neutralize(new.group()))
+                tbody = re.search(r'<tbody>([\s\S]*?)</tbody>', old.group())
+                rows = re.findall(r'<tr\b[^>]*>([\s\S]*?)</tr>', tbody.group(1))
+                self.assertEqual(len(rows), ROWS[n - 1])
+                original_cells = [
+                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>', row)
+                    for row in rows
+                ]
+                alternative = re.search(
+                    rf'<section class="lm-mobile lm-mobile-{n}" '
+                    rf'aria-labelledby="table-{n}-caption">'
+                    r'([\s\S]*?)</section>', rendered
+                )
+                self.assertIsNotNone(alternative)
+                cards = re.findall(
+                    r'<dl class="lm-card">([\s\S]*?)</dl>',
+                    alternative.group(1)
+                )
+                self.assertEqual(len(cards), len(rows))
+                for original_row, card in zip(original_cells, cards, strict=True):
+                    copied = re.findall(r'<dd>([\s\S]*?)</dd>', card)
+                    self.assertEqual(original_row, [
+                        re.sub(r'<a href="[^"]+">([^<]+)</a>', r'\1', v)
+                        for v in copied
+                    ])
+                    cells_checked += len(copied)
+        self.assertEqual(cells_checked, 237)
+        with self.assertRaises(ValueError):
+            render_lambek_machines(rendered)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -28,6 +28,7 @@ from render_preface import render_preface
 from render_semantic import render_semantic_participation
 from render_typed import render_typed_generativity
 from render_functorial import render_functorial_diagram, render_functorial_tables
+from render_lambek import render_lambek_machines
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://fraware.github.io/compositional-intelligence/"
@@ -383,6 +384,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_synthesis_figures(body)
     if slug == "functorial-consistency":
         body = render_functorial_diagram(body)
+    if slug == "lambek-machines":
+        body = render_lambek_machines(body)
     body = enhance_scientific_presentation(body)
     if slug == "series-preface":
         body = render_preface(body)
