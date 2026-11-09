@@ -180,7 +180,7 @@ def link_reader_map(body: str) -> str:
 def _lines(markup: str) -> list[str]:
     if re.search(r"<(?!br\s*/?>)", markup, re.I):
         raise ValueError("Unexpected markup inside a source block quotation")
-    return [unescape(part) for part in re.split(r"<br\s*/?>", markup)]
+    return [unescape(part).strip() for part in re.split(r"<br\s*/?>", markup)]
 
 
 def _source_code(text: str) -> str:
