@@ -746,7 +746,8 @@ def main() -> int:
                                                        preceding?.classList.contains("sp-scroll-hint") ||
                                                        preceding?.classList.contains("tg-scroll-hint") ||
                                                        preceding?.classList.contains("fc-scroll-hint") ||
-                                                       preceding?.classList.contains("lm-hint"))
+                                                       preceding?.classList.contains("lm-hint") ||
+                                                       preceding?.classList.contains("aa-hint"))
                                           ? preceding.previousElementSibling : preceding;
                                         if (!t || !t.tHead || !t.tBodies.length ||
                                             !t.caption || !t.caption.classList.contains("visually-hidden") ||
@@ -781,11 +782,14 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         const compactLambek = !!w.dataset.lmAlternative &&
                                             getComputedStyle(w).display === "none";
+                                        const compactAlgebraic = !!w.dataset.aaAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
                                             !compactSquare && !compactPreface &&
                                             !compactSemantic && !compactTyped &&
-                                            !compactFunctorial && !compactLambek) return true;
+                                            !compactFunctorial && !compactLambek &&
+                                             !compactAlgebraic) return true;
                                         return false;
                                       }).length
                                 })""")
