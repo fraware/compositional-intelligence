@@ -601,6 +601,27 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     for row in mobile_rows
                 ]
                 self.assertEqual(normalized_source, normalized_mobile)
+                # A field value without its source column heading is an
+                # incomplete mobile translation even if the cells match.
+                section = re.search(
+                    r'<section class="preface-mobile-records" aria-label="' +
+                    re.escape(label) + r'">([\s\S]*?)</section>',
+                    published
+                )
+                self.assertIsNotNone(section)
+                cards = re.findall(
+                    r'<dl class="preface-mobile-record[^"]*">'
+                    r'([\s\S]*?)</dl>',
+                    section.group(1)
+                )
+                self.assertEqual(len(cards), len(original_rows))
+                source_headers = before.tables[number][0]
+                for card in cards:
+                    self.assertEqual(
+                        re.findall(r"<dt>([^<]+)</dt>", card),
+                        source_headers,
+                        f"Source table {number} column labels changed in mobile record",
+                    )
                 total_fields += sum(len(row) for row in mobile_rows)
         self.assertEqual(total_fields, 118)
 
