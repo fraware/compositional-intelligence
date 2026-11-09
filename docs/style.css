@@ -1240,3 +1240,150 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     font-size:clamp(12.5px,3.9vw,14px);
   }
 }
+
+
+/* Functorial Consistency: source-derived commutation diagram and data records. */
+.article-content .fc-commuting {
+  margin:31px 0 38px;
+  padding:23px 0 20px;
+  border-block:1px solid var(--line);
+}
+.article-content .fc-square-grid {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 52px minmax(0,1fr);
+  grid-template-rows:auto 45px auto;
+  column-gap:8px;
+  align-items:stretch;
+}
+.article-content .fc-square-node {
+  min-width:0;
+  min-height:100px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:15px 13px;
+  border:1px solid var(--line);
+  text-align:center;
+}
+.article-content .fc-node-description {
+  display:block;
+  margin-bottom:8px;
+  color:var(--soft);
+  font:12px/1.4 var(--sans);
+}
+.article-content .fc-node-math {
+  display:block;
+  min-width:0;
+  font:21px/1.4 var(--serif);
+  overflow-wrap:break-word;
+}
+.article-content .fc-node-math math {max-width:100%;vertical-align:middle;}
+.article-content .fc-horizontal-arrow,
+.article-content .fc-down-arrow {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font:18px/1.4 var(--serif);
+  color:var(--ink);
+  white-space:nowrap;
+}
+.article-content .fc-commuting figcaption {
+  display:flex;
+  justify-content:center;
+  align-items:baseline;
+  flex-wrap:wrap;
+  gap:7px 16px;
+  padding:15px 7px 0;
+  margin-top:24px;
+  border-top:1px solid var(--line);
+  font:17px/1.55 var(--serif);
+  text-align:center;
+}
+.article-content .fc-condition-label {
+  color:var(--soft);
+  font:12px/1.5 var(--sans);
+}
+.article-content .fc-condition-formula math {
+  font-size:1.15em;
+  vertical-align:middle;
+}
+.article-content .fc-mobile-records,
+.article-content .fc-scroll-hint {display:none;}
+@media (min-width:651px) and (max-width:1000px) {
+  .article-content .fc-scroll-hint:has(+ .table-scroll[data-columns="3"]),
+  .article-content .fc-scroll-hint:has(+ .table-scroll[data-columns="4"]) {
+    display:block;
+    margin:9px 0 12px;
+    color:var(--soft);
+    font:italic 13px/1.55 var(--serif);
+  }
+}
+@media (max-width:650px) {
+  .article-content .fc-commuting {margin:25px 0 32px;padding:19px 0 17px;}
+  .article-content .fc-square-grid {
+    grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);
+    grid-template-rows:auto 38px auto;
+    column-gap:4px;
+  }
+  .article-content .fc-square-node {padding:11px 6px;min-height:96px;}
+  .article-content .fc-node-description {font-size:11px;}
+  .article-content .fc-node-math {font-size:17px;}
+  .article-content .fc-horizontal-arrow,
+  .article-content .fc-down-arrow {font-size:15px;}
+  .article-content .fc-commuting figcaption {margin-top:18px;font-size:15px;}
+  .article-content .table-scroll[data-fc-alternative="mobile"],
+  .article-content .fc-scroll-hint {display:none;}
+  .article-content .fc-mobile-records {display:block;margin:7px 0 35px;}
+  .article-content .fc-mobile-record {
+    margin:0;
+    padding:15px 0 18px;
+    border-top:1px solid var(--line);
+  }
+  .article-content .fc-mobile-record:last-child {border-bottom:1px solid var(--line);}
+  .article-content .fc-record-field + .fc-record-field {margin-top:12px;}
+  .article-content .fc-record-field dt {
+    margin:0 0 4px;
+    color:var(--soft);
+    font:12px/1.5 var(--sans);
+    letter-spacing:.025em;
+  }
+  .article-content .fc-record-field dd {
+    margin:0;
+    min-width:0;
+    max-width:100%;
+    font:16px/1.57 var(--serif);
+    overflow-wrap:break-word;
+  }
+  .article-content .fc-record-field:first-child dd {
+    font:18px/1.46 var(--display);
+  }
+  .article-content .fc-record-field:first-child dt {
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+  }
+  .article-content .fc-mobile-table-2 .fc-record-field:first-child dd,
+  .article-content .fc-mobile-table-8 .fc-record-field:first-child dd,
+  .article-content .fc-mobile-table-9 .fc-record-field:first-child dd,
+  .article-content .fc-mobile-table-16 .fc-record-field:first-child dd {
+    font:14px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+    overflow-wrap:anywhere;
+  }
+  .article-content .fc-mobile-table-17 .fc-record-field:nth-child(3) dd {
+    font:16px/1.62 var(--serif);
+  }
+}
+@media print {
+  .article-content .table-scroll[data-fc-alternative="mobile"] {display:block;}
+  .article-content .fc-mobile-records,
+  .article-content .fc-scroll-hint {display:none;}
+  .article-content .fc-commuting,
+  .article-content .fc-mobile-record {break-inside:avoid;}
+}

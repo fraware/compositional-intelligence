@@ -21,6 +21,7 @@ from render_synthesis import render_synthesis_figures
 from render_preface import render_preface
 from render_semantic import render_semantic_participation, _HEADERS, _ROW_COUNTS
 from render_typed import render_typed_generativity, _HEADERS as TG_HEADERS, _ROW_COUNTS as TG_ROWS
+from render_functorial import render_functorial_diagram, render_functorial_tables, HEADERS as FC_HEADERS, ROW_COUNTS as FC_ROWS, SOURCE_TABLE_LABELS
 
 
 
@@ -988,6 +989,136 @@ class ManuscriptFidelityTests(unittest.TestCase):
             "grid-template-columns:minmax(180px,290px) minmax(0,1fr);",
             stylesheet,
         )
+
+
+    def test_functorial_original_tables_match_every_mobile_field(self) -> None:
+        """Preserve all 419 source cells across 19 source tables and mobile views."""
+        slug, title, category, description = publication.ESSAYS[4]
+        text = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        source, _ = publication.source_to_body(text, title, [])
+        source = publication.enhance_scientific_presentation(
+            render_functorial_diagram(source)
+        )
+        rendered = render_functorial_tables(source)
+        page = publication.render_essay(slug, title, category, description, 4, [])
+        self.assertIn(rendered, page)
+        self.assertEqual(page.count('data-fc-alternative="mobile"'), 19)
+        self.assertEqual(page.count('<dl class="fc-mobile-record">'), 156)
+        self.assertEqual(page.count('class="fc-record-field"'), 419)
+        self.assertEqual(sum(FC_ROWS.values()), 156)
+
+        source_cells = 0
+        mobile_cells = 0
+        for number in range(1, 20):
+            with self.subTest(table=number):
+                regex = (
+                    rf'<table data-source-table="{number}" id="table-{number}">'
+                    r'[\s\S]*?</table>'
+                )
+                original = re.search(regex, source)
+                output = re.search(regex, rendered)
+                self.assertIsNotNone(original)
+                self.assertIsNotNone(output)
+                def generated_caption_empty(html: str) -> str:
+                    return re.sub(
+                        r'<caption class="visually-hidden">[^<]*</caption>',
+                        '<caption class="visually-hidden"></caption>',
+                        html,
+                    )
+                self.assertEqual(
+                    generated_caption_empty(original.group()),
+                    generated_caption_empty(output.group()),
+                )
+                tbody = re.search(r'<tbody>([\s\S]*?)</tbody>', original.group())
+                self.assertIsNotNone(tbody)
+                rows = re.findall(r'<tr\b[^>]*>([\s\S]*?)</tr>', tbody.group(1))
+                self.assertEqual(len(rows), FC_ROWS[number])
+                original_cells = [
+                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>', row)
+                    for row in rows
+                ]
+                self.assertTrue(all(len(row) == len(FC_HEADERS[number])
+                                    for row in original_cells))
+                mobile = re.search(
+                    rf'<section class="fc-mobile-records fc-mobile-table-{number}" '
+                    rf'aria-labelledby="table-{number}-caption">'
+                    r'([\s\S]*?)</section>', rendered
+                )
+                self.assertIsNotNone(mobile)
+                cards = re.findall(
+                    r'<dl class="fc-mobile-record">([\s\S]*?)</dl>',
+                    mobile.group(1)
+                )
+                self.assertEqual(len(cards), len(original_cells))
+                for row, card in zip(original_cells, cards, strict=True):
+                    self.assertEqual(
+                        row, re.findall(r'<dd>([\s\S]*?)</dd>', card)
+                    )
+                    source_cells += len(row)
+                    mobile_cells += len(row)
+        self.assertEqual(source_cells, 419)
+        self.assertEqual(mobile_cells, 419)
+
+    def test_functorial_diagram_preserves_original_path_condition(self) -> None:
+        """Retain both authorial routes and their explicitly qualified agreement."""
+        slug, title, category, description = publication.ESSAYS[4]
+        text = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        source, _ = publication.source_to_body(text, title, [])
+        self.assertIn("T(f(x)) ~ g(T(x))</p>", source)
+        self.assertIn("source object x -- f --&gt;", source)
+        diagram = render_functorial_diagram(source)
+        self.assertEqual(diagram.count('class="fc-commuting"'), 1)
+        self.assertEqual(diagram.count('class="fc-square-node'), 4)
+        self.assertEqual(diagram.count('class="fc-horizontal-arrow"'), 2)
+        self.assertEqual(diagram.count('class="fc-down-arrow"'), 2)
+        self.assertEqual(diagram.count('<figcaption>'), 1)
+        self.assertIn('class="fc-condition-formula">T(f(x)) ~ g(T(x))', diagram)
+        self.assertIn('class="fc-node-math">g(T(x))</span>', diagram)
+        self.assertNotIn("source object x -- f --&gt;", diagram)
+        with self.assertRaises(ValueError):
+            render_functorial_diagram(diagram)
+        page = publication.render_essay(slug, title, category, description, 4, [])
+        self.assertIn('alttext="T(f(x)) ~ g(T(x))"', page)
+        self.assertIn('encoding="application/x-tex"', page)
+        self.assertEqual(page.count('class="fc-commuting"'), 1)
+        self.assertEqual(page.count('<figcaption>'), 1)
+
+    def test_functorial_captions_preserve_original_visible_labels(self) -> None:
+        """Reader-visible captions remain authored; AT captions describe the same table."""
+        slug, title, category, description = publication.ESSAYS[4]
+        source, _ = publication.source_to_body(
+            (publication.ROOT / "essays" / f"{slug}.md").read_text(
+                encoding="utf-8"
+            ), title, []
+        )
+        page = publication.render_essay(slug, title, category, description, 4, [])
+        for number, label in SOURCE_TABLE_LABELS.items():
+            with self.subTest(table=number):
+                visible = re.search(
+                    rf'<p>(Table {label}\. [^<]+)</p>',
+                    source
+                )
+                self.assertIsNotNone(visible)
+                self.assertIn(visible.group(), page)
+                paragraph = re.search(
+                    rf'<p class="table-display-caption" '
+                    rf'id="table-{number}-caption">([^<]+)</p>',
+                    page
+                )
+                self.assertIsNotNone(paragraph)
+                self.assertEqual(paragraph.group(1).split(" — ")[0],
+                                 visible.group(1))
+                self.assertGreaterEqual(len(paragraph.group(1)), 30)
+                self.assertIn(
+                    '<caption class="visually-hidden">' +
+                    paragraph.group(1) + '</caption>',
+                    page
+                )
+        self.assertEqual(page.count('class="fc-scroll-hint"'), 19)
 
 
 

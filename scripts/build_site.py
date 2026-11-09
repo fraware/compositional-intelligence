@@ -27,6 +27,7 @@ from render_synthesis import render_synthesis_figures
 from render_preface import render_preface
 from render_semantic import render_semantic_participation
 from render_typed import render_typed_generativity
+from render_functorial import render_functorial_diagram, render_functorial_tables
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "https://fraware.github.io/compositional-intelligence/"
@@ -380,6 +381,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_synthesis_table_math(body)
     if slug == "compositional-intelligence":
         body = render_synthesis_figures(body)
+    if slug == "functorial-consistency":
+        body = render_functorial_diagram(body)
     body = enhance_scientific_presentation(body)
     if slug == "series-preface":
         body = render_preface(body)
@@ -387,6 +390,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_semantic_participation(body)
     if slug == "typed-generativity":
         body = render_typed_generativity(body)
+    if slug == "functorial-consistency":
+        body = render_functorial_tables(body)
     before = ESSAYS[position - 1] if position > 0 else None
     after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None
     prev_link = (f'<div class="previous"><span>Previous</span><a href="{esc(before[0])}.html">{esc(before[1])}</a></div>'

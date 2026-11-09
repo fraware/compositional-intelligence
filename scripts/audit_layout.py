@@ -129,7 +129,7 @@ def main() -> int:
                                               return false;
                                             }
                                              const alternate = e.closest(
-                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile']"
+                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile']"
                                              );
                                              if (alternate && getComputedStyle(alternate).display === "none") {
                                                return false;
@@ -504,6 +504,92 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: typed generation reading regression {typed}"
                                         )
+                                if rel == "essays/functorial-consistency.html":
+                                    functorial = page.evaluate("""() => {
+                                        const article = document.querySelector(".article-content");
+                                        const square = article.querySelector(".fc-commuting");
+                                        const squareBounds = square?.getBoundingClientRect();
+                                        const nodes = [...(square?.querySelectorAll(
+                                            ".fc-square-node") ?? [])];
+                                        const nodeBounds = nodes.map(n => n.getBoundingClientRect());
+                                        const original = [...article.querySelectorAll(
+                                            ".table-scroll[data-fc-alternative='mobile']"
+                                        )];
+                                        const mobile = [...article.querySelectorAll(".fc-mobile-records")];
+                                        const records = [...article.querySelectorAll(".fc-mobile-record")];
+                                        const fields = [...article.querySelectorAll(".fc-record-field")];
+                                        const hints = [...article.querySelectorAll(".fc-scroll-hint")];
+                                        const sourceVisible = original.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const mobileVisible = mobile.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const shownHints = hints.filter(e =>
+                                            getComputedStyle(e).display !== "none").length;
+                                        const invalidHints = hints.filter(h =>
+                                            !h.nextElementSibling?.classList.contains("table-scroll") ||
+                                            h.nextElementSibling?.getAttribute("aria-describedby") !== h.id
+                                        ).length;
+                                        const visibleRecords = records.filter(r =>
+                                            getComputedStyle(r.closest(".fc-mobile-records")).display !== "none"
+                                        ).map(r => r.getBoundingClientRect());
+                                        const condition = square?.querySelector(
+                                            ".fc-condition-formula math[alttext]"
+                                        );
+                                        const sizes = original.map(e => Number(e.dataset.columns));
+                                        return {
+                                            tableCount: original.length,
+                                            tableIds: original.map(e =>
+                                                Number(e.querySelector("table")?.dataset.sourceTable)),
+                                            rowCounts: mobile.map(e =>
+                                                e.querySelectorAll(".fc-mobile-record").length),
+                                            cards: records.length, fields: fields.length,
+                                            sourceVisible, mobileVisible,
+                                            hints: hints.length, shownHints, invalidHints,
+                                            squareNodes: nodes.length,
+                                            squareArrows: square?.querySelectorAll(
+                                                ".fc-horizontal-arrow, .fc-down-arrow").length ?? 0,
+                                            squareFits: !!squareBounds &&
+                                                squareBounds.left >= -1 && squareBounds.right <= innerWidth + 1 &&
+                                                nodeBounds.every(n => n.left >= -1 && n.right <= innerWidth + 1),
+                                            squareStructure: nodeBounds.length === 4 &&
+                                                nodeBounds[0].right < nodeBounds[1].left &&
+                                                nodeBounds[2].right < nodeBounds[3].left &&
+                                                nodeBounds[0].bottom < nodeBounds[2].top &&
+                                                nodeBounds[1].bottom < nodeBounds[3].top,
+                                            condition: condition?.getAttribute("alttext") ?? null,
+                                            overflowCards: visibleRecords.filter(
+                                                b => b.left < -1 || b.right > innerWidth + 1).length,
+                                            threeAndFourColumnTables: sizes.filter(c => c >= 3).length
+                                        };
+                                    }""")
+                                    expected_rows = [
+                                        5, 8, 6, 5, 8, 9, 12, 16, 13, 5,
+                                        8, 6, 7, 8, 7, 15, 5, 6, 7
+                                    ]
+                                    if (functorial["tableCount"] != 19 or
+                                        functorial["tableIds"] != list(range(1, 20)) or
+                                        functorial["rowCounts"] != expected_rows or
+                                        functorial["cards"] != 156 or functorial["fields"] != 419 or
+                                        functorial["hints"] != 19 or functorial["invalidHints"] or
+                                        functorial["squareNodes"] != 4 or
+                                        functorial["squareArrows"] != 4 or
+                                        not functorial["squareFits"] or
+                                        not functorial["squareStructure"] or
+                                        functorial["condition"] != "T(f(x)) ~ g(T(x))" or
+                                        functorial["overflowCards"] or
+                                        (width <= 650 and (
+                                            functorial["sourceVisible"] != 0 or
+                                            functorial["mobileVisible"] != 19 or
+                                            functorial["shownHints"] != 0)) or
+                                        (width > 650 and (
+                                            functorial["sourceVisible"] != 19 or
+                                            functorial["mobileVisible"] != 0 or
+                                            functorial["shownHints"] !=
+                                                (functorial["threeAndFourColumnTables"]
+                                                 if width <= 1000 else 0)))):
+                                        failures.append(
+                                            f"{width}px {rel}: functorial source reading regression {functorial}"
+                                        )
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
                                       .filter(w => {
@@ -511,7 +597,8 @@ def main() -> int:
                                         const preceding = w.previousElementSibling;
                                         const label = (preceding?.classList.contains("preface-scroll-hint") ||
                                                        preceding?.classList.contains("sp-scroll-hint") ||
-                                                       preceding?.classList.contains("tg-scroll-hint"))
+                                                       preceding?.classList.contains("tg-scroll-hint") ||
+                                                       preceding?.classList.contains("fc-scroll-hint"))
                                           ? preceding.previousElementSibling : preceding;
                                         if (!t || !t.tHead || !t.tBodies.length ||
                                             !t.caption || !t.caption.classList.contains("visually-hidden") ||
@@ -542,10 +629,13 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         const compactTyped = !!w.dataset.tgAlternative &&
                                             getComputedStyle(w).display === "none";
+                                        const compactFunctorial = !!w.dataset.fcAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
                                             !compactSquare && !compactPreface &&
-                                            !compactSemantic && !compactTyped) return true;
+                                            !compactSemantic && !compactTyped &&
+                                            !compactFunctorial) return true;
                                         return false;
                                       }).length
                                 })""")
@@ -638,6 +728,24 @@ def main() -> int:
                                             ("record-pair", ".tg-record-pair"),
                                             ("harness-schema", '.tg-type-schema[aria-label="Source record type_first_item"]'),
                                             ("benchmark-schema", '.tg-type-schema[aria-label="Source record typed_generativity_benchmark_item"]'),
+                                        ):
+                                            item = page.locator(selector).first
+                                            if item.count() and item.is_visible():
+                                                item.screenshot(
+                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
+                                                )
+                                    if rel == "essays/functorial-consistency.html":
+                                        for name, selector in (
+                                            ("commuting-square", ".fc-commuting"),
+                                            ("contributions", ".fc-mobile-table-1"),
+                                            ("evaluation-object", ".fc-mobile-table-2"),
+                                            ("metrics", ".fc-mobile-table-6"),
+                                            ("failure-taxonomy", ".fc-mobile-table-7"),
+                                            ("item-schema", ".fc-mobile-table-8"),
+                                            ("output-schema", ".fc-mobile-table-9"),
+                                            ("benchmark-card", ".fc-mobile-table-16"),
+                                            ("worked-cases", ".fc-mobile-table-17"),
+                                            ("editorial-revisions", ".fc-mobile-table-19"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():

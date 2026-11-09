@@ -207,7 +207,7 @@ def main() -> int:
     # Media inventory follows the uploaded V3 Word documents, not superseded
     # website revisions that introduced additional diagram markup.
     expected_math_essays = {row[0] for row in build_site.ESSAYS}
-    expected_figure_counts = {"compositional-intelligence": 2}
+    expected_figure_counts = {"compositional-intelligence": 2, "functorial-consistency": 1}
 
     for page, doc in documents.items():
         relative = page.relative_to(SITE).as_posix()

@@ -35,6 +35,8 @@ def main() -> int:
         body, _ = build_site.source_to_body(source, title, [])
         if slug == "compositional-intelligence":
             body = build_site.render_synthesis_figures(body)
+        if slug == "functorial-consistency":
+            body = build_site.render_functorial_diagram(body)
         body = build_site.enhance_scientific_presentation(body)
         if slug == "series-preface":
             body = build_site.render_preface(body)
@@ -42,6 +44,8 @@ def main() -> int:
             body = build_site.render_semantic_participation(body)
         if slug == "typed-generativity":
             body = build_site.render_typed_generativity(body)
+        if slug == "functorial-consistency":
+            body = build_site.render_functorial_tables(body)
         page = published.read_text(encoding="utf-8")
         if body not in page:
             problems.append(f"{slug}: displayed essay body differs from source HTML")

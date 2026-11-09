@@ -13,6 +13,7 @@ import re
 import subprocess
 
 FORMULAE: tuple[tuple[str, str], ...] = (
+    ("T(f(x)) ~ g(T(x))", r"T(f(x))\sim g(T(x))"),
     ("Delta_L(c) = F(L + c) - F(L)", r"\Delta_L(c)=F(L+c)-F(L)"),
     ("T : (a, E_s) -> (b, E_t, rho_T)",
      r"T:(a,E_s)\to(b,E_t,\rho_T)"),
