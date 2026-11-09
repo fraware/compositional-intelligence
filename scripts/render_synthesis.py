@@ -121,6 +121,73 @@ def _square_figure(match: re.Match[str]) -> str:
     )
 
 
+_SOURCE_LABEL_IDS = (1, 2, 3, 4, 6, 7, 8)
+_GENERATED_ACCESSIBLE_CAPTIONS = {
+    5: "Table 5. Source and target objects in the Functorial Consistency square.",
+    9: "Table 9. Claim levels, meanings, and publication treatment.",
+    10: "Table 10. Epistemic types and their meanings.",
+}
+
+
+def _improve_source_table_labels(body: str) -> str:
+    """Keep each authored caption once and preserve the table's native caption.
+
+    The DOCX conversion duplicated seven source captions as separate hidden
+    paragraphs. Each original caption becomes the table group's accessible
+    label. Synthetic catalogue descriptions remain only on tables lacking an
+    authored caption.
+    """
+    for number in _SOURCE_LABEL_IDS:
+        pattern = re.compile(
+            r'(?P<source><p>(?P<text>Table\.[^<]+)</p>)\s*'
+            rf'<p class="table-display-caption" id="table-{number}-caption">'
+            r'(?P<duplicate>[^<]+)</p>'
+        )
+        found = list(pattern.finditer(body))
+        if len(found) != 1:
+            raise ValueError(f"Missing or duplicated authored table label {number}")
+        item = found[0]
+        if unescape(item.group("text")) != unescape(item.group("duplicate")):
+            raise ValueError(f"Source table {number} caption differs from conversion")
+        preserved = (
+            f'<p id="table-{number}-caption" '
+            f'class="table-display-caption source-visible-caption">'
+            f'{item.group("text")}</p>'
+        )
+        body = body[:item.start()] + preserved + body[item.end():]
+
+    # Only the conversion-generated (non-authorial) accessibility captions
+    # are clarified; the authored headings and all table cells are retained.
+    for number, label in _GENERATED_ACCESSIBLE_CAPTIONS.items():
+        title = re.compile(
+            rf'<p class="table-display-caption" id="table-{number}-caption">'
+            r'[^<]+</p>'
+        )
+        title_matches = list(title.finditer(body))
+        if len(title_matches) != 1:
+            raise ValueError(f"Missing generated label for table {number}")
+        body = title.sub(
+            lambda _: (f'<p class="table-display-caption" '
+                       f'id="table-{number}-caption">{escape(label)}</p>'),
+            body, count=1
+        )
+
+        native = re.compile(
+            rf'(?P<table><table\b[^>]*\bid="table-{number}"[^>]*>\s*)'
+            r'<caption class="visually-hidden">[^<]+</caption>'
+        )
+        native_matches = list(native.finditer(body))
+        if len(native_matches) != 1:
+            raise ValueError(f"Missing native caption for table {number}")
+        body = native.sub(
+            lambda match: (match.group("table") +
+                           '<caption class="visually-hidden">' +
+                           escape(label) + '</caption>'),
+            body, count=1
+        )
+    return body
+
+
 def render_synthesis_figures(body: str) -> str:
     """Render precisely two figures, rejecting ambiguous source conversions."""
     lifecycle = list(_LIFECYCLE.finditer(body))
@@ -132,6 +199,7 @@ def render_synthesis_figures(body: str) -> str:
         )
     body = _LIFECYCLE.sub(_lifecycle_figure, body, count=1)
     body = _SQUARE.sub(_square_figure, body, count=1)
+    body = _improve_source_table_labels(body)
     if body.count('<figure class="ci-source-figure') != 2:
         raise ValueError("Flagship source figures were not rendered exactly")
     return body

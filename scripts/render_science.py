@@ -13,6 +13,10 @@ import re
 import subprocess
 
 FORMULAE: tuple[tuple[str, str], ...] = (
+    ("TaskSpec -> ArchitectureType -> ArchitectureInstance, A |= S",
+     r"\mathrm{TaskSpec}\to\mathrm{ArchitectureType}\to\mathrm{ArchitectureInstance},\quad A\models S"),
+    ("Gamma; M; E; C ⊢ a : Pre -> Post ! epsilon @ rho",
+     r"\Gamma;M;E;C\vdash a:\mathrm{Pre}\to\mathrm{Post}\;!\;\varepsilon@\rho"),
     ("S = (E_s, E_t, x, f, T, g, epsilon)", r"S=(E_s,E_t,x,f,T,g,\varepsilon)"),
     ("T(x)", r"T(x)"),
     ("f(x)", r"f(x)"),
@@ -54,10 +58,10 @@ _TOKEN = re.compile("|".join(
 ))
 _TEXT = re.compile(r"(?<=>)([^<]+)(?=<)", re.S)
 _HIDDEN_LABEL = re.compile(
-    r'<p\b[^>]*class="table-display-caption"[^>]*>[\s\S]*?</p>'
+    r'<p\b[^>]*class="[^"]*\btable-display-caption\b[^"]*"[^>]*>[\s\S]*?</p>'
     r'|<caption\b[^>]*class="visually-hidden"[^>]*>[\s\S]*?</caption>'
 )
-_ONLY_MATH = re.compile(r"<p>\s*(<math\b[^>]*>(?:(?!</p>)[\s\S])*?</math>)([.]?)\s*</p>")
+_ONLY_MATH = re.compile(r"<p>\s*(<math\b[^>]*>(?:(?!</math>)[\s\S])*?</math>)([.]?)\s*</p>")
 _P = re.compile(r"^<p>([\s\S]*?)</p>$")
 _BR = re.compile(r"<br\s*/?>", re.I)
 _KEY = re.compile(r"^[a-z][a-z0-9_]*:$")
@@ -114,10 +118,13 @@ def render_source_math(body: str) -> str:
         math = (match.group(1)
                 .replace('tabindex="0" ', "", 1)
                 .replace('display="inline"', 'display="block"', 1))
+        punctuation = ('<span class="math-display-punctuation">.</span>'
+                       if match.group(2) else '')
         return (
             '<div class="math-scroll" role="group" tabindex="0" '
-            'aria-label="Displayed mathematical expression">' +
-            math + match.group(2) + "</div>"
+            'aria-label="Displayed mathematical expression">'
+            '<span class="math-display-expression">' +
+            math + punctuation + "</span></div>"
         )
 
     body = _ONLY_MATH.sub(display, body)

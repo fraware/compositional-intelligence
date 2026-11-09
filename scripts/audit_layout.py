@@ -116,6 +116,12 @@ def main() -> int:
                                         mathScrolls: article.querySelectorAll(".math-scroll").length,
                                         clippedDisplayMath: [...article.querySelectorAll(".math-scroll")]
                                           .filter(e => e.scrollWidth > e.clientWidth + 2).length,
+                                        detachedMathPunctuation: [...article.querySelectorAll(".math-scroll")]
+                                          .filter(e => [...e.childNodes].some(node =>
+                                            node.nodeType === 3 && node.textContent.trim() === ".")).length,
+                                        malformedDisplayMath: [...article.querySelectorAll(".math-scroll")]
+                                          .filter(e => e.querySelectorAll('math[display="block"]').length !== 1 ||
+                                            !e.querySelector(".math-display-expression")).length,
                                         invalidInlineMath: [...article.querySelectorAll('math[display="inline"]')]
                                           .filter(e => {
                                             const sourceSquare = e.closest(".ci-commuting .table-scroll");
@@ -149,8 +155,9 @@ def main() -> int:
                                 }""")
                                 if media is None or media["displayMath"] != media["mathScrolls"]:
                                     failures.append(f"{width}px {rel}: missing MathML scroll wrappers")
-                                elif media["invisibleMath"] or media["invalidInlineMath"]:
-                                    failures.append(f"{width}px {rel}: clipped or invisible mathematics {media}")
+                                elif (media["invisibleMath"] or media["invalidInlineMath"] or
+                                      media["detachedMathPunctuation"] or media["malformedDisplayMath"]):
+                                    failures.append(f"{width}px {rel}: malformed or invisible mathematics {media}")
                                 # Wide formulas are intentionally scrollable. Assert
                                 # keyboard operability instead of rejecting valid math.
                                 if width == 375 and media and media["clippedDisplayMath"]:
@@ -203,9 +210,16 @@ def main() -> int:
                                         if (!Number.isInteger(count) || count < 1 ||
                                             headers.length < 1 || headers.length > count) return true;
                                         if (t.querySelector("th[ead]")) return true;
-                                        if (getComputedStyle(label).display === "none" ||
-                                            label.getBoundingClientRect().height > 2 ||
-                                            label.getBoundingClientRect().width > 2) return true;
+                                        if (getComputedStyle(label).display === "none") return true;
+                                        const authored = label.classList.contains("source-visible-caption");
+                                        const bounds = label.getBoundingClientRect();
+                                        if (authored) {
+                                            if (bounds.height < 10 ||
+                                                bounds.right > innerWidth + 2 ||
+                                                !label.textContent.trim().startsWith("Table.")) return true;
+                                        } else if (bounds.height > 2 || bounds.width > 2) {
+                                            return true;
+                                        }
                                         const compactSquare = t.id === "table-5" &&
                                             !!t.closest(".ci-commuting") &&
                                             !!document.querySelector(".ci-commuting-mobile") &&

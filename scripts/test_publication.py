@@ -206,6 +206,71 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertNotIn('class="byline"', page)
 
 
+    def test_math_display_punctuation_and_multi_expression_safety(self) -> None:
+        """Mathematical punctuation stays attached and unrelated math stays separate."""
+        single = render_source_math("<p>P_theta(t : A | Gamma).</p>")
+        self.assertEqual(single.count('class="math-scroll"'), 1)
+        self.assertIn('class="math-display-expression"', single)
+        self.assertIn('<span class="math-display-punctuation">.</span>', single)
+        self.assertNotIn("</math>.</div>", single)
+
+        multiple = render_source_math("<p>P_theta(t : A | Gamma), A |= S.</p>")
+        self.assertEqual(multiple.count("<math "), 2)
+        self.assertNotIn('class="math-scroll"', multiple)
+        self.assertIn("</math>, ", multiple)
+
+        combined = render_source_math(
+            "<p>TaskSpec -&gt; ArchitectureType -&gt; ArchitectureInstance, A |= S.</p>"
+        )
+        self.assertEqual(combined.count("<math "), 1)
+        self.assertEqual(combined.count('class="math-scroll"'), 1)
+        self.assertIn("ArchitectureInstance, A |= S", combined)
+
+    def test_original_typed_action_judgment_is_typeset(self) -> None:
+        """The synthesis uses the exact authored typed-action transcription."""
+        original = (
+            "<p>Gamma; M; E; C ⊢ a : Pre -&gt; Post ! epsilon @ rho.</p>"
+        )
+        rendered = render_source_math(original)
+        self.assertEqual(rendered.count('class="math-scroll"'), 1)
+        self.assertIn("Gamma; M; E; C ⊢ a : Pre -&gt; Post ! epsilon @ rho", rendered)
+        self.assertIn('encoding="application/x-tex"', rendered)
+
+    def test_source_table_labels_are_not_repeated_visually(self) -> None:
+        """Retain original caption paragraphs as the single group labels."""
+        manuscript = (
+            publication.ROOT / "essays" / "compositional-intelligence.md"
+        ).read_text(encoding="utf-8")
+        original, _ = publication.source_to_body(
+            manuscript, "Compositional Intelligence", []
+        )
+        rendered = render_synthesis_figures(original)
+        for number in (1, 2, 3, 4, 6, 7, 8):
+            with self.subTest(number=number):
+                self.assertIn(
+                    f'<p id="table-{number}-caption" '
+                    'class="table-display-caption source-visible-caption">',
+                    rendered,
+                )
+                self.assertEqual(
+                    rendered.count(f'id="table-{number}-caption"'), 1
+                )
+        self.assertEqual(rendered.count("source-visible-caption"), 7)
+        self.assertIn("Table 9. Claim levels, meanings, and publication treatment.", rendered)
+        self.assertIn("Table 10. Epistemic types and their meanings.", rendered)
+
+    def test_flagship_browser_title_is_not_repeated(self) -> None:
+        """The flagship page's browser tab shows the essay title once."""
+        page = publication.render_essay(
+            *publication.ESSAYS[0], position=0, table_captions=[]
+        )
+        self.assertIn("<title>Compositional Intelligence</title>", page)
+        self.assertNotIn(
+            "<title>Compositional Intelligence · Compositional Intelligence</title>",
+            page,
+        )
+
+
 
 if __name__ == "__main__":
     unittest.main()

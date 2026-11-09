@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the static publication directly from the canonical Markdown manuscripts.
+"""Build the static publication from the canonical V3 DOCX-derived HTML fragments.
 
 Usage:
   python3 scripts/build_site.py --output _site
@@ -71,6 +71,7 @@ def esc(value: str) -> str:
 
 def header(title: str, description: str, canonical: str, *, document_type: str = "article") -> str:
     """Provide a stable, privacy-preserving document head and shared navigation."""
+    document_title = title if title == "Compositional Intelligence" else title + " · Compositional Intelligence"
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -86,7 +87,7 @@ def header(title: str, description: str, canonical: str, *, document_type: str =
 <link rel="canonical" href="{esc(canonical)}">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../style.css">
-<title>{esc(title)} · Compositional Intelligence</title>
+<title>{esc(document_title)}</title>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>

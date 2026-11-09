@@ -478,3 +478,37 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     font-size:19px;
   }
 }
+
+
+/* Flagship source captions remain on the page, named by their source table. */
+.article-content .table-display-caption.source-visible-caption {
+  position:static;
+  display:block;
+  width:auto;
+  height:auto;
+  padding:0;
+  margin:7px 0 13px;
+  overflow:visible;
+  clip:auto;
+  clip-path:none;
+  white-space:normal;
+  border:0;
+  color:var(--soft);
+  font:italic 15px/1.55 var(--serif);
+}
+
+/* Keep source punctuation on the same typographic line as display MathML. */
+.article-content .math-display-expression {
+  display:inline-flex;
+  align-items:baseline;
+  flex-wrap:nowrap;
+  gap:0;
+  min-width:max-content;
+  white-space:nowrap;
+}
+.article-content .math-display-punctuation {
+  display:inline-block;
+  margin-left:.035em;
+  flex:none;
+  white-space:nowrap;
+}
