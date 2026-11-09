@@ -1417,7 +1417,7 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .fc-mobile-table-8 .fc-field-attribute,
   .article-content .fc-mobile-table-9 .fc-field-attribute {
     display:block;
-    overflow-wrap:normal;
+    overflow-wrap:anywhere;
     font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
   }
   .article-content .fc-mobile-table-8 .fc-field-attribute,
