@@ -1053,13 +1053,19 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 )
                 self.assertEqual(len(cards), len(original_cells))
                 for row, card in zip(original_cells, cards, strict=True):
-                    self.assertEqual(
-                        row, re.findall(r'<dd>([\s\S]*?)</dd>', card)
-                    )
+                    mobile_values = re.findall(r'<dd>([\s\S]*?)</dd>', card)
+                    if number in (8, 9):
+                        mobile_values = [
+                            re.sub(r'</?span\b[^>]*>', '', cell)
+                            for cell in mobile_values
+                        ]
+                    self.assertEqual(row, mobile_values)
                     source_cells += len(row)
                     mobile_cells += len(row)
         self.assertEqual(source_cells, 419)
         self.assertEqual(mobile_cells, 419)
+        self.assertEqual(page.count('class="fc-field-attribute"'), 12)
+        self.assertEqual(page.count('class="fc-field-object"'), 12)
 
     def test_functorial_diagram_preserves_original_path_condition(self) -> None:
         """Retain both authorial routes and their explicitly qualified agreement."""
@@ -1075,6 +1081,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertEqual(diagram.count('class="fc-square-node'), 4)
         self.assertEqual(diagram.count('class="fc-horizontal-arrow"'), 2)
         self.assertEqual(diagram.count('class="fc-down-arrow"'), 2)
+        self.assertEqual(diagram.count('class="fc-square-relation"'), 1)
+        self.assertIn('aria-label="Paths compared under the stated equivalence regime"', diagram)
         self.assertEqual(diagram.count('<figcaption>'), 1)
         self.assertIn('class="fc-condition-formula">T(f(x)) ~ g(T(x))', diagram)
         self.assertIn('class="fc-node-math">g(T(x))</span>', diagram)

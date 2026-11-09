@@ -1387,3 +1387,29 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
   .article-content .fc-commuting,
   .article-content .fc-mobile-record {break-inside:avoid;}
 }
+
+
+/* The square is qualified by the explicitly stated target-side relation. */
+.article-content .fc-square-relation {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--soft);
+  font:24px/1.2 var(--serif);
+}
+@media (max-width:650px) {
+  .article-content .fc-square-relation {font-size:18px;}
+  .article-content .fc-mobile-table-8 .fc-field-object,
+  .article-content .fc-mobile-table-9 .fc-field-object,
+  .article-content .fc-mobile-table-8 .fc-field-attribute,
+  .article-content .fc-mobile-table-9 .fc-field-attribute {
+    display:block;
+    overflow-wrap:normal;
+    font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  }
+  .article-content .fc-mobile-table-8 .fc-field-attribute,
+  .article-content .fc-mobile-table-9 .fc-field-attribute {
+    margin-top:2px;
+    font-size:14px;
+  }
+}

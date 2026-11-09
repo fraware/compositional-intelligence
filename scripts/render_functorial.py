@@ -98,7 +98,9 @@ def render_functorial_diagram(body: str) -> str:
         '<span class="fc-node-math">f(x)</span></div>'
         '<div class="fc-down-arrow" role="img" '
         'aria-label="translation T"><span aria-hidden="true">T ↓</span></div>'
-        '<div class="fc-square-spacer" aria-hidden="true"></div>'
+        '<div class="fc-square-relation" role="img" '
+        'aria-label="Paths compared under the stated equivalence regime">'
+        '<span aria-hidden="true">∼</span></div>'
         '<div class="fc-down-arrow" role="img" '
         'aria-label="translation T"><span aria-hidden="true">T ↓</span></div>'
         '<div class="fc-square-node fc-target-node">'
@@ -191,12 +193,33 @@ def render_functorial_tables(body: str) -> str:
             cells = _TD.findall(row)
             if len(cells) != len(headers):
                 raise ValueError(f"Table {number} source cell structure changed")
-            fields = "".join(
-                '<div class="fc-record-field"><dt>' + escape(header) +
-                '</dt><dd>' + cell + '</dd></div>'
-                for header, cell in zip(headers, cells, strict=True)
-            )
-            cards.append('<dl class="fc-mobile-record">' + fields + '</dl>')
+            fields: list[str] = []
+            for index, (header, cell) in enumerate(
+                zip(headers, cells, strict=True)
+            ):
+                mobile_cell = cell
+                if number in (8, 9) and index == 0 and "." in cell:
+                    # The model-output and benchmark-item schemas contain
+                    # dotted field paths. Keep the exact text, with a natural
+                    # reading break at the already-authored dot separator.
+                    name, attribute = cell.split(".", 1)
+                    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]*", name) or not re.fullmatch(
+                        r"[A-Za-z][A-Za-z0-9_]*", attribute
+                    ):
+                        raise ValueError(
+                            f"Unexpected dotted field in table {number}: {cell}"
+                        )
+                    mobile_cell = (
+                        '<span class="fc-field-object">' + escape(name + ".") +
+                        '</span><span class="fc-field-attribute">' +
+                        escape(attribute) + '</span>'
+                    )
+                fields.append(
+                    '<div class="fc-record-field"><dt>' + escape(header) +
+                    '</dt><dd>' + mobile_cell + '</dd></div>'
+                )
+            card_fields = "".join(fields)
+            cards.append('<dl class="fc-mobile-record">' + card_fields + '</dl>')
 
         hint_id = f"fc-table-{number}-scroll-hint"
         wrapper = match.group("opening").replace(
@@ -221,4 +244,6 @@ def render_functorial_tables(body: str) -> str:
         raise ValueError("Mobile row count differs from original V3")
     if body.count('class="fc-record-field"') != 419:
         raise ValueError("Mobile data-cell count differs from original V3")
+    if body.count('class="fc-field-attribute"') != 12:
+        raise ValueError("Dotted source field inventory differs from V3")
     return body

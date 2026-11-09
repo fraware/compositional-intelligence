@@ -548,6 +548,21 @@ def main() -> int:
                                             squareNodes: nodes.length,
                                             squareArrows: square?.querySelectorAll(
                                                 ".fc-horizontal-arrow, .fc-down-arrow").length ?? 0,
+                                            conditionalRelation: square?.querySelectorAll(
+                                                ".fc-square-relation").length ?? 0,
+                                            pathSegments: article.querySelectorAll(
+                                                ".fc-field-object").length,
+                                            pathAttributes: article.querySelectorAll(
+                                                ".fc-field-attribute").length,
+                                            pathOverflow: [...article.querySelectorAll(
+                                                ".fc-field-object, .fc-field-attribute"
+                                            )].filter(e => {
+                                                if (getComputedStyle(e.closest(".fc-mobile-records")).display === "none") {
+                                                    return false;
+                                                }
+                                                const b = e.getBoundingClientRect();
+                                                return b.left < -1 || b.right > innerWidth + 1;
+                                            }).length,
                                             squareFits: !!squareBounds &&
                                                 squareBounds.left >= -1 && squareBounds.right <= innerWidth + 1 &&
                                                 nodeBounds.every(n => n.left >= -1 && n.right <= innerWidth + 1),
@@ -573,6 +588,10 @@ def main() -> int:
                                         functorial["hints"] != 19 or functorial["invalidHints"] or
                                         functorial["squareNodes"] != 4 or
                                         functorial["squareArrows"] != 4 or
+                                        functorial["conditionalRelation"] != 1 or
+                                        functorial["pathSegments"] != 12 or
+                                        functorial["pathAttributes"] != 12 or
+                                        functorial["pathOverflow"] != 0 or
                                         not functorial["squareFits"] or
                                         not functorial["squareStructure"] or
                                         functorial["condition"] != "T(f(x)) ~ g(T(x))" or
