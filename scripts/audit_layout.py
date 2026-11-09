@@ -392,16 +392,16 @@ def main() -> int:
                                         algebraic["hints"] != 13 or algebraic["badHints"] or
                                         algebraic["visibleHints"] != (0 if width <= 650 else 7) or
                                         algebraic["sequences"] != 2 or algebraic["stages"] != 8 or
-                                        !algebraic["stageFlow"] or !algebraic["stageMarks"] or
+                                        not algebraic["stageFlow"] or not algebraic["stageMarks"] or
                                         algebraic["specification"] != 1 or algebraic["symbols"] != 9 or
                                         algebraic["formula"] != 1 or algebraic["formulaKeyboard"] != 0 or
                                         algebraic["mathCueShown"] != (width <= 650) or
                                         algebraic["lawTerms"] != [
                                             "F({x_1,...,x_n})",
                                             "F({x_perm(1),...,x_perm(n)})"] or
-                                        !algebraic["lawInBounds"] or
+                                        not algebraic["lawInBounds"] or
                                         (width <= 650 and (
-                                            !algebraic["sigmaOneLine"] or
+                                            not algebraic["sigmaOneLine"] or
                                             algebraic["regimeTitleSize"] < 16 or
                                             algebraic["firstRecordHeight"] >= 2200)) or
                                         algebraic["examples"] != 6 or algebraic["exampleFields"] != 21 or
