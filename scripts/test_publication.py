@@ -1678,5 +1678,178 @@ class ManuscriptFidelityTests(unittest.TestCase):
 
 
 
+
+    def test_effectful_source_bound_presentation(self) -> None:
+        """Every formal record and scientific table matches the committed V3 source."""
+        import render_effectful as effectful
+
+        slug, title, category, description = publication.ESSAYS[8]
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(source, title, [])
+        rendered = effectful.render_effectful_and_conceptual_intelligence(original)
+        page = publication.render_essay(slug, title, category, description, 8, [])
+        self.assertEqual(page.count('class="ef-sequence"'), 1)
+        self.assertEqual(page.count('class="ef-math ef-math-'), 7)
+        self.assertEqual(page.count('class="table-display-caption ef-caption"'), 19)
+        self.assertEqual(page.count('data-ef-alternative="mobile"'), 19)
+        self.assertEqual(page.count('class="ef-card"'), 154)
+        self.assertEqual(page.count('class="ef-field"'), 342)
+        self.assertEqual(page.count('class="ef-source-notes"'), 1)
+
+        with self.subTest("series sequence"):
+            chain = re.search(
+                r'<div class="ef-sequence"[^>]*><ol>'
+                r'([\s\S]*?)</ol></div>', rendered
+            )
+            self.assertIsNotNone(chain)
+            self.assertEqual(
+                re.findall(r"<li>([^<]*)</li>", chain.group(1)),
+                list(effectful.STAGES)
+            )
+
+        with self.subTest("MathML source equivalence"):
+            formulas = re.findall(
+                r'<div class="ef-math ef-math-\d+"[^>]*>'
+                r'([\s\S]*?)</div>', rendered
+            )
+            self.assertEqual(len(formulas), 7)
+            for i, (source_expression, formula) in enumerate(
+                    zip(effectful.EXPRESSION_TEX, formulas, strict=True), 1):
+                self.assertEqual(
+                    re.findall(r'<math\b[^>]*alttext="([^"]+)"', formula),
+                    [escape(source_expression, quote=True).replace(
+                        "&#x27;", "&#x27;"
+                    )]
+                )
+                self.assertIn(
+                    'encoding="application/x-tex"', formula,
+                    f"MathML missing semantic annotation at {i}"
+                )
+
+        with self.subTest("source-use notes"):
+            original_notes = re.search(
+                r'<blockquote>([\s\S]*?)</blockquote>', original
+            )
+            self.assertIsNotNone(original_notes)
+            notes = re.findall(
+                r"<p>([^<]*)</p>", original_notes.group(1)
+            )
+            self.assertEqual(
+                tuple(unescape(text) for text in notes),
+                effectful.SOURCE_NOTES
+            )
+            styled = re.search(
+                r'<ul class="ef-source-notes">([\s\S]*?)</ul>',
+                rendered
+            )
+            self.assertIsNotNone(styled)
+            self.assertEqual(
+                re.findall(r"<li>([^<]*)</li>",styled.group(1)),
+                [line[2:] for line in effectful.SOURCE_NOTES]
+            )
+
+        self.assertIn(
+            '<a href="#effectful-agent-benchmark-v0.2">11</a>',
+            rendered
+        )
+        self.assertIn(
+            '<a href="#appendix-a.-typed-action-ledger-schema">A</a>',
+            rendered
+        )
+        self.assertIn(
+            '<a href="quantitative-curry-howard.html">Essay 6</a>',
+            rendered
+        )
+        total_rows, total_cells = 0, 0
+        for n in range(1, 20):
+            with self.subTest(table=n):
+                source_table = re.search(
+                    rf'<table data-source-table="{n}" id="table-{n}">'
+                    r'[\s\S]*?</table>', original
+                )
+                html_table = re.search(
+                    rf'<table data-source-table="{n}" id="table-{n}">'
+                    r'[\s\S]*?</table>', rendered
+                )
+                self.assertIsNotNone(source_table)
+                self.assertIsNotNone(html_table)
+
+                def normalize(value: str) -> str:
+                    value = re.sub(
+                        r'<caption class="visually-hidden">[^<]*</caption>',
+                        '<caption></caption>', value
+                    )
+                    return re.sub(
+                        r'<a href="[^"]+">([^<]+)</a>', r'\1', value
+                    )
+
+                self.assertEqual(
+                    normalize(source_table.group()),
+                    normalize(html_table.group())
+                )
+                tbody = re.search(
+                    r'<tbody>([\s\S]*?)</tbody>', source_table.group()
+                )
+                self.assertIsNotNone(tbody)
+                rows = re.findall(
+                    r'<tr\b[^>]*>([\s\S]*?)</tr>',tbody.group(1)
+                )
+                self.assertEqual(len(rows),effectful.ROWS[n - 1])
+                source_values = [
+                    re.findall(
+                        r'<td(?:\s[^>]*)?>([\s\S]*?)</td>',row
+                    ) for row in rows
+                ]
+                alt = re.search(
+                    rf'<section class="ef-mobile ef-mobile-{n}" '
+                    rf'aria-labelledby="table-{n}-caption">'
+                    r'([\s\S]*?)</section>', rendered
+                )
+                self.assertIsNotNone(alt)
+                cards = re.findall(
+                    r'<dl class="ef-card">([\s\S]*?)</dl>',
+                    alt.group(1)
+                )
+                self.assertEqual(len(cards), len(rows))
+                for values, card in zip(source_values,cards,strict=True):
+                    derived = re.findall(
+                        r'<dd>([\s\S]*?)</dd>', card
+                    )
+                    self.assertEqual(
+                        values,
+                        [
+                            re.sub(
+                                r'<a href="[^"]+">([^<]+)</a>',r'\1',v
+                            ) for v in derived
+                        ],
+                    )
+                    total_cells += len(derived)
+                total_rows += len(cards)
+                self.assertIn(
+                    f'id="table-{n}-caption">' + effectful.CAPTIONS[n],
+                    rendered,
+                )
+        self.assertEqual((total_rows,total_cells), (154,342))
+        for n in (2,11,13):
+            self.assertNotIn(
+                f'<p class="table-display-caption" id="table-{n}-caption">',
+                rendered
+            )
+        with self.assertRaises(ValueError):
+            effectful.render_effectful_and_conceptual_intelligence(rendered)
+
+        with self.subTest("source drift detection"):
+            damaged = original.replace(
+                "<p>concept_transfer : SourceDomain -&gt; TargetDomain</p>",
+                "<p>concept_transfer : SourceDomain -&gt; OtherDomain</p>",
+                1
+            )
+            self.assertNotEqual(damaged, original)
+            with self.assertRaises(ValueError):
+                effectful.render_effectful_and_conceptual_intelligence(damaged)
+
+
 if __name__ == "__main__":
     unittest.main()
