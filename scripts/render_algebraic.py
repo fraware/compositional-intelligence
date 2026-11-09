@@ -89,7 +89,7 @@ RECORDS = (
 TABLE = re.compile(
     r'(?P<start><div aria-labelledby="table-(?P<n>\d+)-caption" '
     r'class="table-scroll" data-columns="\d+" role="group" tabindex="0">)'
-    r'(?P<table><table data-source-table=\d+ id="table-\d+">'
+    r'(?P<table><table data-source-table="\d+" id="table-\d+">'
     r'[\s\S]*?</table>)(?P<end></div>)'
 )
 BLOCK = re.compile(r'<blockquote>\s*<p>(?P<lines>[\s\S]*?)</p>\s*</blockquote>')
