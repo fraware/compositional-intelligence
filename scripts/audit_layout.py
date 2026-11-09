@@ -662,7 +662,8 @@ def main() -> int:
                                         const label = (preceding?.classList.contains("preface-scroll-hint") ||
                                                        preceding?.classList.contains("sp-scroll-hint") ||
                                                        preceding?.classList.contains("tg-scroll-hint") ||
-                                                       preceding?.classList.contains("fc-scroll-hint"))
+                                                       preceding?.classList.contains("fc-scroll-hint") ||
+                                                       preceding?.classList.contains("lm-hint"))
                                           ? preceding.previousElementSibling : preceding;
                                         if (!t || !t.tHead || !t.tBodies.length ||
                                             !t.caption || !t.caption.classList.contains("visually-hidden") ||
@@ -695,11 +696,13 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         const compactFunctorial = !!w.dataset.fcAlternative &&
                                             getComputedStyle(w).display === "none";
+                                        const compactLambek = !!w.dataset.lmAlternative &&
+                                            getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
                                             !compactSquare && !compactPreface &&
                                             !compactSemantic && !compactTyped &&
-                                            !compactFunctorial) return true;
+                                            !compactFunctorial && !compactLambek) return true;
                                         return false;
                                       }).length
                                 })""")
