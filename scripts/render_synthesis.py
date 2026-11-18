@@ -225,6 +225,55 @@ def _label_scrollable_source_tables(body: str) -> str:
     return body
 
 
+def _normalize_synthesis_outline(body: str) -> str:
+    """Restore section-local numbering and appendix hierarchy for publication.
+
+    The manuscript's DOCX-derived source remains unchanged. These adjustments
+    affect rendered list counters and heading semantics, never authored prose.
+    Fail closed if the expected source outline changes.
+    """
+    for start in (6, 15):
+        source = f'<ol start="{start}" type="1">'
+        if body.count(source) != 1:
+            raise ValueError(f"Synthesis list numbering changed: {start}")
+        body = body.replace(source, '<ol type="1">', 1)
+
+    appendix_heading = (
+        '<h2 id="appendix-materials-from-the-synthesis-paper">Appendix</h2>'
+    )
+    if body.count(appendix_heading) != 1:
+        raise ValueError("Synthesis appendix marker is missing or duplicated")
+    before, _, appendix = body.partition(appendix_heading)
+    headings = (
+        ("claim-levels-and-epistemic-types", 2, 3),
+        ("minimal-schema-summaries", 2, 3),
+        ("claim-levels", 3, 4),
+        ("epistemic-types", 3, 4),
+        ("artifactrecord", 3, 4),
+        ("targettyperecord", 3, 4),
+        ("functorialconsistencyitem", 3, 4),
+        ("architecturespec", 3, 4),
+        ("quantitativejudgmentrecord", 3, 4),
+        ("typedactionledgerentry", 3, 4),
+        ("concepttransferrecord", 3, 4),
+    )
+    for ident, old_level, new_level in headings:
+        pattern = re.compile(
+            rf'<h{old_level} id="{ident}">(?P<title>[^<>]+)</h{old_level}>'
+        )
+        if len(pattern.findall(appendix)) != 1:
+            raise ValueError(f"Synthesis appendix heading changed: {ident}")
+        appendix = pattern.sub(
+            lambda match: (
+                f'<h{new_level} id="{ident}">'
+                + match.group("title")
+                + f'</h{new_level}>'
+            ),
+            appendix, count=1
+        )
+    return before + appendix_heading + appendix
+
+
 def render_synthesis_figures(body: str) -> str:
     """Render precisely two figures, rejecting ambiguous source conversions."""
     lifecycle = list(_LIFECYCLE.finditer(body))
@@ -240,7 +289,7 @@ def render_synthesis_figures(body: str) -> str:
     body = _label_scrollable_source_tables(body)
     if body.count('<figure class="ci-source-figure') != 2:
         raise ValueError("Flagship source figures were not rendered exactly")
-    return body
+    return _normalize_synthesis_outline(body)
 
 
 # Responsive alternatives for the nine original synthesis data tables. The
