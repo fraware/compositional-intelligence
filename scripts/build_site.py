@@ -366,7 +366,7 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
             # Editorial provenance is recorded in the source file and audit;
             # it is not part of the reader-facing article text.
             metadata = re.match(
-                r"<!-- Publication editorial revision V5 [^\\n]* -->\\s*",
+                r"<!-- Publication editorial revision V5 [^\n]* -->\s*",
                 body,
             )
             if metadata is None:
