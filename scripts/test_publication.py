@@ -17,6 +17,7 @@ import build_site as publication
 from render_science import FORMULAE, enhance_scientific_presentation, render_source_math
 from check_originals import Paragraphs, overlap, phrases, tokens
 from render_synthesis import render_synthesis_figures
+from render_references import render_synthesis_references
 from render_semantic import render_semantic_participation, _HEADERS, _ROW_COUNTS
 from render_typed import render_typed_generativity, _HEADERS as TG_HEADERS, _ROW_COUNTS as TG_ROWS
 from render_functorial import render_functorial_diagram, render_functorial_tables, HEADERS as FC_HEADERS, ROW_COUNTS as FC_ROWS, SOURCE_TABLE_LABELS
@@ -330,6 +331,33 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertEqual(page.count('data-source-table='), 10)
 
 
+    def test_synthesis_citations_have_exact_bibliographic_targets(self) -> None:
+        """All cited works resolve to one primary-source bibliography entry."""
+        catalogue_path = (
+            publication.ROOT / "sources" / "synthesis_references.json"
+        )
+        entries = json.loads(catalogue_path.read_text(encoding="utf-8"))[
+            "references"
+        ]
+        self.assertEqual(len(entries), 34)
+        keys = [entry["key"] for entry in entries]
+        self.assertEqual(len(keys), len(set(keys)))
+        page = publication.render_essay(
+            *publication.ESSAYS[0], position=0, table_captions=[]
+        )
+        self.assertEqual(page.count('<h2 id="references">'), 1)
+        self.assertEqual(page.count('class="bibliography-entry"'), 34)
+        for key in keys:
+            with self.subTest(key=key):
+                self.assertEqual(page.count(f'id="ref-{key}"'), 1)
+                self.assertIn(f'href="#ref-{key}"', page)
+        self.assertIn(
+            "AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories",
+            page,
+        )
+        self.assertIn("A Foundation for Differentiable Logics using Dependent Type Theory",page)
+        self.assertIn("The Lean Language Reference",page)
+
     def test_flagship_browser_title_is_not_repeated(self) -> None:
         """The flagship page's browser tab shows the essay title once."""
         page = publication.render_essay(
@@ -404,7 +432,10 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
         styled = render_synthesis.render_synthesis_mobile_tables(scientific)
         page = publication.render_essay(slug,title,category,description,0,[])
-        self.assertIn(styled,page)
+        linked = render_synthesis_references(
+            styled, publication.ROOT / "sources" / "synthesis_references.json"
+        )
+        self.assertIn(linked,page)
         self.assertEqual(page.count('class="ci-data-mobile ci-data-mobile-'),9)
         self.assertEqual(page.count('class="ci-data-card"'),52)
         self.assertEqual(page.count('class="ci-data-field"'),151)
