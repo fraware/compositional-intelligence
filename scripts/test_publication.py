@@ -1104,7 +1104,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
             render_typed_generativity(rendered)
 
     def test_typed_reader_map_links_only_existing_targets(self) -> None:
-        """Link actual destinations without fabricating the source's Section 7.4."""
+        """Resolve the absent Section 7.4 with a traceable Section 7 link."""
         slug, title, category, description = publication.ESSAYS[3]
         page = publication.render_essay(
             slug, title, category, description, 3, [],
@@ -1115,9 +1115,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
         self.assertIsNotNone(table)
         anchors = re.findall(
-            r'<a href="#([^"]+)">([^<]+)</a>', table.group(),
+            r'<a href="#([^"]+)"(?:\\s+[^>]*)?>([^<]+)</a>', table.group(),
         )
-        self.assertEqual(len(anchors), 22)
+        self.assertEqual(len(anchors), 23)
         for fragment, text in anchors:
             with self.subTest(target=fragment):
                 self.assertIn(f'id="{fragment}"', page)
@@ -1130,8 +1130,19 @@ class ManuscriptFidelityTests(unittest.TestCase):
             '<a href="functorial-consistency.html">Essay 3</a>',
             table.group(),
         )
-        self.assertIn("7.4", table.group())
+        self.assertIn(
+            'href="#type-first-prompting-harness-v0.3" '
+            'data-source-reference="7.4"',
+            table.group(),
+        )
+        self.assertIn(">7</a>", table.group())
         self.assertNotIn(">7.4</a>", table.group())
+        self.assertIn(
+            "Sections 6.4, 7.4, 8, 9, and 11",
+            (publication.ROOT / "essays" / "typed-generativity.md").read_text(
+                encoding="utf-8"
+            ),
+        )
         self.assertEqual(
             page.count('class="tg-scroll-hint"'), 15,
         )
