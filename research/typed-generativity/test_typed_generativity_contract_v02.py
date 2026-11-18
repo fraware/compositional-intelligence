@@ -226,7 +226,7 @@ class ManuscriptV5Tests(unittest.TestCase):
     def tables(source: str) -> list[str]:
         """Return complete source tables, including all original data cells."""
         return re.findall(
-            r'<table data-source-table="\\d+" id="table-\\d+">[\\s\\S]*?</table>',
+            r'<table data-source-table="\d+" id="table-\d+">[\s\S]*?</table>',
             source,
         )
 
@@ -242,7 +242,7 @@ class ManuscriptV5Tests(unittest.TestCase):
         self.assertGreater(len(current), len(original))
 
     def test_no_duplicate_html_ids(self) -> None:
-        ids = re.findall(r'\\bid="([^"]+)"', self.v5)
+        ids = re.findall(r'\bid="([^"]+)"', self.v5)
         self.assertEqual(len(ids), len(set(ids)))
 
     def test_domain_and_outcome_sections_included(self) -> None:
