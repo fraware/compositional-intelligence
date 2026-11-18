@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Adversarial regression checks for proposed Typed Generativity V4 prototype.
+"""Adversarial checks for the Typed Generativity V5 publication and benchmark.
 
 Tests operate exclusively on synthetic fixtures; they validate implementation
 invariants and text conservation, never scientific or benchmark effectiveness.
@@ -7,6 +7,7 @@ invariants and text conservation, never scientific or benchmark effectiveness.
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import re
 import tempfile
@@ -211,50 +212,67 @@ class ContractV02Tests(unittest.TestCase):
                 load_json(p)
 
 
-class ManuscriptV4Tests(unittest.TestCase):
-    """Confirm source tables and anchor identities are preserved."""
+class ManuscriptV5Tests(unittest.TestCase):
+    """Check that the published V5 manuscript preserves original V3 evidence."""
 
     @classmethod
-    def setUpClass(cls):
-        cls.source=(ROOT/"Markdown collé.md").read_text(encoding="utf-8")
-        cls.v3=(ROOT/"typed_generativity_scientific_revision_v3.md").read_text(encoding="utf-8")
-        cls.v4=(ROOT/"typed_generativity_scientific_revision_v4.md").read_text(encoding="utf-8")
+    def setUpClass(cls) -> None:
+        cls.original = (ROOT / "historical-v3-source.md").read_text(encoding="utf-8")
+        cls.v5 = (
+            ROOT.parents[1] / "essays" / "typed-generativity.md"
+        ).read_text(encoding="utf-8")
 
     @staticmethod
-    def tables(s):
-        return re.findall(r'<table data-source-table="\d+" id="table-\d+">[\s\S]*?</table>',s)
+    def tables(source: str) -> list[str]:
+        """Return complete source tables, including all original data cells."""
+        return re.findall(
+            r'<table data-source-table="\\d+" id="table-\\d+">[\\s\\S]*?</table>',
+            source,
+        )
 
-    def test_all_original_tables_byte_exact(self):
-        before=self.tables(self.source)
-        self.assertEqual(len(before),15)
-        self.assertEqual(self.tables(self.v4),before)
+    def test_all_original_tables_byte_exact(self) -> None:
+        original = self.tables(self.original)
+        self.assertEqual(len(original), 15)
+        self.assertEqual(self.tables(self.v5), original)
 
-    def test_original_headings_and_v3_headings_preserved(self):
-        original=set(re.findall(r'<h[23] id="([^"]+)"',self.source))
-        previous=set(re.findall(r'<h[23] id="([^"]+)"',self.v3))
-        current=set(re.findall(r'<h[23] id="([^"]+)"',self.v4))
+    def test_original_headings_preserved(self) -> None:
+        original = set(re.findall(r'<h[23] id="([^"]+)"', self.original))
+        current = set(re.findall(r'<h[23] id="([^"]+)"', self.v5))
         self.assertTrue(original <= current)
-        self.assertTrue(previous <= current)
+        self.assertGreater(len(current), len(original))
 
-    def test_no_duplicate_html_ids(self):
-        ids=re.findall(r'\bid="([^"]+)"',self.v4)
-        self.assertEqual(len(ids),len(set(ids)))
+    def test_no_duplicate_html_ids(self) -> None:
+        ids = re.findall(r'\\bid="([^"]+)"', self.v5)
+        self.assertEqual(len(ids), len(set(ids)))
 
-    def test_domain_and_outcome_sections_included(self):
-        for anchor in ("domain-specific-acceptance-and-evidence",
-                       "trial-disposition-and-missing-evidence",
-                       "appendix-e.-primary-outcome-derivation",
-                       "appendix-f.-domain-evidence-boundaries"):
-            self.assertIn(f'id="{anchor}"',self.v4)
+    def test_domain_and_outcome_sections_included(self) -> None:
+        for anchor in (
+            "domain-specific-acceptance-and-evidence",
+            "trial-disposition-and-missing-evidence",
+            "appendix-e.-primary-outcome-derivation",
+            "appendix-f.-domain-evidence-boundaries",
+        ):
+            with self.subTest(anchor=anchor):
+                self.assertIn(f'id="{anchor}"', self.v5)
 
-    def test_unmodified_reader_map_has_correct_7_4_anchor(self):
-        self.assertIn("Sections 6.4, 7.4, 8, 9, and 11",self.v4)
-        self.assertIn('id="identification-and-analysis-protocol"',self.v4)
+    def test_reader_map_has_real_section_7_4(self) -> None:
+        self.assertIn("Sections 6.4, 7.4, 8, 9, and 11", self.v5)
+        self.assertIn('id="identification-and-analysis-protocol"', self.v5)
 
-    def test_proposed_v4_not_passing_as_literal_original(self):
-        self.assertIn("author-edited text",self.v4)
-        self.assertIn("AUTHORITATIVE-DOCX SHA256",self.source)
-        self.assertIn("The historical DOCX fingerprint",self.v4)
+    def test_editorial_provenance_and_current_checksum(self) -> None:
+        self.assertIn("AUTHORITATIVE-DOCX SHA256", self.original)
+        self.assertIn("AUTHORITATIVE-DOCX SHA256", self.v5)
+        self.assertNotIn("Publication editorial revision V5", self.original)
+        self.assertIn("Publication editorial revision V5", self.v5)
+        publication_record = json.loads(
+            (ROOT.parents[1] / "sources" / "originals.json").read_text(
+                encoding="utf-8"
+            )
+        )["documents"]["typed-generativity"]
+        self.assertEqual(
+            hashlib.sha256(self.v5.encode("utf-8")).hexdigest(),
+            publication_record["markdown_sha256"],
+        )
 
 
 if __name__ == "__main__":
