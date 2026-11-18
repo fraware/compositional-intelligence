@@ -29,11 +29,13 @@
       "source_docx": "Essay2_Typed_Generativity_V3(1).docx",
       "source_sha256": "174be720ce13dfaf0196ad51a5f35c02810fc8bd0a00356399f0ab4baf67e028",
       "canonical_text_sha256": "2c09c904e19a282c9c04aa7ee490a0b781cf0929bf8ef4a0c86e61efcc6bbe1c",
-      "markdown_sha256": "60dfec38a0b91bc20d84aecf8ab12976c05406db59bc2b3248efcd82f2d8818c",
+      "markdown_sha256": "72077f9d10402667c96b1838daef6a7c130214d739b64bdd29dea57c649e2776",
       "table_count": 15,
-      "heading_count": 26,
+      "heading_count": 34,
       "word_count": 3570,
-      "published_markdown": "typed-generativity.md"
+      "published_markdown": "typed-generativity.md",
+      "publication_status": "Publication V5 editorial revision of original V3 DOCX-derived source; DOCX fingerprint records historical original; all 15 source tables retained",
+      "publication_word_count": 6986
     },
     "functorial-consistency": {
       "slug": "functorial-consistency",
