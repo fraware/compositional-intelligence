@@ -21,9 +21,9 @@ Compositional Intelligence is a series of research essays on the creation, inter
 
 The essays advance a research program and identify questions that remain open. The scope of each mathematical and empirical claim is stated in the corresponding essay.
 
-The eight manuscripts in `essays/` contain the V3 DOCX-derived HTML publication fragments and are the authoritative website sources. The build retains their text, adds reviewed MathML typesetting and readable schema formatting, and produces a deterministic static site using Pandoc 3.1.13.
+The eight manuscripts in `essays/` are the authoritative website sources. Seven retain their V3 DOCX-derived publication fragments; [Typed Generativity](essays/typed-generativity.md) is an editorial V5 revision preserving all original tables. Its [research supplement](research/typed-generativity/README.md) records the evaluation protocol and evidence boundaries. The build provides reviewed MathML typesetting and readable schema formatting, and produces a deterministic static site using Pandoc 3.1.13.
 
-The original DOCX file fingerprints are recorded in `sources/originals.json`. GitHub Actions checks the committed source hashes, HTML structure, scientific markup, links, responsive presentation, and deployment. The original Word files are deliberately absent from the public repository. Consequently, CI alone does not establish byte-for-byte correspondence with those files.
+The original DOCX file fingerprints and current published source checksums are recorded in `sources/originals.json`. For the edited Typed Generativity manuscript, the DOCX fingerprint identifies the historical original and the Markdown checksum identifies the current editorial source. GitHub Actions checks the committed source hashes, HTML structure, scientific markup, links, responsive presentation, and deployment. The original Word files are deliberately absent from the public repository. Consequently, CI alone does not establish byte-for-byte correspondence with those files.
 
 An independent local source comparison is available with the original Word documents in a private directory:
 

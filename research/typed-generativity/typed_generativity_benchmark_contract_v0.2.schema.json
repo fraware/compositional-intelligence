@@ -1,0 +1,656 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:typed-generativity:benchmark-contract:0.2",
+  "title": "Typed Generativity assigned-trial evaluation contract, version 0.2",
+  "description": "Records only. Structural validity does not verify assignment integrity, adjudication correctness, tool isolation, or construct validity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol_version",
+    "dataset_id",
+    "record_kind",
+    "design",
+    "tasks",
+    "runs",
+    "judgments"
+  ],
+  "properties": {
+    "protocol_version": {
+      "const": "0.2"
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "record_kind": {
+      "enum": [
+        "synthetic_example",
+        "study_data"
+      ]
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/task"
+      }
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/run"
+      }
+    },
+    "judgments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/judgment"
+      }
+    },
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary_conditions",
+        "primary_cohort",
+        "primary_split",
+        "repetitions_per_task",
+        "assignment_manifest_sha256",
+        "artifact_failure_policy"
+      ],
+      "properties": {
+        "primary_conditions": {
+          "type": "array",
+          "const": [
+            "deliberation",
+            "type_first"
+          ]
+        },
+        "primary_cohort": {
+          "const": "one_shot"
+        },
+        "primary_split": {
+          "const": "confirmatory"
+        },
+        "repetitions_per_task": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "assignment_manifest_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "artifact_failure_policy": {
+          "const": "refusal_and_model_generation_failure_are_zero"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$",
+      "maxLength": 160
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "criterion_id",
+        "description",
+        "mandatory",
+        "assessment_mode",
+        "validator_id",
+        "role",
+        "evidence_grade"
+      ],
+      "properties": {
+        "criterion_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10
+        },
+        "mandatory": {
+          "type": "boolean"
+        },
+        "assessment_mode": {
+          "enum": [
+            "automatic",
+            "human",
+            "hybrid"
+          ]
+        },
+        "validator_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "role": {
+          "enum": [
+            "target_alignment",
+            "correctness",
+            "interface",
+            "warrant",
+            "authorization",
+            "resource",
+            "other"
+          ]
+        },
+        "evidence_grade": {
+          "enum": [
+            "formal_kernel_check",
+            "test_suite",
+            "static_validation",
+            "expert_review",
+            "simulation",
+            "executed_state_reconciliation",
+            "document_audit"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "assessment_mode": {
+                "const": "automatic"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "validator_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "task_family_id",
+        "domain",
+        "split",
+        "analysis_cohort",
+        "prompt",
+        "prompt_sha256",
+        "intent_status",
+        "clarification_policy",
+        "admissible_target_ids",
+        "criteria",
+        "eligible_conditions",
+        "provenance"
+      ],
+      "properties": {
+        "task_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "task_family_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "domain": {
+          "enum": [
+            "code",
+            "lean_math",
+            "explanation",
+            "scientific_protocol",
+            "planning",
+            "tool_use"
+          ]
+        },
+        "split": {
+          "enum": [
+            "pilot",
+            "confirmatory",
+            "development"
+          ]
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 8
+        },
+        "prompt_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "intent_status": {
+          "enum": [
+            "determinate",
+            "admissibly_ambiguous",
+            "unresolved"
+          ]
+        },
+        "clarification_policy": {
+          "enum": [
+            "none",
+            "interactive_separate_cohort"
+          ]
+        },
+        "admissible_target_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/criterion"
+          }
+        },
+        "eligible_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "origin",
+            "creation_date",
+            "public_exposure",
+            "training_exposure"
+          ],
+          "properties": {
+            "origin": {
+              "enum": [
+                "newly_authored",
+                "adapted",
+                "synthetic"
+              ]
+            },
+            "creation_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "public_exposure": {
+              "enum": [
+                "private",
+                "public",
+                "unknown"
+              ]
+            },
+            "training_exposure": {
+              "enum": [
+                "verified_absent",
+                "known_present",
+                "unknown"
+              ]
+            },
+            "source_reference": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "analysis_cohort": {
+          "enum": [
+            "one_shot",
+            "interactive"
+          ]
+        }
+      }
+    },
+    "condition": {
+      "enum": [
+        "direct",
+        "deliberation",
+        "type_first",
+        "oracle",
+        "constrained",
+        "checker_repair"
+      ]
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "task_id",
+        "assigned_condition",
+        "trial_index",
+        "order_index",
+        "model_id",
+        "model_revision",
+        "prompt_bundle_sha256",
+        "environment_sha256",
+        "max_output_tokens",
+        "observed_output_tokens",
+        "termination",
+        "artifact",
+        "sampling_settings",
+        "usage",
+        "analysis_population",
+        "session_id",
+        "artifact_extraction_status",
+        "declared_target_text"
+      ],
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "task_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "assigned_condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "trial_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "order_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "model_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model_revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prompt_bundle_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "environment_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "max_output_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "observed_output_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "termination": {
+          "enum": [
+            "completed",
+            "refused",
+            "generation_error",
+            "budget_timeout",
+            "infrastructure_error",
+            "infrastructure_timeout",
+            "not_started"
+          ]
+        },
+        "artifact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sampling_settings": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "temperature",
+            "top_p",
+            "seed"
+          ],
+          "properties": {
+            "temperature": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "top_p": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0,
+              "maximum": 1
+            },
+            "seed": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "input_tokens",
+            "total_tokens",
+            "tool_call_count",
+            "retry_count",
+            "latency_ms",
+            "cost_usd"
+          ],
+          "properties": {
+            "input_tokens": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "total_tokens": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "tool_call_count": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "retry_count": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "latency_ms": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "cost_usd": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        "analysis_population": {
+          "enum": [
+            "primary",
+            "secondary",
+            "excluded_preassignment"
+          ]
+        },
+        "session_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "artifact_extraction_status": {
+          "enum": [
+            "extracted",
+            "ambiguous",
+            "empty",
+            "not_applicable"
+          ]
+        },
+        "declared_target_text": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "description": "One record per preallocated assignment, including refusals, model errors, and infrastructure losses; analysis population must be assigned prior to response.",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "termination": {
+                "const": "completed"
+              }
+            },
+            "required": [
+              "termination"
+            ]
+          },
+          "then": {
+            "properties": {
+              "artifact_extraction_status": {
+                "enum": [
+                  "extracted",
+                  "ambiguous",
+                  "empty"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "artifact_extraction_status": {
+                "const": "extracted"
+              }
+            },
+            "required": [
+              "artifact_extraction_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "artifact": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "termination": {
+                "enum": [
+                  "refused",
+                  "generation_error",
+                  "budget_timeout",
+                  "infrastructure_error",
+                  "infrastructure_timeout",
+                  "not_started"
+                ]
+              }
+            },
+            "required": [
+              "termination"
+            ]
+          },
+          "then": {
+            "properties": {
+              "artifact_extraction_status": {
+                "const": "not_applicable"
+              },
+              "artifact": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "judgment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "criterion_id",
+        "phase",
+        "assessor_id",
+        "assessor_kind",
+        "execution_status",
+        "verdict",
+        "evidence_reference"
+      ],
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "criterion_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "phase": {
+          "enum": [
+            "initial",
+            "final"
+          ]
+        },
+        "assessor_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "assessor_kind": {
+          "enum": [
+            "machine",
+            "human",
+            "adjudicator"
+          ]
+        },
+        "execution_status": {
+          "enum": [
+            "executed",
+            "not_run",
+            "unavailable",
+            "error"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "accepted",
+            "rejected",
+            "indeterminate"
+          ]
+        },
+        "evidence_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "description": "Criterion-level observation; final adjudication is distinct from the raw independent initial reviews."
+    }
+  }
+}

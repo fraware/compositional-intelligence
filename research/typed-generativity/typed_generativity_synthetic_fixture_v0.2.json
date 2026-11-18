@@ -1,0 +1,231 @@
+{
+  "protocol_version": "0.2",
+  "dataset_id": "synthetic-example-not-data",
+  "record_kind": "synthetic_example",
+  "tasks": [
+    {
+      "task_id": "synthetic-code-001",
+      "task_family_id": "synthetic-deduplication",
+      "domain": "code",
+      "split": "confirmatory",
+      "prompt": "Return a function that removes repeated integers while preserving first occurrence order.",
+      "prompt_sha256": "d936da03bdf876c6cc0a6c4cff5cec08eb95c912018f02bca372403229859b80",
+      "intent_status": "determinate",
+      "clarification_policy": "none",
+      "admissible_target_ids": [
+        "stable-dedup-int"
+      ],
+      "eligible_conditions": [
+        "deliberation",
+        "type_first"
+      ],
+      "criteria": [
+        {
+          "criterion_id": "target-alignment",
+          "description": "The final artifact implements the requested order-preserving deduplication behavior.",
+          "mandatory": true,
+          "assessment_mode": "human",
+          "validator_id": null,
+          "role": "target_alignment",
+          "evidence_grade": "expert_review"
+        },
+        {
+          "criterion_id": "test-fixture",
+          "description": "The function passes the frozen unit-test fixture for representative and edge inputs.",
+          "mandatory": true,
+          "assessment_mode": "automatic",
+          "validator_id": "synthetic-test-fixture-v0",
+          "role": "correctness",
+          "evidence_grade": "test_suite"
+        }
+      ],
+      "provenance": {
+        "origin": "synthetic",
+        "creation_date": "2026-11-18",
+        "public_exposure": "private",
+        "training_exposure": "unknown",
+        "source_reference": null
+      },
+      "analysis_cohort": "one_shot"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "synthetic-run-1",
+      "task_id": "synthetic-code-001",
+      "assigned_condition": "deliberation",
+      "trial_index": 0,
+      "order_index": 0,
+      "model_id": "no-model-synthetic-fixture",
+      "model_revision": "0",
+      "prompt_bundle_sha256": "861c3a36a46ab793e4d5c99938c90bc8304434f4cd19c86e10231315ce433844",
+      "environment_sha256": "ed803ebaf5e6802cca2132164095a8cd8e61b613c53b7f8de1d7c1e37aa6dc12",
+      "max_output_tokens": 500,
+      "observed_output_tokens": 10,
+      "termination": "completed",
+      "artifact": "SYNTHETIC_ARTIFACT_1",
+      "sampling_settings": {
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "seed": 1
+      },
+      "usage": {
+        "input_tokens": 40,
+        "total_tokens": 50,
+        "tool_call_count": 0,
+        "retry_count": 0,
+        "latency_ms": 10.0,
+        "cost_usd": 0.0
+      },
+      "declared_target_text": null,
+      "session_id": "synthetic-session-0",
+      "artifact_extraction_status": "extracted",
+      "analysis_population": "primary"
+    },
+    {
+      "run_id": "synthetic-run-2",
+      "task_id": "synthetic-code-001",
+      "assigned_condition": "type_first",
+      "trial_index": 0,
+      "order_index": 1,
+      "model_id": "no-model-synthetic-fixture",
+      "model_revision": "0",
+      "prompt_bundle_sha256": "6a1a664574ec9c724d9698fe86d5847bddb90ec07ac9e06e102e762f47617566",
+      "environment_sha256": "ed803ebaf5e6802cca2132164095a8cd8e61b613c53b7f8de1d7c1e37aa6dc12",
+      "max_output_tokens": 500,
+      "observed_output_tokens": 10,
+      "termination": "completed",
+      "artifact": "SYNTHETIC_ARTIFACT_2",
+      "sampling_settings": {
+        "temperature": 0.0,
+        "top_p": 1.0,
+        "seed": 2
+      },
+      "usage": {
+        "input_tokens": 40,
+        "total_tokens": 50,
+        "tool_call_count": 0,
+        "retry_count": 0,
+        "latency_ms": 10.0,
+        "cost_usd": 0.0
+      },
+      "declared_target_text": "An order-preserving deduplication function over integers.",
+      "session_id": "synthetic-session-1",
+      "artifact_extraction_status": "extracted",
+      "analysis_population": "primary"
+    }
+  ],
+  "judgments": [
+    {
+      "run_id": "synthetic-run-1",
+      "criterion_id": "target-alignment",
+      "phase": "initial",
+      "assessor_id": "synthetic-human-1",
+      "assessor_kind": "human",
+      "execution_status": "executed",
+      "verdict": "accepted",
+      "evidence_reference": "synthetic-evidence:synthetic-run-1:target-alignment:0"
+    },
+    {
+      "run_id": "synthetic-run-1",
+      "criterion_id": "target-alignment",
+      "phase": "initial",
+      "assessor_id": "synthetic-human-2",
+      "assessor_kind": "human",
+      "execution_status": "executed",
+      "verdict": "accepted",
+      "evidence_reference": "synthetic-evidence:synthetic-run-1:target-alignment:1"
+    },
+    {
+      "run_id": "synthetic-run-1",
+      "criterion_id": "target-alignment",
+      "phase": "final",
+      "assessor_id": "synthetic-adjudicator",
+      "assessor_kind": "adjudicator",
+      "execution_status": "executed",
+      "verdict": "accepted",
+      "evidence_reference": "synthetic-evidence:synthetic-run-1:target-alignment:final"
+    },
+    {
+      "run_id": "synthetic-run-1",
+      "criterion_id": "test-fixture",
+      "phase": "initial",
+      "assessor_id": "synthetic-automatic-1",
+      "assessor_kind": "machine",
+      "execution_status": "executed",
+      "verdict": "accepted",
+      "evidence_reference": "synthetic-evidence:synthetic-run-1:test-fixture:0"
+    },
+    {
+      "run_id": "synthetic-run-1",
+      "criterion_id": "test-fixture",
+      "phase": "final",
+      "assessor_id": "synthetic-validator",
+      "assessor_kind": "machine",
+      "execution_status": "executed",
+      "verdict": "accepted",
+      "evidence_reference": "synthetic-evidence:synthetic-run-1:test-fixture:final"
+    },
+    {
+      "run_id": "synthetic-run-2",
+      "criterion_id": "target-alignment",
+      "phase": "initial",
+      "assessor_id": "synthetic-human-1",
+      "assessor_kind": "human",
+      "execution_status": "executed",
+      "verdict": "rejected",
+      "evidence_reference": "synthetic-evidence:synthetic-run-2:target-alignment:0"
+    },
+    {
+      "run_id": "synthetic-run-2",
+      "criterion_id": "target-alignment",
+      "phase": "initial",
+      "assessor_id": "synthetic-human-2",
+      "assessor_kind": "human",
+      "execution_status": "executed",
+      "verdict": "rejected",
+      "evidence_reference": "synthetic-evidence:synthetic-run-2:target-alignment:1"
+    },
+    {
+      "run_id": "synthetic-run-2",
+      "criterion_id": "target-alignment",
+      "phase": "final",
+      "assessor_id": "synthetic-adjudicator",
+      "assessor_kind": "adjudicator",
+      "execution_status": "executed",
+      "verdict": "rejected",
+      "evidence_reference": "synthetic-evidence:synthetic-run-2:target-alignment:final"
+    },
+    {
+      "run_id": "synthetic-run-2",
+      "criterion_id": "test-fixture",
+      "phase": "initial",
+      "assessor_id": "synthetic-automatic-1",
+      "assessor_kind": "machine",
+      "execution_status": "executed",
+      "verdict": "rejected",
+      "evidence_reference": "synthetic-evidence:synthetic-run-2:test-fixture:0"
+    },
+    {
+      "run_id": "synthetic-run-2",
+      "criterion_id": "test-fixture",
+      "phase": "final",
+      "assessor_id": "synthetic-validator",
+      "assessor_kind": "machine",
+      "execution_status": "executed",
+      "verdict": "rejected",
+      "evidence_reference": "synthetic-evidence:synthetic-run-2:test-fixture:final"
+    }
+  ],
+  "design": {
+    "primary_conditions": [
+      "deliberation",
+      "type_first"
+    ],
+    "primary_cohort": "one_shot",
+    "primary_split": "confirmatory",
+    "repetitions_per_task": 1,
+    "assignment_manifest_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "artifact_failure_policy": "refusal_and_model_generation_failure_are_zero"
+  }
+}

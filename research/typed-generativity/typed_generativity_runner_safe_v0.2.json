@@ -1,0 +1,12 @@
+{
+  "protocol_version": "0.2",
+  "dataset_id": "synthetic-example-not-data",
+  "tasks": [
+    {
+      "task_id": "synthetic-code-001",
+      "domain": "code",
+      "prompt": "Return a function that removes repeated integers while preserving first occurrence order.",
+      "prompt_sha256": "d936da03bdf876c6cc0a6c4cff5cec08eb95c912018f02bca372403229859b80"
+    }
+  ]
+}

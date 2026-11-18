@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Faithful reading layouts for the original Typed Generativity V3 manuscript.
+"""Source-faithful reading layouts for the Typed Generativity V5 manuscript.
 
 All source HTML tables and original manuscript paragraphs remain available.
 Desktop retains every original table; narrow screens use matching definition
@@ -128,14 +128,15 @@ def _reader_targets(body: str) -> tuple[dict[str, str], dict[str, str]]:
             appendices[appendix.group(1)] = fragment
     if set(numbers) != {
         *(str(i) for i in range(1, 13)),
-        "6.1", "6.2", "6.3", "6.4", "6.5", "7.1", "7.2", "7.3",
-    } or set(appendices) != {"A", "B", "C"}:
-        raise ValueError("Source section/appendix inventory differs from V3")
+        "6.1", "6.2", "6.3", "6.4", "6.5",
+        "7.1", "7.2", "7.3", "7.4", "7.5", "7.6", "7.7",
+    } or set(appendices) != {"A", "B", "C", "D", "E", "F"}:
+        raise ValueError("Source section/appendix inventory differs from the V5 publication manuscript")
     return numbers, appendices
 
 
 def _link_reading_paths(body: str) -> str:
-    """Link existing headings, resolving the source-only 7.4 reference to Section 7."""
+    """Link every reading-map section to its existing V5 heading."""
     numbers, appendices = _reader_targets(body)
     table = re.compile(
         r'(?P<open><table data-source-table="2" id="table-2">)'
@@ -168,17 +169,6 @@ def _link_reading_paths(body: str) -> str:
 
             def link_section(number: re.Match[str]) -> str:
                 raw = number.group()
-                if raw == "7.4":
-                    # The original reader map points to a nonexistent subsection.
-                    # Show the valid parent section and keep the source citation
-                    # in a machine-readable attribute for editorial traceability.
-                    return (
-                        '<a href="#' + escape(numbers["7"], quote=True) +
-                        '" data-source-reference="7.4" '
-                        'aria-label="Section 7; original citation was 7.4" '
-                        'title="The manuscript references an absent Section 7.4. '
-                        'This link opens Section 7.">7</a>'
-                    )
                 if raw not in numbers:
                     return raw
                 return '<a href="#' + escape(numbers[raw], quote=True) + '">' + raw + "</a>"
@@ -191,8 +181,8 @@ def _link_reading_paths(body: str) -> str:
                     '">' + key + "</a>", 1,
                 )
         content = content[:item.start("route")] + linked + content[item.end("route"):]
-    if content.count('data-source-reference="7.4"') != 1 or ">7.4</a>" in content:
-        raise ValueError("Source-only 7.4 reference lost its traceable Section 7 link")
+    if content.count('href="#' + escape(numbers["7.4"], quote=True) + '"') != 1:
+        raise ValueError("Section 7.4 reader reference is not linked to the authored section")
     return body[:match.start()] + match.group("open") + content + match.group("close") + body[match.end():]
 
 
@@ -458,7 +448,7 @@ def _format_source_schemas(body: str) -> str:
 
 
 def render_typed_generativity(body: str) -> str:
-    """Render the V3 Typed Generativity text without modifying its manuscript."""
+    """Render the V5 Typed Generativity text without changing its source tables."""
     body = _source_captions(body)
     body = _link_reading_paths(body)
     body = _typeset_source_symbols(body)
