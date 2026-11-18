@@ -339,14 +339,14 @@ class ManuscriptFidelityTests(unittest.TestCase):
         entries = json.loads(catalogue_path.read_text(encoding="utf-8"))[
             "references"
         ]
-        self.assertEqual(len(entries), 34)
+        self.assertEqual(len(entries), 35)
         keys = [entry["key"] for entry in entries]
         self.assertEqual(len(keys), len(set(keys)))
         page = publication.render_essay(
             *publication.ESSAYS[0], position=0, table_captions=[]
         )
         self.assertEqual(page.count('<h2 id="references">'), 1)
-        self.assertEqual(page.count('class="bibliography-entry"'), 34)
+        self.assertEqual(page.count('class="bibliography-entry"'), 35)
         for key in keys:
             with self.subTest(key=key):
                 self.assertEqual(page.count(f'id="ref-{key}"'), 1)
