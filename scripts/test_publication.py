@@ -777,7 +777,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                         out_html.count('data-source-reference="7.4"'), 1
                     )
                     out_html, restored = re.subn(
-                        r'<a\b[^>]*data-source-reference="7\\.4"[^>]*>7</a>',
+                        r'<a\b[^>]*data-source-reference="7[.]4"[^>]*>7</a>',
                         '7.4', out_html,
                     )
                     self.assertEqual(restored, 1)
@@ -854,7 +854,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                             re.sub(
                                 r'</?a\b[^>]*>', '',
                                 re.sub(
-                                    r'<a\b[^>]*data-source-reference="7\\.4"[^>]*>7</a>',
+                                    r'<a\b[^>]*data-source-reference="7[.]4"[^>]*>7</a>',
                                     '7.4', value,
                                 ),
                             )
