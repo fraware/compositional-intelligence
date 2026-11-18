@@ -37,7 +37,7 @@ def main() -> int:
             body = build_site.render_synthesis_figures(body)
         if slug == "functorial-consistency":
             body = build_site.render_functorial_diagram(body)
-        if slug == "lambek-machines":
+        if slug == "lambek-machines" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_lambek_machines(body)
         if slug == "algebraic-architectures":
             body = build_site.render_algebraic_architectures(body)
