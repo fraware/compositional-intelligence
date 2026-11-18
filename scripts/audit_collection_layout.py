@@ -54,7 +54,7 @@ def measure(page) -> dict:
             return true;
         };
         const tables = [...article.querySelectorAll('.table-scroll')];
-        const sourceTables = [...article.querySelectorAll('table[data-source-table]')];
+        const sourceTables = [...article.querySelectorAll('table[data-source-table], .table-scroll > table[id^="table-"]')];
         const hints = [];
         const missingHints = [];
         const redundantHints = [];
