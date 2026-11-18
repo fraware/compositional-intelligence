@@ -260,11 +260,11 @@
 <p>A simple example comes from informal mathematics to Lean. If a natural-language theorem is first specialized and then formalized in Lean, the result should align with formalizing the original theorem and then specializing the formal statement. The two paths need not produce identical syntax. They should agree under a stated formal or reviewed equivalence regime (LeanRef,TPIL4).</p>
 <h3 id="worked-commutation-example">A worked commutation test</h3>
 <p>Consider an expression language over the integers. The source artifact x specifies the function x(n) = n * n. The source transformation f adds one to the result, yielding f(x)(n) = n * n + 1. Translation T maps source expressions to executable Python functions. The corresponding target operation g adds one to a translated function’s result. The declared acceptance relation is extensional equality over integer inputs. A single counterexample is sufficient to reject path agreement, while a finite collection of passing tests does not establish equality over the full domain.</p>
-<pre><code>Source artifact:         x(n)        = n * n
-Transformed source:      f(x)(n)     = n * n + 1
-Original translation:   T(x)(n)     = n * n
-Target-side transform:  g(T(x))(n)  = n * n + 1
-Candidate translation:  T(f(x))(n)  = n * (n + 1)</code></pre>
+<pre><code>source(n)               = n * n
+source_plus_one(n)      = n * n + 1
+translated(n)           = n * n
+target_plus_one(n)      = n * n + 1
+transformed_candidate(n) = n * (n + 1)</code></pre>
 <p>Both target expressions are syntactically valid and executable. At n = 1, each evaluates to 2, so a local test restricted to that input reports success. At n = 2, the transform-then-translate path evaluates to 6 and the translate-then-transform path evaluates to 5. The witness n = 2 establishes non-commutation under the declared relation. Independent checks of the source transformation and target operation identify the candidate translation of the transformed source as the faulty component. Without those independent checks, path disagreement alone does not uniquely localize the defect.</p>
 <p>The benchmark record names the two environments, both transformations, the translation candidates, the equality regime, the witness input, and the validation outcome. This example demonstrates the diagnostic record; it supplies no evidence of superiority over metamorphic testing. A suitably specified metamorphic relation detects the same failure. The empirical question is whether the explicit two-path record improves fault attribution, review, or repair under controlled comparison.</p>
 <p>Functorial Consistency differs from ordinary robustness. Robustness often asks whether an output remains stable under perturbation. Functorial Consistency asks whether the output changes in the right way under a typed transformation. Some transformations should preserve meaning. Others should change meaning in controlled ways. A paraphrase can preserve denotation. A specialization should narrow a claim. An edge-case strengthening should add a behavioral condition. A decomposition should preserve recomposability.</p>
