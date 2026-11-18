@@ -190,52 +190,20 @@
     ],
     "lambek-machines": [
       {
-        "caption": "Contributions of the Lambek Machines research proposal",
-        "source_sha256": "20df0f56bffc09eebe8329b22a1e608164bcf4d844fa044904faf151632fef43"
+        "caption": "Four intervention levels for typed language composition.",
+        "source_sha256": "02c9a7f6185d2443f3caa5b10a4e270a4d6337c8f7eb4b61caf820502abd72ee"
       },
       {
-        "caption": "Suggested reading paths by audience",
-        "source_sha256": "a98e416b6fa8b8d0cae9fc6fd8065585da23faabb833c495030edca20ae5441b"
+        "caption": "Linguistic transformations and expected semantic effects.",
+        "source_sha256": "562735cb5b2a06f8657288366db21218824035159b85cc4b1fde756118b2f509"
       },
       {
-        "caption": "Relevant literature and the claims it supports",
-        "source_sha256": "dcc1bfea57483431ff5b0e69256601db5433ef76db27693a7f4dd63b6d7a6614"
+        "caption": "Comparative supervision and decoding conditions.",
+        "source_sha256": "1733515c6cf436306c3dcd2b7e7ef5586cddcd783fb614b082092d31bf9f4d93"
       },
       {
-        "caption": "Four levels of proposed Lambek Machine implementations",
-        "source_sha256": "20a12efbd623ef86d13cd212d345fbcb6220b46af4dcc235ac29d83fb6cfea98"
-      },
-      {
-        "caption": "Linguistic transformation families and target-side expectations",
-        "source_sha256": "ffdf5d78ec30ec048533b759c531e1a03ff7456c9fabb69ea9d5cb9c973760b3"
-      },
-      {
-        "caption": "Experimental conditions for categorial auxiliary supervision",
-        "source_sha256": "4ba663eeb69bce454339f2358ef5db6f8e9d093edbb75b9eb07a4b4dbd1d8b91"
-      },
-      {
-        "caption": "Diagnostic failure labels in typed linguistic composition",
-        "source_sha256": "627c04c686cd29ca817a349a6c82f87d71a18a2382f149ac0d827825ce136c51"
-      },
-      {
-        "caption": "Metrics for the proposed language evaluation",
-        "source_sha256": "03f98efe0dd4f72edab8201e33704b09fa4ccb35665afaedae45700be52264f4"
-      },
-      {
-        "caption": "Proposed pilot tracks and item counts",
-        "source_sha256": "25130d38ff8f158d7ba8fe60319a22b0b1be6a6094304d07c2ba984422f68cac"
-      },
-      {
-        "caption": "Interpretation of favorable and unfavorable evidence",
-        "source_sha256": "6cd080b6264c3931a705ee67eebd7bc2e61faa03ab867c7d60d09157e86fbf6c"
-      },
-      {
-        "caption": "Objections and their research responses",
-        "source_sha256": "cb1e1102434ea22c1fd5a4ee4fad3579d1c85dd44b63b498e798a11c56621764"
-      },
-      {
-        "caption": "Proposed falsification criteria for Lambek-specific interventions",
-        "source_sha256": "21ac07b86ee550c35b0ee25b610840ade793dae376cf19928a13f2682c60be9c"
+        "caption": "Pilot evaluation tracks and measurement units.",
+        "source_sha256": "b079b9ce5293d1a8b5694adef26d7fe00ed1d23e303e7b0af4197c3c258a26b5"
       }
     ],
     "algebraic-architectures": [
