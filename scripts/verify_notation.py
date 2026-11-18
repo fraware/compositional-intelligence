@@ -37,7 +37,7 @@ def main() -> int:
             body = build_site.render_synthesis_figures(body)
         if slug == "functorial-consistency":
             body = build_site.render_functorial_diagram(body)
-        if slug == "lambek-machines":
+        if slug == "lambek-machines" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_lambek_machines(body)
         if slug == "algebraic-architectures":
             body = build_site.render_algebraic_architectures(body)
@@ -45,7 +45,8 @@ def main() -> int:
             body = build_site.render_quantitative_curry_howard(body)
         if slug == "effectful-and-conceptual-intelligence":
             body = build_site.render_effectful_and_conceptual_intelligence(body)
-        body = build_site.enhance_scientific_presentation(body)
+        if slug != "lambek-machines" or "AUTHORITATIVE-DOCX SHA256" in source:
+            body = build_site.enhance_scientific_presentation(body)
         if slug == "compositional-intelligence":
             body = build_site.render_synthesis_mobile_tables(body)
             body = build_site.render_synthesis_references(

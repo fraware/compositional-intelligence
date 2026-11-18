@@ -121,17 +121,39 @@ def heading_text(raw: str) -> str:
 
 
 def verify_table_catalog(markdown: str, captions: list[dict[str, str]], title: str) -> None:
-    """Keep table descriptions attached to the exact manuscript table they describe."""
-    original_tables = list(TABLE.finditer(markdown))
-    if len(original_tables) != len(captions):
+    """Validate accessible descriptions against source-bound table digests."""
+    if title == "Lambek Machines":
+        blocks = re.findall(r"(?m)(?:^\|[^\n]*\|\n){3,}", markdown)
+    else:
+        blocks = [match.group() for match in TABLE.finditer(markdown)]
+    if len(blocks) != len(captions):
         raise ValueError(f"{title}: table catalogue count differs from manuscript")
-    for index, (match, entry) in enumerate(zip(original_tables, captions, strict=True), 1):
-        digest = hashlib.sha256(match.group().encode("utf-8")).hexdigest()
+    for index, (block, entry) in enumerate(zip(blocks, captions, strict=True), 1):
+        digest = hashlib.sha256(block.encode("utf-8")).hexdigest()
         label = entry.get("caption", "")
         if digest != entry.get("source_sha256"):
             raise ValueError(f"{title}: table {index} changed; review its accessible description")
         if not isinstance(label, str) or len(label.strip()) < 20:
             raise ValueError(f"{title}: table {index} lacks a meaningful description")
+
+
+def annotate_pandoc_math(body: str) -> str:
+    """Attach source TeX as MathML alternative text."""
+    def annotate(match: re.Match[str]) -> str:
+        markup = match.group()
+        opening = re.match(r"<math\b[^>]*>", markup)
+        if opening is None or "alttext=" in opening.group():
+            return markup
+        annotation = re.search(
+            r'<annotation encoding="application/x-tex">(.*?)</annotation>',
+            markup, re.S,
+        )
+        if annotation is None:
+            raise ValueError("MathML expression lacks its TeX annotation")
+        tex = html.unescape(annotation.group(1))
+        opening_tag = opening.group()[:-1] + f' alttext="{esc(tex)}">'
+        return opening_tag + markup[opening.end():]
+    return re.sub(r"<math\b[^>]*>.*?</math>", annotate, body, flags=re.S)
 
 
 def render_tables(body: str, captions: list[dict[str, str]], *, preserve_source_labels: bool = False) -> str:
@@ -272,8 +294,9 @@ def render_math(body: str) -> str:
     pattern = re.compile(r'<p>\s*(<math\b[^>]*\bdisplay="block"[^>]*>.*?</math>)\s*</p>', re.S)
     def wrap(match: re.Match[str]) -> str:
         return ('<div class="math-scroll" role="group" tabindex="0" '
-                'aria-label="Displayed mathematical expression">' +
-                match.group(1) + '</div>')
+                'aria-label="Displayed mathematical expression">'
+                '<span class="math-display-expression">' +
+                match.group(1) + '</span></div>')
     return pattern.sub(wrap, body)
 
 
@@ -346,6 +369,8 @@ def render_toc(body: str) -> str:
 def source_to_body(markdown: str, expected_title: str, table_captions: list[dict[str, str]]) -> tuple[str, str]:
     """Render the authored Markdown to HTML with a fixed Pandoc release."""
     match = TITLE_AUTHOR.match(markdown)
+    if match is None and expected_title == "Lambek Machines":
+        match = re.match(r"\A# (Lambek Machines)\n\n", markdown)
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
     source_body = markdown[match.end():]
@@ -375,11 +400,21 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         if '<h2 id="abstract">' not in body:
             raise ValueError(f"Missing original Abstract: {expected_title}")
         return body, hashlib.sha256(markdown.encode("utf-8")).hexdigest()
+    if expected_title == "Lambek Machines" and not table_captions:
+        table_captions = json.loads(
+            (ROOT / "tables" / "captions.json").read_text(encoding="utf-8")
+        )["essays"]["lambek-machines"]
     verify_table_catalog(source_body, table_captions, expected_title)
-    command = ["pandoc", "--from=markdown+raw_html", "--to=html5", "--mathml", "--wrap=none"]
+    input_format = "markdown+raw_html"
+    if expected_title == "Lambek Machines":
+        input_format += "+tex_math_single_backslash"
+    command = ["pandoc", "--from=" + input_format, "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
+    rendered_html = rendered.stdout.rstrip() + "\n"
+    if expected_title == "Lambek Machines":
+        rendered_html = annotate_pandoc_math(rendered_html)
     body = render_schema_blocks(render_tables(
-        render_math(rendered.stdout.rstrip() + "\n"), table_captions,
+        render_math(rendered_html), table_captions,
         preserve_source_labels=(expected_title == "Compositional Intelligence"),
     ))
     for ident in MARKDOWN_SECTION.findall(source_body):
@@ -398,7 +433,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_synthesis_figures(body)
     if slug == "functorial-consistency":
         body = render_functorial_diagram(body)
-    if slug == "lambek-machines":
+    if slug == "lambek-machines" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_lambek_machines(body)
     if slug == "algebraic-architectures":
         body = render_algebraic_architectures(body)
@@ -406,7 +441,8 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_quantitative_curry_howard(body)
     if slug == "effectful-and-conceptual-intelligence":
         body = render_effectful_and_conceptual_intelligence(body)
-    body = enhance_scientific_presentation(body)
+    if slug != "lambek-machines" or "AUTHORITATIVE-DOCX SHA256" in manuscript:
+        body = enhance_scientific_presentation(body)
     if slug == "compositional-intelligence":
         body = render_synthesis_mobile_tables(body)
         body = render_synthesis_references(

@@ -766,62 +766,28 @@ def main() -> int:
                                 if rel == "essays/lambek-machines.html":
                                     lambek = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
-                                        const a = [...root.querySelectorAll(
-                                            ".table-scroll[data-lm-alternative='mobile']")];
-                                        const b = [...root.querySelectorAll(".lm-mobile")];
-                                        const visible = e => getComputedStyle(e).display !== "none";
-                                        const elements = [...root.querySelectorAll(
-                                            ".lm-sequence,.lm-pipeline,.lm-square-figure,.lm-schema")];
-                                        const overflow = elements.filter(e => {
-                                            const box = e.getBoundingClientRect();
-                                            return box.left < -1 ||
-                                                box.right > document.documentElement.clientWidth + 1;
-                                        }).length;
+                                        const tables = [...root.querySelectorAll(".table-scroll")];
+                                        const viewport = document.documentElement.clientWidth;
                                         return {
-                                            source: a.length, mobile: b.length,
-                                            cards: root.querySelectorAll(".lm-card").length,
-                                            fields: root.querySelectorAll(".lm-field").length,
-                                            records: root.querySelectorAll(".lm-schema").length,
-                                            schemaLines: root.querySelectorAll(".lm-schema-line").length,
-                                            diagnosticPairs: root.querySelectorAll(".lm-diagnostic-pair").length,
-                                            diagnosticLines: root.querySelectorAll(".lm-diagnostic-line").length,
-                                            hints: root.querySelectorAll(".lm-hint").length,
-                                            visibleHints: [...root.querySelectorAll(".lm-hint")].filter(visible).length,
-                                            schemaOverflows: [...root.querySelectorAll(".lm-schema")].filter(
-                                                e => e.scrollWidth > e.clientWidth + 1).length,
-                                            pipeline: root.querySelectorAll(".lm-pipeline li").length,
-                                            sequence: root.querySelectorAll(".lm-sequence li").length,
-                                            nodes: root.querySelectorAll(".lm-node").length,
-                                            arrows: root.querySelectorAll(".lm-arrow").length,
-                                            caption: root.querySelector("#table-9-caption").textContent,
-                                            sourceShown: a.filter(visible).length,
-                                            mobileShown: b.filter(visible).length,
-                                            overflow,
+                                            tables: tables.length,
+                                            captions: root.querySelectorAll(".table-display-caption").length,
+                                            math: root.querySelectorAll("math").length,
+                                            annotatedMath: root.querySelectorAll("math[alttext]").length,
+                                            codeBlocks: root.querySelectorAll("pre code").length,
+                                            overflow: root.getBoundingClientRect().right > viewport + 2,
+                                            inaccessibleTables: tables.filter(t =>
+                                                t.getAttribute("tabindex") !== "0" ||
+                                                t.getAttribute("role") !== "group").length,
                                         };
                                     }""")
-                                    if (lambek["source"] != 14 or lambek["mobile"] != 14 or
-                                        lambek["cards"] != 98 or lambek["fields"] != 237 or
-                                        lambek["records"] != 4 or
-                                        lambek["schemaLines"] != 65 or
-                                        lambek["diagnosticPairs"] != 2 or
-                                        lambek["diagnosticLines"] != 4 or
-                                        lambek["hints"] != 14 or
-                                        lambek["schemaOverflows"] or
-                                        lambek["visibleHints"] !=
-                                            (0 if width <= 650 else 6 if width <= 828 else 1) or
-                                        lambek["pipeline"] != 4 or
-                                        lambek["sequence"] != 4 or lambek["nodes"] != 4 or
-                                        lambek["arrows"] != 4 or lambek["overflow"] or
-                                        lambek["caption"] !=
-                                            "Table 9. Pilot evaluation tracks and recommended sizes." or
-                                        (width <= 650 and
-                                         (lambek["sourceShown"] != 0 or
-                                          lambek["mobileShown"] != 14)) or
-                                        (width > 650 and
-                                         (lambek["sourceShown"] != 14 or
-                                          lambek["mobileShown"] != 0))):
+                                    if (lambek["tables"] != 4 or
+                                        lambek["captions"] != 4 or
+                                        lambek["math"] < 6 or
+                                        lambek["annotatedMath"] != lambek["math"] or
+                                        lambek["codeBlocks"] == 0 or
+                                        lambek["overflow"] or lambek["inaccessibleTables"]):
                                         failures.append(
-                                            f"{width}px {rel}: Lambek presentation regression {lambek}"
+                                            f"{width}px {rel}: Lambek editorial layout regression {lambek}"
                                         )
                                 if rel == "essays/semantic-participation.html":
                                     semantic = page.evaluate("""() => {
@@ -1443,14 +1409,12 @@ def main() -> int:
                                                 )
                                     if rel == "essays/lambek-machines.html":
                                         for name, selector in (
-                                            ("composition-sequence", ".lm-sequence"),
-                                            ("typed-pipeline", ".lm-pipeline"),
-                                            ("commuting-square", ".lm-square-figure"),
-                                            ("scope-alternatives", ".lm-diagnostic-pair"),
-                                            ("benchmark-schema", '.lm-schema[aria-label="Source record lambek_benchmark_item"]'),
-                                            ("machine-schema", '.lm-schema[aria-label="Source record lambek_machine_record"]'),
-                                            ("pilot-table-mobile", ".lm-mobile-9"),
-                                            ("levels-table-mobile", ".lm-mobile-4"),
+                                            ("intervention-levels", "#table-1"),
+                                            ("transformation-families", "#table-2"),
+                                            ("supervision-comparison", "#table-3"),
+                                            ("pilot-allocation", "#table-4"),
+                                            ("formal-proposition", "#a-limit-of-the-commutation-test"),
+                                            ("validator-contract", "#appendix-minimal-flc-validator-contract"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():

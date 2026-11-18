@@ -53,11 +53,15 @@
       "source_docx": "Essay4_Lambek_Machines_V3(1).docx",
       "source_sha256": "d7fa42921bd8ec0664fa1f23f3462bce1e26531dee2b6ad6db7210f92f128ad0",
       "canonical_text_sha256": "1e396adbc6ef9487e4900120245199162c59ad18a32007c8ede137ef84419f24",
-      "markdown_sha256": "52bcc22dfc911be46d31f79fd7c34eeb6faf9df6d28bc18b02636a78161b291b",
+      "markdown_sha256": "b6885c4975fb780f3f0c2d13532d8c7546f396c9b34e3bf7287bec325bf01021",
       "table_count": 14,
       "heading_count": 30,
       "word_count": 4347,
-      "published_markdown": "lambek-machines.md"
+      "published_markdown": "lambek-machines.md",
+      "publication_status": "Editorial revision of the V3 DOCX-derived Lambek Machines manuscript; historical DOCX fingerprint and original content metrics preserved",
+      "publication_word_count": 6906,
+      "publication_heading_count": 24,
+      "publication_table_count": 4
     },
     "algebraic-architectures": {
       "slug": "algebraic-architectures",

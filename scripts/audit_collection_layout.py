@@ -22,7 +22,7 @@ TABLES = {
     "semantic-participation": (12, "Semantic Participation"),
     "typed-generativity": (15, "Typed Generativity"),
     "functorial-consistency": (19, "Functorial Consistency"),
-    "lambek-machines": (14, "Lambek Machines"),
+    "lambek-machines": (4, "Lambek Machines"),
     "algebraic-architectures": (13, "Algebraic Architectures"),
     "quantitative-curry-howard": (10, "Quantitative Curry-Howard"),
     "effectful-and-conceptual-intelligence": (
@@ -54,7 +54,7 @@ def measure(page) -> dict:
             return true;
         };
         const tables = [...article.querySelectorAll('.table-scroll')];
-        const sourceTables = [...article.querySelectorAll('table[data-source-table]')];
+        const sourceTables = [...article.querySelectorAll('table[data-source-table], .table-scroll > table[id^="table-"]')];
         const hints = [];
         const missingHints = [];
         const redundantHints = [];
