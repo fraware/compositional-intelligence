@@ -1,0 +1,27 @@
+{
+  "dataset_id": "synthetic-example-not-data",
+  "record_kind": "synthetic_example",
+  "interpretation": "synthetic checker demonstration; NOT empirical evidence",
+  "primary_conditions": [
+    "deliberation",
+    "type_first"
+  ],
+  "domains": {
+    "code": {
+      "task_count": 1,
+      "assigned_trial_count": 2,
+      "effect_bound_lower": -1.0,
+      "effect_bound_upper": -1.0,
+      "dispositions_by_condition": {
+        "deliberation": {
+          "accepted": 1
+        },
+        "type_first": {
+          "criterion_rejected": 1
+        }
+      }
+    }
+  },
+  "six_domain_macro_average": null,
+  "statistical_confidence_interval_computed": false
+}
