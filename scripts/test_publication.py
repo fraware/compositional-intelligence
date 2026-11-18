@@ -363,7 +363,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         page = publication.render_essay(
             *publication.ESSAYS[0], position=0, table_captions=[]
         )
-        self.assertIn("<title>Compositional Intelligence</title>", page)
+        self.assertIn("<title>Compositional Intelligence | A Framework for AI</title>", page)
         self.assertNotIn(
             "<title>Compositional Intelligence · Compositional Intelligence</title>",
             page,
@@ -394,7 +394,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
 
 
     def test_collection_navigation_metadata_and_browser_titles(self) -> None:
-        """Use a consistent site tab title; retain unique canonical essay URLs."""
+        """Differentiate search titles without changing authored page headings."""
         for index, (slug, title, category, description) in enumerate(publication.ESSAYS):
             with self.subTest(slug=slug):
                 page = publication.render_essay(
@@ -403,7 +403,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 )
                 self.assertEqual(
                     re.findall(r"<title>([^<]*)</title>", page),
-                    ["Compositional Intelligence"]
+                    [publication.discovery.CONCEPTS[slug]["seo_title"]]
                 )
                 self.assertEqual(
                     re.findall(r'<meta property="og:title" content="([^"]+)"',page),
@@ -417,6 +417,49 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 self.assertEqual(page.count('aria-label="Essay navigation"'), 1)
                 self.assertNotIn('class="byline"', page)
                 self.assertEqual(page.count("<h1>"), 1)
+
+
+    def test_discovery_index_is_source_grounded_and_schema_valid(self) -> None:
+        """Each generated article has one non-executable discovery graph."""
+        metadata = publication.discovery
+        metadata.validate_inventory(publication.ESSAYS)
+        self.assertEqual(len(set(data["seo_title"] for data in metadata.CONCEPTS.values())), 8)
+        for position, (slug, title, category, description) in enumerate(publication.ESSAYS):
+            with self.subTest(slug=slug):
+                page = publication.render_essay(
+                    slug, title, category, description,
+                    position=position, table_captions=[],
+                )
+                match = re.search(
+                    r'<script type="application/ld\+json">(.*?)</script>', page, re.S
+                )
+                self.assertIsNotNone(match)
+                self.assertEqual(page.count('<script type="application/ld+json">'), 1)
+                graph = json.loads(match.group(1))["@graph"]
+                article = next(item for item in graph if item["@type"] == "Article")
+                self.assertEqual(article["headline"], title)
+                self.assertEqual(
+                    article["url"], publication.BASE + "essays/" + slug + ".html"
+                )
+                self.assertEqual(article["author"]["@id"], metadata.AUTHOR_ID)
+                self.assertNotIn("datePublished", article)
+                self.assertNotIn("dateModified", article)
+                self.assertEqual(article["keywords"], metadata.CONCEPTS[slug]["topics"])
+                self.assertIn("<h1>" + escape(title) + "</h1>", page)
+                self.assertIn('rel="canonical"', page)
+                self.assertIn('href="../corpus.json"', page)
+                self.assertNotIn('<script src=', page)
+
+        overview = metadata.homepage_graph(publication.ESSAYS)["@graph"]
+        items = next(item for item in overview if item["@type"] == "ItemList")
+        self.assertEqual(
+            [x["position"] for x in items["itemListElement"]],
+            list(range(1, 9)),
+        )
+        concepts = metadata.render_concepts(publication.ESSAYS)
+        self.assertEqual(concepts.count('class="concept-entry"'), 8)
+        self.assertIn('<h1>Concepts in Compositional Intelligence</h1>', concepts)
+        self.assertEqual(concepts.count('type="application/ld+json"'), 1)
 
     def test_flagship_source_exact_mobile_table_parity(self) -> None:
         """All nine source data tables have lossless mobile records; square stays intact."""

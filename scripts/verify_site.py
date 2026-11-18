@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import collections
 import hashlib
+import json
+import re
 from html.parser import HTMLParser
 from pathlib import Path
 import build_site
@@ -194,8 +196,8 @@ def main() -> int:
     check_manifest(issues)
     pages = sorted(SITE.rglob("*.html"))
     essays = sorted((ROOT / "essays").glob("*.md"))
-    if len(pages) != 9 or len(essays) != 8:
-        issues.append(f"Expected 9 HTML pages and 8 Markdown essays, got {len(pages)} and {len(essays)}")
+    if len(pages) != 10 or len(essays) != 8:
+        issues.append(f"Expected 10 HTML pages and 8 Markdown essays, got {len(pages)} and {len(essays)}")
     if not (SITE / "index.html").is_file() or not (SITE / ".nojekyll").is_file():
         issues.append("Missing HTML entrypoint or .nojekyll")
     documents = {p: parse_html(p) for p in pages}
@@ -219,9 +221,36 @@ def main() -> int:
             issues.append(f"Canonical/OG URL mismatch: {relative}")
         if doc.unsafe_attributes:
             issues.append(f"Unexpected event handler in {relative}")
-        allowed_scripts: list[tuple[str, str]] = []
+        # JSON-LD is inert metadata; executable scripts remain prohibited.
+        allowed_scripts = [(None, "application/ld+json")]
         if doc.script_sources != allowed_scripts:
             issues.append(f"Unexpected script inclusion in {relative}")
+        markup = page.read_text(encoding="utf-8")
+        script_match = re.search(
+            r'<script type="application/ld\+json">(.*?)</script>', markup, re.S
+        )
+        if not script_match:
+            issues.append(f"Missing structured discovery graph in {relative}")
+        else:
+            try:
+                graph = json.loads(script_match.group(1))
+                nodes = graph.get("@graph", [])
+                if graph.get("@context") != "https://schema.org" or not isinstance(nodes, list):
+                    issues.append(f"Invalid Schema.org graph in {relative}")
+                else:
+                    expected_type = (
+                        "CollectionPage" if relative == "index.html"
+                        else "DefinedTermSet" if relative == "concepts.html" else "Article"
+                    )
+                    found = [node for node in nodes if node.get("@type") == expected_type]
+                    if len(found) != 1:
+                        issues.append(f"Unexpected schema type in {relative}: {expected_type}")
+                    elif expected_type == "Article" and found[0].get("url") != target_canonical:
+                        issues.append(f"Article schema URL differs from canonical in {relative}")
+                    elif expected_type == "DefinedTermSet" and len(found[0].get("hasDefinedTerm", [])) != 8:
+                        issues.append("Concept graph must define exactly eight linked terms")
+            except (ValueError, TypeError, AttributeError) as exc:
+                issues.append(f"Invalid JSON-LD in {relative}: {exc}")
         duplicates = [id_ for id_, n in collections.Counter(doc.ids).items() if n > 1]
         if duplicates:
             issues.append(f"Duplicate identifiers in {relative}: {duplicates[:3]}")
@@ -300,6 +329,63 @@ def main() -> int:
             issues.append(f"Invalid sitemap: {exc}")
     else:
         issues.append("Missing sitemap")
+
+    # Verify discoverability metadata against the exact generated HTML set.
+    expected_titles = {"index.html": build_site.discovery.HOME_TITLE,
+                       "concepts.html": "Compositional Intelligence Concepts | Research Guide"}
+    expected_titles.update({
+        f"essays/{slug}.html": build_site.discovery.CONCEPTS[slug]["seo_title"]
+        for slug, _, _, _ in build_site.ESSAYS
+    })
+    titles: list[str] = []
+    for relative, expected_title in expected_titles.items():
+        path = SITE / relative
+        if not path.is_file():
+            issues.append(f"Missing expected HTML route: {relative}")
+            continue
+        raw = path.read_text(encoding="utf-8")
+        candidates = re.findall(r"<title>(.*?)</title>", raw, re.S)
+        if candidates != [expected_title]:
+            issues.append(f"Missing or incorrect unique search title: {relative}")
+        titles.extend(candidates)
+    if len(titles) != len(set(titles)):
+        issues.append("Search titles must be distinct across all canonical pages")
+
+    corpus_path = SITE / "corpus.json"
+    if not corpus_path.is_file():
+        issues.append("Missing structured research corpus")
+    else:
+        try:
+            corpus = json.loads(corpus_path.read_text(encoding="utf-8"))
+            entries = corpus["essays"]
+            expected_urls = [
+                URL + "essays/" + slug + ".html" for slug, _, _, _ in build_site.ESSAYS
+            ]
+            if ([row["url"] for row in entries] != expected_urls
+                    or corpus["schema_version"] != 1
+                    or any(not row["sections"] for row in entries)):
+                issues.append("Corpus index differs from published essays or lacks sections")
+            for row in entries:
+                if (row["url"] not in canonical_set or
+                        row["concept"]["url"] != URL + "concepts.html#" + row["url"].split("/")[-1][:-5]):
+                    issues.append("Corpus contains an invalid essay or concept reference")
+                for section in row["sections"]:
+                    if not section["url"].startswith(row["url"] + "#"):
+                        issues.append("Corpus section URL is outside its essay")
+        except (ValueError, TypeError, KeyError, IndexError) as exc:
+            issues.append(f"Invalid research corpus: {exc}")
+
+    guide = SITE / "llms.txt"
+    if not guide.is_file() or not all(
+        URL + "essays/" + slug + ".html" in guide.read_text(encoding="utf-8")
+        for slug, _, _, _ in build_site.ESSAYS
+    ):
+        issues.append("AI reading guide must cover every canonical essay")
+
+    robots = SITE / "robots.txt"
+    if (not robots.is_file() or
+            "Sitemap: " + URL + "sitemap.xml" not in robots.read_text(encoding="utf-8")):
+        issues.append("Missing sitemap discovery hint")
 
     if issues:
         for issue in issues:

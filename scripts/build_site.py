@@ -22,6 +22,7 @@ import tempfile
 from pathlib import Path
 from xml.etree import ElementTree
 
+import discovery
 from render_science import enhance_scientific_presentation
 from render_synthesis import render_synthesis_figures, render_synthesis_mobile_tables
 from render_references import render_synthesis_references
@@ -416,18 +417,19 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     subtitle = ORIGINAL_ARTICLE_SUBTITLES.get(slug)
     subtitle_html = '<p class="deck">' + esc(subtitle) + '</p>' if subtitle else ''
     head = head.replace("</head>", src_meta + "</head>", 1)
-    return (head +
+    page = (head +
             '<article><header class="article-header"><p class="breadcrumb"><a href="../index.html">Essays</a> / ' +
             esc(category) + '</p><h1>' + esc(title) + '</h1>' + subtitle_html +
             '</header><div class="article-content" id="article-content">\n' +
             render_toc(body) + body + '</div>\n' +
             '<nav class="article-pager" aria-label="Essay navigation">' + prev_link + next_link + '</nav>' +
             '</article>\n' + footer())
+    return discovery.decorate_article(page, slug, title, category)
 
 
 def render_sitemap() -> str:
     """Generate the public sitemap from the same declared publication inventory."""
-    paths = [""] + [f"essays/{row[0]}.html" for row in ESSAYS]
+    paths = ["", "concepts.html"] + [f"essays/{row[0]}.html" for row in ESSAYS]
     root = ElementTree.Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
     for path in paths:
         item = ElementTree.SubElement(root, "url")
@@ -459,6 +461,12 @@ def build(output: Path) -> None:
         (output / "essays" / (slug + ".html")).write_text(
             render_essay(*row, position=index, table_captions=catalogue["essays"].get(slug, [])),
             encoding="utf-8")
+    homepage_path = output / "index.html"
+    homepage_path.write_text(
+        discovery.decorate_homepage(homepage_path.read_text(encoding="utf-8"), ESSAYS),
+        encoding="utf-8",
+    )
+    discovery.build_assets(output, ROOT, ESSAYS)
     (output / "sitemap.xml").write_text(render_sitemap(), encoding="utf-8")
 
 

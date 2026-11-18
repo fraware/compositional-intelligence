@@ -17,6 +17,8 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
+from discovery import CONCEPTS
+
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
     """Serve only the generated publication without request log noise."""
@@ -132,7 +134,7 @@ def main() -> int:
                                         articleWidth: article?.getBoundingClientRect().width
                                     };
                                 }""")
-                                if (identity["tab"] != "Compositional Intelligence" or
+                                if (identity["tab"] != CONCEPTS[Path(rel).stem]["seo_title"] or
                                     identity["og"] != identity["heading"] or
                                     identity["canonical"] != "https://fraware.github.io/compositional-intelligence/" + rel or
                                     not identity["uniqueHeadings"] or
