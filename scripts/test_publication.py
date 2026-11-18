@@ -851,19 +851,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 src_html = original_table.group()
                 out_html = published_table.group()
                 if n == 2:
-                    # The published reader map corrects an absent Section 7.4
-                    # target to Section 7 while retaining its original citation
-                    # in data-source-reference. Reverse that documented display
-                    # correction for the source-fidelity comparison only.
-                    self.assertEqual(
-                        out_html.count('data-source-reference="7.4"'), 1
-                    )
-                    out_html, restored = re.subn(
-                        r'<a\b[^>]*data-source-reference="7[.]4"[^>]*>7</a>',
-                        '7.4', out_html,
-                    )
-                    self.assertEqual(restored, 1)
-                    out_html = re.sub(r'</?a\b[^>]*>', '', out_html)
+                    # V5 has a real Section 7.4. Remove renderer-added links
+                    # before the table's original cell content is compared.
+                    out_html = re.sub(r'</?a\\b[^>]*>', '', out_html)
 
                 def strip_source_symbol_math(html: str) -> str:
                     return re.sub(
@@ -933,13 +923,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     values = re.findall(r'<dd>([\s\S]*?)</dd>', card)
                     if n == 2:
                         values = [
-                            re.sub(
-                                r'</?a\b[^>]*>', '',
-                                re.sub(
-                                    r'<a\b[^>]*data-source-reference="7[.]4"[^>]*>7</a>',
-                                    '7.4', value,
-                                ),
-                            )
+                            re.sub(r'</?a\\b[^>]*>', '', value)
                             for value in values
                         ]
                     if n == 3:
@@ -1023,7 +1007,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
             render_typed_generativity(rendered)
 
     def test_typed_reader_map_links_only_existing_targets(self) -> None:
-        """Resolve the absent Section 7.4 with a traceable Section 7 link."""
+        """Verify reader-map anchors including the authored Section 7.4."""
         slug, title, category, description = publication.ESSAYS[2]
         page = publication.render_essay(
             slug, title, category, description, 3, [],
@@ -1050,12 +1034,10 @@ class ManuscriptFidelityTests(unittest.TestCase):
             table.group(),
         )
         self.assertIn(
-            'href="#type-first-prompting-harness-v0.3" '
-            'data-source-reference="7.4"',
+            '<a href="#identification-and-analysis-protocol">7.4</a>',
             table.group(),
         )
-        self.assertIn(">7</a>", table.group())
-        self.assertNotIn(">7.4</a>", table.group())
+        self.assertNotIn('data-source-reference="7.4"', table.group())
         self.assertIn(
             "Sections 6.4, 7.4, 8, 9, and 11",
             (publication.ROOT / "essays" / "typed-generativity.md").read_text(
