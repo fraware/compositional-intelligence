@@ -28,8 +28,8 @@ def render_synthesis_references(body: str, catalogue_path: Path) -> str:
     if catalogue.get("schema_version") != 1:
         raise ValueError("Unexpected synthesis bibliography schema")
     entries = catalogue.get("references")
-    if not isinstance(entries, list) or len(entries) != 34:
-        raise ValueError("Synthesis bibliography must have 34 references")
+    if not isinstance(entries, list) or len(entries) != 35:
+        raise ValueError("Synthesis bibliography must have 35 references")
     by_key: dict[str, dict[str, str]] = {}
     for entry in entries:
         if not isinstance(entry, dict) or set(entry) != {
