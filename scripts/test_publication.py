@@ -769,6 +769,18 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 src_html = original_table.group()
                 out_html = published_table.group()
                 if n == 2:
+                    # The published reader map corrects an absent Section 7.4
+                    # target to Section 7 while retaining its original citation
+                    # in data-source-reference. Reverse that documented display
+                    # correction for the source-fidelity comparison only.
+                    self.assertEqual(
+                        out_html.count('data-source-reference="7.4"'), 1
+                    )
+                    out_html, restored = re.subn(
+                        r'<a\b[^>]*data-source-reference="7\\.4"[^>]*>7</a>',
+                        '7.4', out_html,
+                    )
+                    self.assertEqual(restored, 1)
                     out_html = re.sub(r'</?a\b[^>]*>', '', out_html)
 
                 def strip_source_symbol_math(html: str) -> str:
@@ -839,7 +851,13 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     values = re.findall(r'<dd>([\s\S]*?)</dd>', card)
                     if n == 2:
                         values = [
-                            re.sub(r'</?a\b[^>]*>', '', value)
+                            re.sub(
+                                r'</?a\b[^>]*>', '',
+                                re.sub(
+                                    r'<a\b[^>]*data-source-reference="7\\.4"[^>]*>7</a>',
+                                    '7.4', value,
+                                ),
+                            )
                             for value in values
                         ]
                     if n == 3:
