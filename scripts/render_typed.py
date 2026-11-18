@@ -135,7 +135,7 @@ def _reader_targets(body: str) -> tuple[dict[str, str], dict[str, str]]:
 
 
 def _link_reading_paths(body: str) -> str:
-    """Make existing headings navigable, preserving the unresolved 7.4 citation."""
+    """Link existing headings, resolving the source-only 7.4 reference to Section 7."""
     numbers, appendices = _reader_targets(body)
     table = re.compile(
         r'(?P<open><table data-source-table="2" id="table-2">)'
@@ -168,6 +168,17 @@ def _link_reading_paths(body: str) -> str:
 
             def link_section(number: re.Match[str]) -> str:
                 raw = number.group()
+                if raw == "7.4":
+                    # The original reader map points to a nonexistent subsection.
+                    # Show the valid parent section and keep the source citation
+                    # in a machine-readable attribute for editorial traceability.
+                    return (
+                        '<a href="#' + escape(numbers["7"], quote=True) +
+                        '" data-source-reference="7.4" '
+                        'aria-label="Section 7; original citation was 7.4" '
+                        'title="The manuscript references an absent Section 7.4. '
+                        'This link opens Section 7.">7</a>'
+                    )
                 if raw not in numbers:
                     return raw
                 return '<a href="#' + escape(numbers[raw], quote=True) + '">' + raw + "</a>"
@@ -180,8 +191,8 @@ def _link_reading_paths(body: str) -> str:
                     '">' + key + "</a>", 1,
                 )
         content = content[:item.start("route")] + linked + content[item.end("route"):]
-    if "7.4" not in content or ">7.4</a>" in content:
-        raise ValueError("Unresolved authorial 7.4 reference was overwritten")
+    if content.count('data-source-reference="7.4"') != 1 or ">7.4</a>" in content:
+        raise ValueError("Source-only 7.4 reference lost its traceable Section 7 link")
     return body[:match.start()] + match.group("open") + content + match.group("close") + body[match.end():]
 
 
