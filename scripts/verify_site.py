@@ -194,8 +194,8 @@ def main() -> int:
     check_manifest(issues)
     pages = sorted(SITE.rglob("*.html"))
     essays = sorted((ROOT / "essays").glob("*.md"))
-    if len(pages) != 10 or len(essays) != 9:
-        issues.append(f"Expected 10 HTML pages and 9 Markdown essays, got {len(pages)} and {len(essays)}")
+    if len(pages) != 9 or len(essays) != 8:
+        issues.append(f"Expected 9 HTML pages and 8 Markdown essays, got {len(pages)} and {len(essays)}")
     if not (SITE / "index.html").is_file() or not (SITE / ".nojekyll").is_file():
         issues.append("Missing HTML entrypoint or .nojekyll")
     documents = {p: parse_html(p) for p in pages}

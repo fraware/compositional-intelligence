@@ -48,8 +48,6 @@ def main() -> int:
         body = build_site.enhance_scientific_presentation(body)
         if slug == "compositional-intelligence":
             body = build_site.render_synthesis_mobile_tables(body)
-        if slug == "series-preface":
-            body = build_site.render_preface(body)
         if slug == "semantic-participation":
             body = build_site.render_semantic_participation(body)
         if slug == "typed-generativity":

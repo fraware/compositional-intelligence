@@ -19,7 +19,6 @@ from pypdf import PdfReader
 
 TABLES = {
     "compositional-intelligence": (10, "Compositional Intelligence"),
-    "series-preface": (7, "Series Preface"),
     "semantic-participation": (12, "Semantic Participation"),
     "typed-generativity": (15, "Typed Generativity"),
     "functorial-consistency": (19, "Functorial Consistency"),
@@ -67,8 +66,7 @@ def measure(page) -> dict:
             const table = wrapper.querySelector('table');
             const previous = wrapper.previousElementSibling;
             const next = wrapper.nextElementSibling;
-            const hint = previous?.classList.contains('preface-scroll-hint') ||
-                previous?.classList.contains('sp-scroll-hint') ||
+            const hint =                 previous?.classList.contains('sp-scroll-hint') ||
                 previous?.classList.contains('tg-scroll-hint') ||
                 previous?.classList.contains('fc-scroll-hint') ||
                 previous?.classList.contains('lm-hint') ||

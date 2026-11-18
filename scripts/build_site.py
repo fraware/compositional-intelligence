@@ -24,7 +24,6 @@ from xml.etree import ElementTree
 
 from render_science import enhance_scientific_presentation
 from render_synthesis import render_synthesis_figures, render_synthesis_mobile_tables
-from render_preface import render_preface
 from render_semantic import render_semantic_participation
 from render_typed import render_typed_generativity
 from render_functorial import render_functorial_diagram, render_functorial_tables
@@ -41,8 +40,6 @@ PANDOC_VERSION = "3.1.13"
 ESSAYS = [
     ("compositional-intelligence", "Compositional Intelligence", "Synthesis",
      "Typed Artifacts, Structured Worlds, and Effectful AI"),
-    ("series-preface", "Series Preface", "Preface",
-     "Compositional Intelligence is a proposed research program for evaluating generative AI through typed artifacts and the structured worlds those artifacts enter."),
     ("semantic-participation", "Semantic Participation", "01 · Foundations",
      "AI Artifacts as Members of Formal and Scientific Worlds"),
     ("typed-generativity", "Typed Generativity", "02 · Foundations",
@@ -398,8 +395,6 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     body = enhance_scientific_presentation(body)
     if slug == "compositional-intelligence":
         body = render_synthesis_mobile_tables(body)
-    if slug == "series-preface":
-        body = render_preface(body)
     if slug == "semantic-participation":
         body = render_semantic_participation(body)
     if slug == "typed-generativity":
@@ -453,7 +448,7 @@ def build(output: Path) -> None:
     shutil.rmtree(output / "reading", ignore_errors=True)
     (output / "essays").mkdir(parents=True)
     catalogue = json.loads((ROOT / "tables" / "captions.json").read_text(encoding="utf-8"))
-    if catalogue.get("schema_version") != 1 or set(catalogue["essays"]) != {row[0] for row in ESSAYS} - {"series-preface"}:
+    if catalogue.get("schema_version") != 1 or set(catalogue["essays"]) != {row[0] for row in ESSAYS}:
         raise ValueError("Table caption catalogue does not match the manuscript inventory")
     for index, row in enumerate(ESSAYS):
         slug = row[0]

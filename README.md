@@ -11,18 +11,17 @@ Compositional Intelligence is a series of research essays on the creation, inter
 ## Essays
 
 1. [Compositional Intelligence](essays/compositional-intelligence.md)
-2. [Series Preface](essays/series-preface.md)
-3. [Semantic Participation](essays/semantic-participation.md)
-4. [Typed Generativity](essays/typed-generativity.md)
-5. [Functorial Consistency](essays/functorial-consistency.md)
-6. [Lambek Machines](essays/lambek-machines.md)
-7. [Algebraic Architectures](essays/algebraic-architectures.md)
-8. [Quantitative Curry–Howard](essays/quantitative-curry-howard.md)
-9. [Effectful and Conceptual Intelligence](essays/effectful-and-conceptual-intelligence.md)
+2. [Semantic Participation](essays/semantic-participation.md)
+3. [Typed Generativity](essays/typed-generativity.md)
+4. [Functorial Consistency](essays/functorial-consistency.md)
+5. [Lambek Machines](essays/lambek-machines.md)
+6. [Algebraic Architectures](essays/algebraic-architectures.md)
+7. [Quantitative Curry–Howard](essays/quantitative-curry-howard.md)
+8. [Effectful and Conceptual Intelligence](essays/effectful-and-conceptual-intelligence.md)
 
 The essays advance a research program and identify questions that remain open. The scope of each mathematical and empirical claim is stated in the corresponding essay.
 
-The nine manuscripts in `essays/` contain the V3 DOCX-derived HTML publication fragments and are the authoritative website sources. The build retains their text, adds reviewed MathML typesetting and readable schema formatting, and produces a deterministic static site using Pandoc 3.1.13.
+The eight manuscripts in `essays/` contain the V3 DOCX-derived HTML publication fragments and are the authoritative website sources. The build retains their text, adds reviewed MathML typesetting and readable schema formatting, and produces a deterministic static site using Pandoc 3.1.13.
 
 The original DOCX file fingerprints are recorded in `sources/originals.json`. GitHub Actions checks the committed source hashes, HTML structure, scientific markup, links, responsive presentation, and deployment. The original Word files are deliberately absent from the public repository. Consequently, CI alone does not establish byte-for-byte correspondence with those files.
 

@@ -170,7 +170,7 @@ def main() -> int:
                                               return false;
                                             }
                                              const alternate = e.closest(
-                                               ".preface-mobile-records, .table-scroll[data-preface-alternative='mobile'], .sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile'], .qc-mobile, .table-scroll[data-qc-alternative='mobile'], .ef-mobile, .table-scroll[data-ef-alternative='mobile'], .ci-data-mobile, .table-scroll[data-ci-alternative='mobile']"
+                                               ".sp-mobile-records, .table-scroll[data-sp-alternative='mobile'], .tg-mobile-records, .table-scroll[data-tg-alternative='mobile'], .fc-mobile-records, .table-scroll[data-fc-alternative='mobile'], .aa-mobile, .table-scroll[data-aa-alternative='mobile'], .qc-mobile, .table-scroll[data-qc-alternative='mobile'], .ef-mobile, .table-scroll[data-ef-alternative='mobile'], .ci-data-mobile, .table-scroll[data-ci-alternative='mobile']"
                                              );
                                              if (alternate && getComputedStyle(alternate).display === "none") {
                                                return false;
@@ -353,146 +353,6 @@ def main() -> int:
                                         )
                                     elif width == 375 and flagship["mobileShown"] == 9:
                                         responsive_table_alternatives += flagship["mobileShown"]
-                                if rel == "essays/series-preface.html":
-                                    preface = page.evaluate("""() => {
-                                        const article = document.querySelector(".article-content");
-                                        const lifecycle = article?.querySelector(".preface-lifecycle");
-                                        const wrappers = [...article.querySelectorAll(".table-scroll")];
-                                        const mobile = [...article.querySelectorAll(".preface-mobile-records")];
-                                        const compact = wrappers.filter(w => w.dataset.prefaceAlternative === "mobile");
-                                        const linked = wrappers[0]?.querySelectorAll('tbody tr td:nth-child(2) a');
-                                        const cues = wrappers.map(w => {
-                                            const hint = w.previousElementSibling;
-                                            return {
-                                                exists: !!hint && hint.classList.contains("preface-scroll-hint") &&
-                                                    hint.id === w.getAttribute("aria-describedby"),
-                                                visible: !!hint && getComputedStyle(hint).display !== "none" &&
-                                                    hint.getBoundingClientRect().height >= 10
-                                            };
-                                        });
-                                        const cards = mobile.reduce((n, e) => n +
-                                            e.querySelectorAll(".preface-mobile-record").length, 0);
-                                        const mobileDisplayed = mobile.filter(e =>
-                                            getComputedStyle(e).display !== "none").length;
-                                        const nativeDisplayed = compact.filter(e =>
-                                            getComputedStyle(e).display !== "none").length;
-                                        const bounds = lifecycle?.getBoundingClientRect();
-                                        const lifecycleStages = [...(lifecycle?.querySelectorAll("ol > li") ?? [])];
-                                        const flow = lifecycleStages.slice(1).every((stage,i) => {
-                                            const previous = lifecycleStages[i].getBoundingClientRect();
-                                            const next = stage.getBoundingClientRect();
-                                            return next.top > previous.bottom;
-                                        });
-                                        const arrowPositions = lifecycleStages.slice(0,-1).every((stage,i) => {
-                                            const stageBounds = stage.getBoundingClientRect();
-                                            const nextBounds = lifecycleStages[i+1].getBoundingClientRect();
-                                            const arrow = getComputedStyle(stage,"::after");
-                                            const x = stageBounds.left + Number.parseFloat(arrow.left);
-                                            const y = stageBounds.bottom - Number.parseFloat(arrow.bottom);
-                                            return arrow.content.includes("↓") &&
-                                                Number.isFinite(x) && Number.isFinite(y) &&
-                                                x > bounds.left && x < bounds.right &&
-                                                y > stageBounds.bottom &&
-                                                y <= nextBounds.top + 2;
-                                        });
-                                        const dts = [...article.querySelectorAll(".preface-mobile-records dt")];
-                                        const accessibleClipped = dts.filter(e => {
-                                            const st = getComputedStyle(e);
-                                            return st.position === "absolute" &&
-                                                st.clipPath === "inset(50%)" &&
-                                                st.display !== "none";
-                                        }).length;
-                                        const mobileBounds = mobile.flatMap(sec =>
-                                            [...sec.querySelectorAll(".preface-mobile-record")]
-                                            .filter(e => getComputedStyle(sec).display !== "none")
-                                            .map(e => e.getBoundingClientRect())
-                                        );
-                                        return {
-                                            sourceTableNumbers: wrappers.map(w =>
-                                                Number(w.querySelector("table")?.dataset.sourceTable)),
-                                            rowCounts: mobile.map(sec =>
-                                                sec.querySelectorAll(".preface-mobile-record").length),
-                                            mobileLinks: mobile[0]?.querySelectorAll('a[href]').length,
-                                            clippedFieldLabels: accessibleClipped,
-                                            outOfBoundsRecords: mobileBounds.filter(b =>
-                                                b.left < -1 || b.right > innerWidth + 1).length,
-                                            stages: lifecycle?.querySelectorAll("li").length ?? 0,
-                                            stageLabels: lifecycleStages.map(stage => stage.textContent.trim()),
-                                            directionalFlow: flow,
-                                            arrowsInsideSequence: arrowPositions,
-                                            lifecycleFits: !!bounds && bounds.left >= -1 &&
-                                                bounds.right <= innerWidth + 1,
-                                            tables: wrappers.length,
-                                            linkedDocuments: linked?.length ?? 0,
-                                            cards, mobileDisplayed, nativeDisplayed,
-                                            cuesValid: cues.every(v => v.exists),
-                                            cuesVisible: cues.filter(v => v.visible).length,
-                                            expectedCues: innerWidth <= 650 ? 0 :
-                                                innerWidth <= 828 ? 5 : 0
-                                        };
-                                    }""")
-                                    if (preface["stages"] != 8 or not preface["lifecycleFits"] or
-                                        preface["stageLabels"] != [
-                                            "Output","candidate artifact","typed candidate",
-                                            "transformed artifact","validated artifact",
-                                            "warranted artifact","reusable artifact","effectful action"] or
-                                        not preface["directionalFlow"] or
-                                        not preface["arrowsInsideSequence"] or
-                                        preface["tables"] != 7 or preface["linkedDocuments"] != 9 or
-                                        str(preface["sourceTableNumbers"]) != "[1, 2, 3, 4, 5, 6, 7]" or
-                                        str(preface["rowCounts"]) != "[10, 3, 8, 5, 6, 5, 7]" or
-                                        preface["mobileLinks"] != 9 or
-                                        preface["outOfBoundsRecords"] != 0 or
-                                        preface["clippedFieldLabels"] != (78 if width <= 650 else 0) or
-                                        preface["cards"] != 44 or not preface["cuesValid"] or
-                                        preface["cuesVisible"] != preface["expectedCues"] or
-                                        (width <= 650 and
-                                         (preface["mobileDisplayed"] != 7 or
-                                          preface["nativeDisplayed"] != 0)) or
-                                        (width > 650 and
-                                         (preface["mobileDisplayed"] != 0 or
-                                          preface["nativeDisplayed"] != 7))):
-                                        failures.append(f"{width}px {rel}: preface reading regression {preface}")
-                                    # The source tables must survive printing even if the
-                                    # viewport is at the narrow mobile breakpoint.
-                                    if width in (375, 1440):
-                                        page.emulate_media(media="print")
-                                        try:
-                                            print_view = page.evaluate("""() => {
-                                                const article = document.querySelector(".article-content");
-                                                const native = [...article.querySelectorAll(
-                                                    '.table-scroll[data-preface-alternative="mobile"]')];
-                                                const alternate = [...article.querySelectorAll(
-                                                    ".preface-mobile-records")];
-                                                const hints = [...article.querySelectorAll(
-                                                    ".preface-scroll-hint")];
-                                                const visible = element =>
-                                                    getComputedStyle(element).display !== "none";
-                                                return {
-                                                    native: native.length,
-                                                    nativeVisible: native.filter(visible).length,
-                                                    alternate: alternate.length,
-                                                    alternateVisible: alternate.filter(visible).length,
-                                                    hintsVisible: hints.filter(visible).length,
-                                                    sourceRows: native.reduce((n, wrapper) =>
-                                                        n + wrapper.querySelectorAll("tbody tr").length, 0),
-                                                    mobileDataFields: alternate.reduce((n, section) =>
-                                                        n + section.querySelectorAll("dd").length, 0),
-                                                };
-                                            }""")
-                                            if (print_view["native"] != 7 or
-                                                print_view["nativeVisible"] != 7 or
-                                                print_view["alternate"] != 7 or
-                                                print_view["alternateVisible"] != 0 or
-                                                print_view["hintsVisible"] != 0 or
-                                                print_view["sourceRows"] != 44 or
-                                                print_view["mobileDataFields"] != 118):
-                                                failures.append(
-                                                    f"{width}px {rel}: incomplete print-source "
-                                                    f"tables or duplicate mobile records {print_view}"
-                                                )
-                                        finally:
-                                            page.emulate_media(media="screen")
                                 if rel == "essays/effectful-and-conceptual-intelligence.html":
                                     effectful = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
@@ -1362,8 +1222,7 @@ def main() -> int:
                                       .filter(w => {
                                         const t = w.querySelector("table");
                                         const preceding = w.previousElementSibling;
-                                        const label = (preceding?.classList.contains("preface-scroll-hint") ||
-                                                       preceding?.classList.contains("sp-scroll-hint") ||
+                                        const label = (preceding?.classList.contains("sp-scroll-hint") ||
                                                        preceding?.classList.contains("tg-scroll-hint") ||
                                                        preceding?.classList.contains("fc-scroll-hint") ||
                                                        preceding?.classList.contains("lm-hint") ||
@@ -1401,8 +1260,6 @@ def main() -> int:
                                             !!t.closest(".ci-commuting") &&
                                             !!document.querySelector(".ci-commuting-mobile") &&
                                             getComputedStyle(w).display === "none";
-                                        const compactPreface = !!w.dataset.prefaceAlternative &&
-                                            getComputedStyle(w).display === "none";
                                         const compactSemantic = !!w.dataset.spAlternative &&
                                             getComputedStyle(w).display === "none";
                                         const compactTyped = !!w.dataset.tgAlternative &&
@@ -1419,7 +1276,7 @@ def main() -> int:
                                             getComputedStyle(w).display === "none";
                                         if (innerWidth <= 375 && count >= 2 &&
                                             t.getBoundingClientRect().width < 550 &&
-                                            !compactSquare && !compactFlagship && !compactPreface &&
+                                            !compactSquare && !compactFlagship &&
                                             !compactSemantic && !compactTyped &&
                                             !compactFunctorial && !compactLambek &&
                                              !compactAlgebraic && !compactQuantitative &&
@@ -1468,22 +1325,6 @@ def main() -> int:
                                         figure.screenshot(
                                             path=str(screenshots / f"{width}-{label}-figure-{index:02d}.png")
                                         )
-                                    if rel == "essays/series-preface.html":
-                                        for name, selector in (
-                                            ("lifecycle", ".preface-lifecycle"),
-                                            ("reading-map", '.preface-mobile-records[aria-label="Publication order and reading links"]'),
-                                            ("foundations", '.preface-mobile-records[aria-label="Foundational layers and questions"]'),
-                                            ("glossary", '.preface-mobile-records[aria-label="Core terms and definitions"]'),
-                                            ("claims", '.preface-mobile-records[aria-label="Claim protocol levels and treatment"]'),
-                                            ("notation", '.preface-mobile-records[aria-label="Mathematical notation and reading"]'),
-                                            ("publication", '.preface-mobile-records[aria-label="Publication steps and gates"]'),
-                                            ("schemas", '.preface-mobile-records[aria-label="Canonical schemas and artifacts"]'),
-                                        ):
-                                            item = page.locator(selector).first
-                                            if item.count() and item.is_visible():
-                                                item.screenshot(
-                                                    path=str(screenshots / f"{width}-{label}-{name}.png")
-                                                )
                                     if rel == "essays/semantic-participation.html":
                                         for name, selector in (
                                             ("contributions", ".sp-mobile-table-1"),

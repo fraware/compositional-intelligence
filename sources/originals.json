@@ -13,17 +13,6 @@
       "published_markdown": "compositional-intelligence.md",
       "publication_status": "Author-edited following the original V3 DOCX conversion; original DOCX fingerprint retained"
     },
-    "series-preface": {
-      "slug": "series-preface",
-      "source_docx": "Essay0_Compositional_Intelligence_Preface_V3(1).docx",
-      "source_sha256": "1ce80674057c8c2951652bbb0e1f39bb20be1b18c03080bbe2eb1ca33f02e8c5",
-      "canonical_text_sha256": "be342533efe553ef9ba5daf489962cea780726c717e06a2aea3d1a03b35ea888",
-      "markdown_sha256": "03d2e69f54162b6519f9ef215ad7b6123a9f76fc9530992f89bc5f45a8170df2",
-      "table_count": 7,
-      "heading_count": 12,
-      "word_count": 1616,
-      "published_markdown": "series-preface.md"
-    },
     "semantic-participation": {
       "slug": "semantic-participation",
       "source_docx": "Essay1_Semantic_Participation_V3(1).docx",
