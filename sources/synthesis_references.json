@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "description": "Publication links and bibliographic identities for the 34 citation keys in the Compositional Intelligence synthesis.",
+  "references": [
+    {
+      "key": "LeanRef",
+      "authors": "Lean developers",
+      "year": "n.d.",
+      "title": "The Lean Language Reference",
+      "venue": "Lean documentation",
+      "url": "https://lean-lang.org/doc/reference/latest/"
+    },
+    {
+      "key": "TPIL4",
+      "authors": "Avigad et al.",
+      "year": "n.d.",
+      "title": "Theorem Proving in Lean 4",
+      "venue": "Online textbook",
+      "url": "https://leanprover.github.io/theorem_proving_in_lean4/"
+    },
+    {
+      "key": "LeanDojo2023",
+      "authors": "Yang et al.",
+      "year": "2023",
+      "title": "LeanDojo: Theorem Proving with Retrieval-Augmented Language Models",
+      "venue": "NeurIPS 2023",
+      "url": "https://arxiv.org/abs/2306.15626"
+    },
+    {
+      "key": "Toolformer2023",
+      "authors": "Schick et al.",
+      "year": "2023",
+      "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+      "venue": "NeurIPS 2023",
+      "url": "https://proceedings.neurips.cc/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html"
+    },
+    {
+      "key": "COGS2020",
+      "authors": "Kim and Linzen",
+      "year": "2020",
+      "title": "COGS: A Compositional Generalization Challenge Based on Semantic Interpretation",
+      "venue": "EMNLP 2020",
+      "url": "https://aclanthology.org/2020.emnlp-main.731/"
+    },
+    {
+      "key": "SLOG2023",
+      "authors": "Li et al.",
+      "year": "2023",
+      "title": "SLOG: A Structural Generalization Benchmark for Semantic Parsing",
+      "venue": "EMNLP 2023",
+      "url": "https://aclanthology.org/2023.emnlp-main.194/"
+    },
+    {
+      "key": "SCAN2018",
+      "authors": "Lake and Baroni",
+      "year": "2018",
+      "title": "Generalization without Systematicity: On the Compositional Skills of Sequence-to-Sequence Recurrent Networks",
+      "venue": "ICML 2018",
+      "url": "https://proceedings.mlr.press/v80/lake18a.html"
+    },
+    {
+      "key": "CFQ2020",
+      "authors": "Keysers et al.",
+      "year": "2020",
+      "title": "Measuring Compositional Generalization: A Comprehensive Method on Realistic Data",
+      "venue": "ICLR 2020",
+      "url": "https://research.google/pubs/measuring-compositional-generalization-a-comprehensive-method-on-realistic-data/"
+    },
+    {
+      "key": "FormalBench2025",
+      "authors": "Le-Cong et al.",
+      "year": "2025",
+      "title": "Can LLMs Reason About Program Semantics? A Comprehensive Evaluation of LLMs on Formal Specification Inference",
+      "venue": "ACL 2025",
+      "url": "https://aclanthology.org/2025.acl-long.1068/"
+    },
+    {
+      "key": "ConsistencyChecker2025",
+      "authors": "Hong et al.",
+      "year": "2025",
+      "title": "ConsistencyChecker: Tree-based Evaluation of LLM Generalization Capabilities",
+      "venue": "ACL 2025",
+      "url": "https://aclanthology.org/2025.acl-long.1585/"
+    },
+    {
+      "key": "Lambek1958",
+      "authors": "Lambek",
+      "year": "1958",
+      "title": "The Mathematics of Sentence Structure",
+      "venue": "American Mathematical Monthly 65(3)",
+      "url": "https://doi.org/10.1080/00029890.1958.11989160"
+    },
+    {
+      "key": "BangaloreJoshi1999",
+      "authors": "Bangalore and Joshi",
+      "year": "1999",
+      "title": "Supertagging: An Approach to Almost Parsing",
+      "venue": "Computational Linguistics 25(2)",
+      "url": "https://aclanthology.org/J99-2004/"
+    },
+    {
+      "key": "DisCoCat2010",
+      "authors": "Coecke, Sadrzadeh, and Clark",
+      "year": "2010",
+      "title": "Mathematical Foundations for a Compositional Distributional Model of Meaning",
+      "venue": "Linguistic Analysis; preprint arXiv:1003.4394",
+      "url": "https://arxiv.org/abs/1003.4394"
+    },
+    {
+      "key": "LLMSupertagger2024",
+      "authors": "Zhao and Penn",
+      "year": "2024",
+      "title": "LLM-supertagger: Categorial Grammar Supertagging via Large Language Models",
+      "venue": "Findings of EMNLP 2024",
+      "url": "https://aclanthology.org/2024.findings-emnlp.39/"
+    },
+    {
+      "key": "GDL2021",
+      "authors": "Bronstein et al.",
+      "year": "2021",
+      "title": "Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges",
+      "venue": "arXiv:2104.13478",
+      "url": "https://arxiv.org/abs/2104.13478"
+    },
+    {
+      "key": "DeepSets2017",
+      "authors": "Zaheer et al.",
+      "year": "2017",
+      "title": "Deep Sets",
+      "venue": "NeurIPS 2017",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2017/hash/f22e4747da1aa27e363d86d40ff442fe-Abstract.html"
+    },
+    {
+      "key": "GraphNetworks2018",
+      "authors": "Battaglia et al.",
+      "year": "2018",
+      "title": "Relational Inductive Biases, Deep Learning, and Graph Networks",
+      "venue": "arXiv:1806.01261",
+      "url": "https://arxiv.org/abs/1806.01261"
+    },
+    {
+      "key": "Transformer2017",
+      "authors": "Vaswani et al.",
+      "year": "2017",
+      "title": "Attention Is All You Need",
+      "venue": "NeurIPS 2017",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html"
+    },
+    {
+      "key": "Mamba2023",
+      "authors": "Gu and Dao",
+      "year": "2024",
+      "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+      "venue": "COLM 2024; preprint 2023",
+      "url": "https://proceedings.colm.cc/paper_files/paper/2024/hash/12564fe3900e4e2cefb52d4b4ad40625-Abstract-Conference.html"
+    },
+    {
+      "key": "CategoricalDL2024",
+      "authors": "Gavranović et al.",
+      "year": "2024",
+      "title": "Position: Categorical Deep Learning is an Algebraic Theory of All Architectures",
+      "venue": "ICML 2024",
+      "url": "https://proceedings.mlr.press/v235/gavranovic24a.html"
+    },
+    {
+      "key": "DiffProving2017",
+      "authors": "Rocktäschel and Riedel",
+      "year": "2017",
+      "title": "End-to-End Differentiable Proving",
+      "venue": "NeurIPS 2017",
+      "url": "https://papers.nips.cc/paper/6969-end-to-end-differentiable-proving"
+    },
+    {
+      "key": "LNN2020",
+      "authors": "Riegel et al.",
+      "year": "2020",
+      "title": "Logical Neural Networks",
+      "venue": "arXiv:2006.13155",
+      "url": "https://arxiv.org/abs/2006.13155"
+    },
+    {
+      "key": "QBS2017",
+      "authors": "Heunen et al.",
+      "year": "2017",
+      "title": "A Convenient Category for Higher-Order Probability Theory",
+      "venue": "LICS 2017; arXiv:1701.02547",
+      "url": "https://arxiv.org/abs/1701.02547"
+    },
+    {
+      "key": "DifferentiableLogicsDTT2026",
+      "authors": "Affeldt et al.",
+      "year": "2026",
+      "title": "A Foundation for Differentiable Logics using Dependent Type Theory",
+      "venue": "arXiv:2602.23878",
+      "url": "https://arxiv.org/abs/2602.23878"
+    },
+    {
+      "key": "Hoare1969",
+      "authors": "Hoare",
+      "year": "1969",
+      "title": "An Axiomatic Basis for Computer Programming",
+      "venue": "Communications of the ACM 12(10)",
+      "url": "https://doi.org/10.1145/363235.363259"
+    },
+    {
+      "key": "PDDL1998",
+      "authors": "McDermott et al.",
+      "year": "1998",
+      "title": "PDDL — The Planning Domain Definition Language, Version 1.2",
+      "venue": "Technical report (AIPS-98)",
+      "url": "https://www.cs.cmu.edu/~mmv/planning/readings/98aips-PDDL.pdf"
+    },
+    {
+      "key": "Moggi1989",
+      "authors": "Moggi",
+      "year": "1989",
+      "title": "Notions of Computation and Monads",
+      "venue": "Category Theory and Computer Science (CTCS 1989); journal version 1991",
+      "url": "https://person.dibris.unige.it/moggi-eugenio/publications.html"
+    },
+    {
+      "key": "PlotkinPretnar2013",
+      "authors": "Plotkin and Pretnar",
+      "year": "2013",
+      "title": "Handling Algebraic Effects",
+      "venue": "Logical Methods in Computer Science 9(4:23)",
+      "url": "https://lmcs.episciences.org/705"
+    },
+    {
+      "key": "ReAct2022",
+      "authors": "Yao et al.",
+      "year": "2023",
+      "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+      "venue": "ICLR 2023; preprint 2022",
+      "url": "https://arxiv.org/abs/2210.03629"
+    },
+    {
+      "key": "WebArena2023",
+      "authors": "Zhou et al.",
+      "year": "2024",
+      "title": "WebArena: A Realistic Web Environment for Building Autonomous Agents",
+      "venue": "ICLR 2024; preprint 2023",
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/4410c0711e9154a7a2d26f9b3816d1ef-Abstract-Conference.html"
+    },
+    {
+      "key": "OSWorld2024",
+      "authors": "Xie et al.",
+      "year": "2024",
+      "title": "OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments",
+      "venue": "NeurIPS 2024",
+      "url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/5d413e48f84dc61244b6be550f1cd8f5-Abstract-Datasets_and_Benchmarks_Track.html"
+    },
+    {
+      "key": "TauBench2025",
+      "authors": "Yao et al.",
+      "year": "2025",
+      "title": "τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains",
+      "venue": "ICLR 2025",
+      "url": "https://collaborate.princeton.edu/en/publications/%CF%84-bench-a-benchmark-for-tool-agent-user-interaction-in-real-world/"
+    },
+    {
+      "key": "AgentDojo2024",
+      "authors": "Debenedetti et al.",
+      "year": "2024",
+      "title": "AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents",
+      "venue": "NeurIPS 2024",
+      "url": "https://proceedings.nips.cc/paper_files/paper/2024/hash/97091a5177d8dc64b1da8bf3e1f6fb54-Abstract-Datasets_and_Benchmarks_Track.html"
+    },
+    {
+      "key": "AgentRewardBench2025",
+      "authors": "Lù et al.",
+      "year": "2025",
+      "title": "AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories",
+      "venue": "COLM 2025",
+      "url": "https://proceedings.colm.cc/paper_files/paper/2025/hash/e61219bcb30e2a78f0647bfafe7855ca-Abstract-Conference.html"
+    }
+  ]
+}
