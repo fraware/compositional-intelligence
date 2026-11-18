@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "purpose": "synthetic_control_only",
+  "cases": [
+    {
+      "id": "case_valid_quadratic",
+      "reference": [
+        1,
+        0,
+        1
+      ],
+      "transform_then_translate": [
+        1,
+        0,
+        1
+      ],
+      "translate_then_transform": [
+        1,
+        0,
+        1
+      ],
+      "expected_classification": "valid_agreement"
+    },
+    {
+      "id": "case_left_fault_hidden_at_one",
+      "reference": [
+        1,
+        0,
+        1
+      ],
+      "transform_then_translate": [
+        0,
+        1,
+        1
+      ],
+      "translate_then_transform": [
+        1,
+        0,
+        1
+      ],
+      "expected_classification": "left_path_fault"
+    },
+    {
+      "id": "case_right_fault",
+      "reference": [
+        1,
+        0,
+        1
+      ],
+      "transform_then_translate": [
+        1,
+        0,
+        1
+      ],
+      "translate_then_transform": [
+        0,
+        1,
+        1
+      ],
+      "expected_classification": "right_path_fault"
+    },
+    {
+      "id": "case_both_faults_disagree",
+      "reference": [
+        1,
+        0,
+        1
+      ],
+      "transform_then_translate": [
+        0,
+        1,
+        1
+      ],
+      "translate_then_transform": [
+        2,
+        0,
+        1
+      ],
+      "expected_classification": "unresolved_disagreement"
+    },
+    {
+      "id": "case_both_faults_agree",
+      "reference": [
+        1,
+        0,
+        1
+      ],
+      "transform_then_translate": [
+        0,
+        1,
+        1
+      ],
+      "translate_then_transform": [
+        0,
+        1,
+        1
+      ],
+      "expected_classification": "invalid_agreement"
+    },
+    {
+      "id": "case_constant_with_trailing_zero",
+      "reference": [
+        5
+      ],
+      "transform_then_translate": [
+        5,
+        0
+      ],
+      "translate_then_transform": [
+        5
+      ],
+      "expected_classification": "valid_agreement"
+    },
+    {
+      "id": "case_zero_polynomial",
+      "reference": [
+        0
+      ],
+      "transform_then_translate": [
+        0,
+        0,
+        0
+      ],
+      "translate_then_transform": [
+        0
+      ],
+      "expected_classification": "valid_agreement"
+    },
+    {
+      "id": "case_right_fault_cubic",
+      "reference": [
+        2,
+        0,
+        0,
+        1
+      ],
+      "transform_then_translate": [
+        2,
+        0,
+        0,
+        1
+      ],
+      "translate_then_transform": [
+        2,
+        1,
+        0,
+        1
+      ],
+      "expected_classification": "right_path_fault"
+    },
+    {
+      "id": "case_linear_both_wrong_agree",
+      "reference": [
+        0,
+        1
+      ],
+      "transform_then_translate": [
+        0,
+        2
+      ],
+      "translate_then_transform": [
+        0,
+        2,
+        0
+      ],
+      "expected_classification": "invalid_agreement"
+    },
+    {
+      "id": "case_left_fault_cubic",
+      "reference": [
+        0,
+        0,
+        1
+      ],
+      "transform_then_translate": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "translate_then_transform": [
+        0,
+        0,
+        1
+      ],
+      "expected_classification": "left_path_fault"
+    }
+  ]
+}

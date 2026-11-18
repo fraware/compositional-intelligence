@@ -26,9 +26,13 @@ jobs:
         with:
           pandoc-version: '3.1.13'
       - name: Check Python syntax
-        run: python3 -m py_compile scripts/build_site.py scripts/verify_site.py scripts/verify_notation.py scripts/render_science.py scripts/render_semantic.py scripts/render_typed.py scripts/render_functorial.py scripts/render_lambek.py scripts/render_algebraic.py scripts/render_quantitative.py scripts/render_effectful.py scripts/audit_layout.py scripts/audit_typed_layout.py scripts/audit_quantitative_layout.py scripts/audit_effectful_layout.py scripts/audit_collection_layout.py scripts/check_originals.py
+        run: python3 -m py_compile scripts/build_site.py scripts/verify_site.py scripts/verify_notation.py scripts/render_science.py scripts/render_semantic.py scripts/render_typed.py scripts/render_functorial.py scripts/render_lambek.py scripts/render_algebraic.py scripts/render_quantitative.py scripts/render_effectful.py scripts/audit_layout.py scripts/audit_typed_layout.py scripts/audit_quantitative_layout.py scripts/audit_effectful_layout.py scripts/audit_collection_layout.py scripts/check_originals.py experiments/commutation_pilot/evaluate.py experiments/commutation_pilot/test_evaluate.py
       - name: Test source-bound publication metadata
         run: python3 -m unittest discover -s scripts -p 'test_publication.py' -v
+      - name: Test exact polynomial commutation controls
+        run: |
+          python3 -m unittest discover -s experiments/commutation_pilot -p 'test_*.py' -v
+          python3 experiments/commutation_pilot/evaluate.py > /dev/null
       - name: Build website twice and verify reproducibility
         run: python3 scripts/build_site.py --output _site --reproducibility-check
       - name: Validate publication integrity and navigation

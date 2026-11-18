@@ -260,11 +260,24 @@
 <p>A simple example comes from informal mathematics to Lean. If a natural-language theorem is first specialized and then formalized in Lean, the result should align with formalizing the original theorem and then specializing the formal statement. The two paths need not produce identical syntax. They should agree under a stated formal or reviewed equivalence regime (LeanRef,TPIL4).</p>
 <h3 id="worked-commutation-example">A worked commutation test</h3>
 <p>Consider an expression language over the integers. The source artifact x specifies the function x(n) = n * n. The source transformation f adds one to the result, yielding f(x)(n) = n * n + 1. Translation T maps source expressions to executable Python functions. The corresponding target operation g adds one to a translated function’s result. The declared acceptance relation is extensional equality over integer inputs. A single counterexample is sufficient to reject path agreement, while a finite collection of passing tests does not establish equality over the full domain.</p>
-<pre><code>source(n)               = n * n
-source_plus_one(n)      = n * n + 1
-translated(n)           = n * n
-target_plus_one(n)      = n * n + 1
-transformed_candidate(n) = n * (n + 1)</code></pre>
+<pre><code>def source(n: int) -&gt; int:
+    return n * n
+
+def transform_source(n: int) -&gt; int:
+    return source(n) + 1
+
+def translate_source(n: int) -&gt; int:
+    return source(n)
+
+def transform_target(n: int) -&gt; int:
+    return translate_source(n) + 1
+
+def translate_transformed_bug(n: int) -&gt; int:
+    return n * (n + 1)
+
+assert transform_target(1) == translate_transformed_bug(1) == 2
+assert transform_target(2) == 5
+assert translate_transformed_bug(2) == 6</code></pre>
 <p>Both target expressions are syntactically valid and executable. At n = 1, each evaluates to 2, so a local test restricted to that input reports success. At n = 2, the transform-then-translate path evaluates to 6 and the translate-then-transform path evaluates to 5. The witness n = 2 establishes non-commutation under the declared relation. Independent checks of the source transformation and target operation identify the candidate translation of the transformed source as the faulty component. Without those independent checks, path disagreement alone does not uniquely localize the defect.</p>
 <p>The benchmark record names the two environments, both transformations, the translation candidates, the equality regime, the witness input, and the validation outcome. This example demonstrates the diagnostic record; it supplies no evidence of superiority over metamorphic testing. A suitably specified metamorphic relation detects the same failure. The empirical question is whether the explicit two-path record improves fault attribution, review, or repair under controlled comparison.</p>
 <p>Functorial Consistency differs from ordinary robustness. Robustness often asks whether an output remains stable under perturbation. Functorial Consistency asks whether the output changes in the right way under a typed transformation. Some transformations should preserve meaning. Others should change meaning in controlled ways. A paraphrase can preserve denotation. A specialization should narrow a claim. An edge-case strengthening should add a behavioral condition. A decomposition should preserve recomposability.</p>
@@ -443,6 +456,10 @@ transformed_candidate(n) = n * (n + 1)</code></pre>
 <p>A first Type-First Prompting pilot should use 100-150 curated items across code, Lean or mathematics, explanation, scientific protocol design, and planning. It should measure target-type accuracy, constraint recall, inhabitant validity, semantic alignment, repair cost, type stability, downstream usability, and ambiguity handling.</p>
 <p>A first Functorial Consistency pilot should use 80-120 commutation-square items across informal mathematics to Lean, requirements to code, language to semantic parse, and goals to plans. The first version should prioritize exact, executable, and denotational equivalence regimes before relying heavily on reviewed alignment. The primary question is whether path agreement reveals failures missed by local validity.</p>
 <p>Each item must declare source and target transformations, a validator, and an acceptance relation independently of model output. Local validity of each path must be measured separately from cross-path agreement, with non-commutation reported conditional on both paths passing their local validators. Matched comparisons must include local accuracy, perturbation robustness, and metamorphic testing under equivalent query budgets. Reviewed cases need blinded annotation, an adjudication protocol, and inter-annotator agreement reporting. A held-out transformation family probes generalization beyond the item templates.</p>
+<h3 id="pilot-identifiability-and-controls">Pilot identifiability and controls</h3>
+<p>The acceptance relation and the strength of each independent validator determine what a benchmark observation establishes. A diagnostic record distinguishes correct agreement, agreement of two independently invalid paths, disagreement with a fault independently attributed to one path, and disagreement with unresolved or multiple faults. Passing tests establish agreement only over the tested inputs. An exhaustive validator or sound proof is necessary for a global correctness claim. Disagreement alone identifies neither the defective component nor the validity of either path.</p>
+<p>Evaluation conditions must receive the same source and target transformations, validator outputs, reference access, query budget, and execution resources. The strongest matched metamorphic-testing protocol is the principal comparator. Randomized presentation and blinded adjudication isolate the incremental contribution of the two-path record from extra information supplied to the reviewer. The primary unit of analysis is an independent task or transformation family. Repeated stochastic samples from the same family remain correlated observations. Report false fault attribution, abstention, reviewer disagreement, validation costs, and uncertainty intervals clustered by task family.</p>
+<p>The proposed 80–120 heterogeneous items establish feasibility and refine the failure taxonomy; that sample target alone supplies no statistical power guarantee. Confirmatory claims need a separately held-out transformation-family split, a declared minimum effect, and a prospective power analysis. Deterministic polynomial control fixtures included with the publication verify only the diagnostic software. Their complete algebraic oracle differs materially from finite testing, reviewed semantic alignment, and open-ended agent environments. No comparative advantage follows from passing the synthetic controls.</p>
 <p>The primary incremental metric is the proportion of items with independently confirmed, actionable failures detected by the square and missed by the strongest matched baseline. Results must also report false-positive diagnoses, validator coverage, disagreement rates, per-domain uncertainty intervals, and annotation and execution costs. Repeated stochastic runs need fixed sampling budgets and reported variability; a single sampled disagreement does not establish systematic non-commutation.</p>
 <p>A first Lambek pilot should use two or three dataset families: a categorial resource for supertagging and derivational evaluation, a semantic parsing dataset or controlled semantic examples, and hand-curated transformation squares. The primary question is whether categorial structure improves downstream semantic behavior, not merely category prediction.</p>
 <p>A first ArchitectureSpec catalog should contain 20-30 task-family records with candidate architecture families, excluded families, structural commitments, validators, and predicted failure modes. Candidate task families include sets, graphs, molecules, long-context sequences, proof states, scientific protocols, and agent workflows.</p>
