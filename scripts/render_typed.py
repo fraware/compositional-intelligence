@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Faithful reading layouts for the original Typed Generativity V3 manuscript.
+"""Source-faithful reading layouts for the Typed Generativity V5 manuscript.
 
 All source HTML tables and original manuscript paragraphs remain available.
 Desktop retains every original table; narrow screens use matching definition
@@ -448,7 +448,7 @@ def _format_source_schemas(body: str) -> str:
 
 
 def render_typed_generativity(body: str) -> str:
-    """Render the V3 Typed Generativity text without modifying its manuscript."""
+    """Render the V5 Typed Generativity text without changing its source tables."""
     body = _source_captions(body)
     body = _link_reading_paths(body)
     body = _typeset_source_symbols(body)
