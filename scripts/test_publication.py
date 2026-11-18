@@ -1115,7 +1115,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
         self.assertIsNotNone(table)
         anchors = re.findall(
-            r'<a href="#([^"]+)"(?:\\s+[^>]*)?>([^<]+)</a>', table.group(),
+            r'<a href="#([^"]+)"(?:\s+[^>]*)?>([^<]+)</a>', table.group(),
         )
         self.assertEqual(len(anchors), 23)
         for fragment, text in anchors:
