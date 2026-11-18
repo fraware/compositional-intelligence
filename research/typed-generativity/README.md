@@ -7,6 +7,7 @@ The current publication manuscript is [Typed Generativity V5](../../essays/typed
 - [Full evaluation protocol](full-evaluation-protocol.md) — experimental design, identification, comparison conditions, missing evidence, and inference.
 - [Domain acceptance handbook](domain-acceptance-handbook.md) — proposed criteria for code, Lean mathematics, explanations, scientific protocols, planning, and tool use.
 - [V5 editorial audit](v5-editorial-audit.md) — source-preservation checks, editorial rationale, and explicitly unverified claims. This records the state of the manuscript before repository integration.
+- [Historical V3 manuscript source](historical-v3-source.md) — the original DOCX-derived publication text retained for independent regression checks of V5 table and heading preservation.
 
 ## Reproducible benchmark contract
 
