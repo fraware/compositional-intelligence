@@ -312,7 +312,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
             "The acceptance relation need not be symmetric",
             "Metamorphic testing already evaluates relations",
             "Its diagnostic advantage over a well-designed metamorphic test remains an empirical hypothesis.",
-            "Local validity of each path must be measured separately from cross-path agreement",
+            "The evaluator must record path agreement and each path's independently assessed validity as separate observations.",
+            "Attributing that disagreement to a particular translation or transformation additionally depends on independently justified reference relations",
+            "agreement alone does not establish the correctness of either path",
             "Revised by the evaluated system",
         ):
             if phrase == "Revised by the evaluated system":
@@ -327,6 +329,12 @@ class ManuscriptFidelityTests(unittest.TestCase):
             'alttext="P_theta(A, t | Gamma) = P_theta(A | Gamma) P_theta(t | A, Gamma)"',
             page,
         )
+        self.assertNotIn(
+            "non-commutation reported conditional on both paths passing",
+            source,
+        )
+        self.assertIn("A worked commutation test", page)
+        self.assertIn("Pilot identifiability and controls", page)
         self.assertIn("Segura et al., 2016", page)
         self.assertEqual(page.count('data-source-table='), 10)
 
