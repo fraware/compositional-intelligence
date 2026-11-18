@@ -131,7 +131,7 @@ def _reader_targets(body: str) -> tuple[dict[str, str], dict[str, str]]:
         "6.1", "6.2", "6.3", "6.4", "6.5",
         "7.1", "7.2", "7.3", "7.4", "7.5", "7.6", "7.7",
     } or set(appendices) != {"A", "B", "C", "D", "E", "F"}:
-        raise ValueError("Source section/appendix inventory differs from V3")
+        raise ValueError("Source section/appendix inventory differs from the V5 publication manuscript")
     return numbers, appendices
 
 
@@ -169,7 +169,7 @@ def _link_reading_paths(body: str) -> str:
 
             def link_section(number: re.Match[str]) -> str:
                 raw = number.group()
-                 if raw not in numbers:
+                if raw not in numbers:
                     return raw
                 return '<a href="#' + escape(numbers[raw], quote=True) + '">' + raw + "</a>"
 
