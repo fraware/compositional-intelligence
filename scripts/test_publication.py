@@ -1266,6 +1266,13 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertGreater(body.count("<math "), 5)
         self.assertIn('alttext="', page)
         self.assertIn('encoding="application/x-tex"', page)
+        annotations = re.findall(
+            r'<annotation encoding="application/x-tex">(.*?)</annotation>',
+            page, re.S,
+        )
+        self.assertGreater(len(annotations), 5)
+        for annotation in annotations:
+            self.assertNotIn("<math", annotation, "MathML annotation cannot nest MathML")
         self.assertIn("A limit of the commutation test", page)
         self.assertIn("Minimal FLC validator contract", page)
         self.assertNotIn('class="lm-square-figure"', page)
