@@ -145,8 +145,6 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
 }
 .article-content math[display="inline"] {
   display:inline-block;
-  min-width:6px;
-  min-height:1em;
   max-width:100%;
   overflow-x:auto;
   overflow-y:hidden;
