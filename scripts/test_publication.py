@@ -234,7 +234,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn('class="ci-source-figure ci-lifecycle"', page)
         self.assertIn('class="ci-source-figure ci-commuting"', page)
         self.assertEqual(page.count("<figcaption"), 2)
-        self.assertIn('alttext="S = (E_s, E_t, x, f, T, g, epsilon)"', page)
+        self.assertIn('alttext="S = (E_s, E_t, x, f, T, g, epsilon, V)"', page)
+        self.assertIn('alttext="P_theta(A, t | Gamma) = P_theta(A | Gamma) P_theta(t | A, Gamma)"', page)
         self.assertNotIn('class="byline"', page)
 
 
@@ -290,6 +291,44 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertEqual(rendered.count("source-visible-caption"), 7)
         self.assertIn("Table 9. Claim levels, meanings, and publication treatment.", rendered)
         self.assertIn("Table 10. Epistemic types and their meanings.", rendered)
+
+    def test_synthesis_revised_claims_have_exact_source_scope(self) -> None:
+        """Keep the proposed mathematics, comparative evidence, and tests bounded."""
+        source = (
+            publication.ROOT / "essays" / "compositional-intelligence.md"
+        ).read_text(encoding="utf-8")
+        self.assertEqual(source.count(
+            "S = (E_s, E_t, x, f, T, g, epsilon, V)"
+        ), 1)
+        self.assertEqual(source.count(
+            "P_theta(A, t | Gamma) = P_theta(A | Gamma) P_theta(t | A, Gamma)"
+        ), 1)
+        self.assertEqual(source.count(
+            "<td>w_i -&gt; tau_i -&gt; pi -&gt; [[pi]]</td>"
+        ), 1)
+        for phrase in (
+            "Agreement on a finite collection of squares alone does not establish functoriality.",
+            "The acceptance relation need not be symmetric",
+            "Metamorphic testing already evaluates relations",
+            "Its diagnostic advantage over a well-designed metamorphic test remains an empirical hypothesis.",
+            "Local validity of each path must be measured separately from cross-path agreement",
+            "Revised by the evaluated system",
+        ):
+            if phrase == "Revised by the evaluated system":
+                self.assertNotIn(phrase, source)
+            else:
+                self.assertIn(phrase, source)
+        page = publication.render_essay(
+            *publication.ESSAYS[0], position=0, table_captions=[]
+        )
+        self.assertIn('alttext="S = (E_s, E_t, x, f, T, g, epsilon, V)"',page)
+        self.assertIn(
+            'alttext="P_theta(A, t | Gamma) = P_theta(A | Gamma) P_theta(t | A, Gamma)"',
+            page,
+        )
+        self.assertIn("Segura et al., 2016", page)
+        self.assertEqual(page.count('data-source-table='), 10)
+
 
     def test_flagship_browser_title_is_not_repeated(self) -> None:
         """The flagship page's browser tab shows the essay title once."""
