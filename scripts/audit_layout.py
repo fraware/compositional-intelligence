@@ -185,21 +185,6 @@ def main() -> int:
                                               (pr && r.right > pr.right + 4 &&
                                                 !e.closest(".table-scroll,.aa-spec-formula"));
                                           }).length,
-                                        inlineGeometry: [...article.querySelectorAll('math[display="inline"]')].map((e,i)=> {
-                                            const r = e.getBoundingClientRect();
-                                            const p = e.closest("p,li,blockquote");
-                                            const pr = p ? p.getBoundingClientRect() : null;
-                                            const bad = r.width < 4 || r.height < 4 ||
-                                               (r.width > window.innerWidth + 1 && !e.closest(".aa-spec-formula")) ||
-                                               (pr && r.right > pr.right + 4 &&
-                                                 !e.closest(".table-scroll,.aa-spec-formula"));
-                                            return bad ? {
-                                                i, tex: e.querySelector("annotation")?.textContent,
-                                                width: r.width, height: r.height,
-                                                right: r.right, parentRight: pr?.right,
-                                                parentTag: p?.tagName
-                                            } : null;
-                                        }).filter(Boolean),
                                         invisibleMath: math.filter(e => {
                                             const r = e.getBoundingClientRect();
                                             return r.width < 4 || r.height < 4 ||
