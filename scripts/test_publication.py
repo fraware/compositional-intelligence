@@ -287,6 +287,34 @@ class ManuscriptFidelityTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             render_synthesis_figures(rendered)
 
+    def test_flagship_outline_follows_section_semantics(self) -> None:
+        """Reset DOCX list counters and nest appendix headings without source edits."""
+        manuscript = (
+            publication.ROOT / "essays" / "compositional-intelligence.md"
+        ).read_text(encoding="utf-8")
+        original, _ = publication.source_to_body(
+            manuscript, "Compositional Intelligence", []
+        )
+        self.assertIn('<ol start="6" type="1">', original)
+        self.assertIn('<ol start="15" type="1">', original)
+        rendered = render_synthesis_figures(original)
+        self.assertNotIn('<ol start="6" type="1">', rendered)
+        self.assertNotIn('<ol start="15" type="1">', rendered)
+        self.assertEqual(rendered.count('<ol type="1">'), 3)
+        self.assertIn(
+            '<h2 id="appendix-materials-from-the-synthesis-paper">Appendix</h2>',
+            rendered,
+        )
+        for ident in ("claim-levels-and-epistemic-types",
+                      "minimal-schema-summaries"):
+            self.assertIn(f'<h3 id="{ident}">', rendered)
+        for ident in ("claim-levels", "epistemic-types", "artifactrecord",
+                      "targettyperecord", "functorialconsistencyitem",
+                      "architecturespec", "quantitativejudgmentrecord",
+                      "typedactionledgerentry", "concepttransferrecord"):
+            self.assertIn(f'<h4 id="{ident}">', rendered)
+        self.assertEqual(rendered.count("<table "), original.count("<table "))
+
     def test_flagship_rendering_is_scoped_and_accessible(self) -> None:
         """The flagship typesetting does not alter another essay's diagrams."""
         page = publication.render_essay(*publication.ESSAYS[0], position=0, table_captions=[])
