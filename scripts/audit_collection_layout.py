@@ -22,7 +22,7 @@ TABLES = {
     "semantic-participation": (12, "Semantic Participation"),
     "typed-generativity": (15, "Typed Generativity"),
     "functorial-consistency": (19, "Functorial Consistency"),
-    "lambek-machines": (14, "Lambek Machines"),
+    "lambek-machines": (4, "Lambek Machines"),
     "algebraic-architectures": (13, "Algebraic Architectures"),
     "quantitative-curry-howard": (10, "Quantitative Curry-Howard"),
     "effectful-and-conceptual-intelligence": (
