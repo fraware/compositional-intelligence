@@ -1091,7 +1091,7 @@ def main() -> int:
                                         typed["rows"] != expected_rows or
                                         typed["records"] != 81 or typed["fields"] != 227 or
                                         typed["hints"] != 15 or typed["badCues"] != 0 or
-                                        typed["originalPaths"] != 22 or typed["mobilePaths"] != 22 or
+                                        typed["originalPaths"] != 23 or typed["mobilePaths"] != 23 or
                                         typed["symbolSource"] != ["Gamma", "A", "t", "theta", "P_theta"] or
                                         typed["symbolMobile"] != ["Gamma", "A", "t", "theta", "P_theta"] or
                                         typed["benchmarkTitleLines"] != 1 or
