@@ -291,7 +291,7 @@ def main() -> int:
         try:
             root = ElementTree.parse(sitemap).getroot()
             urls = [x.text for x in root.findall(f".//{namespace}loc")]
-            if len(urls) != 10 or set(urls) != canonical_set:
+            if len(urls) != len(canonical_set) or set(urls) != canonical_set:
                 issues.append("Sitemap URLs differ from public HTML canonicals")
         except ElementTree.ParseError as exc:
             issues.append(f"Invalid sitemap: {exc}")
