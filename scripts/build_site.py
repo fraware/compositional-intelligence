@@ -360,6 +360,18 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         ):
             raise ValueError(f"Malformed DOCX provenance: {expected_title}")
         body = fragment.lstrip()
+        if expected_title == "Typed Generativity" and body.startswith(
+            "<!-- Publication editorial revision V5 "
+        ):
+            # Editorial provenance is recorded in the source file and audit;
+            # it is not part of the reader-facing article text.
+            metadata = re.match(
+                r"<!-- Publication editorial revision V5 [^\\n]* -->\\s*",
+                body,
+            )
+            if metadata is None:
+                raise ValueError("Malformed Typed Generativity editorial provenance")
+            body = body[metadata.end():]
         if '<h2 id="abstract">' not in body:
             raise ValueError(f"Missing original Abstract: {expected_title}")
         return body, hashlib.sha256(markdown.encode("utf-8")).hexdigest()
