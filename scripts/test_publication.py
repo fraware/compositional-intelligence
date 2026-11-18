@@ -853,7 +853,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 if n == 2:
                     # V5 has a real Section 7.4. Remove renderer-added links
                     # before the table's original cell content is compared.
-                    out_html = re.sub(r'</?a\\b[^>]*>', '', out_html)
+                    out_html = re.sub(r'</?a\b[^>]*>', '', out_html)
 
                 def strip_source_symbol_math(html: str) -> str:
                     return re.sub(
@@ -923,7 +923,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     values = re.findall(r'<dd>([\s\S]*?)</dd>', card)
                     if n == 2:
                         values = [
-                            re.sub(r'</?a\\b[^>]*>', '', value)
+                            re.sub(r'</?a\b[^>]*>', '', value)
                             for value in values
                         ]
                     if n == 3:
