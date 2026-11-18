@@ -400,7 +400,7 @@ def build_assets(output: Path, root: Path, essays: list[tuple[str, str, str, str
         "source_repository": "https://github.com/fraware/compositional-intelligence",
         "source_note": (
             "The original DOCX fingerprints are recorded in sources/originals.json. "
-            "Published essays are DOCX-derived, source-verified research writing; "
+            "Published essays include DOCX-derived and explicitly identified editorial revisions; "
             "a source checksum establishes file identity, not scientific correctness. "
             "The collection includes proposals and untested hypotheses."
         ),
