@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Publication links and bibliographic identities for the 34 citation keys in the Compositional Intelligence synthesis.",
+  "description": "Publication links and bibliographic identities for the synthesis essay’s referenced works.",
   "references": [
     {
       "key": "LeanRef",
@@ -273,6 +273,14 @@
       "title": "AgentRewardBench: Evaluating Automatic Evaluations of Web Agent Trajectories",
       "venue": "COLM 2025",
       "url": "https://proceedings.colm.cc/paper_files/paper/2025/hash/e61219bcb30e2a78f0647bfafe7855ca-Abstract-Conference.html"
+    },
+    {
+      "key": "MetamorphicTesting2016",
+      "authors": "Segura et al.",
+      "year": "2016",
+      "title": "A Survey on Metamorphic Testing",
+      "venue": "IEEE Transactions on Software Engineering",
+      "url": "https://doi.org/10.1109/TSE.2016.2532875"
     }
   ]
 }
