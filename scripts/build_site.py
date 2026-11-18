@@ -294,8 +294,9 @@ def render_math(body: str) -> str:
     pattern = re.compile(r'<p>\s*(<math\b[^>]*\bdisplay="block"[^>]*>.*?</math>)\s*</p>', re.S)
     def wrap(match: re.Match[str]) -> str:
         return ('<div class="math-scroll" role="group" tabindex="0" '
-                'aria-label="Displayed mathematical expression">' +
-                match.group(1) + '</div>')
+                'aria-label="Displayed mathematical expression">'
+                '<span class="math-display-expression">' +
+                match.group(1) + '</span></div>')
     return pattern.sub(wrap, body)
 
 
