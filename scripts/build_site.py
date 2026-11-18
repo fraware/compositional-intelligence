@@ -24,6 +24,7 @@ from xml.etree import ElementTree
 
 from render_science import enhance_scientific_presentation
 from render_synthesis import render_synthesis_figures, render_synthesis_mobile_tables
+from render_references import render_synthesis_references
 from render_semantic import render_semantic_participation
 from render_typed import render_typed_generativity
 from render_functorial import render_functorial_diagram, render_functorial_tables
@@ -395,6 +396,9 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
     body = enhance_scientific_presentation(body)
     if slug == "compositional-intelligence":
         body = render_synthesis_mobile_tables(body)
+        body = render_synthesis_references(
+            body, ROOT / "sources" / "synthesis_references.json"
+        )
     if slug == "semantic-participation":
         body = render_semantic_participation(body)
     if slug == "typed-generativity":
