@@ -1305,7 +1305,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn("Architecture Specification Catalog", page)
         self.assertNotIn('class="aa-mobile"', page)
         self.assertNotIn("AUTHORITATIVE-DOCX SHA256", source)
-        for annotation in re.findall(r"<annotation\\b[^>]*>(.*?)</annotation>", page, re.S):
+        for annotation in re.findall(r"<annotation\b[^>]*>(.*?)</annotation>", page, re.S):
             self.assertNotIn("<math", annotation)
 
     def test_quantitative_source_bound_presentation(self) -> None:
