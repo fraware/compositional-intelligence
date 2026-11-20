@@ -417,6 +417,12 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         render_math(rendered_html), table_captions,
         preserve_source_labels=(expected_title == "Compositional Intelligence"),
     ))
+    if expected_title == "Functorial Consistency":
+        # Mark only this revised essay's generic table hints for responsive display.
+        body = body.replace(
+            'class="table-scroll-hint"',
+            'class="table-scroll-hint fc-editorial-hint"',
+        )
     for ident in MARKDOWN_SECTION.findall(source_body):
         if f'id="{ident}"' not in body:
             raise ValueError(f"Missing rendered heading anchor {ident!r}: {expected_title}")
