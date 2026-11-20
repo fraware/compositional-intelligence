@@ -94,11 +94,15 @@
       "source_docx": "Essay7_Effectful_and_Conceptual_Intelligence_V3(1).docx",
       "source_sha256": "675f34ac5bd61d76d77b3e48880d4e34d869abc5f4d9d82d9b71212984ce1a23",
       "canonical_text_sha256": "c428c90dd58c3e7cac508ec4e9154abddd5b6f645aeb320958614b11171ded62",
-      "markdown_sha256": "68359cba78c3396c63c7a167bd9c0715fc639267e78f68194f6fd1bca5351c00",
+      "markdown_sha256": "0258a941f7a0218523a996d20c10953441eb8efe4b3d13ef139e6f076a0f1f8c",
       "table_count": 19,
       "heading_count": 26,
       "word_count": 4207,
-      "published_markdown": "effectful-and-conceptual-intelligence.md"
+      "published_markdown": "effectful-and-conceptual-intelligence.md",
+      "publication_status": "Final editorial revision of the V3-derived Effectful and Conceptual Intelligence manuscript; original DOCX fingerprint and historical metrics retained for provenance",
+      "publication_word_count": 8048,
+      "publication_heading_count": 32,
+      "publication_table_count": 9
     }
   }
 }

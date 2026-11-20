@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the static publication from the canonical V3 DOCX-derived HTML fragments.
+"""Build the static publication from the committed HTML and Markdown manuscripts.
 
 Usage:
   python3 scripts/build_site.py --output _site
@@ -122,7 +122,7 @@ def heading_text(raw: str) -> str:
 
 def verify_table_catalog(markdown: str, captions: list[dict[str, str]], title: str) -> None:
     """Validate accessible descriptions against source-bound table digests."""
-    if title == "Lambek Machines":
+    if title in ("Lambek Machines", "Effectful and Conceptual Intelligence"):
         blocks = re.findall(r"(?m)(?:^\|[^\n]*\|\n){3,}", markdown)
     else:
         blocks = [match.group() for match in TABLE.finditer(markdown)]
@@ -369,7 +369,7 @@ def render_toc(body: str) -> str:
 def source_to_body(markdown: str, expected_title: str, table_captions: list[dict[str, str]]) -> tuple[str, str]:
     """Render the authored Markdown to HTML with a fixed Pandoc release."""
     match = TITLE_AUTHOR.match(markdown)
-    if match is None and expected_title in {"Lambek Machines", "Algebraic Architectures"}:
+    if match is None and expected_title in {"Lambek Machines", "Algebraic Architectures", "Effectful and Conceptual Intelligence"}:
         match = re.match(r"\A# (" + re.escape(expected_title) + r")\n\n", markdown)
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
@@ -400,10 +400,159 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         if '<h2 id="abstract">' not in body:
             raise ValueError(f"Missing original Abstract: {expected_title}")
         return body, hashlib.sha256(markdown.encode("utf-8")).hexdigest()
-    if expected_title == "Lambek Machines" and not table_captions:
+    if expected_title in {"Lambek Machines", "Effectful and Conceptual Intelligence"} and not table_captions:
+        slug = ("lambek-machines" if expected_title == "Lambek Machines"
+                else "effectful-and-conceptual-intelligence")
         table_captions = json.loads(
             (ROOT / "tables" / "captions.json").read_text(encoding="utf-8")
-        )["essays"]["lambek-machines"]
+        )["essays"][slug]
+    if expected_title == "Effectful and Conceptual Intelligence":
+        # Map historical section links onto real Pandoc heading identifiers.
+        # Duplicate <a id> nodes would otherwise produce invalid HTML IDs.
+        source_body, anchor_count = re.subn(
+            r'(?m)^<a id="([a-z0-9.-]+)"></a>\n\n(#{2,4} [^\n]+)    input_format = "markdown+raw_html"
+    if expected_title == "Lambek Machines":
+        input_format += "+tex_math_single_backslash"
+    command = ["pandoc", "--from=" + input_format, "--to=html5", "--mathml", "--wrap=none"]
+    rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
+    rendered_html = rendered.stdout.rstrip() + "\n"
+    if expected_title in {"Lambek Machines", "Algebraic Architectures"}:
+        rendered_html = annotate_pandoc_math(rendered_html)
+    body = render_schema_blocks(render_tables(
+        render_math(rendered_html), table_captions,
+        preserve_source_labels=(expected_title == "Compositional Intelligence"),
+    ))
+    for ident in MARKDOWN_SECTION.findall(source_body):
+        if f'id="{ident}"' not in body:
+            raise ValueError(f"Missing rendered heading anchor {ident!r}: {expected_title}")
+    return body, hashlib.sha256(markdown.encode("utf-8")).hexdigest()
+
+
+def render_essay(slug: str, title: str, category: str, description: str, position: int, table_captions: list[dict[str, str]]) -> str:
+    """Render a manuscript with source provenance, toc, and sequential links."""
+    manuscript = (ROOT / "essays" / (slug + ".md")).read_text(encoding="utf-8")
+    body, digest = source_to_body(manuscript, title, table_captions)
+    if slug == "compositional-intelligence" and "AUTHORITATIVE-DOCX SHA256" not in manuscript:
+        body = render_synthesis_table_math(body)
+    if slug == "compositional-intelligence":
+        body = render_synthesis_figures(body)
+    if slug == "functorial-consistency":
+        body = render_functorial_diagram(body)
+    if slug == "lambek-machines" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
+        body = render_lambek_machines(body)
+    if slug == "algebraic-architectures" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
+        body = render_algebraic_architectures(body)
+    if slug == "quantitative-curry-howard":
+        body = render_quantitative_curry_howard(body)
+    if slug == "effectful-and-conceptual-intelligence":
+        body = render_effectful_and_conceptual_intelligence(body)
+    if slug not in {"lambek-machines", "algebraic-architectures"} or "AUTHORITATIVE-DOCX SHA256" in manuscript:
+        body = enhance_scientific_presentation(body)
+    if slug == "compositional-intelligence":
+        body = render_synthesis_mobile_tables(body)
+        body = render_synthesis_references(
+            body, ROOT / "sources" / "synthesis_references.json"
+        )
+    if slug == "semantic-participation":
+        body = render_semantic_participation(body)
+    if slug == "typed-generativity":
+        body = render_typed_generativity(body)
+    if slug == "functorial-consistency":
+        body = render_functorial_tables(body)
+    before = ESSAYS[position - 1] if position > 0 else None
+    after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None
+    prev_link = (f'<div class="previous"><span>Previous</span><a href="{esc(before[0])}.html">{esc(before[1])}</a></div>'
+                 if before else '<div></div>')
+    next_link = (f'<div class="next"><span>Next</span><a href="{esc(after[0])}.html">{esc(after[1])}</a></div>'
+                 if after else '<div></div>')
+    src_meta = f'<meta name="source-sha256" content="{digest}">\n'
+    head = header(title, description, BASE + "essays/" + slug + ".html")
+    subtitle = ORIGINAL_ARTICLE_SUBTITLES.get(slug)
+    subtitle_html = '<p class="deck">' + esc(subtitle) + '</p>' if subtitle else ''
+    head = head.replace("</head>", src_meta + "</head>", 1)
+    page = (head +
+            '<article><header class="article-header"><p class="breadcrumb"><a href="../index.html">Essays</a> / ' +
+            esc(category) + '</p><h1>' + esc(title) + '</h1>' + subtitle_html +
+            '</header><div class="article-content" id="article-content">\n' +
+            render_toc(body) + body + '</div>\n' +
+            '<nav class="article-pager" aria-label="Essay navigation">' + prev_link + next_link + '</nav>' +
+            '</article>\n' + footer())
+    return discovery.decorate_article(page, slug, title, category)
+
+
+def render_sitemap() -> str:
+    """Generate the public sitemap from the same declared publication inventory."""
+    paths = ["", "concepts.html"] + [f"essays/{row[0]}.html" for row in ESSAYS]
+    root = ElementTree.Element("urlset", xmlns="http://www.sitemaps.org/schemas/sitemap/0.9")
+    for path in paths:
+        item = ElementTree.SubElement(root, "url")
+        ElementTree.SubElement(item, "loc").text = BASE + path
+    ElementTree.indent(root, space="  ")
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' + ElementTree.tostring(root, encoding="unicode") + "\n"
+
+
+def build(output: Path) -> None:
+    """Construct a fresh publication directory without modifying source files."""
+    if output.resolve() in {ROOT.resolve(), (ROOT / "docs").resolve()}:
+        raise ValueError("Build directory cannot replace the repository or source assets")
+    pandoc = subprocess.run(["pandoc", "--version"], capture_output=True, text=True, check=True)
+    if not pandoc.stdout.splitlines()[0].strip() == "pandoc " + PANDOC_VERSION:
+        raise RuntimeError(f"Pandoc {PANDOC_VERSION} required; found {pandoc.stdout.splitlines()[0]}")
+    if output.exists():
+        shutil.rmtree(output)
+    shutil.copytree(ROOT / "docs", output)
+    # The manuscript renderer, not any preexisting snapshot, owns published essay pages.
+    shutil.rmtree(output / "essays", ignore_errors=True)
+    shutil.rmtree(output / "atlas", ignore_errors=True)
+    shutil.rmtree(output / "reading", ignore_errors=True)
+    (output / "essays").mkdir(parents=True)
+    catalogue = json.loads((ROOT / "tables" / "captions.json").read_text(encoding="utf-8"))
+    if catalogue.get("schema_version") != 1 or set(catalogue["essays"]) != {row[0] for row in ESSAYS}:
+        raise ValueError("Table caption catalogue does not match the manuscript inventory")
+    for index, row in enumerate(ESSAYS):
+        slug = row[0]
+        (output / "essays" / (slug + ".html")).write_text(
+            render_essay(*row, position=index, table_captions=catalogue["essays"].get(slug, [])),
+            encoding="utf-8")
+    homepage_path = output / "index.html"
+    homepage_path.write_text(
+        discovery.decorate_homepage(homepage_path.read_text(encoding="utf-8"), ESSAYS),
+        encoding="utf-8",
+    )
+    discovery.build_assets(output, ROOT, ESSAYS)
+    (output / "sitemap.xml").write_text(render_sitemap(), encoding="utf-8")
+
+
+def file_digests(path: Path) -> dict[str, str]:
+    """Hash all generated files, indexed by their relative path."""
+    return {p.relative_to(path).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted(path.rglob("*")) if p.is_file()}
+
+
+def main() -> None:
+    """Build and optionally prove deterministic output in two isolated directories."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=ROOT / "_site")
+    parser.add_argument("--reproducibility-check", action="store_true")
+    args = parser.parse_args()
+    output = args.output.resolve()
+    build(output)
+    if args.reproducibility_check:
+        with tempfile.TemporaryDirectory(prefix="ci-publication-") as tmp:
+            second = Path(tmp) / "site"
+            build(second)
+            if file_digests(output) != file_digests(second):
+                raise RuntimeError("Non-deterministic publication output detected")
+    print(f"Built {len(ESSAYS)} essays into {output}")
+
+
+if __name__ == "__main__":
+    main()
+,
+            r'\2 {#\1}', source_body,
+        )
+        if anchor_count != 30 or '<a id="' in source_body:
+            raise ValueError("Effectful historical heading anchors changed")
     verify_table_catalog(source_body, table_captions, expected_title)
     input_format = "markdown+raw_html"
     if expected_title == "Lambek Machines":
