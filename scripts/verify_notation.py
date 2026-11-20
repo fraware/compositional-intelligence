@@ -52,7 +52,7 @@ def main() -> int:
             body = build_site.render_synthesis_references(
                 body, ROOT / "sources" / "synthesis_references.json"
             )
-        if slug == "semantic-participation":
+        if slug == "semantic-participation" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_semantic_participation(body)
         if slug == "typed-generativity":
             body = build_site.render_typed_generativity(body)

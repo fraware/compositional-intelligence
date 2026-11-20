@@ -47,7 +47,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     hashlib.sha256(source_file.read_bytes()).hexdigest(),
                     record["markdown_sha256"],
                 )
-                if slug in {"lambek-machines", "algebraic-architectures", "functorial-consistency", "effectful-and-conceptual-intelligence"}:
+                if slug in {"semantic-participation", "lambek-machines", "algebraic-architectures", "functorial-consistency", "effectful-and-conceptual-intelligence"}:
                     self.assertTrue(contents.startswith(f"# {title}\n\n"))
                     self.assertIn("## Abstract\n", contents[:160])
                     self.assertNotIn("AUTHORITATIVE-DOCX SHA256", contents)
@@ -100,7 +100,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
 
     def test_source_document_theories_are_preserved(self) -> None:
         samples = {
-            "semantic-participation": "Member_E(a)",
+            "semantic-participation": "point of reliance",
             "typed-generativity": "P_theta(t : A",
             "functorial-consistency": r"T_\theta^{(1)}(f(x))",
             "lambek-machines": "Lambek Auxiliary Supervision",
@@ -573,269 +573,38 @@ class ManuscriptFidelityTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             render_synthesis.render_synthesis_mobile_tables(styled)
 
-    def test_semantic_participation_mobile_tables_are_source_equivalent(self) -> None:
-        """All original cells survive, and every mobile cell is copied verbatim."""
-        slug, title, _, _ = publication.ESSAYS[1]
-        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
-            encoding="utf-8"
-        )
-        original, _ = publication.source_to_body(source, title, [])
-        enhanced = enhance_scientific_presentation(original)
-        rendered = render_semantic_participation(enhanced)
-        self.assertEqual(rendered.count('data-sp-alternative="mobile"'), 12)
-        self.assertEqual(rendered.count('<dl class="sp-mobile-record'), 74)
-        self.assertEqual(rendered.count('class="sp-record-field"'), 190)
-        original_cells = 0
-        copied_cells = 0
-        for number in range(1, 13):
-            with self.subTest(table=number):
-                source_table = re.search(
-                    rf'<table data-source-table="{number}" id="table-{number}">'
-                    r'[\s\S]*?</table>', enhanced,
-                )
-                output_table = re.search(
-                    rf'<table data-source-table="{number}" id="table-{number}">'
-                    r'[\s\S]*?</table>', rendered,
-                )
-                self.assertIsNotNone(source_table)
-                self.assertIsNotNone(output_table)
-                published_table = output_table.group()
-                if number == 2:
-                    published_table = re.sub(r"</?a\b[^>]*>", "", published_table)
-                # Native captions were synthesized during conversion, not
-                # authored DOCX cells. Compare exact source structure
-                # without these publication-only accessibility descriptions.
-                def without_generated_caption(text: str) -> str:
-                    return re.sub(
-                        r'<caption class="visually-hidden">[^<]*</caption>',
-                        '<caption class="visually-hidden"></caption>',
-                        text,
-                    )
-                self.assertEqual(
-                    without_generated_caption(source_table.group()),
-                    without_generated_caption(published_table),
-                )
-                source_rows = re.findall(
-                    r'<tr\b[^>]*>([\s\S]*?)</tr>',
-                    re.search(
-                        r'<tbody>([\s\S]*?)</tbody>', source_table.group()
-                    ).group(1),
-                )
-                self.assertEqual(len(source_rows), _ROW_COUNTS[number])
-                source_fields = [
-                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>', row)
-                    for row in source_rows
-                ]
-                original_cells += sum(len(row) for row in source_fields)
-                mobile = re.search(
-                    rf'<section class="sp-mobile-records sp-mobile-table-{number}" '
-                    rf'aria-labelledby="table-{number}-caption">'
-                    r'([\s\S]*?)</section>',
-                    rendered,
-                )
-                self.assertIsNotNone(mobile)
-                records = re.findall(
-                    r'<dl class="sp-mobile-record[^"]*">([\s\S]*?)</dl>',
-                    mobile.group(1),
-                )
-                rows_to_copy = (
-                    [row for i, row in enumerate(source_fields) if i != 9]
-                    if number == 6 else source_fields
-                )
-                self.assertEqual(len(records), len(rows_to_copy))
-                source_heading = re.search(
-                    r"<thead>([\s\S]*?)</thead>", source_table.group()
-                )
-                self.assertIsNotNone(source_heading)
-                source_labels = [
-                    unescape(re.sub(r"<[^>]+>", "", item)).strip()
-                    for item in re.findall(
-                        r"<th\b[^>]*>([\s\S]*?)</th>",
-                        source_heading.group(1),
-                    )
-                ]
-                for record_index, (original_row, record) in enumerate(
-                    zip(rows_to_copy, records, strict=True)
-                ):
-                    record_labels = re.findall(r"<dt>([^<]+)</dt>", record)
-                    if number == 6:
-                        # Original table 6 contains two separately named
-                        # regions in one table. Its tenth row is a subheading.
-                        expected_labels = (
-                            source_labels[:3] if record_index < 9
-                            else ["Type transition", "Required control"]
-                        )
-                    else:
-                        expected_labels = source_labels
-                    self.assertEqual(
-                        record_labels, expected_labels,
-                        f"Table {number}, mobile record {record_index + 1}: "
-                        "source column labels differ"
-                    )
-                    mobile_cells = re.findall(
-                        r'<dd>([\s\S]*?)</dd>', record,
-                    )
-                    if number == 2:
-                        mobile_cells = [
-                            re.sub(r"</?a\b[^>]*>", "", cell)
-                            for cell in mobile_cells
-                        ]
-                    self.assertEqual(original_row, mobile_cells)
-                    copied_cells += len(mobile_cells)
-        self.assertEqual(original_cells, 192)
-        self.assertEqual(copied_cells, 190)
-        self.assertIn('class="sp-transition-head"', rendered)
-        self.assertIn("Type transition", rendered)
-        self.assertIn("Required control", rendered)
-
-    def test_semantic_participation_formal_objects_remain_source_bound(self) -> None:
-        """Author's sequence, memberships and schema fields stay legible."""
-        slug, title, category, description = publication.ESSAYS[1]
-        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
-            encoding="utf-8"
-        )
-        body, _ = publication.source_to_body(source, title, [])
-        enhanced = enhance_scientific_presentation(body)
-        output = render_semantic_participation(enhanced)
-        self.assertEqual(output.count('class="sp-sequence"'), 1)
-        self.assertIn('aria-label="Original membership-to-action sequence"', output)
-        self.assertIn('class="sp-criterion"', output)
-        self.assertIn('class="sp-transport"', output)
-        self.assertEqual(
-            len(re.findall(r'class="sp-source-schema(?:\s|")', output)), 4
-        )
-        self.assertEqual(output.count('class="sp-schema-entry"'), 10)
-        self.assertIn("SemanticEnvironment E = {", output)
-        self.assertIn("ArtifactRecord a = {", output)
-        self.assertIn("TransportRecord rho_T = {", output)
-        self.assertIn("semantic_participation_item:", output)
-        self.assertIn('class="sp-proof-example"', output)
-        self.assertIn("expected shape", output)
-        self.assertIn("f y &lt;= f x", output)
-        self.assertIn('alttext="T : (a, E_s) -&gt; (b, E_t, rho_T)"', output)
-        self.assertIn('alttext="Delta_L(c) = F(L + c) - F(L)"', output)
-        self.assertEqual(output.count('<table data-source-table='), 12)
-        self.assertEqual(
-            len(re.findall(r'<h2\b|<h3\b', output)),
-            self.documents[slug]["heading_count"],
-        )
-        with self.assertRaises(ValueError):
-            render_semantic_participation(output)
-        page = publication.render_essay(
-            slug, title, category, description, 2, [],
-        )
-        self.assertIn(output, page)
-        self.assertNotIn('<p class="byline">', page)
-
-
-    def test_semantic_reader_map_links_without_changing_author_text(self) -> None:
-        """Link all existing targets; retain the source's unresolved 6.1 reference."""
-        slug, title, category, description = publication.ESSAYS[1]
-        page = publication.render_essay(
-            slug, title, category, description, 2, [],
-        )
-        table = re.search(
-            r'<table data-source-table="2" id="table-2">[\s\S]*?</table>',
-            page,
-        )
-        self.assertIsNotNone(table)
-        links = re.findall(r'<a href="#([^"]+)">([^<]+)</a>', table.group())
-        self.assertEqual(len(links), 22)
-        for fragment, label in links:
-            with self.subTest(fragment=fragment):
-                self.assertIn(f'id="{fragment}"', page)
-                self.assertTrue(label.strip())
-        self.assertIn("6.1", table.group())
-        self.assertNotIn('>6.1</a>', table.group())
-        mobile = re.search(
-            r'<section class="sp-mobile-records sp-mobile-table-2" '
-            r'aria-labelledby="table-2-caption">([\s\S]*?)</section>',
-            page,
-        )
-        self.assertIsNotNone(mobile)
-        self.assertEqual(mobile.group().count('href="#'), 22)
-
-
-    def test_semantic_environment_source_field_definitions_are_exact(self) -> None:
-        """All ten technical fields retain their original names and meanings."""
-        slug, title, _, _ = publication.ESSAYS[1]
+    def test_semantic_participation_editorial_structure(self) -> None:
+        """The reviewed manuscript retains its central claim and limitations."""
         manuscript = (
-            publication.ROOT / "essays" / f"{slug}.md"
+            publication.ROOT / "essays" / "semantic-participation.md"
         ).read_text(encoding="utf-8")
-        original, _ = publication.source_to_body(manuscript, title, [])
-        rendered = render_semantic_participation(
-            enhance_scientific_presentation(original)
-        )
-        block = re.search(
-            r'<blockquote>\s*<p>SemanticEnvironment E = \{<br\s*/?>'
-            r'([\s\S]*?)<br\s*/?>\s*\}</p>\s*</blockquote>',
-            original,
-        )
-        self.assertIsNotNone(block)
-        source_lines = [
-            unescape(line).strip()
-            for line in re.split(r"<br\s*/?>", block.group(1))
-        ]
-        formatted = re.search(
-            r'<dl class="sp-environment-fields">([\s\S]*?)</dl>',
-            rendered,
-        )
-        self.assertIsNotNone(formatted)
-        pairs = re.findall(
-            r'<div class="sp-schema-entry"><dt><code>([^<]+)</code></dt>'
-            r'<dd>([\s\S]*?)</dd></div>',
-            formatted.group(1),
-        )
-        self.assertEqual(len(pairs), 10)
-        recovered = [
-            unescape(field) + " " + unescape(
-                re.sub(r"<[^>]+>", "", meaning)
-            )
-            for field, meaning in pairs
-        ]
-        self.assertEqual(recovered, source_lines)
+        record = self.documents["semantic-participation"]
+        self.assertTrue(manuscript.startswith("# Semantic Participation\n\n## Abstract\n"))
+        self.assertNotIn("AUTHORITATIVE-DOCX SHA256", manuscript)
+        self.assertEqual(len(re.findall(r"(?m)^## ", manuscript)),
+                         record["publication_heading_count"])
+        self.assertIn("point of reliance", manuscript)
+        self.assertIn("Curry–Howard–Lambek", manuscript)
+        self.assertIn("Extreme Value Theorem", manuscript)
+        self.assertIn("## 12. Conclusion", manuscript)
+        self.assertIn("## References", manuscript)
+        self.assertIn("has yet to establish that benefit", manuscript)
 
-    def test_semantic_table_captions_are_concise_and_source_neutral(self) -> None:
-        """The twelve generated captions describe the original tables once."""
-        from render_semantic import _ACCESSIBLE_TABLE_CAPTIONS
-
+    def test_semantic_participation_editorial_rendering(self) -> None:
+        """Render TeX and historical provenance without obsolete table widgets."""
         slug, title, category, description = publication.ESSAYS[1]
         page = publication.render_essay(
-            slug, title, category, description, 2, [],
+            slug, title, category, description, 1, [],
         )
-        for number, caption in _ACCESSIBLE_TABLE_CAPTIONS.items():
-            with self.subTest(table=number):
-                self.assertEqual(
-                    page.count(
-                        f'<p class="table-display-caption" id="table-{number}-caption">'
-                        f'{caption}</p>'
-                    ), 1,
-                )
-                self.assertEqual(
-                    page.count(
-                        '<caption class="visually-hidden">' +
-                        caption + '</caption>'
-                    ), 1,
-                )
-        self.assertNotIn(
-            "Governing claim — Governing claim", page
-        )
-
-    def test_semantic_governing_claim_keeps_accessible_field_label(self) -> None:
-        """Mobile-only CSS visually clips the original label, without hiding it."""
-        css = (publication.ROOT / "docs" / "style.css").read_text(
-            encoding="utf-8"
-        )
-        rule = re.search(
-            r'\.article-content \.sp-mobile-table-3 '
-            r'\.sp-record-field dt\s*\{([^}]*)\}',
-            css,
-        )
-        self.assertIsNotNone(rule)
-        self.assertNotIn("display:none", rule.group(1))
-        self.assertIn("position:absolute", rule.group(1))
-        self.assertIn("clip-path:inset(50%)", rule.group(1))
-
+        self.assertEqual(page.count("<h1>Semantic Participation</h1>"), 1)
+        self.assertGreater(page.count("<math "), 10)
+        self.assertIn('encoding="application/x-tex"', page)
+        self.assertIn('class="math-scroll"', page)
+        self.assertNotIn('data-sp-alternative="mobile"', page)
+        self.assertNotIn('class="sp-sequence"', page)
+        self.assertEqual(page.count("<table "), 0)
+        digest = self.documents[slug]["markdown_sha256"]
+        self.assertIn(f'<meta name="source-sha256" content="{digest}">', page)
 
     def test_typed_generativity_preserves_every_source_table_cell(self) -> None:
         """All 227 Word-derived data cells are reproduced exactly on phones."""

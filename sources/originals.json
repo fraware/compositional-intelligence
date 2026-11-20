@@ -18,11 +18,15 @@
       "source_docx": "Essay1_Semantic_Participation_V3(1).docx",
       "source_sha256": "40dbb4d36d7e57258776ec5beb4b3ab296b8bd5827b6d16296bd0ad4b5e75268",
       "canonical_text_sha256": "d68d8a266791b08930eb0f4ded8c13a78a9d097a7208ff65cdde090ecb8d24dd",
-      "markdown_sha256": "a70fc3148f54cbe562e3b8404497162c3466afea7eca954e5085c9b4e4443369",
+      "markdown_sha256": "6bf669aabe4ce5702951c9fa10cadce1e4907f9b1a3348696864a3ef692a02af",
       "table_count": 12,
       "heading_count": 27,
       "word_count": 3778,
-      "published_markdown": "semantic-participation.md"
+      "published_markdown": "semantic-participation.md",
+      "publication_status": "Fourth-pass editorial revision; original DOCX fingerprint and historical metrics retained for provenance",
+      "publication_table_count": 0,
+      "publication_heading_count": 15,
+      "publication_word_count": 4648
     },
     "typed-generativity": {
       "slug": "typed-generativity",

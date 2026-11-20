@@ -43,8 +43,8 @@ CONCEPTS = {
     "semantic-participation": {
         "term": "Semantic Participation",
         "seo_title": "Semantic Participation | AI Artifact Validation",
-        "description": "How generated proofs, programs, and scientific claims participate in structured environments through validation, provenance, epistemic status, and permitted use.",
-        "definition": "The conditions for treating a generated candidate as an artifact within a specified environment, with recorded validation, alignment, compositional role, epistemic status, and permitted use.",
+        "description": "How AI-generated proofs, programs, and scientific claims become grounds for downstream reliance through validation, interpretation, evidence, and use-specific review.",
+        "definition": "An account of artifact participation that distinguishes observed dependence from justified reliance, assessed relative to intended use, interpretation, evidence, and review.",
         "topics": ["semantic participation", "AI artifact validation", "formal verification", "scientific evidence"],
     },
     "typed-generativity": {

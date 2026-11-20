@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the static publication from the canonical V3 DOCX-derived HTML fragments.
+"""Build the static publication from reviewed Markdown and historical DOCX-derived manuscripts.
 
 Usage:
   python3 scripts/build_site.py --output _site
@@ -43,7 +43,7 @@ ESSAYS = [
     ("compositional-intelligence", "Compositional Intelligence", "Synthesis",
      "Typed Artifacts, Structured Worlds, and Effectful AI"),
     ("semantic-participation", "Semantic Participation", "01 · Foundations",
-     "AI Artifacts as Members of Formal and Scientific Worlds"),
+     "AI Artifacts, Evidence, and Justified Reliance"),
     ("typed-generativity", "Typed Generativity", "02 · Foundations",
      "AI Generation as Probabilistic Type Inhabitation"),
     ("functorial-consistency", "Functorial Consistency", "03 · Foundations",
@@ -369,7 +369,7 @@ def render_toc(body: str) -> str:
 def source_to_body(markdown: str, expected_title: str, table_captions: list[dict[str, str]]) -> tuple[str, str]:
     """Render the authored Markdown to HTML with a fixed Pandoc release."""
     match = TITLE_AUTHOR.match(markdown)
-    if match is None and expected_title in {"Lambek Machines", "Algebraic Architectures", "Functorial Consistency", "Effectful and Conceptual Intelligence"}:
+    if match is None and expected_title in {"Semantic Participation", "Lambek Machines", "Algebraic Architectures", "Functorial Consistency", "Effectful and Conceptual Intelligence"}:
         match = re.match(r"\A# (" + re.escape(expected_title) + r")\n\n", markdown)
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
@@ -426,14 +426,17 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         if rewritten != 30:
             raise ValueError("Effectful historical heading anchors changed")
         source_body = "".join(rebuilt)
+    if expected_title == "Semantic Participation":
+        # The revised source replaces the historical twelve-table inventory.
+        table_captions = []
     verify_table_catalog(source_body, table_captions, expected_title)
     input_format = "markdown+raw_html"
-    if expected_title in {"Lambek Machines", "Functorial Consistency"}:
+    if expected_title in {"Semantic Participation", "Lambek Machines", "Functorial Consistency"}:
         input_format += "+tex_math_single_backslash"
     command = ["pandoc", "--from=" + input_format, "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
     rendered_html = rendered.stdout.rstrip() + "\n"
-    if expected_title in {"Lambek Machines", "Algebraic Architectures", "Functorial Consistency"}:
+    if expected_title in {"Semantic Participation", "Lambek Machines", "Algebraic Architectures", "Functorial Consistency"}:
         rendered_html = annotate_pandoc_math(rendered_html)
     body = render_schema_blocks(render_tables(
         render_math(rendered_html), table_captions,
@@ -476,7 +479,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_synthesis_references(
             body, ROOT / "sources" / "synthesis_references.json"
         )
-    if slug == "semantic-participation":
+    if slug == "semantic-participation" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_semantic_participation(body)
     if slug == "typed-generativity":
         body = render_typed_generativity(body)

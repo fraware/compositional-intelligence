@@ -592,7 +592,27 @@ def main() -> int:
                                         failures.append(
                                             f"{width}px {rel}: Lambek editorial layout regression {lambek}"
                                         )
-                                if rel == "essays/semantic-participation.html":
+                                if (rel == "essays/semantic-participation.html" and
+                                    'data-sp-alternative="mobile"' not in page.content()):
+                                    editorial = page.evaluate("""() => {
+                                        const body = document.querySelector(".article-content");
+                                        return {
+                                            sections: body.querySelectorAll("h2").length,
+                                            mathematicalExpressions: body.querySelectorAll("math").length,
+                                            tables: body.querySelectorAll("table").length,
+                                            scrollWidth: document.documentElement.scrollWidth,
+                                            viewportWidth: window.innerWidth
+                                        };
+                                    }""")
+                                    if (editorial["sections"] != 15 or
+                                        editorial["mathematicalExpressions"] < 10 or
+                                        editorial["tables"] != 0 or
+                                        editorial["scrollWidth"] > editorial["viewportWidth"] + 1):
+                                        failures.append(
+                                            f"{width}px {rel}: editorial layout regression {editorial}"
+                                        )
+                                if (rel == "essays/semantic-participation.html" and
+                                    'data-sp-alternative="mobile"' in page.content()):
                                     semantic = page.evaluate("""() => {
                                         const article = document.querySelector(".article-content");
                                         const source = [...article.querySelectorAll(
