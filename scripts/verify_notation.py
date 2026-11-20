@@ -39,7 +39,7 @@ def main() -> int:
             body = build_site.render_functorial_diagram(body)
         if slug == "lambek-machines" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_lambek_machines(body)
-        if slug == "algebraic-architectures":
+        if slug == "algebraic-architectures" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_algebraic_architectures(body)
         if slug == "quantitative-curry-howard":
             body = build_site.render_quantitative_curry_howard(body)

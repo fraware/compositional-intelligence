@@ -369,8 +369,8 @@ def render_toc(body: str) -> str:
 def source_to_body(markdown: str, expected_title: str, table_captions: list[dict[str, str]]) -> tuple[str, str]:
     """Render the authored Markdown to HTML with a fixed Pandoc release."""
     match = TITLE_AUTHOR.match(markdown)
-    if match is None and expected_title == "Lambek Machines":
-        match = re.match(r"\A# (Lambek Machines)\n\n", markdown)
+    if match is None and expected_title in {"Lambek Machines", "Algebraic Architectures"}:
+        match = re.match(r"\A# (" + re.escape(expected_title) + r")\n\n", markdown)
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
     source_body = markdown[match.end():]
@@ -411,7 +411,7 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
     command = ["pandoc", "--from=" + input_format, "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
     rendered_html = rendered.stdout.rstrip() + "\n"
-    if expected_title == "Lambek Machines":
+    if expected_title in {"Lambek Machines", "Algebraic Architectures"}:
         rendered_html = annotate_pandoc_math(rendered_html)
     body = render_schema_blocks(render_tables(
         render_math(rendered_html), table_captions,
@@ -435,7 +435,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_functorial_diagram(body)
     if slug == "lambek-machines" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_lambek_machines(body)
-    if slug == "algebraic-architectures":
+    if slug == "algebraic-architectures" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_algebraic_architectures(body)
     if slug == "quantitative-curry-howard":
         body = render_quantitative_curry_howard(body)
