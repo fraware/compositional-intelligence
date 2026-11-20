@@ -113,6 +113,13 @@ def render_effectful_and_conceptual_intelligence(body: str) -> str:
         'class="table-display-caption"',
         'class="table-display-caption ef-caption"',
     )
+    # Match the full native table-caption numbering in the visible heading.
+    body, corrected = re.subn(
+        r'(<span class="table-caption-number">Table [0-9]+)(</span>)',
+        r'\1.\2', body,
+    )
+    if corrected != TABLE_COUNT:
+        raise ValueError("Effectful visible table numbers are incomplete")
     if (body.count('class="ef-card"') != total_rows or
             body.count('class="ef-field"') != total_fields or
             body.count('data-ef-alternative="mobile"') != TABLE_COUNT or
