@@ -1292,7 +1292,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         source = (publication.ROOT / "essays" / f"{slug}.md").read_text(encoding="utf-8")
         body, _ = publication.source_to_body(source, title, [])
         page = publication.render_essay(slug, title, category, description, 5, [])
-        self.assertEqual(len(re.findall(r"<h[23]\\b", body)), 17)
+        self.assertEqual(len(re.findall(r"<h[23]\b", body)), 17)
         self.assertEqual(body.count("<table "), 0)
         self.assertGreaterEqual(page.count('class="math-scroll"'), 11)
         self.assertEqual(page.count('display="block"'), 11)
