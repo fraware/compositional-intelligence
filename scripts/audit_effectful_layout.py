@@ -94,7 +94,7 @@ def inspect(page) -> dict:
 
 def failures(width: int, mode: str, result: dict) -> list[str]:
     """Describe failed parity or responsive-visibility obligations."""
-    compact = width <= 650 and mode == "screen"
+    compact = width <= 650  # Narrow print also uses source-equivalent cards.
     expected_source = 0 if compact else TABLE_COUNT
     expected_mobile = TABLE_COUNT if compact else 0
     issues: list[str] = []
