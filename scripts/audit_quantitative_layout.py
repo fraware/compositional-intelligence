@@ -231,7 +231,7 @@ def main() -> int:
     if screenshots is not None:
         screenshots.mkdir(parents=True, exist_ok=True)
 
-    if 'data-qc-alternative="mobile"' not in markup:
+    if 'class="qc-pipeline"' not in markup:
         return audit_editorial(markup, screenshots)
 
     errors: list[str] = []
