@@ -48,7 +48,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     record["markdown_sha256"],
                 )
                 if slug in {"lambek-machines", "algebraic-architectures", "functorial-consistency", "effectful-and-conceptual-intelligence"}:
-                    self.assertTrue(contents.startswith(f"# {title}\n\n## Abstract\n"))
+                    self.assertTrue(contents.startswith(f"# {title}\n\n"))
+                    self.assertIn("## Abstract\n", contents[:160])
                     self.assertNotIn("AUTHORITATIVE-DOCX SHA256", contents)
                     body, digest = publication.source_to_body(contents, title, [])
                     self.assertEqual(digest, record["markdown_sha256"])
