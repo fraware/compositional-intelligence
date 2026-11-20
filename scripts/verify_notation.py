@@ -45,7 +45,7 @@ def main() -> int:
             body = build_site.render_quantitative_curry_howard(body)
         if slug == "effectful-and-conceptual-intelligence":
             body = build_site.render_effectful_and_conceptual_intelligence(body)
-        if slug not in {"lambek-machines", "algebraic-architectures", "functorial-consistency"} or "AUTHORITATIVE-DOCX SHA256" in source:
+        if slug not in {"lambek-machines", "algebraic-architectures", "functorial-consistency", "semantic-participation", "quantitative-curry-howard"} or "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.enhance_scientific_presentation(body)
         if slug == "compositional-intelligence":
             body = build_site.render_synthesis_mobile_tables(body)

@@ -482,7 +482,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_quantitative_curry_howard(body)
     if slug == "effectful-and-conceptual-intelligence":
         body = render_effectful_and_conceptual_intelligence(body)
-    if slug not in {"lambek-machines", "algebraic-architectures", "functorial-consistency"} or "AUTHORITATIVE-DOCX SHA256" in manuscript:
+    if slug not in {"lambek-machines", "algebraic-architectures", "functorial-consistency", "semantic-participation", "quantitative-curry-howard"} or "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = enhance_scientific_presentation(body)
     if slug == "compositional-intelligence":
         body = render_synthesis_mobile_tables(body)
