@@ -91,11 +91,14 @@
       "source_docx": "Essay6_Quantitative_Curry_Howard_V3(1).docx",
       "source_sha256": "be5dbebb3bfd7c0c7a8afbab0f48a614d113420d27cf2354b49b55e3dc2170cc",
       "canonical_text_sha256": "476996de237e3e0720c69ab45cbf9f4fa7e86a9527c5276f40e4a5022ba99262",
-      "markdown_sha256": "a6bbd22b0dc08643c69f4386fd30147cd77cc8f2368ef2c77b0aadcd02c03dc9",
+      "markdown_sha256": "617d5c2ff5eba4b1e98f414b367d347d9d92f37c29254583e1234054f7a5ae5b",
       "table_count": 10,
       "heading_count": 28,
       "word_count": 3794,
-      "published_markdown": "quantitative-curry-howard.md"
+      "published_markdown": "quantitative-curry-howard.md",
+      "publication_table_count": 0,
+      "publication_heading_count": 17,
+      "publication_status": "Editorial revision of the original V3 manuscript; historical DOCX fingerprint and metrics retained for provenance"
     },
     "effectful-and-conceptual-intelligence": {
       "slug": "effectful-and-conceptual-intelligence",

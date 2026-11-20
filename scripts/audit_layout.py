@@ -404,7 +404,27 @@ def main() -> int:
                                         )
                                     elif width == 375:
                                         responsive_table_alternatives += effectful["mobileShown"]
-                                if rel == "essays/quantitative-curry-howard.html":
+                                if (rel == "essays/quantitative-curry-howard.html" and
+                                    'data-qc-alternative="mobile"' not in page.content()):
+                                    editorial = page.evaluate("""() => {
+                                        const article = document.querySelector(".article-content");
+                                        return {
+                                            headings: article.querySelectorAll("h2").length,
+                                            math: article.querySelectorAll("math").length,
+                                            tables: article.querySelectorAll("table").length,
+                                            width: document.documentElement.scrollWidth,
+                                            viewport: window.innerWidth
+                                        };
+                                    }""")
+                                    if (editorial["headings"] != 13 or
+                                        editorial["math"] < 10 or
+                                        editorial["tables"] != 0 or
+                                        editorial["width"] > editorial["viewport"] + 1):
+                                        failures.append(
+                                            f"{width}px {rel}: quantitative editorial layout regression {editorial}"
+                                        )
+                                if (rel == "essays/quantitative-curry-howard.html" and
+                                    'data-qc-alternative="mobile"' in page.content()):
                                     quantitative = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
                                         const source = [...root.querySelectorAll(

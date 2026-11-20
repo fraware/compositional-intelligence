@@ -19,12 +19,12 @@ from pypdf import PdfReader
 
 TABLES = {
     "compositional-intelligence": (10, "Compositional Intelligence"),
-    "semantic-participation": (12, "Semantic Participation"),
+    "semantic-participation": (0, "Semantic Participation"),
     "typed-generativity": (15, "Typed Generativity"),
     "functorial-consistency": (8, "Functorial Consistency"),
     "lambek-machines": (4, "Lambek Machines"),
     "algebraic-architectures": (0, "Algebraic Architectures"),
-    "quantitative-curry-howard": (10, "Quantitative Curry-Howard"),
+    "quantitative-curry-howard": (0, "Quantitative Curry–Howard"),
     "effectful-and-conceptual-intelligence": (
         9, "Effectful and Conceptual Intelligence"
     ),

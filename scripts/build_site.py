@@ -52,7 +52,7 @@ ESSAYS = [
      "Grammar-as-Logic and the Compositional Evaluation of Language Models"),
     ("algebraic-architectures", "Algebraic Architectures", "05 · Architectures",
      "Specifying Neural Models by Structure, Symmetry, Constraint, and Validation"),
-    ("quantitative-curry-howard", "Quantitative Curry-Howard", "06 · Evidence",
+    ("quantitative-curry-howard", "Quantitative Curry–Howard", "06 · Evidence",
      "Differentiable Logic, Probabilistic Warrant, and Trainable Proof Structure"),
     ("effectful-and-conceptual-intelligence", "Effectful and Conceptual Intelligence",
      "07 · Action", "Type-and-Effect Records for Agents That Act"),
@@ -369,7 +369,7 @@ def render_toc(body: str) -> str:
 def source_to_body(markdown: str, expected_title: str, table_captions: list[dict[str, str]]) -> tuple[str, str]:
     """Render the authored Markdown to HTML with a fixed Pandoc release."""
     match = TITLE_AUTHOR.match(markdown)
-    if match is None and expected_title in {"Semantic Participation", "Lambek Machines", "Algebraic Architectures", "Functorial Consistency", "Effectful and Conceptual Intelligence"}:
+    if match is None and expected_title in {"Semantic Participation", "Quantitative Curry–Howard", "Lambek Machines", "Algebraic Architectures", "Functorial Consistency", "Effectful and Conceptual Intelligence"}:
         match = re.match(r"\A# (" + re.escape(expected_title) + r")\n\n", markdown)
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
@@ -426,17 +426,17 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         if rewritten != 30:
             raise ValueError("Effectful historical heading anchors changed")
         source_body = "".join(rebuilt)
-    if expected_title == "Semantic Participation":
-        # The revised source replaces the historical twelve-table inventory.
+    if expected_title in {"Semantic Participation", "Quantitative Curry–Howard"}:
+        # Reviewed manuscripts supersede the historical table inventories.
         table_captions = []
     verify_table_catalog(source_body, table_captions, expected_title)
     input_format = "markdown+raw_html"
-    if expected_title in {"Semantic Participation", "Lambek Machines", "Functorial Consistency"}:
+    if expected_title in {"Semantic Participation", "Quantitative Curry–Howard", "Lambek Machines", "Functorial Consistency"}:
         input_format += "+tex_math_single_backslash"
     command = ["pandoc", "--from=" + input_format, "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
     rendered_html = rendered.stdout.rstrip() + "\n"
-    if expected_title in {"Semantic Participation", "Lambek Machines", "Algebraic Architectures", "Functorial Consistency"}:
+    if expected_title in {"Semantic Participation", "Quantitative Curry–Howard", "Lambek Machines", "Algebraic Architectures", "Functorial Consistency"}:
         rendered_html = annotate_pandoc_math(rendered_html)
     body = render_schema_blocks(render_tables(
         render_math(rendered_html), table_captions,
@@ -468,7 +468,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_lambek_machines(body)
     if slug == "algebraic-architectures" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_algebraic_architectures(body)
-    if slug == "quantitative-curry-howard":
+    if slug == "quantitative-curry-howard" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_quantitative_curry_howard(body)
     if slug == "effectful-and-conceptual-intelligence":
         body = render_effectful_and_conceptual_intelligence(body)

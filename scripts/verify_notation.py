@@ -41,7 +41,7 @@ def main() -> int:
             body = build_site.render_lambek_machines(body)
         if slug == "algebraic-architectures" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_algebraic_architectures(body)
-        if slug == "quantitative-curry-howard":
+        if slug == "quantitative-curry-howard" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_quantitative_curry_howard(body)
         if slug == "effectful-and-conceptual-intelligence":
             body = build_site.render_effectful_and_conceptual_intelligence(body)

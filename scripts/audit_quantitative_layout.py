@@ -166,6 +166,61 @@ def check(width: int, mode: str, result: dict) -> list[str]:
     return errors
 
 
+
+def audit_editorial(markup: str, screenshots: Path | None) -> int:
+    """Check reviewed mathematical typography and screen/print reading geometry."""
+    failures: list[str] = []
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        try:
+            for width in WIDTHS:
+                context = browser.new_context(
+                    viewport={"width": width, "height": 900},
+                    device_scale_factor=1,
+                    reduced_motion="reduce",
+                )
+                try:
+                    page = context.new_page()
+                    page.set_content(markup, wait_until="load")
+                    for mode in ("screen", "print"):
+                        page.emulate_media(media=mode)
+                        result = page.evaluate("""() => {
+                            const article = document.querySelector(".article-content");
+                            const math = [...article.querySelectorAll("math")];
+                            return {
+                                title: document.querySelector("article h1")?.textContent.trim(),
+                                sections: article.querySelectorAll("h2").length,
+                                mathCount: math.length,
+                                unlabelledMath: math.filter(m =>
+                                    !m.getAttribute("alttext") ||
+                                    !m.querySelector('annotation[encoding="application/x-tex"]')
+                                ).length,
+                                tables: article.querySelectorAll("table").length,
+                                overflow: document.documentElement.scrollWidth > innerWidth + 1
+                            };
+                        }""")
+                        if (result["title"] != "Quantitative Curry–Howard" or
+                            result["sections"] != 13 or
+                            result["mathCount"] < 10 or
+                            result["unlabelledMath"] or
+                            result["tables"] or result["overflow"]):
+                            failures.append(f"{width}px {mode}: {result}")
+                        if screenshots is not None and mode == "screen" and width in (320, 1440):
+                            page.locator("article").screenshot(
+                                path=str(screenshots / f"{width}-quantitative-editorial.png")
+                            )
+                finally:
+                    context.close()
+        finally:
+            browser.close()
+    for failure in failures:
+        print("FAIL:", failure)
+    if failures:
+        return 1
+    print("PASS: Quantitative Curry–Howard: reviewed source at eight screen and print widths")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("site", type=Path, help="Built publication directory")
@@ -175,6 +230,9 @@ def main() -> int:
     screenshots = args.screenshots.resolve() if args.screenshots else None
     if screenshots is not None:
         screenshots.mkdir(parents=True, exist_ok=True)
+
+    if 'data-qc-alternative="mobile"' not in markup:
+        return audit_editorial(markup, screenshots)
 
     errors: list[str] = []
     with sync_playwright() as playwright:
