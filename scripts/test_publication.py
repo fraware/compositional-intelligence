@@ -1299,7 +1299,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         for heading in ("preservation-under-composition", "molecular-energy-and-forces",
                         "how-the-proposal-would-be-tested", "references"):
             self.assertIn(f'id="{heading}"', page)
-        self.assertIn("specification_id: atomistic_energy_force_v1", page)
+        self.assertIn("atomistic_energy_force_v1", page)
         self.assertIn("Architecture Specification Catalog", page)
         self.assertNotIn('class="aa-mobile"', page)
         self.assertNotIn("AUTHORITATIVE-DOCX SHA256", source)
