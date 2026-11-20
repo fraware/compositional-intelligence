@@ -1,830 +1,283 @@
 # Algebraic Architectures
 
-*Mateo Petel*
+## Abstract
 
-<!-- AUTHORITATIVE-DOCX SHA256 aa2ce689a52f15fde0ccea0276a18f3b6c7a316d98ab2a4ec965bdb41196ef20; source Essay5_Algebraic_Architectures_V3(1).docx -->
+A neural architecture encodes judgments about the structure of a task. The same tensor representation might describe a time-ordered sequence or an unordered collection, although the two objects obey incompatible transformation laws. Molecular energies and forces transform differently under changes of spatial coordinates. Scientific agents introduce state, action, and external verification beyond the interface of a predictor. Benchmark accuracy and computational cost remain essential measures, yet neither identifies which structural obligations a system enforces by construction, which it learns imperfectly, or which it leaves to external validators.
 
-<h2 id="abstract">Abstract</h2>
-<p>Neural architectures are frequently characterized through capacity, training procedure, benchmark performance, parameter count, and scaling behavior. Those descriptors omit a structural dimension that matters for Compositional Intelligence. A model family encodes commitments about the objects it represents, the transformations it preserves, the symmetries it exploits, the memory regimes it supports, the interfaces it exposes, and the validators that can be applied to its outputs. These commitments affect sample efficiency, extrapolation, interpretability, runtime cost, validation design, and deployment failure modes.</p>
-<p>Algebraic Architectures develops a specification-first account of architecture design. The central schema is TaskSpec -&gt; ArchitectureType -&gt; ArchitectureInstance. A task specification records object types, transformations, operations, laws, symmetries, resource constraints, interfaces, effects, and validation obligations. An architecture type is evaluated by the relation A |= S, read operationally as a claim that an architecture formally guarantees, structurally supports, empirically satisfies, or violates a task specification. The notation provides an audit surface for architecture claims and does not assert that algebraic or categorical arguments identify the best model independently of experiment.</p>
-<p>The proposal is grounded in established architecture literatures, including geometric deep learning, equivariant neural networks, Deep Sets, graph networks, Transformers, graph Transformers, selective state-space models, equivariant atomistic architectures, neural algorithmic reasoning, scientific graph systems, and categorical deep learning. These literatures motivate the specification layer without validating the proposed records themselves. The companion artifact is the Architecture Specification Catalog, which compares architecture families against task specifications through explicit exclusions, tradeoffs, validators, evidence levels, and decision criteria. The proposal succeeds only when the specification layer constrains design choice, predicts mismatch, improves validation, or changes an architecture decision.</p>
-<h2 id="contribution-summary">Contribution summary</h2>
-<p class="table-display-caption" id="table-1-caption">Table 1. ID, Contribution, Publication claim</p>
-<div aria-labelledby="table-1-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="1" id="table-1"><caption class="visually-hidden">Table 1. ID, Contribution, Publication claim</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>ID</strong></th>
-<th scope="col"><strong>Contribution</strong></th>
-<th scope="col"><strong>Publication claim</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>C1</td>
-<td>Specification-first architecture</td>
-<td>Architecture selection is framed as a match between a structured task specification, an architecture family, and a trained instance.</td>
-</tr>
-<tr class="even">
-<td>C2</td>
-<td>Operational satisfaction relation</td>
-<td>A |= S separates formal guarantee, architectural support, empirical satisfaction, reviewed alignment, and violation.</td>
-</tr>
-<tr class="odd">
-<td>C3</td>
-<td>ArchitectureSpec</td>
-<td>The proposed schema records object types, transformations, operations, laws, symmetries, resources, interfaces, effects, and validators.</td>
-</tr>
-<tr class="even">
-<td>C4</td>
-<td>Mismatch taxonomy</td>
-<td>The essay distinguishes underbias, overbias, symmetry mismatch, relational mismatch, memory mismatch, interface mismatch, validation mismatch, and cost-structure mismatch.</td>
-</tr>
-<tr class="odd">
-<td>C5</td>
-<td>Architecture Specification Catalog</td>
-<td>The catalog functions as an exclusion and validation instrument, not as a taxonomy of model names.</td>
-</tr>
-<tr class="even">
-<td>C6</td>
-<td>Bridge to quantitative warrant</td>
-<td>The next layer studies how learned systems attach scores, probabilities, uncertainty, validation status, and repair distance to candidate typed artifacts.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="reader-map">Reader map</h2>
-<p class="table-display-caption" id="table-2-caption">Table 2. Reader, Recommended path</p>
-<div aria-labelledby="table-2-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="2" id="table-2"><caption class="visually-hidden">Table 2. Reader, Recommended path</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Reader</strong></th>
-<th scope="col"><strong>Recommended path</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>ML architecture researcher</td>
-<td>Sections 1, 3, 4, 5, 8, 9, and Appendix A</td>
-</tr>
-<tr class="even">
-<td>Geometric deep learning researcher</td>
-<td>Sections 4, 6.1, 7.1, 7.2, 7.3, and 9</td>
-</tr>
-<tr class="odd">
-<td>Formal-methods or category-theory reader</td>
-<td>Sections 3, 4, 5, 8, and Appendix C</td>
-</tr>
-<tr class="even">
-<td>AI evaluation researcher</td>
-<td>Sections 5, 8, 9, 10, 11, and Appendix B</td>
-</tr>
-<tr class="odd">
-<td>Series reader</td>
-<td>Read after Essay 4 and before Essay 6</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="position-in-the-compositional-intelligence-series">1. Position in the Compositional Intelligence series</h2>
-<p>The architecture layer specifies how model-family commitments interact with typed artifacts and structure-preserving evaluation. The first essays define artifact membership, target-type inference, and transformation-sensitive evaluation. The language layer instantiates these ideas in typed linguistic composition. Essay 5 shifts attention to the model families that make certain objects, transformations, validators, and failure modes easier to represent or harder to observe.</p>
-<p>Architecture is part of the artifact lifecycle in any setting where the task imposes structure that the model must preserve under transformation. A set-valued task requires invariance to item order; an atomistic prediction task requires rotation, translation, and permutation constraints; an effectful workflow requires explicit state interfaces and validation hooks. A model family either supports the relevant structure directly, learns it indirectly, hides it behind scale, or introduces an incompatible bias. The specification layer records which case is being claimed and what evidence would distinguish it.</p>
-<p>ArchitectureSpec inherits the transformation requirement from Functorial Consistency. A structural architecture claim should identify the transformations under which behavior is invariant, equivariant, covariant, specialized, generalized, or deliberately changed. The specification has value only when those commitments produce validators, counterexamples, or exclusions.</p>
-<blockquote>
-<p>artifact membership -&gt; target-type inference -&gt; transformation preservation -&gt; language structure -&gt; architecture specification</p>
-</blockquote>
-<h2 id="thesis-and-boundary-conditions">2. Thesis and boundary conditions</h2>
-<p>The thesis of Algebraic Architectures is that architecture design should be evaluated as a specification-satisfaction problem. A task imposes object structure, transformation structure, operational laws, interface requirements, effects, resources, and validators. A model family encodes assumptions about those structures, and a trained instance realizes those assumptions under data, optimization, scale, inference, and deployment constraints.</p>
-<p>The proposed account constrains architecture selection without replacing empirical comparison. Algebraic, geometric, or categorical arguments supply candidate invariants, equivariances, locality assumptions, compositional interfaces, and validation tests. They do not settle performance under finite data, nonideal optimization, distribution shift, resource limits, or hybrid deployment constraints. The architecture record should therefore state the status of each claim, including formal guarantee, architectural support, empirical satisfaction, reviewed alignment, or violation.</p>
-<p>The claim boundary is especially important in a literature already rich with structural methods. Geometric deep learning, Deep Sets, graph networks, Transformers, selective state-space models, equivariant atomistic networks, neural algorithmic reasoning, and categorical deep learning provide established source traditions. ArchitectureSpec and the Architecture Specification Catalog are original Compositional Intelligence records that organize these traditions for design audit, not new empirical results.</p>
-<h2 id="formal-core.-architecture-as-satisfaction-of-structure">3. Formal core. Architecture as satisfaction of structure</h2>
-<p>The central schema separates task structure, model-family commitment, and trained-system evidence.</p>
-<blockquote>
-<p>TaskSpec -&gt; ArchitectureType -&gt; ArchitectureInstance</p>
-</blockquote>
-<p>TaskSpec describes the structure the task imposes before candidate architectures are selected. ArchitectureType describes a model family together with its representational commitments, computational primitives, symmetry assumptions, memory mechanisms, interfaces, and validator exposure. ArchitectureInstance denotes a trained system with parameters, data, objective, optimizer, inference procedure, memory subsystem, interface implementation, validation record, and deployment profile. A strong architecture type can produce a weak instance, and a general model family can occasionally learn a structure that another family encodes directly. The record should keep those cases distinct.</p>
-<p>The operational satisfaction relation A |= S names the evidentiary status of an architecture claim. The symbol denotes a theorem only when a formal guarantee is provided. In ordinary ML settings it records a structured claim about support, satisfaction, or violation, together with the validator needed to adjudicate that claim.</p>
-<p class="table-display-caption" id="table-3-caption">Table 3. Regime, Meaning, Required evidence</p>
-<div aria-labelledby="table-3-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="3" id="table-3"><caption class="visually-hidden">Table 3. Regime, Meaning, Required evidence</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Regime</strong></th>
-<th scope="col"><strong>Meaning</strong></th>
-<th scope="col"><strong>Required evidence</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>formal guarantee</td>
-<td>The architecture enforces the property by construction or proof.</td>
-<td>Mathematical proof, type-level guarantee, exact equivariance argument, or verified implementation.</td>
-</tr>
-<tr class="even">
-<td>architectural support</td>
-<td>The architecture makes the property low-cost or natural without guaranteeing it.</td>
-<td>Mechanistic argument, structural analysis, ablation, or controlled transformation test.</td>
-</tr>
-<tr class="odd">
-<td>empirical satisfaction</td>
-<td>A trained instance demonstrates the behavior under stated conditions.</td>
-<td>Evaluation results, transformation tests, calibration, and error analysis.</td>
-</tr>
-<tr class="even">
-<td>reviewed alignment</td>
-<td>Experts judge the architecture-task match when formal tests are incomplete.</td>
-<td>Reviewer protocol, rationale, uncertainty statement, and disagreement record.</td>
-</tr>
-<tr class="odd">
-<td>violation</td>
-<td>The architecture ignores, distorts, or conflicts with task structure.</td>
-<td>Counterexample, failed validator, cost failure, or mismatch report.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="architecturespec-v0.3">4. ArchitectureSpec v0.3</h2>
-<p>ArchitectureSpec records the structures that a model family must represent, preserve, expose, or validate. The schema is designed as an exclusion and validation instrument. A record that accepts every architecture for every task has no design value.</p>
-<blockquote>
-<p>ArchitectureSpec = (O, T, Sigma, L, G, R, Phi, E, V)<br/>
-O object types such as sets, graphs, sequences, fields, molecules, programs, proof states, plans<br/>
-T transformations such as permutations, rotations, translations, rewrites, time shifts, interventions<br/>
-Sigma operations such as aggregation, message passing, attention, recurrence, composition, retrieval, planning<br/>
-L laws such as invariance, equivariance, conservation, causality, monotonicity, locality, typing rules<br/>
-G symmetries and geometry such as groups, gauges, coordinates, manifolds, graph automorphisms<br/>
-R resources such as context length, memory, latency, throughput, compute, data, bandwidth, energy<br/>
-Phi interfaces such as inputs, outputs, tools, validators, explanations, proof obligations, APIs<br/>
-E effects such as state, IO, uncertainty, external tools, interaction, physical action, feedback<br/>
-V validators such as tests, ablations, invariance checks, simulations, proofs, expert review</p>
-</blockquote>
-<p>The specification should force an explicit mismatch diagnosis. If the task is permutation-invariant and the architecture treats arbitrary order as semantically meaningful, the record should require a permutation validator or exclude the architecture for the base design. If the task depends on graph-local interactions and the model flattens the graph without structural encodings, the record should mark a relational underbias. If the task requires long-range selective access under latency constraints, the record should distinguish direct content interaction from compressed state propagation and report the associated resource profile.</p>
-<p>Structural architecture claims should not be accepted without validators. A claim about invariance requires transformation tests or proof. A claim about extrapolation requires out-of-distribution size, geometry, or horizon checks. A claim about effectful interfaces requires precondition, postcondition, rollback, and audit validation. ArchitectureSpec is therefore evaluated by the tests it makes necessary, not by the terminology it introduces.</p>
-<h2 id="underbias-overbias-and-cost-structure">5. Underbias, overbias, and cost structure</h2>
-<p>Inductive bias has diagnostic value only when the specification records both its benefits and its failure modes. Underbias occurs when known task structure is absent from the architecture, forcing the instance to learn the structure from data, scale, or incidental correlations. Overbias occurs when the architecture enforces a law that excludes valid task behavior. A credible architecture analysis must detect both errors and avoid treating structural design as a one-directional improvement.</p>
-<p class="table-display-caption" id="table-4-caption">Table 4. Risk, Diagnostic case, Audit question</p>
-<div aria-labelledby="table-4-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="4" id="table-4"><caption class="visually-hidden">Table 4. Risk, Diagnostic case, Audit question</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Risk</strong></th>
-<th scope="col"><strong>Diagnostic case</strong></th>
-<th scope="col"><strong>Audit question</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>underbias</td>
-<td>A sequence model treats set order as informative in a task whose target is exchangeable.</td>
-<td>Does output change under irrelevant item permutations?</td>
-</tr>
-<tr class="even">
-<td>underbias</td>
-<td>A molecule model omits graph and coordinate structure.</td>
-<td>Does prediction fail under atom relabeling, rotation, translation, or physical sanity checks?</td>
-</tr>
-<tr class="odd">
-<td>overbias</td>
-<td>A local message-passing model is used for a task dominated by global dependencies.</td>
-<td>Does performance degrade under long-range interaction tests or graph-size extrapolation?</td>
-</tr>
-<tr class="even">
-<td>overbias</td>
-<td>A rigid grammar constraint is imposed on open-domain generation.</td>
-<td>Does the constraint exclude valid outputs or reduce utility without validation gain?</td>
-</tr>
-<tr class="odd">
-<td>cost mismatch</td>
-<td>A quadratic attention model is selected for million-token retrieval under strict latency constraints.</td>
-<td>Does the architecture meet memory, latency, throughput, and retrieval obligations?</td>
-</tr>
-<tr class="even">
-<td>interface mismatch</td>
-<td>A static predictor is used in tool, state, and action workflows.</td>
-<td>Can the system expose preconditions, postconditions, effects, rollback, and audit traces?</td>
-</tr>
-</tbody>
-</table></div>
-<p>Cost belongs inside the architecture specification. Latency, memory, bandwidth, deployment hardware, context length, retraining cost, data availability, and validator cost determine whether a structural commitment is usable in the intended environment. A specification that ignores resource and interface constraints is incomplete for deployed systems, even when the architecture has favorable local accuracy.</p>
-<h2 id="state-of-the-art-landscape-and-source-use">6. State-of-the-art landscape and source use</h2>
-<p>The state-of-the-art landscape supplies structural lessons for ArchitectureSpec. Each source tradition supports a specific design claim, and none validates the proposed record schema by itself. The architecture layer should therefore cite these literatures for their demonstrated commitments and then state the additional specification claim introduced here.</p>
-<p class="table-display-caption" id="table-5-caption">Table 5. Area, Structural lesson, ArchitectureSpec implication</p>
-<div aria-labelledby="table-5-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="5" id="table-5"><caption class="visually-hidden">Table 5. Area, Structural lesson, ArchitectureSpec implication</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Area</strong></th>
-<th scope="col"><strong>Structural lesson</strong></th>
-<th scope="col"><strong>ArchitectureSpec implication</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>geometric deep learning</td>
-<td>Many tasks contain symmetries, locality, gauges, graphs, manifolds, or geometric priors.</td>
-<td>Record transformations, symmetry groups, and invariance or equivariance validators.</td>
-</tr>
-<tr class="even">
-<td>Deep Sets</td>
-<td>Permutation-invariant set functions require architectures that respect exchangeability.</td>
-<td>Record whether ordering is meaningful or spurious.</td>
-</tr>
-<tr class="odd">
-<td>graph networks</td>
-<td>Relational inductive bias is appropriate when entities and interactions define the task objects.</td>
-<td>Record nodes, edges, global state, message-passing structure, and graph-size obligations.</td>
-</tr>
-<tr class="even">
-<td>Transformers</td>
-<td>Attention supports content-addressed interaction over token sequences.</td>
-<td>Record sequence structure, context length, retrieval demands, and quadratic-cost tradeoffs.</td>
-</tr>
-<tr class="odd">
-<td>selective state-space models</td>
-<td>Input-dependent recurrence supports efficient propagation over long sequences.</td>
-<td>Record content selectivity, state compression, retrieval behavior, and latency.</td>
-</tr>
-<tr class="even">
-<td>equivariant atomistic models</td>
-<td>3D scientific tasks often require rotation, translation, and permutation structure.</td>
-<td>Record geometry, frame conventions, physical sanity checks, and energy-force consistency.</td>
-</tr>
-<tr class="odd">
-<td>neural algorithmic reasoning</td>
-<td>Algorithmic tasks require invariants, step structure, and size extrapolation.</td>
-<td>Record execution traces, loop invariants, and extrapolation validators.</td>
-</tr>
-<tr class="even">
-<td>categorical deep learning</td>
-<td>Categorical language can relate constraints, morphisms, and implementations.</td>
-<td>Use categorical notation only when it improves specification, comparison, or diagnosis.</td>
-</tr>
-</tbody>
-</table></div>
-<p>The source anchors for this essay include geometric deep learning, Deep Sets, graph networks, attention-based sequence modeling, selective state-space models, equivariant atomistic architectures, scientific graph systems, neural algorithmic reasoning, and categorical deep learning. These sources motivate the architecture layer as background and do not provide evidence for ArchitectureSpec as an evaluated artifact.</p>
-<h2 id="worked-examples">7. Worked examples</h2>
-<h3 id="sets">7.1 Sets</h3>
-<p>Set-valued tasks expose the distinction between representational convenience and semantic structure. If the target is a function of an unordered finite collection, item permutation should not affect the output. The specification should identify the object type as a set, the transformation as item permutation, the law as invariance, the operation as aggregation or exchangeable attention, and the validator as a permutation stress test.</p>
-<blockquote>
-<p>TaskSpec: finite set -&gt; label or statistic<br/>
-Required law: F({x_1,...,x_n}) = F({x_perm(1),...,x_perm(n)})<br/>
-Candidate families: Deep Sets, invariant pooling, attention with validated positional treatment<br/>
-Mismatch: sequence model with arbitrary position encodings and no permutation validator</p>
-</blockquote>
-<p>The specification should exclude architectures that assign semantic significance to arbitrary input order unless instance-level validation shows invariance under permutations. The catalog entry earns value by making that exclusion explicit.</p>
-<h3 id="molecules-and-3d-atomistic-systems">7.2 Molecules and 3D atomistic systems</h3>
-<p>Atomistic prediction tasks require simultaneous relational and geometric commitments. Atom indexing should be irrelevant, scalar energies should be invariant to rigid frame changes, and vector forces should transform equivariantly. An architecture family can support those laws directly, or an instance can demonstrate them empirically through targeted validators.</p>
-<blockquote>
-<p>Objects: atoms, bonds, coordinates, scalar energy, vector forces<br/>
-Transformations: atom permutation, rigid rotation, translation<br/>
-Laws: energy invariance, force equivariance, physical sanity constraints<br/>
-Validators: relabeling tests, rotation and translation checks, energy-force consistency, OOD geometry tests</p>
-</blockquote>
-<p>A flat descriptor model can succeed on local benchmarks and still fail under geometric transformations. An equivariant graph architecture provides a stronger structural match, but ArchitectureSpec still requires data-coverage evidence, instance-level checks, and task-specific physical validation before the satisfaction relation is upgraded from architectural support to empirical satisfaction.</p>
-<h3 id="long-context-sequence-modeling">7.3 Long-context sequence modeling</h3>
-<p>Long-context tasks differ in the memory operation they require. Some demand exact retrieval from distant context, others require streaming compression, temporal forecasting, or summarization under resource constraints. A generic long-context label therefore hides the architecture question that matters for validation.</p>
-<blockquote>
-<p>Objects: tokens, spans, events, memory states, retrieved facts<br/>
-Transformations: context extension, truncation, time shift, irrelevant-prefix insertion, distractor insertion<br/>
-Resources: context length, throughput, memory footprint, latency<br/>
-Validators: needle retrieval, degradation curves, distractor robustness, streaming consistency</p>
-</blockquote>
-<p>A selective state-space model and a full-attention Transformer encode different tradeoffs. The former offers efficient recurrent propagation with compressed state; the latter provides direct token-token interaction with higher computational cost. ArchitectureSpec should record the tradeoff and assign validators to the intended memory behavior instead of declaring a universal architecture winner.</p>
-<h3 id="graph-structured-scientific-systems">7.4 Graph-structured scientific systems</h3>
-<p>Scientific forecasting systems often combine spatial structure, temporal dynamics, boundary conditions, and interaction graphs. The architecture specification should state whether the task is a mesh problem, graph problem, field problem, sequence problem, or hybrid dynamical system. The lesson from scientific graph systems is that object structure, learned dynamics, and validation target must be specified together.</p>
-<blockquote>
-<p>Objects: nodes, edges, fields, time steps, forcings, boundary conditions<br/>
-Transformations: spatial shifts, time shifts, grid refinements, perturbations, extreme-event cases<br/>
-Validators: rollout stability, conservation diagnostics, resolution transfer, event-specific error analysis</p>
-</blockquote>
-<h3 id="algorithms-and-proof-states">7.5 Algorithms and proof states</h3>
-<p>Algorithmic and theorem-proving tasks require state representation, invariant preservation, transition structure, and extrapolation beyond seen sizes or seen lemmas. A model can solve small instances and still fail the invariant that defines the algorithm. ArchitectureSpec should therefore record proof-state interfaces, retrieval mechanisms, step validators, and repair behavior.</p>
-<blockquote>
-<p>Objects: states, goals, subgoals, proof contexts, lemmas, traces<br/>
-Operations: rewrite, split, search, retrieve, backtrack, verify<br/>
-Validators: invariant checks, proof checking, replay, larger-instance generalization, repair cost</p>
-</blockquote>
-<h3 id="scientific-protocols-and-effectful-architectures">7.6 Scientific protocols and effectful architectures</h3>
-<p>Protocol generation and laboratory automation require architecture support for action, state, tool interfaces, uncertainty, external feedback, and audit evidence. A static predictor can draft plausible protocol text and still lack the architectural interfaces needed for execution. This case links the architecture layer to the later effectful-action layer.</p>
-<blockquote>
-<p>Objects: samples, instruments, measurements, protocols, claims, actions<br/>
-Effects: state changes, physical operations, tool calls, human approval, memory writes<br/>
-Validators: precondition checks, postcondition validation, rollback, audit trace, evidence status</p>
-</blockquote>
-<h2 id="architecture-specification-catalog-v0.3">8. Architecture Specification Catalog v0.3</h2>
-<p>The Architecture Specification Catalog is a proposed companion artifact for comparing architecture families against task specifications. The catalog should classify structural commitments, validators, tradeoffs, and exclusions. It should not function as a list of model names.</p>
-<p class="table-display-caption" id="table-6-caption">Table 6. Field, Purpose — Field, Purpose</p>
-<div aria-labelledby="table-6-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="6" id="table-6"><caption class="visually-hidden">Table 6. Field, Purpose — Field, Purpose</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Field</strong></th>
-<th scope="col"><strong>Purpose</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>task family</td>
-<td>Name the task family and target artifacts.</td>
-</tr>
-<tr class="even">
-<td>object structure</td>
-<td>State whether objects are sets, sequences, graphs, fields, programs, plans, proof states, or hybrids.</td>
-</tr>
-<tr class="odd">
-<td>transformations</td>
-<td>List transformations under which behavior should be invariant, equivariant, covariant, or controlled.</td>
-</tr>
-<tr class="even">
-<td>laws and constraints</td>
-<td>Record conservation, causality, typing, symmetry, locality, monotonicity, resource, or authority constraints.</td>
-</tr>
-<tr class="odd">
-<td>candidate architectures</td>
-<td>List architecture families that support the specification and state the support regime.</td>
-</tr>
-<tr class="even">
-<td>excluded architectures</td>
-<td>List model families that are structurally mismatched unless special validation succeeds.</td>
-</tr>
-<tr class="odd">
-<td>validators</td>
-<td>Define tests, ablations, proofs, simulations, reviews, and deployment checks.</td>
-</tr>
-<tr class="even">
-<td>tradeoffs</td>
-<td>Record compute, latency, memory, data, interpretability, maintenance, and deployment constraints.</td>
-</tr>
-<tr class="odd">
-<td>evidence level</td>
-<td>Mark formal guarantee, architectural support, empirical satisfaction, reviewed alignment, or violation.</td>
-</tr>
-<tr class="even">
-<td>predicted failures</td>
-<td>State the expected failure if the mismatch hypothesis is correct.</td>
-</tr>
-</tbody>
-</table></div>
-<p>The catalog succeeds only when it changes an architecture decision or a validation plan. An entry that recommends every candidate family, avoids exclusions, or fails to predict a mismatch should be rejected as descriptive taxonomy.</p>
-<h2 id="architecture-comparison-protocol">9. Architecture comparison protocol</h2>
-<p>The comparison protocol converts ArchitectureSpec into an auditable workflow. The protocol is intended for small, high-quality pilots before any large catalog is attempted.</p>
-<p class="table-display-caption" id="table-7-caption">Table 7. Step, Action, Output — Step, Action, Output</p>
-<div aria-labelledby="table-7-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="7" id="table-7"><caption class="visually-hidden">Table 7. Step, Action, Output — Step, Action, Output</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Step</strong></th>
-<th scope="col"><strong>Action</strong></th>
-<th scope="col"><strong>Output</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>Write the task specification before naming architectures.</td>
-<td>TaskSpec with objects, transformations, laws, interfaces, resources, effects, and validators.</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>List candidate architecture types and their structural commitments.</td>
-<td>ArchitectureType comparison table.</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>List excluded or high-risk architecture types.</td>
-<td>Mismatch hypotheses and expected failure modes.</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>Define validators for each structural claim.</td>
-<td>Transformation tests, ablations, proofs, simulations, or review protocol.</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>Train or evaluate concrete instances.</td>
-<td>Instance-level evidence with cost and deployment metrics.</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>Run mismatch analysis.</td>
-<td>Architecture mismatch report with underbias, overbias, cost, and validation labels.</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>Update the catalog entry.</td>
-<td>Evidence level and revised decision rule.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="benchmark-obligations">10. Benchmark obligations</h2>
-<p>The first pilot should test whether the specification layer produces decisions that ordinary architecture descriptions do not. A pilot with 20 to 30 catalog entries and 4 to 6 evaluation families is sufficient for an initial diagnostic test.</p>
-<p class="table-display-caption" id="table-8-caption">Table 8. Pilot family, Core validator, Failure signal</p>
-<div aria-labelledby="table-8-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="8" id="table-8"><caption class="visually-hidden">Table 8. Pilot family, Core validator, Failure signal</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Pilot family</strong></th>
-<th scope="col"><strong>Core validator</strong></th>
-<th scope="col"><strong>Failure signal</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>sets</td>
-<td>Permutation invariance and item-order stress tests.</td>
-<td>Order-sensitive architecture changes predictions under irrelevant permutations.</td>
-</tr>
-<tr class="even">
-<td>graphs</td>
-<td>Node relabeling, structural perturbation, and graph-size extrapolation.</td>
-<td>Flattened or weakly relational model fails under relabeling or size changes.</td>
-</tr>
-<tr class="odd">
-<td>3D molecules</td>
-<td>Permutation, rotation, translation, and physical sanity checks.</td>
-<td>Energy or force predictions violate geometry or physical consistency.</td>
-</tr>
-<tr class="even">
-<td>long context</td>
-<td>Retrieval, distractor insertion, degradation curves, and latency.</td>
-<td>Architecture meets local accuracy but fails resource or retrieval obligations.</td>
-</tr>
-<tr class="odd">
-<td>algorithmic tasks</td>
-<td>Invariant checks and size extrapolation.</td>
-<td>Model solves training-size cases without preserving algorithmic structure.</td>
-</tr>
-<tr class="even">
-<td>effectful workflows</td>
-<td>Precondition, postcondition, effect, rollback, and audit checks.</td>
-<td>Static or underinstrumented system cannot expose state-change guarantees.</td>
-</tr>
-</tbody>
-</table></div>
-<p>The benchmark should include cases where several architectures obtain similar local accuracy but diverge under structural transformations, extrapolation, interface validation, or resource constraints. That divergence is the architecture-specific analogue of Functorial Consistency.</p>
-<h2 id="strongest-objections">11. Strongest objections</h2>
-<p class="table-display-caption" id="table-9-caption">Table 9. Objection, Answer — Objection, Answer</p>
-<div aria-labelledby="table-9-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="9" id="table-9"><caption class="visually-hidden">Table 9. Objection, Answer — Objection, Answer</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Objection</strong></th>
-<th scope="col"><strong>Answer</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>This is only inductive bias under another name.</td>
-<td>Inductive bias is the background concept. The proposed record links task structure, exclusions, validators, tradeoffs, and evidence levels.</td>
-</tr>
-<tr class="even">
-<td>Architecture choice is empirical.</td>
-<td>The framework shapes the hypothesis space and validation plan; experiments remain decisive.</td>
-</tr>
-<tr class="odd">
-<td>Scale often dominates hand-designed structure.</td>
-<td>ArchitectureSpec should record when generic scale learns the relevant structure and what compute, data, and validation costs were incurred.</td>
-</tr>
-<tr class="even">
-<td>Strong inductive bias can harm performance.</td>
-<td>Overbias is a first-class failure mode, and the catalog must record valid behaviors excluded by the architecture.</td>
-</tr>
-<tr class="odd">
-<td>Category theory is unnecessary.</td>
-<td>The categorical layer should be retained only where it improves specification, comparison, or diagnosis.</td>
-</tr>
-<tr class="even">
-<td>Existing frameworks cover much of this.</td>
-<td>The essay integrates those frameworks into the Compositional Intelligence chain linking membership, generation, transformation, language, architecture, warrant, and action.</td>
-</tr>
-<tr class="odd">
-<td>The catalog can lose currency.</td>
-<td>The catalog should classify structural commitments, validators, and tradeoffs instead of brand-name model families.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="failure-modes-and-kill-criteria">12. Failure modes and kill criteria</h2>
-<p class="table-display-caption" id="table-10-caption">Table 10. Failure mode, Meaning, Required response</p>
-<div aria-labelledby="table-10-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="10" id="table-10"><caption class="visually-hidden">Table 10. Failure mode, Meaning, Required response</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Failure mode</strong></th>
-<th scope="col"><strong>Meaning</strong></th>
-<th scope="col"><strong>Required response</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>descriptive collapse</td>
-<td>The schema describes every architecture without excluding any.</td>
-<td>Strengthen exclusion rules or narrow the task class.</td>
-</tr>
-<tr class="even">
-<td>generic recommendation</td>
-<td>The same architecture is recommended across nearly all tasks.</td>
-<td>Revise task fields, validators, and mismatch labels.</td>
-</tr>
-<tr class="odd">
-<td>no predictive value</td>
-<td>Mismatch hypotheses do not predict failures.</td>
-<td>Narrow the theory to domains where structural commitments matter.</td>
-</tr>
-<tr class="even">
-<td>cost omission</td>
-<td>The specification ignores latency, memory, compute, or deployment constraints.</td>
-<td>Add resource fields and deployment validators.</td>
-</tr>
-<tr class="odd">
-<td>overbias blindness</td>
-<td>The framework praises structure without measuring the harm of excessive constraint.</td>
-<td>Add counterexamples and overbias tests.</td>
-</tr>
-<tr class="even">
-<td>validator weakness</td>
-<td>Structural claims lack tests or ablations.</td>
-<td>Remove unsupported claims or define validators.</td>
-</tr>
-<tr class="odd">
-<td>maintenance failure</td>
-<td>The catalog cannot track hybrid systems.</td>
-<td>Classify by structure instead of model label.</td>
-</tr>
-</tbody>
-</table></div>
-<p class="table-display-caption" id="table-11-caption">Table 10. Failure mode, Meaning, Required response Failure mode Meaning Required response descriptive collapse The schema describes every architecture without excluding any. Strengthen exclusion rules or narrow the task class. generic recommendation The same architecture is recommended across nearly all tasks. Revise task fields, validators, and mismatch labels. no predictive value Mismatch hypotheses do not predict failures. Narrow the theory to domains where structural commitments matter. cost omission The specification ignores latency, memory, compute, or deployment constraints. Add resource fields and deployment validators. overbias blindness The framework praises structure without measuring the harm of excessive constraint. Add counterexamples and overbias tests. validator weakness Structural claims lack tests or ablations. Remove unsupported claims or define validators. maintenance failure The catalog cannot track hybrid systems. Classify by structure instead of model label.</p>
-<div aria-labelledby="table-11-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="11" id="table-11"><caption class="visually-hidden">Table 10. Failure mode, Meaning, Required response Failure mode Meaning Required response descriptive collapse The schema describes every architecture without excluding any. Strengthen exclusion rules or narrow the task class. generic recommendation The same architecture is recommended across nearly all tasks. Revise task fields, validators, and mismatch labels. no predictive value Mismatch hypotheses do not predict failures. Narrow the theory to domains where structural commitments matter. cost omission The specification ignores latency, memory, compute, or deployment constraints. Add resource fields and deployment validators. overbias blindness The framework praises structure without measuring the harm of excessive constraint. Add counterexamples and overbias tests. validator weakness Structural claims lack tests or ablations. Remove unsupported claims or define validators. maintenance failure The catalog cannot track hybrid systems. Classify by structure instead of model label.</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Criterion</strong></th>
-<th scope="col"><strong>Decision rule</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>K1</td>
-<td>The Architecture Specification Catalog does not improve architecture selection beyond ordinary expert intuition.</td>
-</tr>
-<tr class="even">
-<td>K2</td>
-<td>The schema describes architecture families without ruling out unsuitable choices.</td>
-</tr>
-<tr class="odd">
-<td>K3</td>
-<td>Architecture specifications fail to predict robustness, sample-efficiency, extrapolation, interpretability, validation, or cost differences.</td>
-</tr>
-<tr class="even">
-<td>K4</td>
-<td>The framework cannot distinguish underbias from overbias.</td>
-</tr>
-<tr class="odd">
-<td>K5</td>
-<td>The same architecture family is recommended for almost every task.</td>
-</tr>
-<tr class="even">
-<td>K6</td>
-<td>The framework cannot produce benchmarkable structural claims.</td>
-</tr>
-<tr class="odd">
-<td>K7</td>
-<td>The algebraic or categorical framing adds terminology without improving design.</td>
-</tr>
-<tr class="even">
-<td>K8</td>
-<td>Specifications omit deployment-relevant cost, latency, memory, or interface constraints.</td>
-</tr>
-<tr class="odd">
-<td>K9</td>
-<td>The catalog cannot be maintained as architecture families evolve.</td>
-</tr>
-</tbody>
-</table></div>
-<p>These criteria keep the proposal accountable to design constraint, failure prediction, and validation. If the catalog does not exclude architectures, predict mismatch, or change validation practice, the architecture layer should be narrowed or retired.</p>
-<h2 id="relationship-to-essay-6.-quantitative-curry-howard">13. Relationship to Essay 6. Quantitative Curry-Howard</h2>
-<p>Essay 5 specifies model-family commitments, and Essay 6 specifies the evidentiary layer around candidate typed artifacts. The connection is direct. Architecture determines which structures a model represents and which validators it exposes; quantitative warrant records how candidate outputs are scored, calibrated, checked, repaired, and promoted across epistemic statuses.</p>
-<p>The transition is visible across formal, scientific, and agentic systems. A proof-search architecture, molecule model, planning system, or long-context model can be assessed through ArchitectureSpec, but its outputs still require probability, margin, uncertainty, validation status, repair distance, and permitted-use records. The next essay therefore moves from structural commitment to quantitative evidence.</p>
-<h2 id="conclusion">14. Conclusion</h2>
-<p>Algebraic Architectures places model-family selection inside the Compositional Intelligence framework. A generated artifact is shaped by the architecture that produced it, and a structure-preserving transformation is easier to validate when the relevant structure is represented or exposed by design. Architecture claims should therefore identify the task structure, candidate families, excluded families, expected mismatch failures, validators, evidence level, and cost profile.</p>
-<p>The proposal remains operational only if it changes design decisions. ArchitectureSpec is useful when it rules out unsuitable model families, predicts mismatch, improves validators, clarifies tradeoffs, or documents the evidentiary status of a structural claim. If it merely relabels inductive bias, the schema should be simplified. The next layer, Quantitative Curry-Howard, applies the same standard to scores, probabilities, uncertainty, validation, and repair around candidate typed artifacts.</p>
-<h2 id="appendix-a.-architecturespec-record">Appendix A. ArchitectureSpec record</h2>
-<blockquote>
-<p>architecture_spec:<br/>
-id: string<br/>
-task_family: string<br/>
-target_artifacts: list[string]<br/>
-object_types: list[string]<br/>
-transformations:<br/>
-invariant: list[string]<br/>
-equivariant: list[string]<br/>
-covariant_or_controlled: list[string]<br/>
-operations: list[string]<br/>
-laws: list[string]<br/>
-symmetries_and_geometry: list[string]<br/>
-resources:<br/>
-context_length: string<br/>
-latency: string<br/>
-memory: string<br/>
-throughput: string<br/>
-compute_budget: string<br/>
-data_requirements: string<br/>
-interfaces: list[string]<br/>
-effects: list[string]<br/>
-validators: list[string]<br/>
-candidate_architecture_types: list[string]<br/>
-excluded_architecture_types: list[string]<br/>
-expected_failure_modes: list[string]<br/>
-evidence_level: enum[formal_guarantee, architectural_support, empirical_satisfaction, reviewed_alignment, violation]<br/>
-revision_status: string</p>
-</blockquote>
-<h2 id="appendix-b.-architecture-mismatch-report">Appendix B. Architecture mismatch report</h2>
-<blockquote>
-<p>architecture_mismatch_report:<br/>
-report_id: string<br/>
-architecture_type: string<br/>
-architecture_instance: string | null<br/>
-task_spec_id: string<br/>
-mismatch_labels:<br/>
-- symmetry_mismatch<br/>
-- relational_mismatch<br/>
-- memory_mismatch<br/>
-- locality_mismatch<br/>
-- globality_mismatch<br/>
-- modality_mismatch<br/>
-- effect_mismatch<br/>
-- interface_mismatch<br/>
-- invariant_loss<br/>
-- underbias<br/>
-- overbias<br/>
-- validation_mismatch<br/>
-- cost_structure_mismatch<br/>
-failed_validators: list[string]<br/>
-counterexamples: list[string]<br/>
-observed_cost_profile: string<br/>
-repair_options: list[string]<br/>
-decision: enum[retain, modify_instance, add_module, change_architecture_type, reject_for_task]<br/>
-rationale: string</p>
-</blockquote>
-<h2 id="appendix-c.-catalog-item-example">Appendix C. Catalog item example</h2>
-<blockquote>
-<p>catalog_item:<br/>
-task_family: 3D atomistic energy and force prediction<br/>
-object_types: [molecule_graph, atom_coordinates, scalar_energy, vector_forces]<br/>
-transformations:<br/>
-invariant: [atom_relabeling, global_translation, global_rotation_for_energy]<br/>
-equivariant: [global_rotation_for_forces]<br/>
-candidate_architecture_types:<br/>
-- equivariant graph neural network<br/>
-- equivariant graph transformer<br/>
-high_risk_architecture_types:<br/>
-- flat descriptor model without geometry validators<br/>
-- sequence model without relabeling and frame checks<br/>
-validators:<br/>
-- atom_permutation_test<br/>
-- rotation_translation_test<br/>
-- energy_force_consistency_check<br/>
-- out_of_distribution_geometry_test<br/>
-predicted_failures:<br/>
-- geometry_violation<br/>
-- poor_force_consistency<br/>
-- instability_under_atom_relabeling<br/>
-evidence_level: architectural_support until empirical validation is supplied</p>
-</blockquote>
-<h2 id="appendix-d.-source-map-and-verification-queue">Appendix D. Source map and verification queue</h2>
-<p class="table-display-caption" id="table-12-caption">Table 12. Source anchor, Use in Essay 5</p>
-<div aria-labelledby="table-12-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="12" id="table-12"><caption class="visually-hidden">Table 12. Source anchor, Use in Essay 5</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Source anchor</strong></th>
-<th scope="col"><strong>Use in Essay 5</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Geometric Deep Learning</td>
-<td>Background for geometry, symmetry, equivariance, and structural priors.</td>
-</tr>
-<tr class="even">
-<td>Deep Sets</td>
-<td>Background for permutation-invariant set functions.</td>
-</tr>
-<tr class="odd">
-<td>Graph Networks</td>
-<td>Background for relational inductive bias over entities and relations.</td>
-</tr>
-<tr class="even">
-<td>Transformers</td>
-<td>Background for attention-based sequence modeling and content-addressed interaction.</td>
-</tr>
-<tr class="odd">
-<td>Mamba and selective SSMs</td>
-<td>Background for efficient long-sequence state propagation and content-dependent recurrence.</td>
-</tr>
-<tr class="even">
-<td>EquiformerV2 and related equivariant atomistic architectures</td>
-<td>Background for 3D equivariant architectures in atomistic systems.</td>
-</tr>
-<tr class="odd">
-<td>GraphCast and scientific graph systems</td>
-<td>Context for graph-structured scientific forecasting.</td>
-</tr>
-<tr class="even">
-<td>Categorical Deep Learning</td>
-<td>Background for a category-theoretic bridge between constraints and implementations.</td>
-</tr>
-<tr class="odd">
-<td>Neural algorithmic reasoning</td>
-<td>Background for architecture choices around invariants, execution traces, and extrapolation.</td>
-</tr>
-</tbody>
-</table></div>
-<p>Before public release, verify final metadata for recent sources, including 2023-2026 arXiv versions, ICLR, NeurIPS, and Science publication status, page numbers, official code links, and claims about state of the art. Source claims should remain functional. Background sources motivate the architecture layer, and ArchitectureSpec remains an original proposal.</p>
-<h2 id="appendix-e.-editorial-changes-from-v0.2-to-v0.3">Appendix E. Editorial changes from v0.2 to v0.3</h2>
-<p class="table-display-caption" id="table-13-caption">Table 13. Area, Revision — Area, Revision</p>
-<div aria-labelledby="table-13-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="13" id="table-13"><caption class="visually-hidden">Table 13. Area, Revision — Area, Revision</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Area</strong></th>
-<th scope="col"><strong>Revision</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Mission alignment</td>
-<td>The essay now treats validators as the operational test for architecture claims.</td>
-</tr>
-<tr class="even">
-<td>Definition</td>
-<td>ArchitectureSpec is framed as an exclusion and validation instrument.</td>
-</tr>
-<tr class="odd">
-<td>Satisfaction relation</td>
-<td>A |= S separates formal guarantee, architectural support, empirical satisfaction, reviewed alignment, and violation.</td>
-</tr>
-<tr class="even">
-<td>State of the art</td>
-<td>The landscape is organized by structural lesson and ArchitectureSpec implication.</td>
-</tr>
-<tr class="odd">
-<td>Examples</td>
-<td>Worked examples include task structures, transformations, validators, and mismatch signals.</td>
-</tr>
-<tr class="even">
-<td>Pilot design</td>
-<td>The catalog pilot is specified as 20 to 30 task-family entries with structural validators.</td>
-</tr>
-<tr class="odd">
-<td>Failure criteria</td>
-<td>Kill criteria are framed as decision rules for narrowing or rejecting the proposal.</td>
-</tr>
-<tr class="even">
-<td>Series transition</td>
-<td>The conclusion creates a direct bridge to Quantitative Curry-Howard.</td>
-</tr>
-</tbody>
-</table></div>
+*Algebraic Architectures* develops a specification-first account of these judgments within *Compositional Intelligence*. It distinguishes the obligations of a task, the commitments of an architecture class, and the evidence available for a configured instance. The mathematical center is compositional preservation. An equivariant module contributes a system-level guarantee only along a path of compatible transformations, including representation, preprocessing, computation, and output. Analogous boundary questions arise for locality, finite memory, verified transitions, and effectful interfaces, although these properties have distinct mathematical semantics. An *Architecture Specification Catalog* is proposed as a modest decision instrument for recording such obligations and anticipating mismatches. Its usefulness depends on demonstrated improvements over existing design and evaluation practice, not on the descriptive richness of its records.
+
+## 1. The architectural question
+
+The preceding essays in *Compositional Intelligence* examine membership in formal and scientific worlds, generation under target types, and the preservation of structure under transformation. *Lambek Machines* develops typed linguistic composition. This essay addresses a complementary question concerning the systems that generate, transform, or act upon those artifacts. **Which properties of the task are preserved by the construction of the model, and which are contingent on training, integration, and subsequent validation?**
+
+Consider two input arrays containing the same measurements. In one task, their order records time. In another, the order was introduced solely to serialize an unordered collection. Reordering changes the meaning of the first input and preserves the meaning of the second. An architecture that treats all positions as semantically significant introduces a dependence that the second task does not justify. Conversely, imposing permutation invariance on the first task destroys information its target depends upon. Neither tensor shape nor model capacity resolves the distinction.
+
+This problem belongs to an extensive established literature. Group-equivariant networks, Deep Sets, graph networks, geometric deep learning, and categorical accounts of neural architectures already articulate connections from structure to computation [1–4, 11, 12]. Model Cards and the ML Test Score likewise precede the present proposal as instruments for documented assessment [13, 14]. The contribution pursued here is narrower. It is a way of **connecting prospective task obligations to the design of a complete system, then identifying what evidence would justify or defeat an architectural choice**. That proposed utility is open to empirical scrutiny.
+
+An inductive bias has value only relative to the task. Incorporating a true symmetry might eliminate the need to learn it from examples. Enforcing a false symmetry might exclude the desired function altogether. Architecture selection consequently concerns the fit of a particular construction under declared assumptions, resource conditions, and tests of its intended use.
+
+## 2. Task, architecture class, and configured system
+
+The argument distinguishes three objects.
+
+$$
+\mathrm{TaskSpec}\;\longrightarrow\;\mathrm{ArchitectureType}\;\longrightarrow\;\mathrm{ArchitectureInstance}.
+$$
+
+The arrows represent a sequence of justified choices, not a function that uniquely identifies an optimal model.
+
+**TaskSpec** states the object and output types, the relevant transformations, valid and invalid behavior, applicable constraints, operating domain, resource limits, and acceptance conditions. A task specification is itself a scientific claim. Treating spatial reflections as irrelevant, for example, would be an error for a parity-sensitive observable, regardless of the sophistication of the architecture selected to implement that assumption.
+
+**ArchitectureType** designates a class of constructions with identified components and admissible configurations. Its commitments might include permutation-invariant aggregation, equivariant geometric operators, restricted message-passing neighborhoods, content-based attention, recurrent state, or a proof-checking interface. Class-level guarantees are conditional on the precise construction, its parameters, and the semantics of its components. A generic family name is insufficient to establish them.
+
+**ArchitectureInstance** designates a trained and configured system, including its representations, parameters, inference procedure, numerical implementation, external memory, tools, validators, and deployment setting. A result obtained by one instance on a specified evaluation distribution does not establish a property of the entire architecture class. Conversely, a structural theorem concerning a class does not establish the scientific accuracy of an instance.
+
+The distinction prevents three conflations. A task obligation is not evidence that any candidate satisfies it. An architectural guarantee is not a measurement of predictive adequacy. A successful measurement is not automatically a guarantee under every admissible input or system configuration. Architectural judgment is sound only to the extent that these claims retain their individual scopes.
+
+## 3. Preservation under composition
+
+An algebraic formulation becomes informative once the task specifies operations and transformations that its outputs must respect. Let a model implement
+
+$$
+f_\theta:X\longrightarrow Y,
+$$
+
+and let a group $G$ act on inputs and outputs through $\rho_X$ and $\rho_Y$. On an operating domain $D\subseteq X$ preserved by the relevant transformations, the equivariance obligation is
+
+$$
+f_\theta\bigl(\rho_X(g)x\bigr)=\rho_Y(g)f_\theta(x),
+\qquad x\in D,\;g\in G. \qquad\text{(1)}
+$$
+
+Invariance is the special case with a trivial output action. Equation (1) asserts the agreement of two paths, first transforming the input and computing, or first computing and transforming the output. It presupposes compatible group actions and a justified identification of admissible transformations. If a predictor produces a probability distribution, the corresponding law is equality of the transformed output distribution and the distribution predicted from the transformed input. Independent draws need not coincide.
+
+The compositional argument is direct. Suppose $f:X\to Y$ and $h:Y\to Z$ satisfy compatible equivariance laws. Then
+
+$$
+\begin{aligned}
+(h\circ f)(\rho_X(g)x)
+&=h\bigl(\rho_Y(g)f(x)\bigr)\\
+&=\rho_Z(g)(h\circ f)(x).
+\end{aligned} \qquad\text{(2)}
+$$
+
+Their composition inherits the transformation law. The conclusion depends on the shared transformation semantics at the intermediate interface. An encoder introducing arbitrary order, geometry-dependent preprocessing without the required equivariance, or an output head with incompatible transformation rules breaks the argument. A theorem about one neural module does not automatically extend to the complete pipeline that invokes it.
+
+The same distinction applies to implementation. A construction might satisfy Equation (1) over real numbers while a finite-precision implementation exhibits numerical discrepancies. An implementation-level claim needs specified error tolerances, input regimes, and computational conditions. Tests identify implementation violations, while a finite suite of passing tests leaves the universal claim unproved.
+
+Transformation preservation is not the sole structural obligation. Finite-radius message passing constrains local information flow. Recurrence constrains the manner in which information reaches later computations. A proof-producing system might expose transitions to a kernel that checks the resulting artifact. An instrument controller might mediate state-changing actions through independently checked preconditions. These cases involve graphs, state transitions, resources, or effects. They call for their own formal definitions; they are not instances of group equivariance by terminological extension.
+
+This gives the architectural thesis its specific content. **Composition transports a guarantee only through compatible interfaces under their stated assumptions.** To evaluate a system, one must identify the relevant property, the components intended to preserve it, and the boundary beyond which the claim has no established force. The connection to *Functorial Consistency* is substantive. Both essays examine agreement along transformation paths, with the present essay locating the obligation in the construction and integration of model systems.
+
+## 4. What qualifies as satisfaction
+
+The notation $A\models S$ is useful only with a defined interpretation. Let $A$ denote an architecture class and $S_j$ a particular obligation. A class-level statement of satisfaction asserts, under declared assumptions, that every admissible member of that class meets the obligation.
+
+$$
+A\models S_j
+\quad\Longleftrightarrow\quad
+\forall\theta\in\Theta_A,\;S_j(f_\theta)
+\quad\text{under the stated assumptions}. \qquad\text{(3)}
+$$
+
+Here $S_j(f_\theta)$ abbreviates a fully specified predicate with its own domain and quantifiers. Equation (3) records an intended interpretation, not a theorem establishing any particular architecture's compliance. The statement might hold for a restricted class despite failing for a wider family sharing its name.
+
+Outside such a claim, evidence needs more careful language. **Architectural support** identifies a mechanism plausibly favorable to an obligation without proof for the entire class. **Empirical conformance** records that a particular instance met a test criterion under stated conditions. **Reviewed alignment** records an expert judgment and its unresolved assumptions. **Violation** identifies a counterexample, failed acceptance test, or demonstrated incompatibility. **Unassessed** indicates that the available evidence does not settle the obligation. These descriptions are not points on a common numerical scale. A mathematical proof and an empirical measurement might support the same obligation at different boundaries, and a discrepancy might reveal that the assumed boundary was wrong.
+
+Architectural exclusion needs equally precise grounds. A candidate is *provably incompatible* if its specified construction cannot represent necessary task behavior under the relevant assumptions. A candidate might instead lack a mandatory class-level guarantee without being mathematically incapable of the task. A trained instance might fail a prespecified empirical threshold, while an untested family presents only a predicted risk. Conflating those cases converts a preference for structural design into a claim unsupported by the evidence.
+
+Two familiar errors follow. **Underbias** leaves relevant task structure to be learned despite an available construction that preserves it. **Overbias** enforces a constraint incompatible with valid target behavior. Their diagnosis is task-relative. A network invariant to atom ordering might be suitable for molecular energy, while indiscriminate invariance to mirror reflection would be wrong for an observable that distinguishes handedness. The goal is justified structure, not maximal structure.
+
+## 5. Worked architectural judgments
+
+### 5.1 Unordered collections
+
+Suppose $x=(x_1,\ldots,x_n)$ serializes a finite unordered collection, with repetitions retained if the task concerns a multiset. Reindexing by any $\pi\in S_n$ leaves the semantic object unchanged. For a scalar target the obligation is
+
+$$
+f_\theta(\pi x)=f_\theta(x). \qquad\text{(4)}
+$$
+
+The Deep Sets construction
+
+$$
+f_\theta(x)=\rho_\theta\!\left(\sum_{i=1}^n\phi_\theta(x_i)\right) \qquad\text{(5)}
+$$
+
+satisfies this invariance for every admissible parameter setting of its mathematical form [2]. The guarantee is limited to permutation invariance. It says nothing by itself about the approximation of every relevant invariant target, about the latent dimension needed for a specified collection size, or about generalization to larger collections. Work on the limitations of set-function representations makes these expressive qualifications explicit [3].
+
+A sequence model with absolute positional embeddings lacks the corresponding class-level guarantee unless additional constraints enforce it. Such a model might nevertheless learn adequate invariance under a particular data distribution. The appropriate experiment permutes the same semantic inputs, measures prediction variation, and separately tests task accuracy and cardinality transfer. Attention without position-dependent information, with an invariant readout and compatible masking, belongs to a different architectural case. A comparison based only on the label *Transformer* would conceal the distinction.
+
+If the application imposes a hard construction-level invariance rule, a candidate lacking that guarantee fails the specified selection condition pending an enforcing mechanism or proof. If the obligation is empirical invariance to a declared tolerance, both candidates are eligible for evaluation. Neither decision asserts expressive impossibility in the absence of a supporting argument.
+
+### 5.2 Molecular energy and forces
+
+Let $z$ contain atom identities and $R\in\mathbb{R}^{n\times3}$ coordinates arranged by rows. Let $P$ be a permutation matrix, $Q\in SO(3)$ a proper rotation, $b\in\mathbb{R}^3$ a translation, and $\mathbf{1}$ the all-ones column vector. For a scalar energy model $U$, a representative task law is
+
+$$
+U(Pz,\,PRQ+\mathbf{1}b^\top)=U(z,R). \qquad\text{(6)}
+$$
+
+For a vector force model $F\in\mathbb{R}^{n\times3}$, the corresponding transformation law is
+
+$$
+F(Pz,\,PRQ+\mathbf{1}b^\top)=PF(z,R)Q. \qquad\text{(7)}
+$$
+
+For conservative forces derived from the same differentiable energy, the specification also includes
+
+$$
+F(z,R)=-\nabla_R U(z,R). \qquad\text{(8)}
+$$
+
+The transformation laws and gradient relation are distinct obligations. A force model might satisfy Equation (7) while failing Equation (8). There is, however, a useful implication. If $U$ satisfies Equation (6) on a domain supporting the transformations and $F$ is *defined* by the negative gradient of $U$, orthogonality of $P$ and $Q$ and the chain rule yield Equation (7). An independently parameterized force head needs its own evidence for both claims. Even a construction satisfying all three equations has no general guarantee of chemical accuracy, numerical stability, or extrapolation to unfamiliar molecular configurations.
+
+The choice of symmetry must reflect the observable. Proper rotation and translation laws are relevant to many atomistic prediction tasks. A parity-sensitive observable needs transformation rules that preserve its handedness dependence. Moreover, the E(n)-equivariant construction of Satorras and collaborators explicitly includes reflections [7]. That feature is appropriate for suitable targets and potentially excessive for others. The class-level symmetry of a named architecture must be examined against the actual output representation and scientific question. EquiformerV2 supplies another established architecture family for equivariant atomistic prediction [8], without resolving this task-specific comparison on its own.
+
+The complete model boundary matters. Atom representations, coordinate conventions, neighborhood construction, feature preprocessing, energy and force heads, and numerical evaluation each enter the claim. A descriptor model with properly invariant features is not ruled out solely for lacking an equivariant neural backbone. What distinguishes the candidates is the guarantee of the complete construction, its empirical accuracy, its physical diagnostics, and the resources needed to establish those properties.
+
+### 5.3 Long-context memory
+
+Long-context tasks differ in the information that a system must preserve. Recovering an arbitrary distant identifier differs from computing an aggregate statistic, forecasting a temporal process, or maintaining a running summary. Their specifications must distinguish exact retrieval, approximate retrieval, selective updating, and latency under an intended sequence-length distribution.
+
+Dense self-attention permits content-dependent interactions over accessible token representations, subject to the attention pattern and implementation. Selective state-space models such as Mamba propagate information through input-dependent state updates [5, 6]. Neither family description implies exact retrieval across arbitrary unbounded contexts. Evaluations need to vary target distance, distractor content, context length, query structure, and computational cost.
+
+There is a precise limitation for a finite-memory regime. Suppose a sequential system must receive $n$ independent bits, retain no external storage, and subsequently answer a query for *any* one of those bits with certainty. Its internal state must distinguish all $2^n$ possible input strings. A state bounded to $b<n$ bits has fewer than $2^n$ possible values, hence cannot satisfy that requirement. The conclusion concerns exact universal retrieval under the stated state bound. It does not imply poor empirical performance on a particular distribution, or an identical impossibility for an idealized model with unbounded-precision states. Streaming tasks admitting compact sufficient statistics present a different architectural problem.
+
+The relevant comparison is thus indexed by the memory operation and resource budget, not by a generic notion of long-range intelligence. Hardware, caching, state precision, external memory, and permitted error belong in the system description.
+
+### 5.4 Scientific graphs and algorithmic processes
+
+Scientific forecasting might represent spatial dynamics on a mesh, graph, field, or hybrid discretization. Edges might denote physical interactions, geometric proximity, numerical adjacency, or learned connections. This distinction affects the validity of a claimed relational inductive bias. The GraphCast system illustrates the empirical value of graph-based computation for medium-range global weather forecasting [9]. Its evaluated forecast skill does not establish an unconditional conservation law or guaranteed transfer to arbitrary discretizations.
+
+An architectural judgment must connect the intended representation to the scientific tests it motivates. Depending on the task, these include extended rollout error, conservation diagnostics, behavior under changed mesh resolution, and performance under defined distribution shifts. The existence of graph structure does not settle any of those outcomes. A finite-depth local message-passing construction also has a bounded communication radius unless augmented with longer-range connections, global features, additional depth, or other communication mechanisms.
+
+Neural algorithmic reasoning brings a related distinction into view [10]. Training-size success is separate from correctness of transitions, preservation of invariants, and extrapolation to larger problems. In proof-oriented systems, a model proposing a proof step and a trusted kernel validating it have different roles. A completed kernel check warrants a claim relative to the kernel's rules and trusted base. It does not establish that the learned proposal mechanism is correct in general.
+
+### 5.5 Scientific agents and effects
+
+An experimental agent moves beyond the semantics of a static input-output predictor. Its behavior interacts with instrument state, permissions, tool responses, and observations of a changing physical process. A plausible protocol description is insufficient evidence of permitted or correct execution. The relevant design includes state representation, action preconditions, effect tracking, independently mediated operations, and post-action reconciliation.
+
+For example, a transfer instruction might refer to a sample identity, a permitted instrument state, a target volume, and a subsequent measurement. A tool gateway might reject an unauthorized command, while an observation record might establish whether the intended transfer occurred. The first check concerns authorization; the second concerns physical state. Neither alone establishes the validity of a downstream scientific conclusion. These distinct predicates belong to the architecture of the full system, not to its language-model backbone in isolation.
+
+This is the limit of the symmetry example and an extension of its central discipline. A model's mathematical property, an external controller's enforcement rule, and an observation's evidentiary status occupy different interfaces. Their composition needs explicit semantics and verification appropriate to each obligation. The presence of a validator alone establishes no universal architectural guarantee.
+
+## 6. The place of algebra and prior work
+
+Established architectural traditions explain much of the structural reasoning developed above. Deep Sets supplies an invariant construction [2], with important representational limitations examined by Wagstaff and collaborators [3]. Group-equivariant convolutional networks and geometric deep learning develop symmetry-guided model design [1, 12]. Graph networks articulate relational inductive bias [4]. Attention-based Transformers, selective state-space models, equivariant atomistic networks, graph-based scientific forecasting, and neural algorithmic reasoning each provide further evidence of task-dependent architectural commitments [5–10].
+
+Categorical deep learning is especially important prior work for the present title. Gavranović and collaborators develop a broader algebraic theory linking architectural constraints and implementations [11]. This essay neither replaces that program nor proves a new universal characterization of neural architectures. Its mathematical result about compatible equivariant maps is elementary, and its wider discussion of state and effects is not given a common categorical semantics here.
+
+The proposed distinction concerns the **epistemic use of architectural structure**. A construction identifies a conditional property, a system integration establishes whether the conditions continue to hold, and evidence about an instance establishes further task-specific judgments. Model Cards and ML testing methodologies already provide reporting and assessment practices [13, 14]. The proposed extension is prospective and task-indexed. It puts obligations, predicted counterexamples, and exclusion grounds before candidate evaluation, preserving the assumptions connecting each decision to the evidence. The existence of the proposed record alone establishes neither originality in model documentation nor improved decisions in practice.
+
+## 7. A specification as a decision instrument
+
+The proposed *Architecture Specification Catalog* is a compact record of **task–candidate–obligation judgments**. Its purpose is to distinguish four outcomes that ordinary architectural descriptions might obscure. A design might satisfy a construction-level law, support it without a guarantee, fail an empirical acceptance test, or remain unassessed. The same family might occupy different categories for different obligations, and one assembled system might lose a property certified for a constituent module.
+
+For practical use, a record needs only the task domain, system boundary, explicit obligation, candidate construction, acceptance rule, predicted mismatch, validator, resource constraint, and evidence provenance. The optional notation
+
+$$
+\mathrm{ArchitectureSpec}=(O,T,\Sigma,L,G,R,\Phi,E,V) \qquad\text{(9)}
+$$
+
+indexes object types, transformations, operations, laws, geometry, resources, interfaces, effects, and validators. It is a descriptive schema, **not** a mathematical signature with demonstrated completeness or uniform semantics. Each obligation must be formulated individually. Inflating the notation beyond the distinctions actually used in a decision would weaken the essay.
+
+Consider the unordered-collection example. Under an explicit requirement for a class-level permutation-invariance guarantee, a model built from invariant aggregation qualifies on that dimension, subject to the full implementation boundary. An unconstrained position-dependent sequence model does not qualify on that dimension until an enforcing mechanism or proof is supplied. Under an empirical tolerance requirement, the second candidate remains eligible for permutation stress testing. The specification changes the *grounds of selection*, without claiming that all invariant models are accurate or that unconstrained models lack the ability to learn the target.
+
+A worthwhile record makes a falsifiable prediction prior to evaluation. It might identify sensitivity to irrelevant permutations, inconsistency of an independent force head, inaccessible information under a constrained memory budget, or absence of independently checked effects. Its failure prediction must be specific enough to test. A record describing every model as broadly suitable, or repeating an already observed failure, contributes no prospective architectural judgment.
+
+## 8. How the proposal would be tested
+
+The principal empirical question is whether such records improve decisions beyond informed architecture selection and established assessment methods. Persuasive examples do not answer it.
+
+A credible study would specify tasks, candidate constructions, mandatory and optional obligations, and anticipated failures before inspecting the held-out evaluations. It would compare selection using ArchitectureSpec against expert judgment supplied with the same information and budget, selection based on development-set performance, and a conventional structured checklist. Training budgets, evaluator access, model availability, and computational constraints would need to be comparable for the relevant causal claims. Where equalization is impossible, the evaluation would report the resulting limitation.
+
+Meaningful outcomes include correctness of prospective mismatch predictions, detection of violated assumptions, quality of the chosen system under predetermined acceptance criteria, and the cost of producing and maintaining the records. Structural theorems and empirical observations require distinct adjudication protocols. A mathematically established invariance law is assessed through its proof and implementation assumptions, while generalization and runtime cost remain empirical questions. Reusing the same examples to devise and then validate a checklist would inflate its apparent value.
+
+The proposal loses its broad rationale if it fails to distinguish unsuitable candidates, repeatedly recommends the same construction without task-specific justification, provides no predictive advantage over expert assessment, or incurs record-keeping cost exceeding its decision value. It might still be useful in a narrower domain with unusually precise task laws. The present essay reports no experiment demonstrating an improvement and makes no universal architecture-ranking claim.
+
+Two objections delimit the contribution. First, large general-purpose models might outperform specialized architectures despite lacking their explicit guarantees. Empirical superiority is compatible with the framework; a hard construction-level requirement and an optional preference for efficiency lead to different selection decisions. Second, many tasks have contested or incomplete specifications. In those cases, the specification must record disagreement without promoting an uncertain task assumption into a theorem. No record resolves a task that lacks adequate definition.
+
+## 9. Conclusion. From structure to warrant
+
+The architectural question has a compositional form. Task semantics establish relevant obligations. A model construction secures some conditional properties and leaves others to training or observation. Integration preserves a property only across compatible interfaces. Evaluation then supplies evidence about a particular configured system under declared conditions. Confusing any two of these stages produces an unjustified architectural claim.
+
+This account fits the trajectory of *Compositional Intelligence*. Earlier essays examine the membership, generation, and transformation of artifacts. *Algebraic Architectures* asks what a system's design establishes about the processing of those artifacts. *Quantitative Curry–Howard* turns to the warrant associated with particular outputs, including scores, uncertainty, validation status, and repair. Architecture-level guarantees and output-level evidence remain different obligations, especially in systems that act upon the world they are meant to describe.
+
+The proposed catalog has a limited, testable role. If it changes an architecture decision, anticipates a consequential failure, or selects a better validator under a fair comparison, it earns its place. If it relabels existing engineering judgment without improving that judgment, the appropriate conclusion is to retain the underlying structural reasoning and discard the additional apparatus. The durable claim of this essay is the need to track **what architecture preserves, under which assumptions, across which system boundaries, and with what evidence**.
+
+## Appendix. Illustrative obligation record
+
+The following example illustrates the separation of a task obligation from an evidence claim. Its empty evidence fields signify an unevaluated construction, not favorable results.
+
+```yaml
+specification_id: atomistic_energy_force_v1
+system_boundary:
+  components:
+    - coordinate_preprocessing
+    - model
+    - energy_head
+    - force_head
+  inference_configuration: to_be_declared
+
+task:
+  inputs: [atom_identities, coordinates]
+  outputs: [scalar_energy, vector_forces]
+  domain: to_be_declared
+  resources: [latency_budget, memory_budget, hardware_profile]
+
+candidate:
+  architecture_type: equivariant_graph_model
+  instance_id: null
+
+obligations:
+  - id: scalar_energy_symmetry
+    predicate: energy_invariant_under_joint_relabeling_and_SE3
+    evidence_claims: []
+    assessment: unassessed
+  - id: force_equivariance
+    predicate: force_equivariant_under_joint_relabeling_and_SE3
+    evidence_claims: []
+    assessment: unassessed
+  - id: conservative_force_consistency
+    predicate: force_equals_negative_energy_gradient
+    evidence_claims: []
+    assessment: unassessed
+  - id: predictive_accuracy
+    predicate: prespecified_error_on_held_out_geometries
+    evidence_claims: []
+    assessment: unassessed
+
+prospective_tests:
+  - atom_permutation_test
+  - proper_rotation_and_translation_test
+  - energy_force_gradient_consistency_test
+  - held_out_geometry_evaluation
+  - latency_and_memory_measurement
+
+anticipated_risks:
+  - non_equivariant_preprocessing
+  - inconsistent_independent_force_head
+  - unfamiliar_geometry_distribution
+
+decision: evaluation_pending
+```
+
+Evidence subsequently associated with an obligation would identify the claim, scope, assumptions, evaluator, source, and proof or test protocol. Changes in preprocessing, outputs, numerical configuration, or deployment would trigger reassessment of affected claims.
+
+## References
+
+1. Bronstein, M. M., Bruna, J., Cohen, T., & Veličković, P. (2021). [*Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges*](https://arxiv.org/abs/2104.13478). arXiv:2104.13478.
+2. Zaheer, M., et al. (2017). [*Deep Sets*](https://proceedings.neurips.cc/paper_files/paper/2017/hash/f22e4747da1aa27e363d86d40ff442fe-Abstract.html). *Advances in Neural Information Processing Systems*, 30.
+3. Wagstaff, E., Fuchs, F., Engelcke, M., Posner, I., & Osborne, M. A. (2019). [*On the Limitations of Representing Functions on Sets*](https://proceedings.mlr.press/v97/wagstaff19a.html). *Proceedings of Machine Learning Research*, 97, 6487–6494.
+4. Battaglia, P. W., et al. (2018). [*Relational Inductive Biases, Deep Learning, and Graph Networks*](https://arxiv.org/abs/1806.01261). arXiv:1806.01261.
+5. Vaswani, A., et al. (2017). [*Attention Is All You Need*](https://proceedings.neurips.cc/paper_files/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html). *Advances in Neural Information Processing Systems*, 30.
+6. Gu, A., & Dao, T. (2024). [*Mamba: Linear-Time Sequence Modeling with Selective State Spaces*](https://proceedings.colm.cc/paper_files/paper/2024/hash/12564fe3900e4e2cefb52d4b4ad40625-Abstract-Conference.html). *Conference on Language Modeling*.
+7. Satorras, V. G., Hoogeboom, E., & Welling, M. (2021). [*E(n) Equivariant Graph Neural Networks*](https://proceedings.mlr.press/v139/satorras21a.html). *Proceedings of Machine Learning Research*, 139, 9323–9332.
+8. Liao, Y.-L., Wood, B., Das, A., & Smidt, T. (2024). [*EquiformerV2: Improved Equivariant Transformer for Scaling to Higher-Degree Representations*](https://proceedings.iclr.cc/paper_files/paper/2024/hash/ab12e8f3443c1a789f595b18d8c597b4-Abstract-Conference.html). *International Conference on Learning Representations*.
+9. Lam, R., et al. (2023). [*Learning Skillful Medium-Range Global Weather Forecasting*](https://doi.org/10.1126/science.adi2336). *Science*, 382(6677), 1416–1421.
+10. Veličković, P., & Blundell, C. (2021). [*Neural Algorithmic Reasoning*](https://pmc.ncbi.nlm.nih.gov/articles/PMC8276006/). *Patterns*, 2(7), 100273.
+11. Gavranović, B., et al. (2024). [*Position: Categorical Deep Learning Is an Algebraic Theory of All Architectures*](https://proceedings.mlr.press/v235/gavranovic24a.html). *Proceedings of Machine Learning Research*, 235, 15209–15241.
+12. Cohen, T., & Welling, M. (2016). [*Group Equivariant Convolutional Networks*](https://proceedings.mlr.press/v48/cohenc16.html). *Proceedings of Machine Learning Research*, 48, 2990–2999.
+13. Mitchell, M., et al. (2019). [*Model Cards for Model Reporting*](https://doi.org/10.1145/3287560.3287596). *Proceedings of the Conference on Fairness, Accountability, and Transparency*, 220–229.
+14. Breck, E., Cai, S., Nielsen, E., Salib, M., & Sculley, D. (2017). [*The ML Test Score: A Rubric for ML Production Readiness and Technical Debt Reduction*](https://doi.org/10.1109/BigData.2017.8258038). *IEEE International Conference on Big Data*.
