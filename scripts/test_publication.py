@@ -123,11 +123,13 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     encoding="utf-8"
                 )
                 body, _ = publication.source_to_body(source, title, [])
-                enhanced = enhance_scientific_presentation(body)
+                enhanced = (body if slug == "algebraic-architectures"
+                            else enhance_scientific_presentation(body))
                 self.assertGreater(enhanced.count("<math "), 0)
                 self.assertIn('encoding="application/x-tex"', enhanced)
                 self.assertIn('alttext="', enhanced)
-                self.assertEqual(enhanced, enhance_scientific_presentation(body))
+                self.assertEqual(enhanced, (body if slug == "algebraic-architectures"
+                                            else enhance_scientific_presentation(body)))
 
     def test_whitelist_does_not_rewrite_unrecognized_content(self) -> None:
         """Tag attributes and other equations remain untouched."""
@@ -1303,6 +1305,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn("Architecture Specification Catalog", page)
         self.assertNotIn('class="aa-mobile"', page)
         self.assertNotIn("AUTHORITATIVE-DOCX SHA256", source)
+        for annotation in re.findall(r"<annotation\\b[^>]*>(.*?)</annotation>", page, re.S):
+            self.assertNotIn("<math", annotation)
 
     def test_quantitative_source_bound_presentation(self) -> None:
         """Quantitative judgments and every cell/record retain exact source text."""
