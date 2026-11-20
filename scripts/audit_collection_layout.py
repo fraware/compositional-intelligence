@@ -26,7 +26,7 @@ TABLES = {
     "algebraic-architectures": (0, "Algebraic Architectures"),
     "quantitative-curry-howard": (10, "Quantitative Curry-Howard"),
     "effectful-and-conceptual-intelligence": (
-        19, "Effectful and Conceptual Intelligence"
+        9, "Effectful and Conceptual Intelligence"
     ),
 }
 WIDTHS = (320, 375, 650, 651, 768, 820, 828, 829, 1000, 1001, 1440)

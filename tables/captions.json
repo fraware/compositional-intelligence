@@ -207,80 +207,40 @@
     ],
     "effectful-and-conceptual-intelligence": [
       {
-        "caption": "Contributions to the proposed effectful-agent framework",
-        "source_sha256": "9ee922b9f74240540395925a41f4ed20b69e4f413e3b01da4a5363a4ad952985"
+        "caption": "Components and obligations in the typed-action judgment",
+        "source_sha256": "8b9d603b8e012a7e2be6e3f0c7135763025fd2a586028a1991679d40c6d370d0"
       },
       {
-        "caption": "Suggested reading paths by audience",
-        "source_sha256": "7f61a588e7d3fe2bee9ce96e8ec38758f4e0487caa2bd1e6450fcb5271d44c79"
+        "caption": "Execution phases, authorization decisions, and failure modes",
+        "source_sha256": "4130eb77e21c3115557dfc42b0e1ac800f55ebae8f45743210ffd558c5c0c682"
       },
       {
-        "caption": "Symbols in the typed-action judgment",
-        "source_sha256": "61fd86c6d3e03255fcd6d4393ec9c545c97426b6a9742073df2c43b90954560d"
+        "caption": "Operational effect dimensions and their evidence records",
+        "source_sha256": "0010fb44d0211d87b2f3b09b2bfdcf8abd7d1673faf44d1bc93f6f7e03398b4a"
       },
       {
-        "caption": "Phases of consequential execution and their failure modes",
-        "source_sha256": "22ac27e0915394172d425997e7a3787fb3ae7a1fbb70490091e771de50be1fcf"
+        "caption": "Typed Action Ledger field groups and minimum contents",
+        "source_sha256": "95484ea9d531516fc2db7eaaf24fe7868d16e4318f37a5d7fc611f19aea3f86f"
       },
       {
-        "caption": "Classes of agent effects and associated records",
-        "source_sha256": "3a1f486f835850b160f14bda11273a86aadbca338bc86ed8ffd370ed059a2eb4"
+        "caption": "Repository repair trace and associated evaluation criteria",
+        "source_sha256": "4e751ffb934efef142e68ff8b77674baf04e826cd49fdc4f524eaf2abba86a33"
       },
       {
-        "caption": "Field groups in the Typed Action Ledger",
-        "source_sha256": "a5a4287f8e058bfc627cba7eefc4c420080fdf0b3a9377ad21fb8017d4d65be9"
+        "caption": "Evidential tests for conceptual transfer",
+        "source_sha256": "c3d61e838d1a16d2d94e9358cf643fa35f30984a38b0650df450b684383d84bd"
       },
       {
-        "caption": "Levels of plan maturity for state-changing systems",
-        "source_sha256": "5e35cd553943bc07aa9ee77f9df2ff45c1b50a373e6c16e8dec16ea8edc6496e"
+        "caption": "Benchmark outcomes and limits of operational measurement",
+        "source_sha256": "0adbad23b560f3b14c9192dc797459c3e834d1b1ba5a060456d0c1bb986b5a32"
       },
       {
-        "caption": "Fields in the Concept Transfer Record",
-        "source_sha256": "f9d992ed49a13a1fc1c1032c59cac3e7552655609de293929e723a425e8b6826"
+        "caption": "Principal research questions across the essay series",
+        "source_sha256": "118bf433c083abee6b5f39c96f42fd21e08e6a805493aa1a7073facbc209b2a1"
       },
       {
-        "caption": "Security failures diagnosed through effect control",
-        "source_sha256": "d6e583f4b60c63434edd9ddc1ee10d9104836846053012818628af1dcdc40fb3"
-      },
-      {
-        "caption": "Obligations in the proposed effectful-agent benchmark",
-        "source_sha256": "2b34f74e6bc8bccf18b03d9180b17b1c4088648a10bdcb5e6946cbfe33642677"
-      },
-      {
-        "caption": "Proposed metrics for authorization and execution traces",
-        "source_sha256": "a35ebbc88e09142f6025efc2d2abdfeae4a18928b0eb3eef40cdc9b0a87d9bcf"
-      },
-      {
-        "caption": "Objections to the effectful-agent framework",
-        "source_sha256": "96651cd495e30394034adfa5f4d2094289496a99ce74276f97a6f05d785edc7c"
-      },
-      {
-        "caption": "Failure taxonomy for effectful actions",
-        "source_sha256": "22d47517e5bda1c9528e6d5946f617c6878df09100ffbda79dea421cdc7dc17b"
-      },
-      {
-        "caption": "Proposed kill criteria for the framework",
-        "source_sha256": "3275e58b46bee9dd86d1b51ef51bf6f8af422b9947f04f1596c640e54318dd62"
-      },
-      {
-        "caption": "Contributions of the seven essays in the series",
-        "source_sha256": "2554b624e103eeb81da2ac84cafcb95ac8ce1dac098a9f0cf6d7b139f9a3ced2"
-      },
-      {
-        "caption": "Fields in the Typed Action Ledger schema",
-        "source_sha256": "b24d3114f7c0a0c2c182b4bff593af781ef316d7c9e27c206afc9a9851d170db"
-      },
-      {
-        "caption": "Fields in the effectful-agent benchmark schema",
-        "source_sha256": "7a4caed02f50ef26296d8bc0b17d3007b119867f72c3d772ba66e2cb731e04f5"
-      },
-      {
-        "caption": "Fields in the concept-transfer schema",
-        "source_sha256": "a921c0ac3cfbeeb7afb0b97778acd11a3fa5cf1c151d2e9ed1f8f9eda419d977"
-      },
-      {
-        "caption": "Claim levels in the effectful-agent research agenda",
-        "source_sha256": "b6e22a119517e53897259002ee2d63ce8050653effc5496fa26aa135a8c53712"
+        "caption": "Fields in the Typed Action Ledger record specification",
+        "source_sha256": "7cb3c10790d5cbd294d255c1a6b97b21b026462e8cf516d74ab63f1b37fba512"
       }
     ],
     "compositional-intelligence": [

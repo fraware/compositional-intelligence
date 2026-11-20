@@ -374,151 +374,36 @@ def main() -> int:
                                     effectful = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
                                         const source = [...root.querySelectorAll(
-                                            ".table-scroll[data-ef-alternative='mobile']")];
+                                            '.table-scroll[data-ef-alternative="mobile"]')];
                                         const mobile = [...root.querySelectorAll(".ef-mobile")];
+                                        const shown = el => getComputedStyle(el).display !== "none";
                                         const captions = [...root.querySelectorAll(".ef-caption")];
-                                        const hints = [...root.querySelectorAll(".ef-hint")];
-                                        const visible = e => getComputedStyle(e).display !== "none";
-                                        const seq = root.querySelector(".ef-sequence");
-                                        const stages = [...(seq?.querySelectorAll("li") ?? [])];
-                                        const formulas = [...root.querySelectorAll(".ef-math")];
-                                        const notes = [...root.querySelectorAll(".ef-source-notes li")];
-                                        const main = [...root.querySelectorAll(
-                                            ".ef-sequence,.ef-math,.ef-source-notes")];
-                                        const topBounds = main.map(x => x.getBoundingClientRect());
-                                        const flow = stages.slice(1).every((item,i) => {
-                                            const previous = stages[i].getBoundingClientRect();
-                                            const next = item.getBoundingClientRect();
-                                            return next.top >= previous.bottom;
-                                        });
-                                        const arrows = stages.every(item => {
-                                            const number = getComputedStyle(item, "::before").content;
-                                            const arrow = getComputedStyle(item, "::after").content;
-                                            return number.includes("counter(") &&
-                                                (item === item.parentElement.lastElementChild ?
-                                                    ["none","normal"].includes(arrow) :
-                                                    arrow.includes("↓"));
-                                        });
-                                        const arrowsInFlow = stages.slice(0,-1).every((item,i) => {
-                                            const current = item.getBoundingClientRect();
-                                            const next = stages[i+1].getBoundingClientRect();
-                                            const sequence = seq.getBoundingClientRect();
-                                            const arrow = getComputedStyle(item,"::after");
-                                            const left = Number.parseFloat(arrow.left);
-                                            const bottom = Number.parseFloat(arrow.bottom);
-                                            const x = current.left + left;
-                                            const y = current.bottom - bottom;
-                                            return Number.isFinite(x) && Number.isFinite(y) &&
-                                                x > sequence.left + 2 &&
-                                                x < sequence.right - 10 &&
-                                                y > current.bottom + 2 &&
-                                                y <= next.top + 2;
-                                        });
-                                        const alternatives = formulas.map(box =>
-                                            [...box.querySelectorAll("math mi,math mo")]
-                                                .filter(node => node.textContent.trim() === "∣")
-                                                .length
-                                        );
-                                        const labels = [...root.querySelectorAll(
-                                            ".ef-mobile-16 .ef-field dt,"+
-                                            ".ef-mobile-17 .ef-field dt,"+
-                                            ".ef-mobile-18 .ef-field dt")];
-                                        const schemaLabelsVisuallyHidden = labels.every(label => {
-                                            const style = getComputedStyle(label);
-                                            return style.position === "absolute" &&
-                                                style.clipPath === "inset(50%)";
-                                        });
-                                        const mathBounds = formulas.every(box => {
-                                            const r = box.getBoundingClientRect();
-                                            const m = box.querySelector("math")?.getBoundingClientRect();
-                                            return !!m && m.width > 10 && m.height > 10 &&
-                                                m.left >= r.left - 1 && m.right <= r.right + 1 &&
-                                                m.top >= r.top - 1 && m.bottom <= r.bottom + 1;
-                                        });
-                                        const cardOverflow = [...root.querySelectorAll(
-                                            ".ef-card,.ef-field,.ef-field dd")].filter(el =>
-                                                el.scrollWidth > el.clientWidth + 1).length;
+                                        const ids = [...document.querySelectorAll("[id]")].map(x => x.id);
                                         return {
-                                            native: source.length, mobile: mobile.length,
-                                            nativeShown: source.filter(visible).length,
-                                            mobileShown: mobile.filter(visible).length,
-                                            captions: captions.length,
-                                            captionsShown: captions.filter(visible).length,
+                                            source: source.length,
+                                            mobile: mobile.length,
+                                            sourceShown: source.filter(shown).length,
+                                            mobileShown: mobile.filter(shown).length,
                                             cards: root.querySelectorAll(".ef-card").length,
-                                            fields: root.querySelectorAll(".ef-field").length,
-                                            hints: hints.length,
-                                            hintsShown: hints.filter(visible).length,
-                                            badHints: hints.filter(h =>
-                                                !h.nextElementSibling?.classList.contains("table-scroll") ||
-                                                h.nextElementSibling.getAttribute("aria-describedby") !== h.id
-                                            ).length,
-                                            caption2: root.querySelector("#table-2-caption")?.textContent,
-                                            caption11: root.querySelector("#table-11-caption")?.textContent,
-                                            caption13: root.querySelector("#table-13-caption")?.textContent,
-                                            linked: root.querySelectorAll("#table-2 td a[href]").length,
-                                            stages: stages.length, flow, arrows,
-                                            arrowsInFlow, alternatives,
-                                            schemaLabels: labels.length,
-                                            schemaLabelsVisuallyHidden,
-                                            math: formulas.length,
-                                            mathAlt: formulas.map(e =>
-                                                e.querySelector("math")?.getAttribute("alttext")),
-                                            mathBounds,
-                                            notes: notes.length,
-                                            noteBullets: notes.every(n =>
-                                                getComputedStyle(n, "::before").content.includes("•")),
-                                            cardOverflow,
-                                            overflow: topBounds.filter(b =>
-                                                b.left < -1 || b.right > innerWidth + 1).length,
+                                            captions: captions.length,
+                                            uniqueIds: new Set(ids).size === ids.length,
+                                            overflow: document.documentElement.scrollWidth > innerWidth + 2
                                         };
                                     }""")
-                                    if (effectful["native"] != 19 or
-                                        effectful["mobile"] != 19 or
-                                        effectful["cards"] != 154 or
-                                        effectful["fields"] != 342 or
-                                        effectful["captions"] != 19 or
-                                        effectful["captionsShown"] != 19 or
-                                        effectful["hints"] != 19 or
-                                        effectful["badHints"] or
-                                        effectful["hintsShown"] !=
-                                            (5 if width == 768 else 0) or
-                                        effectful["caption2"] !=
-                                            "Table 2. Recommended reading paths." or
-                                        effectful["caption11"] !=
-                                            "Table 11. Benchmark evaluation metrics." or
-                                        effectful["caption13"] !=
-                                            "Table 13. Effectful execution failure taxonomy." or
-                                        effectful["linked"] < 17 or
-                                        effectful["stages"] != 7 or
-                                        not effectful["flow"] or not effectful["arrows"] or
-                                        not effectful["arrowsInFlow"] or
-                                        effectful["alternatives"] != [0,4,3,0,0,0,0] or
-                                        effectful["schemaLabels"] != 74 or
-                                        (width <= 650 and
-                                         not effectful["schemaLabelsVisuallyHidden"]) or
-                                        effectful["math"] != 7 or
-                                        effectful["mathAlt"] != [
-                                            "Gamma; M; E; C |- a : Pre -> Post ! eps @ rho",
-                                            "handler(eps, rho, Pre, C, E) -> authorize | deny | ask | sandbox | escalate",
-                                            "validator(Post, observed_state_delta, frame_conditions) -> pass | fail | partial | unknown",
-                                            "Gamma; M; E; C |- write_memory(m) : M -> M + {m} ! memory_write @ rho",
-                                            "Gamma; M; E; C |- pi : Pre_0 -> Post_n ! (eps_1 + ... + eps_n) @ rho",
-                                            "skill s : Pre -> Post ! eps",
-                                            "concept_transfer : SourceDomain -> TargetDomain"] or
-                                        not effectful["mathBounds"] or
-                                        effectful["notes"] != 5 or
-                                        not effectful["noteBullets"] or
-                                        effectful["cardOverflow"] or effectful["overflow"] or
+                                    if (effectful["source"] != 9 or effectful["mobile"] != 9 or
+                                        effectful["captions"] != 9 or effectful["cards"] < 9 or
+                                        not effectful["uniqueIds"] or effectful["overflow"] or
                                         (width <= 650 and (
-                                            effectful["nativeShown"] != 0 or
-                                            effectful["mobileShown"] != 19)) or
+                                            effectful["sourceShown"] != 0 or
+                                            effectful["mobileShown"] != 9)) or
                                         (width > 650 and (
-                                            effectful["nativeShown"] != 19 or
-                                            effectful["mobileShown"] != 0))
-                                    ):
+                                            effectful["sourceShown"] != 9 or
+                                            effectful["mobileShown"] != 0))):
                                         failures.append(
-                                            f"{width}px {rel}: effectful publication regression {effectful}"
+                                            f"{width}px {rel}: final edition table layout {effectful}"
                                         )
+                                    elif width == 375:
+                                        responsive_table_alternatives += effectful["mobileShown"]
                                 if rel == "essays/quantitative-curry-howard.html":
                                     quantitative = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
@@ -1173,21 +1058,10 @@ def main() -> int:
                                                 )
                                     if rel == "essays/effectful-and-conceptual-intelligence.html":
                                         for name, selector in (
-                                            ("series-sequence", ".ef-sequence"),
-                                            ("typed-action-math", ".ef-math-1"),
-                                            ("handler-math", ".ef-math-2"),
-                                            ("validator-math", ".ef-math-3"),
-                                            ("memory-math", ".ef-math-4"),
-                                            ("plan-math", ".ef-math-5"),
-                                            ("skills-math", ".ef-math-6"),
-                                            ("transfer-math", ".ef-math-7"),
-                                            ("effect-taxonomy", ".ef-mobile-5"),
-                                            ("phase-table", ".ef-mobile-4"),
-                                            ("source-notes", ".ef-source-notes"),
-                                            ("ledger-schema", ".ef-mobile-16"),
-                                            ("benchmark-schema", ".ef-mobile-17"),
-                                            ("concept-transfer-schema", ".ef-mobile-18"),
-                                            ("metrics-table", ".ef-mobile-11"),
+                                            ("action-judgment", "blockquote code"),
+                                            ("first-mobile-table", ".ef-mobile-1"),
+                                            ("benchmark-table", ".ef-mobile-7"),
+                                            ("first-native-table", ".table-scroll[data-ef-alternative='mobile']"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():

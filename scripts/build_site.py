@@ -122,7 +122,7 @@ def heading_text(raw: str) -> str:
 
 def verify_table_catalog(markdown: str, captions: list[dict[str, str]], title: str) -> None:
     """Validate accessible descriptions against source-bound table digests."""
-    if title in {"Lambek Machines", "Functorial Consistency"}:
+    if title in {"Lambek Machines", "Functorial Consistency", "Effectful and Conceptual Intelligence"}:
         blocks = re.findall(r"(?m)(?:^\|[^\n]*\|\n){3,}", markdown)
     else:
         blocks = [match.group() for match in TABLE.finditer(markdown)]
@@ -369,7 +369,7 @@ def render_toc(body: str) -> str:
 def source_to_body(markdown: str, expected_title: str, table_captions: list[dict[str, str]]) -> tuple[str, str]:
     """Render the authored Markdown to HTML with a fixed Pandoc release."""
     match = TITLE_AUTHOR.match(markdown)
-    if match is None and expected_title in {"Lambek Machines", "Algebraic Architectures", "Functorial Consistency"}:
+    if match is None and expected_title in {"Lambek Machines", "Algebraic Architectures", "Functorial Consistency", "Effectful and Conceptual Intelligence"}:
         match = re.match(r"\A# (" + re.escape(expected_title) + r")\n\n", markdown)
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
@@ -400,10 +400,32 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         if '<h2 id="abstract">' not in body:
             raise ValueError(f"Missing original Abstract: {expected_title}")
         return body, hashlib.sha256(markdown.encode("utf-8")).hexdigest()
-    if expected_title in {"Lambek Machines", "Functorial Consistency"} and not table_captions:
+    if expected_title in {"Lambek Machines", "Functorial Consistency", "Effectful and Conceptual Intelligence"} and not table_captions:
         table_captions = json.loads(
             (ROOT / "tables" / "captions.json").read_text(encoding="utf-8")
         )["essays"][expected_title.lower().replace(" ", "-")]
+    if expected_title == "Effectful and Conceptual Intelligence":
+        # Bind historical heading anchors to Pandoc identifiers.
+        source_lines = source_body.splitlines(keepends=True)
+        rebuilt = []
+        cursor = rewritten = 0
+        while cursor < len(source_lines):
+            marker = re.fullmatch(
+                '<a id="([a-z0-9.-]+)"></a>', source_lines[cursor].strip()
+            )
+            if (marker and cursor + 2 < len(source_lines)
+                    and not source_lines[cursor + 1].strip()
+                    and source_lines[cursor + 2].lstrip().startswith("##")):
+                heading = source_lines[cursor + 2].rstrip(chr(10))
+                rebuilt.append(heading + " {#" + marker.group(1) + "}" + chr(10))
+                cursor += 3
+                rewritten += 1
+                continue
+            rebuilt.append(source_lines[cursor])
+            cursor += 1
+        if rewritten != 30:
+            raise ValueError("Effectful historical heading anchors changed")
+        source_body = "".join(rebuilt)
     verify_table_catalog(source_body, table_captions, expected_title)
     input_format = "markdown+raw_html"
     if expected_title in {"Lambek Machines", "Functorial Consistency"}:

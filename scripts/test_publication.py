@@ -47,8 +47,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     hashlib.sha256(source_file.read_bytes()).hexdigest(),
                     record["markdown_sha256"],
                 )
-                if slug in {"lambek-machines", "algebraic-architectures", "functorial-consistency"}:
-                    self.assertTrue(contents.startswith(f"# {title}\n\n## Abstract\n"))
+                if slug in {"lambek-machines", "algebraic-architectures", "functorial-consistency", "effectful-and-conceptual-intelligence"}:
+                    self.assertTrue(contents.startswith(f"# {title}\n\n"))
+                    self.assertIn("## Abstract\n", contents[:160])
                     self.assertNotIn("AUTHORITATIVE-DOCX SHA256", contents)
                     body, digest = publication.source_to_body(contents, title, [])
                     self.assertEqual(digest, record["markdown_sha256"])
@@ -123,6 +124,9 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     encoding="utf-8"
                 )
                 body, _ = publication.source_to_body(source, title, [])
+                if slug == "effectful-and-conceptual-intelligence":
+                    self.assertIn("Γ; M; E; C", body)
+                    continue
                 enhanced = (body if slug == "algebraic-architectures"
                             else enhance_scientific_presentation(body))
                 self.assertGreater(enhanced.count("<math "), 0)
@@ -1436,196 +1440,66 @@ class ManuscriptFidelityTests(unittest.TestCase):
 
 
     def test_effectful_source_bound_presentation(self) -> None:
-        """Every formal record and scientific table matches the committed V3 source."""
-        import render_effectful as effectful
+        """The final edition preserves historical anchors and derived table parity."""
+        from render_effectful import TABLE_COUNT
 
         slug, title, category, description = publication.ESSAYS[7]
         source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
             encoding="utf-8"
         )
-        original, _ = publication.source_to_body(source, title, [])
-        rendered = effectful.render_effectful_and_conceptual_intelligence(original)
-        page = publication.render_essay(slug, title, category, description, 8, [])
-        self.assertEqual(page.count('class="ef-sequence"'), 1)
-        self.assertEqual(page.count('class="ef-math ef-math-'), 7)
-        self.assertEqual(page.count('class="table-display-caption ef-caption"'), 19)
-        self.assertEqual(page.count('data-ef-alternative="mobile"'), 19)
-        self.assertEqual(page.count('class="ef-card"'), 154)
-        self.assertEqual(page.count('class="ef-field"'), 342)
-        self.assertEqual(page.count('class="ef-source-notes"'), 1)
-
-        with self.subTest("series sequence"):
-            chain = re.search(
-                r'<div class="ef-sequence"[^>]*><ol>'
-                r'([\s\S]*?)</ol></div>', rendered
-            )
-            self.assertIsNotNone(chain)
-            self.assertEqual(
-                re.findall(r"<li>([^<]*)</li>", chain.group(1)),
-                list(effectful.STAGES)
-            )
-
-        with self.subTest("MathML source equivalence"):
-            formulas = re.findall(
-                r'<div class="ef-math ef-math-\d+"[^>]*>'
-                r'([\s\S]*?)</div>', rendered
-            )
-            self.assertEqual(len(formulas), 7)
-            for i, (source_expression, formula) in enumerate(
-                    zip(effectful.EXPRESSION_TEX, formulas, strict=True), 1):
-                self.assertEqual(
-                    re.findall(r'<math\b[^>]*alttext="([^"]+)"', formula),
-                    [escape(source_expression, quote=True).replace(
-                        "&#x27;", "&#x27;"
-                    )]
-                )
-                self.assertIn(
-                    'encoding="application/x-tex"', formula,
-                    f"MathML missing semantic annotation at {i}"
-                )
-            # A semantic regression in the earlier version dropped one "|"
-            # across the explicit line breaks in each alternative list.
-            for index, count in ((1, 4), (2, 3)):
-                formula = formulas[index]
-                annotation = re.search(
-                    r'<annotation encoding="application/x-tex">'
-                    r'([\s\S]*?)</annotation>', formula
-                )
-                self.assertIsNotNone(annotation)
-                self.assertEqual(
-                    unescape(annotation.group(1)).count(r"\mid"),
-                    count,
-                    f"Lost an original alternative separator at MathML {index + 1}"
-                )
-                visible_alternatives = re.findall(
-                    r'<(?:mi|mo)>∣</(?:mi|mo)>', formula
-                )
-                self.assertEqual(
-                    len(visible_alternatives), count,
-                    f"MathML rendering lost a source alternative at {index + 1}"
-                )
-
-        with self.subTest("source-use notes"):
-            original_notes = re.search(
-                r'<blockquote>([\s\S]*?)</blockquote>', original
-            )
-            self.assertIsNotNone(original_notes)
-            notes = re.findall(
-                r"<p>([^<]*)</p>", original_notes.group(1)
-            )
-            self.assertEqual(
-                tuple(unescape(text) for text in notes),
-                effectful.SOURCE_NOTES
-            )
-            styled = re.search(
-                r'<ul class="ef-source-notes">([\s\S]*?)</ul>',
-                rendered
-            )
-            self.assertIsNotNone(styled)
-            self.assertEqual(
-                re.findall(r"<li>([^<]*)</li>",styled.group(1)),
-                [line[2:] for line in effectful.SOURCE_NOTES]
-            )
-
-        self.assertIn(
-            '<a href="#effectful-agent-benchmark-v0.2">11</a>',
-            rendered
+        original, digest = publication.source_to_body(source, title, [])
+        self.assertEqual(digest, self.documents[slug]["markdown_sha256"])
+        page = publication.render_essay(
+            slug, title, category, description, position=7, table_captions=[]
         )
-        self.assertIn(
-            '<a href="#appendix-a.-typed-action-ledger-schema">A</a>',
-            rendered
-        )
-        self.assertIn(
-            '<a href="quantitative-curry-howard.html">Essay 6</a>',
-            rendered
-        )
-        total_rows, total_cells = 0, 0
-        for n in range(1, 20):
-            with self.subTest(table=n):
-                source_table = re.search(
-                    rf'<table data-source-table="{n}" id="table-{n}">'
-                    r'[\s\S]*?</table>', original
-                )
-                html_table = re.search(
-                    rf'<table data-source-table="{n}" id="table-{n}">'
-                    r'[\s\S]*?</table>', rendered
-                )
-                self.assertIsNotNone(source_table)
-                self.assertIsNotNone(html_table)
+        self.assertEqual(TABLE_COUNT, 9)
+        self.assertEqual(original.count("<table "), TABLE_COUNT)
+        self.assertEqual(page.count('data-ef-alternative="mobile"'), TABLE_COUNT)
+        self.assertEqual(page.count('class="ef-mobile ef-mobile-'), TABLE_COUNT)
+        self.assertEqual(page.count('class="table-display-caption ef-caption"'), TABLE_COUNT)
+        self.assertNotIn("AUTHORITATIVE-DOCX SHA256", source)
+        self.assertNotIn('class="byline"', page)
 
-                def normalize(value: str) -> str:
-                    value = re.sub(
-                        r'<caption class="visually-hidden">[^<]*</caption>',
-                        '<caption></caption>', value
-                    )
-                    return re.sub(
-                        r'<a href="[^"]+">([^<]+)</a>', r'\1', value
-                    )
+        authored = re.findall(r'^<a id="([^"]+)"></a>', source, re.M)
+        rendered = re.findall(r'<h[23] id="([^"]+)"', original)
+        self.assertEqual(len(authored), 30)
+        self.assertTrue(set(authored).issubset(set(rendered)))
+        self.assertEqual(len(rendered), len(set(rendered)))
+        self.assertIn('id="concept-to-action-boundary"', original)
+        self.assertIn('id="effectful-agent-benchmark-v0.2"', original)
 
+        for number in range(1, TABLE_COUNT + 1):
+            with self.subTest(table=number):
+                self.assertIn(f'id="table-{number}-caption"', page)
+                self.assertIn(f'id="table-{number}"', page)
+                self.assertIn(f'class="ef-mobile ef-mobile-{number}"', page)
+                table = re.search(
+                    rf'<table id="table-{number}"[^>]*>(.*?)</table>',
+                    page, re.S
+                )
+                cards = re.search(
+                    rf'<section class="ef-mobile ef-mobile-{number}"[^>]*>'
+                    r'(.*?)</section>', page, re.S
+                )
+                self.assertIsNotNone(table)
+                self.assertIsNotNone(cards)
+                rows = len(re.findall(r'<tr\b', re.search(
+                    r'<tbody>(.*?)</tbody>', table.group(1), re.S
+                ).group(1)))
+                self.assertEqual(cards.group(1).count('class="ef-card"'), rows)
                 self.assertEqual(
-                    normalize(source_table.group()),
-                    normalize(html_table.group())
+                    cards.group(1).count('class="ef-field"'),
+                    len(re.findall(r'<td\b', table.group(1)))
                 )
-                tbody = re.search(
-                    r'<tbody>([\s\S]*?)</tbody>', source_table.group()
-                )
-                self.assertIsNotNone(tbody)
-                rows = re.findall(
-                    r'<tr\b[^>]*>([\s\S]*?)</tr>',tbody.group(1)
-                )
-                self.assertEqual(len(rows),effectful.ROWS[n - 1])
-                source_values = [
-                    re.findall(
-                        r'<td(?:\s[^>]*)?>([\s\S]*?)</td>',row
-                    ) for row in rows
-                ]
-                alt = re.search(
-                    rf'<section class="ef-mobile ef-mobile-{n}" '
-                    rf'aria-labelledby="table-{n}-caption">'
-                    r'([\s\S]*?)</section>', rendered
-                )
-                self.assertIsNotNone(alt)
-                cards = re.findall(
-                    r'<dl class="ef-card">([\s\S]*?)</dl>',
-                    alt.group(1)
-                )
-                self.assertEqual(len(cards), len(rows))
-                for values, card in zip(source_values,cards,strict=True):
-                    derived = re.findall(
-                        r'<dd>([\s\S]*?)</dd>', card
-                    )
-                    self.assertEqual(
-                        values,
-                        [
-                            re.sub(
-                                r'<a href="[^"]+">([^<]+)</a>',r'\1',v
-                            ) for v in derived
-                        ],
-                    )
-                    total_cells += len(derived)
-                total_rows += len(cards)
-                self.assertIn(
-                    f'id="table-{n}-caption">' + effectful.CAPTIONS[n],
-                    rendered,
-                )
-        self.assertEqual((total_rows,total_cells), (154,342))
-        for n in (2,11,13):
-            self.assertNotIn(
-                f'<p class="table-display-caption" id="table-{n}-caption">',
-                rendered
-            )
+
+        damaged = source.replace(
+            "| `Γ` | Trusted instruction, policy, and task context |",
+            "| `Γ` | Unspecified instruction and policy context |",
+            1
+        )
+        self.assertNotEqual(damaged, source)
         with self.assertRaises(ValueError):
-            effectful.render_effectful_and_conceptual_intelligence(rendered)
-
-        with self.subTest("source drift detection"):
-            damaged = original.replace(
-                "<p>concept_transfer : SourceDomain -&gt; TargetDomain</p>",
-                "<p>concept_transfer : SourceDomain -&gt; OtherDomain</p>",
-                1
-            )
-            self.assertNotEqual(damaged, original)
-            with self.assertRaises(ValueError):
-                effectful.render_effectful_and_conceptual_intelligence(damaged)
+            publication.source_to_body(damaged, title, [])
 
 
 if __name__ == "__main__":
