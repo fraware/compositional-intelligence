@@ -1593,8 +1593,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
                 )
 
         damaged = source.replace(
-            "A tool's availability describes an execution channel.",
-            "A tool's availability grants blanket permission.",
+            "| `Γ` | Trusted instruction, policy, and task context |",
+            "| `Γ` | Unspecified instruction and policy context |",
             1
         )
         self.assertNotEqual(damaged, source)
