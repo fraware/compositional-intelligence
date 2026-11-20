@@ -72,11 +72,15 @@
       "source_docx": "Essay5_Algebraic_Architectures_V3(1).docx",
       "source_sha256": "aa2ce689a52f15fde0ccea0276a18f3b6c7a316d98ab2a4ec965bdb41196ef20",
       "canonical_text_sha256": "f58bc68306b0d0a5735b0400a68b25446dbcbfa7041fc9a35077cf890dc48177",
-      "markdown_sha256": "ede00bb4252ff06b031822ab5d3af9e98a6bf3ccbd5b870b09f0fb8f38881d12",
+      "markdown_sha256": "42ccce4d3fcabcc9f199086acae97c8d7e4e6f96dc5f88b845c1755f97bbac2a",
       "table_count": 13,
       "heading_count": 28,
       "word_count": 4243,
-      "published_markdown": "algebraic-architectures.md"
+      "published_markdown": "algebraic-architectures.md",
+      "publication_status": "Editorial revision of the V3 DOCX-derived Algebraic Architectures manuscript; historical DOCX fingerprint and original content metrics preserved",
+      "publication_word_count": 4335,
+      "publication_heading_count": 17,
+      "publication_table_count": 0
     },
     "quantitative-curry-howard": {
       "slug": "quantitative-curry-howard",

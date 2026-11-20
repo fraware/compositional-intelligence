@@ -23,7 +23,7 @@ TABLES = {
     "typed-generativity": (15, "Typed Generativity"),
     "functorial-consistency": (8, "Functorial Consistency"),
     "lambek-machines": (4, "Lambek Machines"),
-    "algebraic-architectures": (13, "Algebraic Architectures"),
+    "algebraic-architectures": (0, "Algebraic Architectures"),
     "quantitative-curry-howard": (10, "Quantitative Curry-Howard"),
     "effectful-and-conceptual-intelligence": (
         19, "Effectful and Conceptual Intelligence"
@@ -380,7 +380,8 @@ def main() -> int:
             print("FAIL:", problem)
         return 1
     print(
-        "PASS: collection-wide layout: homepage plus nine texts, 119 source tables, "
+        f"PASS: collection-wide layout: homepage plus {len(TABLES)} texts, "
+        f"{sum(item[0] for item in TABLES.values())} source tables, "
         "11 screen widths, three print widths, A4 documents, "
         "keyboard-scrolling and conditional table cues, anchors, "
         "headings, captions, pagination, text spacing and navigation"

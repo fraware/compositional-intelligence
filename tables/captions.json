@@ -166,52 +166,7 @@
         "source_sha256": "b079b9ce5293d1a8b5694adef26d7fe00ed1d23e303e7b0af4197c3c258a26b5"
       }
     ],
-    "algebraic-architectures": [
-      {
-        "caption": "Contributions and status of the architecture-specification proposal",
-        "source_sha256": "16ea1e12a1d6e44fdae669b0e2377fe07746bd1decc26eac995cd2dc49dd2ee7"
-      },
-      {
-        "caption": "Suggested reading paths by audience",
-        "source_sha256": "b9dec86f1e00d31c25ef2f01c10a4cb8acc5772159d54d41d63c5e98f530c85f"
-      },
-      {
-        "caption": "Architecture-specification regimes and evidence obligations",
-        "source_sha256": "1d6557927a7bdf5e9f5cecb4a5c8a72fdb4068b3f523bcda227cbf398579d3ec"
-      },
-      {
-        "caption": "Underbias, overbias, and cost-related design risks",
-        "source_sha256": "64422a2f8b7de6db85f7b169ccd683dd266eff35c101e66460b945b18c02056f"
-      },
-      {
-        "caption": "Structural lessons and boundaries of relevant architecture literature",
-        "source_sha256": "72bffe8b441486f6751aa9e1b7e3b90875d53fbba873c8e0e15f2ac3fee5bf06"
-      },
-      {
-        "caption": "Fields in the architecture specification catalogue",
-        "source_sha256": "893218096ab6ce2850658a1400e98992e37819ee5d9400f3154cc9315a3aa0a4"
-      },
-      {
-        "caption": "Steps in the architecture comparison protocol",
-        "source_sha256": "3a55d64ca05f8641cdc8b11b2082471bbd02afc52408388c0d6556c3ab0dc2eb"
-      },
-      {
-        "caption": "Proposed pilot families and their validators",
-        "source_sha256": "80d34ac0b3e6b91668f302e44e2d68ddd4bd2e77e8b0f47f10c62f422d8617c6"
-      },
-      {
-        "caption": "Objections to architecture-specification methods",
-        "source_sha256": "8ac826bd9ea51a6d3d871899ecab57487bf637eaaf89a690244cec5b5976c019"
-      },
-      {
-        "caption": "Failure modes and required responses in architectural evaluation",
-        "source_sha256": "ab2a7fad4bc706be0a392977fd42356d7d20f2dcc1f7cecebadac855bac2b5f7"
-      },
-      {
-        "caption": "Proposed architecture-specification kill criteria",
-        "source_sha256": "201436f6429439e8e0e938b9eb2f76b91124a0dbb55a76f49d1ca61b6ba5f0dc"
-      }
-    ],
+    "algebraic-architectures": [],
     "quantitative-curry-howard": [
       {
         "caption": "Contributions and claim status of Quantitative Curry–Howard",
