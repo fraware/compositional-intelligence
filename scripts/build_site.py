@@ -405,9 +405,29 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
             (ROOT / "tables" / "captions.json").read_text(encoding="utf-8")
         )["essays"][expected_title.lower().replace(" ", "-")]
     if expected_title == "Effectful and Conceptual Intelligence":
-        # Match historical section links to Pandoc heading identifiers.
-        source_body, anchor_count = re.subn(
-            r'(?m)^<a id="([a-z0-9.-]+)"></a>\n\n(#{2,4} [^\n]+)    input_format = "markdown+raw_html"
+        # Retain historical links as unique Pandoc heading IDs.
+        source_lines = source_body.splitlines(keepends=True)
+        rebuilt = []
+        cursor = rewritten = 0
+        while cursor < len(source_lines):
+            marker = re.fullmatch(
+                '<a id="([a-z0-9.-]+)"></a>', source_lines[cursor].strip()
+            )
+            if (marker and cursor + 2 < len(source_lines)
+                    and not source_lines[cursor + 1].strip()
+                    and source_lines[cursor + 2].lstrip().startswith("##")):
+                heading = source_lines[cursor + 2].rstrip(chr(10))
+                rebuilt.append(heading + " {#" + marker.group(1) + "}" + chr(10))
+                cursor += 3
+                rewritten += 1
+                continue
+            rebuilt.append(source_lines[cursor])
+            cursor += 1
+        if rewritten != 30:
+            raise ValueError("Effectful historical heading anchors changed")
+        source_body = "".join(rebuilt)
+    verify_table_catalog(source_body, table_captions, expected_title)
+    input_format = "markdown+raw_html"
     if expected_title in {"Lambek Machines", "Functorial Consistency"}:
         input_format += "+tex_math_single_backslash"
     command = ["pandoc", "--from=" + input_format, "--to=html5", "--mathml", "--wrap=none"]
