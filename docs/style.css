@@ -2603,3 +2603,10 @@ a:focus-visible,summary:focus-visible { outline:2px solid var(--link); outline-o
     page-break-before:avoid !important;
   }
 }
+
+/* Revised two-column tables fit at the upper mobile breakpoint. */
+@media screen and (min-width:630px) and (max-width:650px) {
+  .article-content .table-scroll[data-columns="2"] + .table-scroll-hint.fc-editorial-hint {
+    display:none;
+  }
+}
