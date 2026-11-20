@@ -47,7 +47,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     hashlib.sha256(source_file.read_bytes()).hexdigest(),
                     record["markdown_sha256"],
                 )
-                if slug in {"lambek-machines", "algebraic-architectures"}:
+                if slug in {"lambek-machines", "functorial-consistency"}:
                     self.assertTrue(contents.startswith(f"# {title}\n\n## Abstract\n"))
                     self.assertNotIn("AUTHORITATIVE-DOCX SHA256", contents)
                     body, digest = publication.source_to_body(contents, title, [])
@@ -101,7 +101,7 @@ class ManuscriptFidelityTests(unittest.TestCase):
         samples = {
             "semantic-participation": "Member_E(a)",
             "typed-generativity": "P_theta(t : A",
-            "functorial-consistency": "T(f(x))",
+            "functorial-consistency": "T_\theta^{(1)}(f(x))",
             "lambek-machines": "Lambek Auxiliary Supervision",
             "algebraic-architectures": "ArchitectureSpec",
             "quantitative-curry-howard": "quantitative_judgment",
@@ -123,13 +123,11 @@ class ManuscriptFidelityTests(unittest.TestCase):
                     encoding="utf-8"
                 )
                 body, _ = publication.source_to_body(source, title, [])
-                enhanced = (body if slug == "algebraic-architectures"
-                            else enhance_scientific_presentation(body))
+                enhanced = enhance_scientific_presentation(body)
                 self.assertGreater(enhanced.count("<math "), 0)
                 self.assertIn('encoding="application/x-tex"', enhanced)
                 self.assertIn('alttext="', enhanced)
-                self.assertEqual(enhanced, (body if slug == "algebraic-architectures"
-                                            else enhance_scientific_presentation(body)))
+                self.assertEqual(enhanced, enhance_scientific_presentation(body))
 
     def test_whitelist_does_not_rewrite_unrecognized_content(self) -> None:
         """Tag attributes and other equations remain untouched."""
@@ -1117,144 +1115,46 @@ class ManuscriptFidelityTests(unittest.TestCase):
         )
 
 
-    def test_functorial_original_tables_match_every_mobile_field(self) -> None:
-        """Preserve all 419 source cells across 19 source tables and mobile views."""
+    def test_functorial_editorial_source_and_math(self) -> None:
+        """The reviewed manuscript has eight source-bound tables and semantic MathML."""
         slug, title, category, description = publication.ESSAYS[3]
-        text = (publication.ROOT / "essays" / f"{slug}.md").read_text(
-            encoding="utf-8"
-        )
-        source, _ = publication.source_to_body(text, title, [])
-        source = publication.enhance_scientific_presentation(
-            render_functorial_diagram(source)
-        )
-        rendered = render_functorial_tables(source)
-        page = publication.render_essay(slug, title, category, description, 4, [])
-        self.assertIn(rendered, page)
-        self.assertEqual(page.count('data-fc-alternative="mobile"'), 19)
-        self.assertEqual(page.count('<dl class="fc-mobile-record">'), 156)
-        self.assertEqual(page.count('class="fc-record-field"'), 419)
-        self.assertEqual(sum(FC_ROWS.values()), 156)
-
-        source_cells = 0
-        mobile_cells = 0
-        for number in range(1, 20):
-            with self.subTest(table=number):
-                regex = (
-                    rf'<table data-source-table="{number}" id="table-{number}">'
-                    r'[\s\S]*?</table>'
-                )
-                original = re.search(regex, source)
-                output = re.search(regex, rendered)
-                self.assertIsNotNone(original)
-                self.assertIsNotNone(output)
-                def generated_caption_empty(html: str) -> str:
-                    return re.sub(
-                        r'<caption class="visually-hidden">[^<]*</caption>',
-                        '<caption class="visually-hidden"></caption>',
-                        html,
-                    )
-                self.assertEqual(
-                    generated_caption_empty(original.group()),
-                    generated_caption_empty(output.group()),
-                )
-                tbody = re.search(r'<tbody>([\s\S]*?)</tbody>', original.group())
-                self.assertIsNotNone(tbody)
-                rows = re.findall(r'<tr\b[^>]*>([\s\S]*?)</tr>', tbody.group(1))
-                self.assertEqual(len(rows), FC_ROWS[number])
-                original_cells = [
-                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>', row)
-                    for row in rows
-                ]
-                self.assertTrue(all(len(row) == len(FC_HEADERS[number])
-                                    for row in original_cells))
-                mobile = re.search(
-                    rf'<section class="fc-mobile-records fc-mobile-table-{number}" '
-                    rf'aria-labelledby="table-{number}-caption">'
-                    r'([\s\S]*?)</section>', rendered
-                )
-                self.assertIsNotNone(mobile)
-                cards = re.findall(
-                    r'<dl class="fc-mobile-record">([\s\S]*?)</dl>',
-                    mobile.group(1)
-                )
-                self.assertEqual(len(cards), len(original_cells))
-                for row, card in zip(original_cells, cards, strict=True):
-                    mobile_values = re.findall(r'<dd>([\s\S]*?)</dd>', card)
-                    if number in (8, 9):
-                        mobile_values = [
-                            re.sub(r'</?span\b[^>]*>', '', cell)
-                            for cell in mobile_values
-                        ]
-                    self.assertEqual(row, mobile_values)
-                    source_cells += len(row)
-                    mobile_cells += len(row)
-        self.assertEqual(source_cells, 419)
-        self.assertEqual(mobile_cells, 419)
-        self.assertEqual(page.count('class="fc-field-attribute"'), 12)
-        self.assertEqual(page.count('class="fc-field-object"'), 12)
-
-    def test_functorial_diagram_preserves_original_path_condition(self) -> None:
-        """Retain both authorial routes and their explicitly qualified agreement."""
-        slug, title, category, description = publication.ESSAYS[3]
-        text = (publication.ROOT / "essays" / f"{slug}.md").read_text(
-            encoding="utf-8"
-        )
-        source, _ = publication.source_to_body(text, title, [])
-        self.assertIn("T(f(x)) ~ g(T(x))</p>", source)
-        self.assertIn("source object x -- f --&gt;", source)
-        diagram = render_functorial_diagram(source)
-        self.assertEqual(diagram.count('class="fc-commuting"'), 1)
-        self.assertEqual(diagram.count('class="fc-square-node'), 4)
-        self.assertEqual(diagram.count('class="fc-horizontal-arrow"'), 2)
-        self.assertEqual(diagram.count('class="fc-down-arrow"'), 2)
-        self.assertEqual(diagram.count('class="fc-square-relation"'), 1)
-        self.assertIn('aria-label="Paths compared under the stated equivalence regime"', diagram)
-        self.assertEqual(diagram.count('<figcaption>'), 1)
-        self.assertIn('class="fc-condition-formula">T(f(x)) ~ g(T(x))', diagram)
-        self.assertIn('class="fc-node-math">g(T(x))</span>', diagram)
-        self.assertNotIn("source object x -- f --&gt;", diagram)
-        with self.assertRaises(ValueError):
-            render_functorial_diagram(diagram)
-        page = publication.render_essay(slug, title, category, description, 4, [])
-        self.assertIn('alttext="T(f(x)) ~ g(T(x))"', page)
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(encoding="utf-8")
+        body, digest = publication.source_to_body(source, title, [])
+        page = publication.render_essay(slug, title, category, description, 3, [])
+        catalogue = json.loads(
+            (publication.ROOT / "tables" / "captions.json").read_text(encoding="utf-8")
+        )["essays"][slug]
+        self.assertEqual(digest, hashlib.sha256(source.encode("utf-8")).hexdigest())
+        self.assertEqual(len(catalogue), 8)
+        self.assertEqual(body.count('<table id="table-'), 8)
+        self.assertEqual(body.count('class="table-scroll"'), 8)
+        self.assertEqual(body.count('class="visually-hidden"'), 8)
+        self.assertEqual(page.count('<table id="table-'), 8)
+        self.assertGreater(page.count("<math "), 5)
         self.assertIn('encoding="application/x-tex"', page)
-        self.assertEqual(page.count('class="fc-commuting"'), 1)
-        self.assertEqual(page.count('<figcaption>'), 1)
+        self.assertIn('alttext="', page)
+        self.assertNotIn('data-fc-alternative="mobile"', page)
+        self.assertNotIn('class="fc-commuting"', page)
+        self.assertIn("## 13. Conclusion", source)
+        self.assertIn("## References", source)
+        self.assertIn("## Appendix B. Review rubric", source)
 
-    def test_functorial_captions_preserve_original_visible_labels(self) -> None:
-        """Reader-visible captions remain authored; AT captions describe the same table."""
+    def test_functorial_revised_table_descriptions(self) -> None:
+        """Accessible captions match the eight revised manuscript tables."""
         slug, title, category, description = publication.ESSAYS[3]
-        source, _ = publication.source_to_body(
-            (publication.ROOT / "essays" / f"{slug}.md").read_text(
-                encoding="utf-8"
-            ), title, []
-        )
-        page = publication.render_essay(slug, title, category, description, 4, [])
-        for number, label in SOURCE_TABLE_LABELS.items():
+        page = publication.render_essay(slug, title, category, description, 3, [])
+        catalogue = json.loads(
+            (publication.ROOT / "tables" / "captions.json").read_text(encoding="utf-8")
+        )["essays"][slug]
+        for number, row in enumerate(catalogue, 1):
             with self.subTest(table=number):
-                visible = re.search(
-                    rf'<p>(Table {label}\. [^<]+)</p>',
-                    source
-                )
-                self.assertIsNotNone(visible)
-                self.assertIn(visible.group(), page)
-                paragraph = re.search(
-                    rf'<p class="table-display-caption" '
-                    rf'id="table-{number}-caption">([^<]+)</p>',
-                    page
-                )
-                self.assertIsNotNone(paragraph)
-                self.assertEqual(paragraph.group(1).split(" — ")[0],
-                                 visible.group(1))
-                self.assertGreaterEqual(len(paragraph.group(1)), 30)
+                caption = f"Table {number}. {row['caption']}"
                 self.assertIn(
-                    '<caption class="visually-hidden">' +
-                    paragraph.group(1) + '</caption>',
-                    page
+                    '<caption class="visually-hidden">' + caption + '</caption>',
+                    page,
                 )
-        self.assertEqual(page.count('class="fc-scroll-hint"'), 19)
-
-
+                self.assertIn(f'id="table-{number}-caption"', page)
+                self.assertIn(f'aria-labelledby="table-{number}-caption"', page)
 
     def test_lambek_editorial_publication(self) -> None:
         """Validate the new source-based scientific presentation and test artifact."""
@@ -1288,25 +1188,193 @@ class ManuscriptFidelityTests(unittest.TestCase):
                          "illustrative_unvalidated")
 
 
-    def test_algebraic_editorial_presentation(self) -> None:
-        """The editorial essay retains mathematics, references, and a structured example."""
+    def test_algebraic_source_bound_presentation(self) -> None:
+        """All 13 original tables and 12 science structures stay source-faithful."""
+        import render_algebraic as algebraic
+
         slug, title, category, description = publication.ESSAYS[5]
-        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(encoding="utf-8")
-        body, _ = publication.source_to_body(source, title, [])
-        page = publication.render_essay(slug, title, category, description, 5, [])
-        self.assertEqual(len(re.findall(r"<h[23]\b", body)), 17)
-        self.assertEqual(body.count("<table "), 0)
-        self.assertGreaterEqual(page.count('class="math-scroll"'), 11)
-        self.assertEqual(page.count('display="block"'), 11)
-        for heading in ("preservation-under-composition", "molecular-energy-and-forces",
-                        "how-the-proposal-would-be-tested", "references"):
-            self.assertIn(f'id="{heading}"', page)
-        self.assertIn("atomistic_energy_force_v1", page)
-        self.assertIn("Architecture Specification Catalog", page)
-        self.assertNotIn('class="aa-mobile"', page)
-        self.assertNotIn("AUTHORITATIVE-DOCX SHA256", source)
-        for annotation in re.findall(r"<annotation\b[^>]*>(.*?)</annotation>", page, re.S):
-            self.assertNotIn("<math", annotation)
+        source = (publication.ROOT / "essays" / f"{slug}.md").read_text(
+            encoding="utf-8"
+        )
+        original, _ = publication.source_to_body(source, title, [])
+        rendered = algebraic.render_algebraic_architectures(original)
+        page = publication.render_essay(
+            slug, title, category, description, 6, []
+        )
+        self.assertIn('class="aa-specification"', page)
+        self.assertEqual(page.count('class="aa-sequence"'), 2)
+        self.assertEqual(page.count('class="aa-spec-field"'), 9)
+        self.assertEqual(page.count('class="aa-law"'), 1)
+        self.assertEqual(page.count('class="aa-math-cue"'), 0)
+        self.assertEqual(page.count('class="aa-example"'), 6)
+        self.assertEqual(page.count('class="aa-example-field"'), 21)
+        self.assertEqual(page.count('class="aa-record"'), 3)
+        self.assertEqual(page.count('class="aa-record-line '), 71)
+        self.assertEqual(page.count('data-aa-alternative="mobile"'), 13)
+        self.assertEqual(page.count('class="aa-card"'), 93)
+        self.assertEqual(page.count('class="aa-field"'), 231)
+        self.assertIn(
+            'alttext="ArchitectureSpec = (O, T, Sigma, L, G, R, Phi, E, V)"',
+            page
+        )
+        self.assertIn(
+            'id="table-11-caption">' + algebraic.CAPTIONS[11], page
+        )
+        self.assertNotIn(">6.1</a>", page)
+
+        original_structures = list(algebraic.BLOCK.finditer(original))
+        self.assertEqual(len(original_structures), 12)
+        for i, source_block in enumerate(original_structures):
+            lines = algebraic._lines(source_block.group("lines"))
+            with self.subTest(block=i + 1):
+                if i < 2:
+                    self.assertIn(
+                        'class="aa-sequence" role="group"', rendered
+                    )
+                    for part in lines[0].split(" -> "):
+                        self.assertIn("<li>" + part + "</li>", rendered)
+                elif i == 2:
+                    formula = re.search(
+                        r'<div class="aa-spec-formula"[^>]*>([\s\S]*?)</div>'
+                        r'<dl>([\s\S]*?)</dl>',
+                        rendered
+                    )
+                    self.assertIsNotNone(formula)
+                    self.assertIn(
+                        'alttext="' + lines[0] + '"', formula.group(1)
+                    )
+                    self.assertEqual(formula.group(1).count("<mtr>"), 2)
+                    self.assertIn("<mi>Σ</mi>", formula.group(1))
+                    self.assertIn("<mi>Φ</mi>", formula.group(1))
+                    fields = re.findall(
+                        r'<div class="aa-spec-field"><dt>(.*?)</dt>'
+                        r'<dd>(.*?)</dd></div>', formula.group(2)
+                    )
+                    self.assertEqual(
+                        [key + " " + unescape(value) for key, value in fields],
+                        lines[1:]
+                    )
+                elif i <= 8:
+                    identifier = algebraic.EXAMPLE_IDS[i - 3]
+                    example = re.search(
+                        r'<dl class="aa-example" aria-label="Authored worked '
+                        r'example ' + re.escape(identifier) +
+                        r'">([\s\S]*?)</dl>', rendered
+                    )
+                    self.assertIsNotNone(example)
+                    fields = re.findall(
+                        r'<div class="aa-example-field"><dt>(.*?)</dt>'
+                        r'<dd>(.*?)</dd></div>', example.group(1)
+                    )
+                    recovered_fields = []
+                    for name, value in fields:
+                        if identifier == "sets" and name == "Required law":
+                            operands = re.findall(
+                                r'<math[^>]*alttext="([^"]+)"',
+                                value
+                            )
+                            self.assertEqual(len(operands), 2)
+                            self.assertEqual(value.count('class="aa-law-side"'), 2)
+                            self.assertEqual(value.count('class="aa-law-equals"'), 1)
+                            recovered_value = " = ".join(
+                                unescape(part) for part in operands
+                            )
+                        else:
+                            recovered_value = unescape(value)
+                        recovered_fields.append(name + ": " + recovered_value)
+                    self.assertEqual(recovered_fields, lines)
+                else:
+                    heading, count, _ = algebraic.RECORDS[i - 9]
+                    self.assertEqual(len(lines), count)
+                    self.assertEqual(lines[0], heading)
+                    block = re.search(
+                        r'<div class="aa-record" role="group" '
+                        r'aria-label="Source record ' +
+                        re.escape(heading[:-1]) +
+                        r'">([\s\S]*?)</ol></div>', rendered
+                    )
+                    self.assertIsNotNone(block)
+                    title = re.search(
+                        r'<p class="aa-record-title">([\s\S]*?)</p>',
+                        block.group(1)
+                    )
+                    self.assertIsNotNone(title)
+                    clean = lambda text: unescape(
+                        re.sub(r"<[^>]+>", "", text)
+                    )
+                    recovered = [clean(title.group(1))]
+                    recovered.extend(
+                        clean(line) for line in re.findall(
+                            r'<li class="aa-record-line aa-record-'
+                            r'(?:field|bullet)">([\s\S]*?)</li>',
+                            block.group(1)
+                        )
+                    )
+                    self.assertEqual(recovered, lines)
+
+        copied_cells = 0
+        for n in range(1, 14):
+            with self.subTest(table=n):
+                expression = (
+                    rf'<table data-source-table="{n}" id="table-{n}">'
+                    r'[\s\S]*?</table>'
+                )
+                old = re.search(expression, original)
+                new = re.search(expression, rendered)
+                self.assertIsNotNone(old)
+                self.assertIsNotNone(new)
+
+                def neutralize(markup: str) -> str:
+                    markup = re.sub(
+                        r'<caption class="visually-hidden">[^<]*</caption>',
+                        '<caption></caption>', markup
+                    )
+                    return re.sub(
+                        r'<a href="[^"]+">([^<]+)</a>', r'\1', markup
+                    )
+
+                self.assertEqual(
+                    neutralize(old.group()), neutralize(new.group())
+                )
+                tbody = re.search(r'<tbody>([\s\S]*?)</tbody>',old.group())
+                self.assertIsNotNone(tbody)
+                rows = re.findall(
+                    r'<tr\b[^>]*>([\s\S]*?)</tr>',tbody.group(1)
+                )
+                self.assertEqual(len(rows), algebraic.ROWS[n - 1])
+                original_cells = [
+                    re.findall(r'<td(?:\s[^>]*)?>([\s\S]*?)</td>',row)
+                    for row in rows
+                ]
+                alternative = re.search(
+                    rf'<section class="aa-mobile aa-mobile-{n}" '
+                    rf'aria-labelledby="table-{n}-caption">'
+                    r'([\s\S]*?)</section>',rendered
+                )
+                self.assertIsNotNone(alternative)
+                cards = re.findall(
+                    r'<dl class="aa-card">([\s\S]*?)</dl>',
+                    alternative.group(1)
+                )
+                self.assertEqual(len(cards), len(rows))
+                for original_row, card in zip(
+                    original_cells,cards,strict=True
+                ):
+                    copied = re.findall(
+                        r'<dd>([\s\S]*?)</dd>',card
+                    )
+                    self.assertEqual(original_row, [
+                        re.sub(
+                            r'<a href="[^"]+">([^<]+)</a>',r'\1',value
+                        )
+                        for value in copied
+                    ])
+                    copied_cells += len(copied)
+        self.assertEqual(copied_cells, 231)
+        with self.assertRaises(ValueError):
+            algebraic.render_algebraic_architectures(rendered)
+
+
 
     def test_quantitative_source_bound_presentation(self) -> None:
         """Quantitative judgments and every cell/record retain exact source text."""

@@ -42,11 +42,15 @@
       "source_docx": "Essay3_Functorial_Consistency_V3(1).docx",
       "source_sha256": "e0c2a62b7b1c76aeda91f2fee25b3880f7f88d33c93622f71737f8e807ab3b0a",
       "canonical_text_sha256": "b912914267bec25dc29b49cde9e3e11e40934bca6f82a1be636562e139e112ae",
-      "markdown_sha256": "8ea148ddb91152a21362f415e0e1b577c602114f083706b1d73530c176ef1767",
+      "markdown_sha256": "c69fbf06853a7bf922b0dc7e100a37dbce23c200e5369e0114db8ba21c281dcb",
       "table_count": 19,
       "heading_count": 29,
       "word_count": 4704,
-      "published_markdown": "functorial-consistency.md"
+      "published_markdown": "functorial-consistency.md",
+      "publication_status": "Scientific and editorial revision of the V3 manuscript; original DOCX fingerprint and historical metrics retained for provenance",
+      "publication_table_count": 8,
+      "publication_heading_count": 24,
+      "publication_word_count": 5890
     },
     "lambek-machines": {
       "slug": "lambek-machines",
@@ -68,15 +72,11 @@
       "source_docx": "Essay5_Algebraic_Architectures_V3(1).docx",
       "source_sha256": "aa2ce689a52f15fde0ccea0276a18f3b6c7a316d98ab2a4ec965bdb41196ef20",
       "canonical_text_sha256": "f58bc68306b0d0a5735b0400a68b25446dbcbfa7041fc9a35077cf890dc48177",
-      "markdown_sha256": "42ccce4d3fcabcc9f199086acae97c8d7e4e6f96dc5f88b845c1755f97bbac2a",
+      "markdown_sha256": "ede00bb4252ff06b031822ab5d3af9e98a6bf3ccbd5b870b09f0fb8f38881d12",
       "table_count": 13,
       "heading_count": 28,
       "word_count": 4243,
-      "published_markdown": "algebraic-architectures.md",
-      "publication_status": "Editorial revision of the V3 DOCX-derived Algebraic Architectures manuscript; historical DOCX fingerprint and original content metrics preserved",
-      "publication_word_count": 4335,
-      "publication_heading_count": 17,
-      "publication_table_count": 0
+      "published_markdown": "algebraic-architectures.md"
     },
     "quantitative-curry-howard": {
       "slug": "quantitative-curry-howard",

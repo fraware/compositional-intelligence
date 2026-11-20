@@ -35,17 +35,17 @@ def main() -> int:
         body, _ = build_site.source_to_body(source, title, [])
         if slug == "compositional-intelligence":
             body = build_site.render_synthesis_figures(body)
-        if slug == "functorial-consistency":
+        if slug == "functorial-consistency" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_functorial_diagram(body)
         if slug == "lambek-machines" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_lambek_machines(body)
-        if slug == "algebraic-architectures" and "AUTHORITATIVE-DOCX SHA256" in source:
+        if slug == "algebraic-architectures":
             body = build_site.render_algebraic_architectures(body)
         if slug == "quantitative-curry-howard":
             body = build_site.render_quantitative_curry_howard(body)
         if slug == "effectful-and-conceptual-intelligence":
             body = build_site.render_effectful_and_conceptual_intelligence(body)
-        if slug not in {"lambek-machines", "algebraic-architectures"} or "AUTHORITATIVE-DOCX SHA256" in source:
+        if slug not in {"lambek-machines", "functorial-consistency"} or "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.enhance_scientific_presentation(body)
         if slug == "compositional-intelligence":
             body = build_site.render_synthesis_mobile_tables(body)
@@ -56,7 +56,7 @@ def main() -> int:
             body = build_site.render_semantic_participation(body)
         if slug == "typed-generativity":
             body = build_site.render_typed_generativity(body)
-        if slug == "functorial-consistency":
+        if slug == "functorial-consistency" and "AUTHORITATIVE-DOCX SHA256" in source:
             body = build_site.render_functorial_tables(body)
         page = published.read_text(encoding="utf-8")
         if body not in page:

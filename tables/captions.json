@@ -116,76 +116,36 @@
     ],
     "functorial-consistency": [
       {
-        "caption": "Contributions of the proposed transformation benchmark",
-        "source_sha256": "aef1418dc2a75b7aad1d3c5d360f45fe8c88711eef83f5ebdcba4b131934bf3c"
+        "caption": "Approval-gate paths under the revised requirement",
+        "source_sha256": "568c4d3023c86cbe440fc604deac92b472b21bd3b4e9f822bf20a1a19994d086"
       },
       {
-        "caption": "Required fields in a Functorial Consistency evaluation item",
-        "source_sha256": "575404ddaf00a67655d6254c9f8d97e8b36222bf3e8820720c078d3432f38a18"
+        "caption": "Acceptance relations and validator evidence",
+        "source_sha256": "c87d3ea1543e5c2493171261397625720afeb1c17bb511777a1baf3f7e48a7e9"
       },
       {
-        "caption": "Comparison relations and their validator regimes",
-        "source_sha256": "37c905850f821365c79c67976e919b181be8a24656c05ebfb49a5339139c8350"
+        "caption": "Comparison with existing evaluation approaches",
+        "source_sha256": "a9af8c27b3636cea147d0bf09e4125ec52dc4bc94afb6b62c9d00425c4367d5d"
       },
       {
-        "caption": "Distinctions from adjacent evaluation families",
-        "source_sha256": "cca91bbdcb90dc7c42e3c93c31013009a7673f78e7a6cc48a9981a8c3aa1a51e"
+        "caption": "Admissible source transformation families",
+        "source_sha256": "20b1c83eeb2d96897a72144d9e51c1fc689296bad4e5dfe8cabba2823edb33b5"
       },
       {
-        "caption": "Controlled families of source transformations",
-        "source_sha256": "7a54d911a8d13358b32ff61721c06d37ae6bad8b5cbf5a3195723996a2ffb082"
+        "caption": "Diagnostic failure classes and interpretation",
+        "source_sha256": "9f7ddc293a1703210982ed6eb2cd0e889239a97a7cbdd6e6dfe824bcef948ebc"
       },
       {
-        "caption": "Proposed agreement, coverage, and adequacy metrics",
-        "source_sha256": "e00c7951028ef2e04211fe3287d393c5ee40e5b44965ba35b5d5f8a201b617af"
+        "caption": "Required fields for a benchmark specification",
+        "source_sha256": "61a69d131253592c008f14327197d778df6fb7100341b1cabc9b31fcdba107da"
       },
       {
-        "caption": "Failure labels and associated repair implications",
-        "source_sha256": "f33a3ab7a72896b20deb56988076a128c97dd0b286ba7874ae1ffd9579affe40"
+        "caption": "Initial item allocation across evaluation domains",
+        "source_sha256": "d7725f48b4932a5366a2b8247eba8ddff00c612323e95c6defd21ca6e279e2fa"
       },
       {
-        "caption": "Fields of the benchmark-item record",
-        "source_sha256": "bfc600811e3f65459d166ca6b30980742c040d8ee56e2343763ea3c8c1dedee6"
-      },
-      {
-        "caption": "Fields of the model-output record",
-        "source_sha256": "ad8e96966fe0f72eefd0c12f0dc4b09f9621f8ff581736a5f28af92c9fb3719b"
-      },
-      {
-        "caption": "Proposed seed-item allocation across domains",
-        "source_sha256": "fd1147c5d98ce122ee7b9c852edab42cc593ac2af211edfcbb280ed355d1e712"
-      },
-      {
-        "caption": "Annotation steps and acceptance conditions",
-        "source_sha256": "e7c162c1c810102338cb63ff0bbb75ae0fa1de0f3d6c61ec58e2daf6d9be1c52"
-      },
-      {
-        "caption": "Pilot phases and associated work products",
-        "source_sha256": "418eccf8eb2de17da0b7244cab96f8ae82fbe66442e92dbedad55ae2e4a48a40"
-      },
-      {
-        "caption": "Objections and required evaluation controls",
-        "source_sha256": "95da8ffa52d810b333847a40ea6d531c060527418b567818875edbea932142d5"
-      },
-      {
-        "caption": "Failure patterns and project decisions",
-        "source_sha256": "11b85e5cb34f9cd725fe5cd2a7320462c3bebd1ca691a0e08abea28bf5884c43"
-      },
-      {
-        "caption": "Proposed rejection or revision criteria",
-        "source_sha256": "d63a810764124cda5dac6d9d1fd356b15205e1289125d83ac74a94d59dce7da1"
-      },
-      {
-        "caption": "Template fields for a benchmark card",
-        "source_sha256": "0b847eb6da99a1a7768d1572806cdd9c176609a404716a29cd6a7ea238653765"
-      },
-      {
-        "caption": "Worked transformation-benchmark cards",
-        "source_sha256": "2c06506fc20a3913dd869e8ce50306bd62a364279a3fd0e3f2681a33dcb51eb3"
-      },
-      {
-        "caption": "Dimensions in the reviewed-alignment rubric",
-        "source_sha256": "fc9757584d82dd1dad50b9b17e7313dea898f509978dfc7c36c8f9a181667e26"
+        "caption": "Worked benchmark card for the approval task",
+        "source_sha256": "dc90caa560f710789747b08c1170758635394c955898ea4bec193c2b64186943"
       }
     ],
     "lambek-machines": [
@@ -206,7 +166,52 @@
         "source_sha256": "b079b9ce5293d1a8b5694adef26d7fe00ed1d23e303e7b0af4197c3c258a26b5"
       }
     ],
-    "algebraic-architectures": [],
+    "algebraic-architectures": [
+      {
+        "caption": "Contributions and status of the architecture-specification proposal",
+        "source_sha256": "16ea1e12a1d6e44fdae669b0e2377fe07746bd1decc26eac995cd2dc49dd2ee7"
+      },
+      {
+        "caption": "Suggested reading paths by audience",
+        "source_sha256": "b9dec86f1e00d31c25ef2f01c10a4cb8acc5772159d54d41d63c5e98f530c85f"
+      },
+      {
+        "caption": "Architecture-specification regimes and evidence obligations",
+        "source_sha256": "1d6557927a7bdf5e9f5cecb4a5c8a72fdb4068b3f523bcda227cbf398579d3ec"
+      },
+      {
+        "caption": "Underbias, overbias, and cost-related design risks",
+        "source_sha256": "64422a2f8b7de6db85f7b169ccd683dd266eff35c101e66460b945b18c02056f"
+      },
+      {
+        "caption": "Structural lessons and boundaries of relevant architecture literature",
+        "source_sha256": "72bffe8b441486f6751aa9e1b7e3b90875d53fbba873c8e0e15f2ac3fee5bf06"
+      },
+      {
+        "caption": "Fields in the architecture specification catalogue",
+        "source_sha256": "893218096ab6ce2850658a1400e98992e37819ee5d9400f3154cc9315a3aa0a4"
+      },
+      {
+        "caption": "Steps in the architecture comparison protocol",
+        "source_sha256": "3a55d64ca05f8641cdc8b11b2082471bbd02afc52408388c0d6556c3ab0dc2eb"
+      },
+      {
+        "caption": "Proposed pilot families and their validators",
+        "source_sha256": "80d34ac0b3e6b91668f302e44e2d68ddd4bd2e77e8b0f47f10c62f422d8617c6"
+      },
+      {
+        "caption": "Objections to architecture-specification methods",
+        "source_sha256": "8ac826bd9ea51a6d3d871899ecab57487bf637eaaf89a690244cec5b5976c019"
+      },
+      {
+        "caption": "Failure modes and required responses in architectural evaluation",
+        "source_sha256": "ab2a7fad4bc706be0a392977fd42356d7d20f2dcc1f7cecebadac855bac2b5f7"
+      },
+      {
+        "caption": "Proposed architecture-specification kill criteria",
+        "source_sha256": "201436f6429439e8e0e938b9eb2f76b91124a0dbb55a76f49d1ca61b6ba5f0dc"
+      }
+    ],
     "quantitative-curry-howard": [
       {
         "caption": "Contributions and claim status of Quantitative Curry–Howard",

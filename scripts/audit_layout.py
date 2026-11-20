@@ -185,21 +185,6 @@ def main() -> int:
                                               (pr && r.right > pr.right + 4 &&
                                                 !e.closest(".table-scroll,.aa-spec-formula"));
                                           }).length,
-                                        invalidInlineDetails: [...article.querySelectorAll('math[display="inline"]')]
-                                          .map(e => {
-                                            const r = e.getBoundingClientRect();
-                                            const p = e.closest("p,li,blockquote");
-                                            const pr = p?.getBoundingClientRect();
-                                            return {
-                                                label: e.getAttribute("alttext"),
-                                                width: r.width, height: r.height, right: r.right,
-                                                parentRight: pr?.right,
-                                                bad: r.width < 4 || r.height < 4 ||
-                                                    (r.width > window.innerWidth + 1 && !e.closest(".aa-spec-formula")) ||
-                                                    (pr && r.right > pr.right + 4 &&
-                                                        !e.closest(".table-scroll,.aa-spec-formula"))
-                                            };
-                                          }).filter(x => x.bad).slice(0, 4),
                                         invisibleMath: math.filter(e => {
                                             const r = e.getBoundingClientRect();
                                             return r.width < 4 || r.height < 4 ||
@@ -656,30 +641,127 @@ def main() -> int:
                                 if rel == "essays/algebraic-architectures.html":
                                     algebraic = page.evaluate("""() => {
                                         const root = document.querySelector(".article-content");
-                                        const math = [...root.querySelectorAll("math")];
+                                        const source = [...root.querySelectorAll(
+                                            ".table-scroll[data-aa-alternative='mobile']")];
+                                        const mobile = [...root.querySelectorAll(".aa-mobile")];
+                                        const hints = [...root.querySelectorAll(".aa-hint")];
+                                        const visible = e => getComputedStyle(e).display !== "none";
+                                        const main = [...root.querySelectorAll(
+                                            ".aa-sequence,.aa-specification,.aa-example,.aa-record")];
+                                        const overflow = main.filter(e => {
+                                            const b = e.getBoundingClientRect();
+                                            return b.left < -1 || b.right > innerWidth + 1;
+                                        }).length;
+                                        const records = [...root.querySelectorAll(".aa-record")];
+                                        const sequences = [...root.querySelectorAll(".aa-sequence")];
+                                        const allStages = [...root.querySelectorAll(".aa-sequence li")];
+                                        const law = root.querySelector(".aa-law");
+                                        const spec = root.querySelector(".aa-specification");
+                                        const formulaBox = spec?.querySelector(".aa-spec-formula");
+                                        const mathElement = formulaBox?.querySelector("math");
+                                        const formulaBounds = formulaBox?.getBoundingClientRect();
+                                        const mathBounds = mathElement?.getBoundingClientRect();
+                                        const symbolSigma = spec?.querySelector(
+                                            ".aa-spec-field:nth-of-type(3) dt"
+                                        );
+                                        const stageFlow = sequences.every(seq => {
+                                            const items = [...seq.querySelectorAll("li")];
+                                            return items.slice(1).every((item, i) => {
+                                                const previous = items[i].getBoundingClientRect();
+                                                const current = item.getBoundingClientRect();
+                                                return innerWidth >= 1100
+                                                    ? current.left >= previous.right
+                                                    : current.top >= previous.bottom;
+                                            });
+                                        });
+                                        const stageMarks = allStages.every(li => {
+                                            const number = getComputedStyle(li, "::before").content;
+                                            const arrow = getComputedStyle(li, "::after").content;
+                                            return number.includes("counter(") &&
+                                                (li === li.parentElement.lastElementChild ?
+                                                    ["none", "normal"].includes(arrow) : arrow.includes(
+                                                        innerWidth >= 1100 ? "→" : "↓"));
+                                        });
                                         return {
-                                            tables: root.querySelectorAll("table").length,
-                                            displays: root.querySelectorAll(".math-scroll").length,
-                                            count: math.length,
-                                            unlabelled: math.filter(m => !m.getAttribute("alttext")).length,
-                                            record: [...root.querySelectorAll("pre code")].some(
-                                                el => el.textContent.includes("specification_id: atomistic_energy_force_v1")),
-                                            headings: ["preservation-under-composition",
-                                                "molecular-energy-and-forces",
-                                                "how-the-proposal-would-be-tested",
-                                                "references"].every(id => !!document.getElementById(id)),
-                                            overflow: document.documentElement.scrollWidth > innerWidth + 2
+                                            source: source.length, mobile: mobile.length,
+                                            sourceShown: source.filter(visible).length,
+                                            mobileShown: mobile.filter(visible).length,
+                                            cards: root.querySelectorAll(".aa-card").length,
+                                            tableFields: root.querySelectorAll(".aa-field").length,
+                                            hints: hints.length,
+                                            visibleHints: hints.filter(visible).length,
+                                            badHints: hints.filter(h => {
+                                                const next = h.nextElementSibling;
+                                                return !next?.classList.contains("table-scroll") ||
+                                                    next.getAttribute("aria-describedby") !== h.id;
+                                            }).length,
+                                            sequences: sequences.length,
+                                            stages: allStages.length,
+                                            stageFlow, stageMarks,
+                                            specification: root.querySelectorAll(".aa-specification").length,
+                                            symbols: root.querySelectorAll(".aa-spec-field").length,
+                                            formula: root.querySelectorAll(
+                                                '.aa-spec-formula math[alttext="ArchitectureSpec = (O, T, Sigma, L, G, R, Phi, E, V)"]'
+                                            ).length,
+                                            formulaRows: mathElement?.querySelectorAll("mtr").length,
+                                            formulaFits: !!mathBounds && !!formulaBounds &&
+                                                mathBounds.left >= formulaBounds.left - 1 &&
+                                                mathBounds.right <= formulaBounds.right + 1 &&
+                                                mathBounds.width >= 90,
+                                            unwantedScrollCue: root.querySelectorAll(".aa-math-cue").length,
+                                            sigmaOneLine: symbolSigma ?
+                                                symbolSigma.getBoundingClientRect().height <= 26 : false,
+                                            lawTerms: [...(law?.querySelectorAll("math") ?? [])]
+                                                .map(e => e.getAttribute("alttext")),
+                                            lawInBounds: !!law && [...law.querySelectorAll(".aa-law-side")]
+                                                .every(e => {
+                                                    const b = e.getBoundingClientRect();
+                                                    return b.left >= -1 && b.right <= innerWidth + 1;
+                                                }),
+                                            regimeTitleSize: Number.parseFloat(getComputedStyle(
+                                                root.querySelector(".aa-mobile-3 .aa-field:first-child dd")
+                                            ).fontSize),
+                                            examples: root.querySelectorAll(".aa-example").length,
+                                            exampleFields: root.querySelectorAll(".aa-example-field").length,
+                                            records: records.length,
+                                            recordLines: root.querySelectorAll(".aa-record-line").length,
+                                            firstRecordHeight: records[0]?.getBoundingClientRect().height,
+                                            recordOverflows: records.filter(e =>
+                                                e.scrollWidth > e.clientWidth + 1).length,
+                                            caption: root.querySelector("#table-11-caption")?.textContent,
+                                            overflow,
                                         };
                                     }""")
-                                    if (algebraic["tables"] != 0 or
-                                        algebraic["displays"] < 11 or
-                                        algebraic["count"] < 11 or
-                                        algebraic["unlabelled"] or
-                                        not algebraic["record"] or
-                                        not algebraic["headings"] or
-                                        algebraic["overflow"]):
+                                    if (algebraic["source"] != 13 or algebraic["mobile"] != 13 or
+                                        algebraic["cards"] != 93 or algebraic["tableFields"] != 231 or
+                                        algebraic["hints"] != 13 or algebraic["badHints"] or
+                                        algebraic["visibleHints"] != (0 if width <= 650 else 7 if width <= 828 else 0) or
+                                        algebraic["sequences"] != 2 or algebraic["stages"] != 8 or
+                                        not algebraic["stageFlow"] or not algebraic["stageMarks"] or
+                                        algebraic["specification"] != 1 or algebraic["symbols"] != 9 or
+                                        algebraic["formula"] != 1 or algebraic["formulaRows"] != 2 or
+                                        not algebraic["formulaFits"] or algebraic["unwantedScrollCue"] or
+                                        algebraic["lawTerms"] != [
+                                            "F({x_1,...,x_n})",
+                                            "F({x_perm(1),...,x_perm(n)})"] or
+                                        not algebraic["lawInBounds"] or
+                                        (width <= 650 and (
+                                            not algebraic["sigmaOneLine"] or
+                                            algebraic["regimeTitleSize"] < 16 or
+                                            algebraic["firstRecordHeight"] >= 2200)) or
+                                        algebraic["examples"] != 6 or algebraic["exampleFields"] != 21 or
+                                        algebraic["records"] != 3 or algebraic["recordLines"] != 71 or
+                                        algebraic["recordOverflows"] or algebraic["overflow"] or
+                                        algebraic["caption"] !=
+                                            "Table 11. Kill criteria and decision rules." or
+                                        (width <= 650 and
+                                         (algebraic["sourceShown"] != 0 or
+                                          algebraic["mobileShown"] != 13)) or
+                                        (width > 650 and
+                                         (algebraic["sourceShown"] != 13 or
+                                          algebraic["mobileShown"] != 0))):
                                         failures.append(
-                                            f"{width}px {rel}: algebraic layout regression {algebraic}"
+                                            f"{width}px {rel}: Algebraic publication regression {algebraic}"
                                         )
                                 if rel == "essays/lambek-machines.html":
                                     lambek = page.evaluate("""() => {
@@ -1001,107 +1083,29 @@ def main() -> int:
                                 if rel == "essays/functorial-consistency.html":
                                     functorial = page.evaluate("""() => {
                                         const article = document.querySelector(".article-content");
-                                        const square = article.querySelector(".fc-commuting");
-                                        const squareBounds = square?.getBoundingClientRect();
-                                        const nodes = [...(square?.querySelectorAll(
-                                            ".fc-square-node") ?? [])];
-                                        const nodeBounds = nodes.map(n => n.getBoundingClientRect());
-                                        const original = [...article.querySelectorAll(
-                                            ".table-scroll[data-fc-alternative='mobile']"
-                                        )];
-                                        const mobile = [...article.querySelectorAll(".fc-mobile-records")];
-                                        const records = [...article.querySelectorAll(".fc-mobile-record")];
-                                        const fields = [...article.querySelectorAll(".fc-record-field")];
-                                        const hints = [...article.querySelectorAll(".fc-scroll-hint")];
-                                        const sourceVisible = original.filter(e =>
-                                            getComputedStyle(e).display !== "none").length;
-                                        const mobileVisible = mobile.filter(e =>
-                                            getComputedStyle(e).display !== "none").length;
-                                        const shownHints = hints.filter(e =>
-                                            getComputedStyle(e).display !== "none").length;
-                                        const invalidHints = hints.filter(h =>
-                                            !h.nextElementSibling?.classList.contains("table-scroll") ||
-                                            h.nextElementSibling?.getAttribute("aria-describedby") !== h.id
-                                        ).length;
-                                        const visibleRecords = records.filter(r =>
-                                            getComputedStyle(r.closest(".fc-mobile-records")).display !== "none"
-                                        ).map(r => r.getBoundingClientRect());
-                                        const condition = square?.querySelector(
-                                            ".fc-condition-formula math[alttext]"
-                                        );
-                                        const sizes = original.map(e => Number(e.dataset.columns));
+                                        const tables = [...article.querySelectorAll(".table-scroll table")];
+                                        const annotated = [...article.querySelectorAll("math[alttext]")];
+                                        const formulas = [...article.querySelectorAll(".math-scroll")];
                                         return {
-                                            tableCount: original.length,
-                                            tableIds: original.map(e =>
-                                                Number(e.querySelector("table")?.dataset.sourceTable)),
-                                            rowCounts: mobile.map(e =>
-                                                e.querySelectorAll(".fc-mobile-record").length),
-                                            cards: records.length, fields: fields.length,
-                                            sourceVisible, mobileVisible,
-                                            hints: hints.length, shownHints, invalidHints,
-                                            squareNodes: nodes.length,
-                                            squareArrows: square?.querySelectorAll(
-                                                ".fc-horizontal-arrow, .fc-down-arrow").length ?? 0,
-                                            conditionalRelation: square?.querySelectorAll(
-                                                ".fc-square-relation").length ?? 0,
-                                            pathSegments: article.querySelectorAll(
-                                                ".fc-field-object").length,
-                                            pathAttributes: article.querySelectorAll(
-                                                ".fc-field-attribute").length,
-                                            pathOverflow: [...article.querySelectorAll(
-                                                ".fc-field-object, .fc-field-attribute"
-                                            )].filter(e => {
-                                                if (getComputedStyle(e.closest(".fc-mobile-records")).display === "none") {
-                                                    return false;
-                                                }
-                                                const b = e.getBoundingClientRect();
-                                                return b.left < -1 || b.right > innerWidth + 1;
-                                            }).length,
-                                            squareFits: !!squareBounds &&
-                                                squareBounds.left >= -1 && squareBounds.right <= innerWidth + 1 &&
-                                                nodeBounds.every(n => n.left >= -1 && n.right <= innerWidth + 1),
-                                            squareStructure: nodeBounds.length === 4 &&
-                                                nodeBounds[0].right < nodeBounds[1].left &&
-                                                nodeBounds[2].right < nodeBounds[3].left &&
-                                                nodeBounds[0].bottom < nodeBounds[2].top &&
-                                                nodeBounds[1].bottom < nodeBounds[3].top,
-                                            condition: condition?.getAttribute("alttext") ?? null,
-                                            overflowCards: visibleRecords.filter(
-                                                b => b.left < -1 || b.right > innerWidth + 1).length,
-                                            threeAndFourColumnTables: sizes.filter(c => c >= 3).length
+                                            tables: tables.length,
+                                            ids: tables.map(t => t.id),
+                                            math: annotated.length,
+                                            displayMath: formulas.length,
+                                            figures: article.querySelectorAll("figure").length,
+                                            invalidCaptions: tables.filter(t =>
+                                                !t.querySelector("caption") ||
+                                                !t.closest(".table-scroll")?.getAttribute("aria-labelledby")
+                                            ).length,
                                         };
                                     }""")
-                                    expected_rows = [
-                                        5, 8, 6, 5, 8, 9, 12, 16, 13, 5,
-                                        8, 6, 7, 8, 7, 15, 5, 6, 7
-                                    ]
-                                    if (functorial["tableCount"] != 19 or
-                                        functorial["tableIds"] != list(range(1, 20)) or
-                                        functorial["rowCounts"] != expected_rows or
-                                        functorial["cards"] != 156 or functorial["fields"] != 419 or
-                                        functorial["hints"] != 19 or functorial["invalidHints"] or
-                                        functorial["squareNodes"] != 4 or
-                                        functorial["squareArrows"] != 4 or
-                                        functorial["conditionalRelation"] != 1 or
-                                        functorial["pathSegments"] != 12 or
-                                        functorial["pathAttributes"] != 12 or
-                                        functorial["pathOverflow"] != 0 or
-                                        not functorial["squareFits"] or
-                                        not functorial["squareStructure"] or
-                                        functorial["condition"] != "T(f(x)) ~ g(T(x))" or
-                                        functorial["overflowCards"] or
-                                        (width <= 650 and (
-                                            functorial["sourceVisible"] != 0 or
-                                            functorial["mobileVisible"] != 19 or
-                                            functorial["shownHints"] != 0)) or
-                                        (width > 650 and (
-                                            functorial["sourceVisible"] != 19 or
-                                            functorial["mobileVisible"] != 0 or
-                                            functorial["shownHints"] !=
-                                                (functorial["threeAndFourColumnTables"]
-                                                 if width <= 828 else 1)))):
+                                    if (functorial["tables"] != 8 or
+                                        functorial["ids"] != [f"table-{i}" for i in range(1, 9)] or
+                                        functorial["math"] < 5 or
+                                        functorial["displayMath"] < 2 or
+                                        functorial["figures"] != 0 or
+                                        functorial["invalidCaptions"]):
                                         failures.append(
-                                            f"{width}px {rel}: functorial source reading regression {functorial}"
+                                            f"{width}px {rel}: revised manuscript rendering regression {functorial}"
                                         )
                                 table_structure = page.evaluate("""() => ({
                                     invalid: [...document.querySelectorAll(".article-content .table-scroll")]
@@ -1308,10 +1312,17 @@ def main() -> int:
                                                 )
                                     if rel == "essays/algebraic-architectures.html":
                                         for name, selector in (
-                                            ("composition", "#preservation-under-composition"),
-                                            ("molecular-example", "#molecular-energy-and-forces"),
-                                            ("validation", "#how-the-proposal-would-be-tested"),
-                                            ("specification-record", ".article-content pre"),
+                                            ("series-stages", ".aa-sequence"),
+                                            ("architecture-stages", ".aa-sequence:last-of-type"),
+                                            ("architecture-specification", ".aa-specification"),
+                                            ("permutation-law", ".aa-law"),
+                                            ("sets-example", '.aa-example[aria-label="Authored worked example sets"]'),
+                                            ("atomistic-example", '.aa-example[aria-label="Authored worked example molecules-and-3d-atomistic-systems"]'),
+                                            ("architecture-record", '.aa-record[aria-label="Source record architecture_spec"]'),
+                                            ("mismatch-report", '.aa-record[aria-label="Source record architecture_mismatch_report"]'),
+                                            ("evaluation-regimes-mobile", ".aa-mobile-3"),
+                                            ("protocol-mobile", ".aa-mobile-7"),
+                                            ("kill-criteria-mobile", ".aa-mobile-11"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():
@@ -1334,16 +1345,10 @@ def main() -> int:
                                                 )
                                     if rel == "essays/functorial-consistency.html":
                                         for name, selector in (
-                                            ("commuting-square", ".fc-commuting"),
-                                            ("contributions", ".fc-mobile-table-1"),
-                                            ("evaluation-object", ".fc-mobile-table-2"),
-                                            ("metrics", ".fc-mobile-table-6"),
-                                            ("failure-taxonomy", ".fc-mobile-table-7"),
-                                            ("item-schema", ".fc-mobile-table-8"),
-                                            ("output-schema", ".fc-mobile-table-9"),
-                                            ("benchmark-card", ".fc-mobile-table-16"),
-                                            ("worked-cases", ".fc-mobile-table-17"),
-                                            ("editorial-revisions", ".fc-mobile-table-19"),
+                                            ("approval-task", "#table-1"),
+                                            ("equivalence-regimes", "#table-2"),
+                                            ("failure-taxonomy", "#table-5"),
+                                            ("benchmark-card", "#table-8"),
                                         ):
                                             item = page.locator(selector).first
                                             if item.count() and item.is_visible():
