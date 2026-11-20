@@ -418,7 +418,7 @@ def main() -> int:
                                     }""")
                                     if (editorial["headings"] != 13 or
                                         editorial["math"] < 10 or
-                                        editorial["tables"] != 0 or
+                                        editorial["tables"] != 1 or
                                         editorial["width"] > editorial["viewport"] + 1):
                                         failures.append(
                                             f"{width}px {rel}: quantitative editorial layout regression {editorial}"

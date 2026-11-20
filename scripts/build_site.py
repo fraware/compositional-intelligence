@@ -122,7 +122,7 @@ def heading_text(raw: str) -> str:
 
 def verify_table_catalog(markdown: str, captions: list[dict[str, str]], title: str) -> None:
     """Validate accessible descriptions against source-bound table digests."""
-    if title in {"Lambek Machines", "Functorial Consistency", "Effectful and Conceptual Intelligence"}:
+    if title in {"Quantitative Curry–Howard", "Lambek Machines", "Functorial Consistency", "Effectful and Conceptual Intelligence"}:
         blocks = re.findall(r"(?m)(?:^\|[^\n]*\|\n){3,}", markdown)
     else:
         blocks = [match.group() for match in TABLE.finditer(markdown)]
@@ -426,9 +426,19 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         if rewritten != 30:
             raise ValueError("Effectful historical heading anchors changed")
         source_body = "".join(rebuilt)
-    if expected_title in {"Semantic Participation", "Quantitative Curry–Howard"}:
-        # Reviewed manuscripts supersede the historical table inventories.
+    if expected_title == "Semantic Participation":
+        # This editorial manuscript contains no tables.
         table_captions = []
+    elif expected_title == "Quantitative Curry–Howard":
+        # The revised source has one authored comparison table. Bind the
+        # accessible title to its Markdown block and the full source checksum.
+        blocks = re.findall(r"(?m)(?:^\|[^\n]*\|\n){3,}", source_body)
+        if len(blocks) != 1:
+            raise ValueError("Quantitative Curry–Howard must contain one authored evidence table")
+        table_captions = [{
+            "caption": "Prospective and retrospective evidence records compared by purpose.",
+            "source_sha256": hashlib.sha256(blocks[0].encode("utf-8")).hexdigest(),
+        }]
     verify_table_catalog(source_body, table_captions, expected_title)
     input_format = "markdown+raw_html"
     if expected_title in {"Semantic Participation", "Quantitative Curry–Howard", "Lambek Machines", "Functorial Consistency"}:

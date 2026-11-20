@@ -1010,7 +1010,8 @@ class ManuscriptFidelityTests(unittest.TestCase):
         self.assertIn('encoding="application/x-tex"', page)
         self.assertIn('class="math-scroll"', page)
         self.assertNotIn('data-qc-alternative="mobile"', page)
-        self.assertEqual(page.count("<table "), 0)
+        self.assertEqual(page.count("<table "), 1)
+        self.assertIn("Prospective and retrospective evidence records", page)
 
     def test_effectful_source_bound_presentation(self) -> None:
         """The final edition preserves historical anchors and derived table parity."""

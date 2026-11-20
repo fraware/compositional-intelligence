@@ -24,7 +24,7 @@ TABLES = {
     "functorial-consistency": (8, "Functorial Consistency"),
     "lambek-machines": (4, "Lambek Machines"),
     "algebraic-architectures": (0, "Algebraic Architectures"),
-    "quantitative-curry-howard": (0, "Quantitative Curry–Howard"),
+    "quantitative-curry-howard": (1, "Quantitative Curry–Howard"),
     "effectful-and-conceptual-intelligence": (
         9, "Effectful and Conceptual Intelligence"
     ),

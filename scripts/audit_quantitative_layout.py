@@ -203,7 +203,7 @@ def audit_editorial(markup: str, screenshots: Path | None) -> int:
                             result["sections"] != 13 or
                             result["mathCount"] < 10 or
                             result["unlabelledMath"] or
-                            result["tables"] or result["overflow"]):
+                            result["tables"] != 1 or result["overflow"]):
                             failures.append(f"{width}px {mode}: {result}")
                         if screenshots is not None and mode == "screen" and width in (320, 1440):
                             page.locator("article").screenshot(
