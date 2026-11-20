@@ -10,6 +10,8 @@ from __future__ import annotations
 from html import escape, unescape
 import re
 
+from render_lambek import mathml
+
 TABLE_COUNT = 9
 TABLE_GROUP = re.compile(
     r'<div class="table-scroll"[^>]*>[\s\S]*?</table>\s*</div>', re.I
@@ -71,6 +73,17 @@ def render_effectful_and_conceptual_intelligence(body: str) -> str:
     Reject any unexpected source inventory, missing caption, or mismatched table
     columns. Native table data is never edited; mobile data uses these same cells.
     """
+    # Publication-only MathML for the authored typed-action judgment.
+    # Preserve the exact original expression as alternative text.
+    judgment = "Γ; M; E; C ⊢ a : Pre → Post ! ε @ ρ"
+    code = "<code>" + judgment + "</code>"
+    if body.count(code) != 2:
+        raise ValueError("Effectful action judgment transcription changed")
+    latex = (
+        r"\Gamma;M;E;C\vdash a:\mathrm{Pre}\to\mathrm{Post}"
+        r"\;!\,\varepsilon@\rho"
+    )
+    body = body.replace(code, mathml(judgment, latex))
     matches = list(TABLE_GROUP.finditer(body))
     if len(matches) != TABLE_COUNT:
         raise ValueError(
