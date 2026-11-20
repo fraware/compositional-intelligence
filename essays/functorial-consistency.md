@@ -1,1153 +1,318 @@
 # Functorial Consistency
 
-*Mateo Petel*
+## Abstract
 
-<!-- AUTHORITATIVE-DOCX SHA256 e0c2a62b7b1c76aeda91f2fee25b3880f7f88d33c93622f71737f8e807ab3b0a; source Essay3_Functorial_Consistency_V3(1).docx -->
+Local validation establishes a property of an AI-generated artifact under a specified checker. It does not establish that a translation respects changes to the task from which the artifact originated. A formally accepted theorem might express a weaker proposition, a functioning program might omit an added requirement, and a plan might reach its goal through a prohibited action. These defects concern correspondence across transformations, even in cases where individual outputs pass their local checks.
 
-<h2 id="abstract">Abstract</h2>
-<p>Functorial Consistency evaluates AI-generated artifacts by path agreement under structured transformation. The object of evaluation is a commutation-square item containing a source object, a source-side transformation, a translation or semantic transport, a corresponding target-side transformation, an equivalence regime, and a validator. The benchmark asks whether transform-then-translate agrees with translate-then-transform according to the acceptance relation declared for the target environment.</p>
-<p>The proposal addresses a failure mode that local correctness obscures. A generated proof, program, semantic representation, plan, or claim record can validate locally and still lose an assumption, alter generality, change target type, ignore an added constraint, or satisfy a validator that measures the wrong relation. Functorial Consistency makes such failures observable by comparing two typed paths through the same transformation problem.</p>
-<p>The contribution is a benchmark specification, not an empirical result. The essay distinguishes Functorial Consistency from accuracy, robustness, self-consistency, metamorphic testing, and standard compositional generalization. It then gives domain instantiations, equivalence regimes, metrics, failure labels, annotation procedures, a minimal pilot plan, and kill criteria. The proposal earns scientific value only if commutation-square records reveal actionable failures beyond local validity and ordinary perturbation tests.</p>
-<p>Table 1. Contribution summary.</p>
-<p class="table-display-caption" id="table-1-caption">Table 1. Contribution summary.</p>
-<div aria-labelledby="table-1-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="1" id="table-1"><caption class="visually-hidden">Table 1. Contribution summary.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>ID</strong></th>
-<th scope="col"><strong>Contribution</strong></th>
-<th scope="col"><strong>Technical content</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>C1</td>
-<td>Benchmark unit</td>
-<td>The commutation-square record specifies x, f, T, g, epsilon, and V as the minimal unit of structure-preservation evaluation.</td>
-</tr>
-<tr class="even">
-<td>C2</td>
-<td>Equivalence-regime control</td>
-<td>Every agreement judgment names the acceptance relation, validator, reviewer protocol, and decision rule.</td>
-</tr>
-<tr class="odd">
-<td>C3</td>
-<td>Domain instantiation</td>
-<td>The benchmark is specified for mathematics-to-Lean, requirements-to-code, semantic parsing, planning, and science-facing artifact transport.</td>
-</tr>
-<tr class="even">
-<td>C4</td>
-<td>Failure localization</td>
-<td>The taxonomy separates object failure, transformation failure, translation failure, target-transformation failure, non-commutation, type drift, assumption loss, and validator mismatch.</td>
-</tr>
-<tr class="odd">
-<td>C5</td>
-<td>Falsification conditions</td>
-<td>The proposal is narrowed or rejected if path agreement adds no diagnostic signal beyond local metrics or if equivalence judgments cannot be made reliable.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="evaluation-object">1. Evaluation object</h2>
-<p>Functorial Consistency evaluates relation preservation across two typed construction paths. The evaluator supplies a source artifact x, a source-side transformation f, a translation or semantic transport T, and a target-side transformation g intended to realize the same change after translation. The comparison concerns the two target artifacts produced by the square, not the surface similarity of intermediate text.</p>
-<blockquote>
-<p>source object x -- f --&gt; transformed source f(x)<br/>
-| |<br/>
-T T<br/>
-v v<br/>
-target object T(x) -- g --&gt; transformed target g(T(x))<br/>
-<br/>
-Evaluation condition<br/>
-T(f(x)) ~ g(T(x))</p>
-</blockquote>
-<p>The formula is a specification pattern whose content comes from the declared environments and validators. A square has no evaluative force until the source environment, target environment, transformation family, equivalence regime, and acceptance procedure have been fixed. The approximation sign therefore functions as a pointer to an audit record, not as a mathematical license for informal agreement.</p>
-<p>Path agreement is typed by the target environment. In a proof assistant, agreement can use implication, theorem equivalence, definitional equality, or reviewed alignment between an informal source and a formal statement. In executable settings, agreement can use a reference specification, property tests, trace comparison, or refinement checks. In semantic parsing and planning, the relevant relation is determined by denotation, graph structure, goal satisfaction, precondition satisfaction, effect constraints, and resource constraints.</p>
-<h2 id="position-within-the-compositional-intelligence-series">2. Position within the Compositional Intelligence series</h2>
-<p>Functorial Consistency supplies the transformation test for the first three layers of the series. Semantic Participation specifies membership conditions for artifacts in structured environments. Typed Generativity specifies how a model infers a target object and constructs a candidate inhabitant. Functorial Consistency then tests whether the candidate artifact maintains the relation that connects it to source transformations and target operations.</p>
-<p>The test constrains the later layers by requiring each extension to state its preserved structure. A language extension must state which semantic relation should commute under paraphrase or scope transformation. An architecture extension must state which task transformations a model family supports. A warrant layer must state how scores relate to validation, repair, or epistemic status. An action layer must state how traces preserve preconditions, postconditions, authority, and permitted effects.</p>
-<p>This role also limits the claim. The essay does not assert that all AI evaluation reduces to commutation. It identifies a class of failures that arise when an artifact moves between representations or environments under a structured change. The benchmark should be used where a corresponding target-side operation and an acceptance relation can be stated with enough precision for annotation and repair.</p>
-<h2 id="formal-status-of-the-square">3. Formal status of the square</h2>
-<p>The commutation square uses category-theoretic notation as an operational control on evaluation design. Objects, transformations, transports, and path agreement force the benchmark author to specify both routes through the task. The notation contributes only if it improves item construction, failure localization, annotation reliability, and repair guidance.</p>
-<p>The source and target environments need not satisfy a full categorical formalization for the benchmark to operate. A proof assistant, codebase, semantic parser, planning domain, or scientific workflow can supply artifacts and admissible transformations without a complete category-theoretic account. The relevant requirement is weaker and more practical. The environment must support enough structure to define the two paths and decide target-side agreement.</p>
-<p>Table 2. Minimal FunctorialConsistencyItem fields.</p>
-<p class="table-display-caption" id="table-2-caption">Table 2. Minimal FunctorialConsistencyItem fields.</p>
-<div aria-labelledby="table-2-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="2" id="table-2"><caption class="visually-hidden">Table 2. Minimal FunctorialConsistencyItem fields.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Field</strong></th>
-<th scope="col"><strong>Meaning</strong></th>
-<th scope="col"><strong>Required annotation</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>E_s</td>
-<td>Source environment</td>
-<td>Object language, task context, source validation assumptions.</td>
-</tr>
-<tr class="even">
-<td>E_t</td>
-<td>Target environment</td>
-<td>Formal system, executable interface, parser target, planner, workflow, or review setting.</td>
-</tr>
-<tr class="odd">
-<td>x</td>
-<td>Source object</td>
-<td>The artifact or statement before transformation.</td>
-</tr>
-<tr class="even">
-<td>f</td>
-<td>Source transformation</td>
-<td>Named operation with a declared semantic effect.</td>
-</tr>
-<tr class="odd">
-<td>T</td>
-<td>Translation or semantic transport</td>
-<td>Procedure that maps source artifacts to target artifacts.</td>
-</tr>
-<tr class="even">
-<td>g</td>
-<td>Target-side transformation</td>
-<td>Operation in the target environment corresponding to f.</td>
-</tr>
-<tr class="odd">
-<td>epsilon</td>
-<td>Equivalence or acceptance regime</td>
-<td>Relation used to compare the two target artifacts.</td>
-</tr>
-<tr class="even">
-<td>V</td>
-<td>Validator or review protocol</td>
-<td>Formal checker, executable test, denotational comparison, constraint checker, or reviewer rubric.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="equivalence-regimes">4. Equivalence regimes</h2>
-<p>The equivalence regime is the benchmark field that prevents path agreement from collapsing into impressionistic similarity. It states which relation the two target artifacts must satisfy and which procedure decides that relation. A dataset mixing formal proof equivalence, executable behavior, denotation, constraint satisfaction, and expert review must label those regimes separately.</p>
-<p>Table 3. Equivalence regimes for path-agreement evaluation.</p>
-<p class="table-display-caption" id="table-3-caption">Table 3. Equivalence regimes for path-agreement evaluation.</p>
-<div aria-labelledby="table-3-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="3" id="table-3"><caption class="visually-hidden">Table 3. Equivalence regimes for path-agreement evaluation.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Regime</strong></th>
-<th scope="col"><strong>Acceptance relation</strong></th>
-<th scope="col"><strong>Validator</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Formal</td>
-<td>Targets are identical, interderivable, or equivalent inside a formal environment.</td>
-<td>Definitional equality, theorem equivalence, provable implication, alpha equivalence.</td>
-</tr>
-<tr class="even">
-<td>Executable</td>
-<td>Targets exhibit the same behavior under a stated specification.</td>
-<td>Unit tests, property tests, refinement checks, model checking, trace comparison.</td>
-</tr>
-<tr class="odd">
-<td>Denotational</td>
-<td>Targets denote the same semantic object or produce the same query result.</td>
-<td>Logical equivalence, graph isomorphism, normalized forms, controlled-model evaluation.</td>
-</tr>
-<tr class="even">
-<td>Constraint</td>
-<td>Targets satisfy the same operative requirements despite surface differences.</td>
-<td>Precondition checks, postcondition checks, frame conditions, resource and authority constraints.</td>
-</tr>
-<tr class="odd">
-<td>Reviewed</td>
-<td>Expert or hybrid review decides whether intended meaning is preserved.</td>
-<td>Rubric-based review, agreement statistics, adjudication, recorded failure label.</td>
-</tr>
-<tr class="even">
-<td>Layered</td>
-<td>Several relations are required for acceptance.</td>
-<td>Combined formal, executable, denotational, and reviewed decisions with explicit precedence.</td>
-</tr>
-</tbody>
-</table></div>
-<p>Reviewed alignment is admissible only when stronger validators are unavailable or incomplete. The review protocol must specify the rubric, reviewer expertise, agreement metric, adjudication rule, and accepted failure labels. An item that hides expert judgment behind the symbol epsilon is underspecified and should be excluded from early benchmark releases.</p>
-<p>Layered equivalence is often necessary in high-value domains. Mathematics-to-Lean can require formal equivalence between target statements and reviewed alignment between the informal claim and the formal statement. Scientific artifact transport can require workflow validity, statistical-assumption review, and epistemic-type control. Agent plans can require goal satisfaction, effect checking, and authority review in a single item.</p>
-<h2 id="relation-to-adjacent-evaluation-families">5. Relation to adjacent evaluation families</h2>
-<p>Functorial Consistency should be compared directly with established evaluation practices. Its novelty is not the claim that transformations matter. Its specific contribution is the reusable path-agreement record that combines source transformation, target transport, target-side operation, explicit equivalence regime, and failure localization.</p>
-<p>Table 4. Distinction from adjacent evaluation families.</p>
-<p class="table-display-caption" id="table-4-caption">Table 4. Distinction from adjacent evaluation families.</p>
-<div aria-labelledby="table-4-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="4" id="table-4"><caption class="visually-hidden">Table 4. Distinction from adjacent evaluation families.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Evaluation family</strong></th>
-<th scope="col"><strong>Primary question</strong></th>
-<th scope="col"><strong>Additional requirement introduced here</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Accuracy</td>
-<td>Does the local output satisfy the item.</td>
-<td>Compare two paths through a transformation square.</td>
-</tr>
-<tr class="even">
-<td>Robustness</td>
-<td>Does output quality stay stable under perturbation.</td>
-<td>Measure structured covariance under a typed transformation.</td>
-</tr>
-<tr class="odd">
-<td>Self-consistency</td>
-<td>Do repeated samples or reasoning paths agree.</td>
-<td>Compare transform-then-translate against translate-then-transform.</td>
-</tr>
-<tr class="even">
-<td>Compositional generalization</td>
-<td>Can the model recombine familiar structures in new configurations.</td>
-<td>Record source and target transformations plus an acceptance relation.</td>
-</tr>
-<tr class="odd">
-<td>Metamorphic testing</td>
-<td>Do outputs satisfy relations induced by input transformations.</td>
-<td>Add source-target transport and target-side transformation as first-class fields.</td>
-</tr>
-</tbody>
-</table></div>
-<p>The benchmark should be narrowed if path agreement merely reproduces the ranking obtained from local validity or standard robustness tests. The intended diagnostic gain appears when two target artifacts validate locally, but the square exposes assumption loss, unintended weakening, overstrengthening, type drift, or constraint mention without operative integration.</p>
-<h2 id="benchmark-domains">6. Benchmark domains</h2>
-<p>The initial benchmark should prioritize domains where validators can be made explicit. Mathematics-to-Lean, requirements-to-code, semantic parsing, and planning supply target environments with formal, executable, denotational, or constraint-based checks. Science-facing claim transport is central to the series, but its early use should be limited to a reviewed-alignment track until annotation reliability has been measured.</p>
-<h3 id="informal-mathematics-to-lean">6.1 Informal mathematics to Lean</h3>
-<p>Mathematical formalization provides the cleanest starting point for path-agreement evaluation. The target environment can check formal artifacts, and the remaining difficulty is source-target alignment. A Lean theorem can pass the kernel and still represent a weakened, overstrengthened, or misdirected version of the informal source claim.</p>
-<p>A diagnostic item can use maximum attainment as the source relation. One path specializes an informal compact-domain theorem to a closed interval and then formalizes it. The other path formalizes the general theorem and specializes the resulting target statement. Agreement requires a formal relation inside Lean, together with reviewed alignment confirming that the target still expresses attainment by a witness point and not merely existence of a supremum. The item therefore tests formal validity and alignment loss in a single square.</p>
-<h3 id="natural-language-requirements-to-code">6.2 Natural-language requirements to code</h3>
-<p>Requirements-to-code tasks expose path failures through executable specifications. A requirement transformation often adds a behavioral constraint that a model can mention in comments, handle for a narrow case, or omit from the operative implementation. Path comparison separates code that passes simple examples from code that satisfies the transformed specification.</p>
-<p>An order-preserving deduplication item illustrates the mechanism. The source transformation adds idempotence and generic element handling to the original order-preservation requirement. The target-side operation adds property tests for first-occurrence order, repeated application, and element generality. Agreement is executable when both paths satisfy the same reference properties and counterexample suite. A failure in this item identifies constraint integration, interface drift, or behavioral overfitting more precisely than local tests alone.</p>
-<h3 id="natural-language-to-semantic-parse">6.3 Natural language to semantic parse</h3>
-<p>Semantic parsing is suited to controlled transformation families. The source side can vary paraphrase, quantifier scope, attachment, lexical choice, or representation format, and the target side can compare logical form, denotation, graph structure, or query result. Early items should avoid open-ended paraphrase and use transformations whose semantic effect is annotated before model evaluation.</p>
-<p>A quantifier-scope item gives the benchmark a clear target relation. The source transformation fixes an existential wide-scope reading before parsing. The target-side operation normalizes the produced logical form to that selected scope. Path agreement is decided through logical or denotational equivalence over controlled models, so the benchmark tests whether surface transformations alter the represented meaning in the intended direction.</p>
-<h3 id="goals-to-plans">6.4 Goals to plans</h3>
-<p>Planning items test whether source-side constraint changes lead to target-side plan changes with operative effects. A locally successful final state can conceal missing preconditions, resource conflicts, approval dependencies, or unintended side effects. Path agreement therefore requires both goal satisfaction and trace-level constraint satisfaction.</p>
-<p>A human-approval item supplies a compact diagnostic case. The source transformation requires approval before external transmission of a report. The target-side operation inserts the approval request and prevents the send step until approval is recorded. Agreement requires precondition satisfaction, effect-trace validation, and authority-boundary review. A plan that reaches the final state without the gate fails the square despite apparent task completion.</p>
-<h3 id="scientific-protocols-to-claims">6.5 Scientific protocols to claims</h3>
-<p>Science-facing items require layered review in domains where formal equivalence is unavailable. Protocol transformations can add controls, alter uncertainty assumptions, impose stopping rules, or restrict permitted claims. The target artifact is often a claim record whose epistemic type must match the available evidence.</p>
-<p>A simulation-to-empirical item tests warrant preservation. The source artifact is a simulation-derived stability result. The source transformation adds empirical measurement requirements. The target-side transformation changes the claim record so that empirical support is granted only after measurement evidence is present. Agreement is judged through epistemic-type preservation and expert review of evidence status. This track should remain small until reviewed-alignment protocols reach acceptable reliability.</p>
-<h2 id="transformation-families">7. Transformation families</h2>
-<p>A transformation family is admissible only when it has a meaningful source-side operation and a corresponding target-side operation. Arbitrary perturbations weaken the benchmark, since path agreement depends on typed transformations whose semantic effect can be checked or reviewed. The first dataset should therefore use a small controlled set before expanding to richer transformations.</p>
-<p>Table 5. Controlled transformation families.</p>
-<p class="table-display-caption" id="table-5-caption">Table 5. Controlled transformation families.</p>
-<div aria-labelledby="table-5-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="5" id="table-5"><caption class="visually-hidden">Table 5. Controlled transformation families.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Family</strong></th>
-<th scope="col"><strong>Definition</strong></th>
-<th scope="col"><strong>Initial domains</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Paraphrase</td>
-<td>Change surface wording with intended meaning preservation.</td>
-<td>Semantic parsing, mathematics, protocols.</td>
-</tr>
-<tr class="even">
-<td>Specialization</td>
-<td>Restrict a general artifact to a specified case.</td>
-<td>Mathematics, code, planning.</td>
-</tr>
-<tr class="odd">
-<td>Generalization</td>
-<td>Lift a specific artifact to a broader class.</td>
-<td>Mathematics, architecture, protocols.</td>
-</tr>
-<tr class="even">
-<td>Constraint addition</td>
-<td>Add a requirement, precondition, approval step, resource limit, or invariant.</td>
-<td>Code, planning, agents, science.</td>
-</tr>
-<tr class="odd">
-<td>Representation change</td>
-<td>Move an artifact among natural language, formal statement, code, graph, plan, or evidence record.</td>
-<td>All core domains.</td>
-</tr>
-<tr class="even">
-<td>Decomposition</td>
-<td>Split an artifact into subartifacts whose recomposition has a declared relation.</td>
-<td>Code, proofs, plans, protocols.</td>
-</tr>
-<tr class="odd">
-<td>Refinement</td>
-<td>Replace an underspecified artifact with a more precise target object.</td>
-<td>Requirements, theorem statements, claim records.</td>
-</tr>
-<tr class="even">
-<td>Authority transformation</td>
-<td>Change the action or claim that an artifact is permitted to support.</td>
-<td>Agent plans, tool calls, laboratory actions.</td>
-</tr>
-</tbody>
-</table></div>
-<p>A transformation family should be removed from the initial release if annotators cannot define the corresponding target-side operation. This rule is stricter than ordinary perturbation design and is central to the benchmark. The transformation must induce a checkable target-side relation.</p>
-<h2 id="metrics">8. Metrics</h2>
-<p>Functorial Consistency requires diagnostic metrics in place of a single aggregate score. Local validity and path agreement measure different properties. A system with high local validity and low path agreement is structurally unreliable; a system with high path agreement on trivial transformations has passed an insufficiently demanding item.</p>
-<p>Table 6. Recommended metrics.</p>
-<p class="table-display-caption" id="table-6-caption">Table 6. Recommended metrics. — Metric, Question, Signal</p>
-<div aria-labelledby="table-6-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="6" id="table-6"><caption class="visually-hidden">Table 6. Recommended metrics. — Metric, Question, Signal</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Metric</strong></th>
-<th scope="col"><strong>Question</strong></th>
-<th scope="col"><strong>Signal</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Local validity</td>
-<td>Does each path output validate in the target environment.</td>
-<td>Checker pass, tests pass, parse validity, plan validity.</td>
-</tr>
-<tr class="even">
-<td>Path agreement</td>
-<td>Do the two target artifacts agree under epsilon.</td>
-<td>Formal relation, executable equivalence, denotational agreement, reviewed alignment.</td>
-</tr>
-<tr class="odd">
-<td>Type preservation</td>
-<td>Does the target artifact keep the intended object class.</td>
-<td>No drift from theorem to example, function to script, plan to narrative.</td>
-</tr>
-<tr class="even">
-<td>Assumption preservation</td>
-<td>Are assumptions retained or intentionally changed.</td>
-<td>No missing compactness, approval, control, resource, or domain assumptions.</td>
-</tr>
-<tr class="odd">
-<td>Generality preservation</td>
-<td>Does the transformation alter generality only in the declared direction.</td>
-<td>No unintended weakening, specialization, or overstrengthening.</td>
-</tr>
-<tr class="even">
-<td>Constraint integration</td>
-<td>Does an added constraint affect the artifact operationally.</td>
-<td>Constraint appears in proof obligation, code branch, plan step, or claim type.</td>
-</tr>
-<tr class="odd">
-<td>Repair cost</td>
-<td>How much work restores agreement.</td>
-<td>Edit distance, reviewer repair time, number of counterexamples.</td>
-</tr>
-<tr class="even">
-<td>Reviewer agreement</td>
-<td>Are human judgments reliable when used.</td>
-<td>Inter-annotator agreement and adjudication rate.</td>
-</tr>
-<tr class="odd">
-<td>Diagnostic novelty</td>
-<td>Does the square reveal failures missed by local metrics.</td>
-<td>Failure labels unique to path comparison.</td>
-</tr>
-</tbody>
-</table></div>
-<p>Diagnostic novelty is the decisive pilot statistic. If commutation items produce no new failure labels beyond local validity, the benchmark should be narrowed. If the square reveals assumption loss, generality collapse, target-type drift, validator mismatch, or constraint failure, the added annotation cost has a concrete evaluation function.</p>
-<h2 id="failure-taxonomy">9. Failure taxonomy</h2>
-<p>The failure taxonomy identifies the broken component of the square. This localization is the principal advantage of the record format. The evaluator should be able to say whether the source item, source transformation, translation, target transformation, equivalence regime, or validator produced the failure.</p>
-<p>Table 7. Failure labels and repair implications.</p>
-<p class="table-display-caption" id="table-7-caption">Table 7. Failure labels and repair implications.</p>
-<div aria-labelledby="table-7-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="7" id="table-7"><caption class="visually-hidden">Table 7. Failure labels and repair implications.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Failure label</strong></th>
-<th scope="col"><strong>Definition</strong></th>
-<th scope="col"><strong>Repair implication</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Object failure</td>
-<td>The source object is ill-posed, ambiguous, or invalid.</td>
-<td>Revise the benchmark item before model evaluation.</td>
-</tr>
-<tr class="even">
-<td>Transformation failure</td>
-<td>The source-side transformation changes the task in an unintended way.</td>
-<td>Rewrite f and define its semantic effect.</td>
-</tr>
-<tr class="odd">
-<td>Translation failure</td>
-<td>T(x) is invalid, misaligned, or targeted at the wrong object type.</td>
-<td>Improve target-type inference or transport.</td>
-</tr>
-<tr class="even">
-<td>Target-transformation failure</td>
-<td>g(T(x)) fails to implement the corresponding target-side change.</td>
-<td>Specify a stronger target operation or validator.</td>
-</tr>
-<tr class="odd">
-<td>Non-commutation</td>
-<td>Both paths validate locally and disagree under epsilon.</td>
-<td>Analyze relation preservation and repair one path.</td>
-</tr>
-<tr class="even">
-<td>Type drift</td>
-<td>The generated target changes object class across a path.</td>
-<td>Add type-stability checks.</td>
-</tr>
-<tr class="odd">
-<td>Assumption loss</td>
-<td>A required assumption disappears across one path.</td>
-<td>Require assumption records and checks.</td>
-</tr>
-<tr class="even">
-<td>Generality collapse</td>
-<td>A general claim is reduced to an unnecessary special case.</td>
-<td>Check generality direction against f.</td>
-</tr>
-<tr class="odd">
-<td>Overstrengthening</td>
-<td>The target path asserts more than the source supports.</td>
-<td>Limit target claims to transported support.</td>
-</tr>
-<tr class="even">
-<td>Spurious equivalence</td>
-<td>The validator accepts agreement despite semantic divergence.</td>
-<td>Replace or layer the equivalence regime.</td>
-</tr>
-<tr class="odd">
-<td>Validator mismatch</td>
-<td>The chosen validator measures the wrong relation.</td>
-<td>Select a validator aligned to the intended relation.</td>
-</tr>
-<tr class="even">
-<td>Constraint mention without integration</td>
-<td>The output names a constraint without making it operative.</td>
-<td>Require executable, formal, or trace-level evidence of integration.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="functorial-consistency-bench-v0.3">10. Functorial Consistency Bench v0.3</h2>
-<p>A first benchmark release should be small, explicit, and validator-driven. Its purpose is to test the diagnostic value of the square, not to claim broad coverage. Each item must expose both paths and must declare the acceptance relation before any model output is evaluated.</p>
-<h3 id="benchmark-item-schema">10.1 Benchmark item schema</h3>
-<p>Table 8. Benchmark item schema.</p>
-<p class="table-display-caption" id="table-8-caption">Table 8. Benchmark item schema.</p>
-<div aria-labelledby="table-8-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="8" id="table-8"><caption class="visually-hidden">Table 8. Benchmark item schema.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Field</strong></th>
-<th scope="col"><strong>Type or value</strong></th>
-<th scope="col"><strong>Purpose</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>id</td>
-<td>string</td>
-<td>Stable item identifier.</td>
-</tr>
-<tr class="even">
-<td>domain</td>
-<td>math_to_lean, requirements_to_code, semantic_parse, planning, science_claims</td>
-<td>Domain label for reporting.</td>
-</tr>
-<tr class="odd">
-<td>source_environment</td>
-<td>string</td>
-<td>Context in which x is interpreted.</td>
-</tr>
-<tr class="even">
-<td>target_environment</td>
-<td>string</td>
-<td>Context in which target artifacts are validated.</td>
-</tr>
-<tr class="odd">
-<td>source_object</td>
-<td>string or object</td>
-<td>Artifact before transformation.</td>
-</tr>
-<tr class="even">
-<td>source_transformation.name</td>
-<td>string</td>
-<td>Name of f.</td>
-</tr>
-<tr class="odd">
-<td>source_transformation.definition</td>
-<td>string</td>
-<td>Operational definition of f.</td>
-</tr>
-<tr class="even">
-<td>source_transformation.family</td>
-<td>controlled family</td>
-<td>Transformation family from Table 5.</td>
-</tr>
-<tr class="odd">
-<td>translation_task</td>
-<td>string</td>
-<td>Instruction or procedure defining T.</td>
-</tr>
-<tr class="even">
-<td>target_transformation.name</td>
-<td>string</td>
-<td>Name of g.</td>
-</tr>
-<tr class="odd">
-<td>target_transformation.definition</td>
-<td>string</td>
-<td>Operational definition of g.</td>
-</tr>
-<tr class="even">
-<td>equivalence_regime.type</td>
-<td>formal, executable, denotational, constraint, reviewed, layered</td>
-<td>Acceptance relation.</td>
-</tr>
-<tr class="odd">
-<td>validator</td>
-<td>string</td>
-<td>Checker, test suite, comparison rule, or reviewer protocol.</td>
-</tr>
-<tr class="even">
-<td>acceptance_rule</td>
-<td>string</td>
-<td>Decision rule for agreement.</td>
-</tr>
-<tr class="odd">
-<td>expected_failure_sensitivities</td>
-<td>list</td>
-<td>Failure labels the item is designed to reveal.</td>
-</tr>
-<tr class="even">
-<td>reviewer_notes</td>
-<td>string</td>
-<td>Guidance for adjudication and repair.</td>
-</tr>
-</tbody>
-</table></div>
-<h3 id="model-output-schema">10.2 Model-output schema</h3>
-<p>Table 9. Model-output record.</p>
-<p class="table-display-caption" id="table-9-caption">Table 9. Model-output record. — Field, Purpose</p>
-<div aria-labelledby="table-9-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="9" id="table-9"><caption class="visually-hidden">Table 9. Model-output record. — Field, Purpose</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 49%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Field</strong></th>
-<th scope="col"><strong>Purpose</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>item_id</td>
-<td>Links the output to the benchmark item.</td>
-</tr>
-<tr class="even">
-<td>model_id</td>
-<td>Identifies model, system, scaffold, and decoding condition.</td>
-</tr>
-<tr class="odd">
-<td>path_A_transform_then_translate.transformed_source</td>
-<td>Records f(x).</td>
-</tr>
-<tr class="even">
-<td>path_A_transform_then_translate.target_artifact</td>
-<td>Records T(f(x)).</td>
-</tr>
-<tr class="odd">
-<td>path_A_transform_then_translate.validation_result</td>
-<td>Records local validation for path A.</td>
-</tr>
-<tr class="even">
-<td>path_B_translate_then_transform.initial_target_artifact</td>
-<td>Records T(x).</td>
-</tr>
-<tr class="odd">
-<td>path_B_translate_then_transform.transformed_target_artifact</td>
-<td>Records g(T(x)).</td>
-</tr>
-<tr class="even">
-<td>path_B_translate_then_transform.validation_result</td>
-<td>Records local validation for path B.</td>
-</tr>
-<tr class="odd">
-<td>path_agreement_result</td>
-<td>Records the decision under epsilon.</td>
-</tr>
-<tr class="even">
-<td>failure_labels</td>
-<td>Records localized failures.</td>
-</tr>
-<tr class="odd">
-<td>repair_trace</td>
-<td>Records edits or diagnostics needed to restore agreement.</td>
-</tr>
-<tr class="even">
-<td>confidence_or_score</td>
-<td>Optional calibrated score or model confidence.</td>
-</tr>
-<tr class="odd">
-<td>notes</td>
-<td>Records evaluator caveats.</td>
-</tr>
-</tbody>
-</table></div>
-<h3 id="dataset-design">10.3 Dataset design</h3>
-<p>The first release should contain 80 to 120 items and should concentrate on validator strength. A balanced seed set can include 25 mathematics-to-Lean items, 25 requirements-to-code items, 25 semantic-parse items, 15 planning items, and 10 science-claim items reserved for reviewed-alignment protocol testing. Ambiguity stress tests should be added after base equivalence regimes reach acceptable reliability.</p>
-<p>Table 10. Seed dataset allocation.</p>
-<p class="table-display-caption" id="table-10-caption">Table 10. Seed dataset allocation.</p>
-<div aria-labelledby="table-10-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="10" id="table-10"><caption class="visually-hidden">Table 10. Seed dataset allocation.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Domain</strong></th>
-<th scope="col"><strong>Seed items</strong></th>
-<th scope="col"><strong>Primary equivalence regime</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Mathematics to Lean</td>
-<td>25</td>
-<td>Formal theorem equivalence or implication plus reviewed source alignment.</td>
-</tr>
-<tr class="even">
-<td>Requirements to code</td>
-<td>25</td>
-<td>Executable specification, property tests, counterexample generation.</td>
-</tr>
-<tr class="odd">
-<td>Semantic parsing</td>
-<td>25</td>
-<td>Logical, denotational, graph, or query-result equivalence.</td>
-</tr>
-<tr class="even">
-<td>Planning</td>
-<td>15</td>
-<td>Plan validity, precondition satisfaction, resource constraints, authority constraints.</td>
-</tr>
-<tr class="odd">
-<td>Science claims</td>
-<td>10</td>
-<td>Layered review of protocol assumptions, evidence status, and permitted claim.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="annotation-and-evaluation-protocol">11. Annotation and evaluation protocol</h2>
-<p>The annotation protocol must force every benchmark item to expose the square. A prompt and an expected answer are insufficient. The record must include the source transformation, the corresponding target operation, the equivalence regime, the validator, and the expected failure sensitivities.</p>
-<p>Table 11. Annotation protocol.</p>
-<p class="table-display-caption" id="table-11-caption">Table 11. Annotation protocol.</p>
-<div aria-labelledby="table-11-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="11" id="table-11"><caption class="visually-hidden">Table 11. Annotation protocol.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Step</strong></th>
-<th scope="col"><strong>Action</strong></th>
-<th scope="col"><strong>Acceptance criterion</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>Write source object x.</td>
-<td>The object is expressible in E_s and has a target transport task.</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>Choose source transformation f.</td>
-<td>The transformation has a clear semantic effect and a named family.</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td>Define translation T.</td>
-<td>The target environment and object class are explicit.</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>Define target transformation g.</td>
-<td>The operation corresponds to f and can be applied to T(x).</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>Set equivalence regime epsilon.</td>
-<td>Validator, acceptance rule, reviewer protocol, and adjudication rule are explicit.</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>Run both paths.</td>
-<td>Outputs are stored separately and locally validated.</td>
-</tr>
-<tr class="odd">
-<td>7</td>
-<td>Judge path agreement.</td>
-<td>The comparison uses epsilon and records failure labels.</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td>Record repair.</td>
-<td>Automated or reviewer repair trace identifies the minimal useful fix.</td>
-</tr>
-</tbody>
-</table></div>
-<p>Evaluation reports must separate local validity from path agreement. A system with invalid target artifacts cannot be judged cleanly for structure preservation until invalid outputs are filtered or repaired. A system with high local validity and low path agreement supplies the strongest evidence for the benchmark, since the failure appears only after the square is evaluated.</p>
-<h2 id="minimal-pilot-plan">12. Minimal pilot plan</h2>
-<p>The pilot should answer whether the commutation-square record exposes important failures missed by local evaluation. The study should compare local accuracy, robustness-style perturbation tests, and path agreement on the same seed items. It should also include ablations for direct generation, two-path generation, and type-first generation with explicit target type, assumptions, transformation, and equivalence regime.</p>
-<p>Table 12. Minimal pilot phases.</p>
-<p class="table-display-caption" id="table-12-caption">Table 12. Minimal pilot phases.</p>
-<div aria-labelledby="table-12-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="12" id="table-12"><caption class="visually-hidden">Table 12. Minimal pilot phases.</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Phase</strong></th>
-<th scope="col"><strong>Work product</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>P1</td>
-<td>Build 80 to 120 seed items across four validator-centered domains and one science review track.</td>
-</tr>
-<tr class="even">
-<td>P2</td>
-<td>Define both paths and the equivalence regime before model evaluation.</td>
-</tr>
-<tr class="odd">
-<td>P3</td>
-<td>Evaluate at least three model families or prompting conditions.</td>
-</tr>
-<tr class="even">
-<td>P4</td>
-<td>Report local validity, path agreement, failure labels, repair cost, and diagnostic novelty.</td>
-</tr>
-<tr class="odd">
-<td>P5</td>
-<td>Measure annotator agreement on all reviewed-alignment items.</td>
-</tr>
-<tr class="even">
-<td>P6</td>
-<td>Release schemas, validators, example cards, and failure-label scripts before increasing scale.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="objections-and-operational-responses">13. Objections and operational responses</h2>
-<p>The main objections concern novelty, annotation cost, subjective equivalence, and domain specificity. These objections should be treated as design constraints. A benchmark that cannot distinguish itself from robustness, cannot specify reliable equivalence regimes, or cannot produce actionable failure labels has not earned expansion.</p>
-<p>Table 13. Objections, responses, and tests.</p>
-<p class="table-display-caption" id="table-13-caption">Table 13. Objections, responses, and tests.</p>
-<div aria-labelledby="table-13-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="13" id="table-13"><caption class="visually-hidden">Table 13. Objections, responses, and tests.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Objection</strong></th>
-<th scope="col"><strong>Operational response</strong></th>
-<th scope="col"><strong>Required test</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Ordinary robustness already covers this.</td>
-<td>Robustness measures stability; this benchmark measures structured covariance under a typed transformation.</td>
-<td>Show path failures absent from perturbation tests.</td>
-</tr>
-<tr class="even">
-<td>Compositional generalization already covers this.</td>
-<td>Existing benchmarks motivate the problem; the added object is the source-target path-agreement record.</td>
-<td>Show that the record localizes failures.</td>
-</tr>
-<tr class="odd">
-<td>The category-theoretic frame is optional.</td>
-<td>Retain the frame only where it clarifies artifacts, transformations, transport, and commutation.</td>
-<td>Compare annotation quality with and without the notation.</td>
-</tr>
-<tr class="even">
-<td>Approximate equality is subjective.</td>
-<td>Use reviewed alignment only with rubric, agreement metric, and adjudication.</td>
-<td>Report reliability and disagreement categories.</td>
-</tr>
-<tr class="odd">
-<td>The benchmark is expensive.</td>
-<td>Start with a small validator-driven release and measure diagnostic novelty.</td>
-<td>Compute failure labels unique to the square.</td>
-</tr>
-<tr class="even">
-<td>Models can exploit format regularities.</td>
-<td>Hold out transformation families and use counterexample-based validators where possible.</td>
-<td>Measure transfer to unseen transformation families.</td>
-</tr>
-<tr class="odd">
-<td>Domain specificity limits generality.</td>
-<td>Initial specificity is required for valid equivalence regimes.</td>
-<td>Earn cross-domain scope through repeated instantiation.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="failure-modes-and-kill-criteria">14. Failure modes and kill criteria</h2>
-<p>The proposal should be rejected, narrowed, or delayed when the benchmark fails to add diagnostic information at acceptable annotation cost. These decision rules should be applied before a larger research program is built around the square.</p>
-<p>Table 14. Failure modes and decisions.</p>
-<p class="table-display-caption" id="table-14-caption">Table 14. Failure modes and decisions.</p>
-<div aria-labelledby="table-14-caption" class="table-scroll" data-columns="3" role="group" tabindex="0"><table data-source-table="14" id="table-14"><caption class="visually-hidden">Table 14. Failure modes and decisions.</caption>
-<colgroup>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-<col style="width: 33%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Failure mode</strong></th>
-<th scope="col"><strong>Adverse evidence</strong></th>
-<th scope="col"><strong>Decision</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>F1</td>
-<td>Path agreement adds no failure labels beyond local accuracy.</td>
-<td>Retire or narrow the benchmark.</td>
-</tr>
-<tr class="even">
-<td>F2</td>
-<td>Annotators cannot define target-side transformations reliably.</td>
-<td>Remove the domain or redesign transformation families.</td>
-</tr>
-<tr class="odd">
-<td>F3</td>
-<td>Equivalence regimes depend on vague review intuition.</td>
-<td>Postpone reviewed-alignment tracks.</td>
-</tr>
-<tr class="even">
-<td>F4</td>
-<td>Commutation failures are mostly cosmetic.</td>
-<td>Redesign item construction and validators.</td>
-</tr>
-<tr class="odd">
-<td>F5</td>
-<td>The notation improves presentation without improving evaluation.</td>
-<td>Use plain commutation-test terminology.</td>
-</tr>
-<tr class="even">
-<td>F6</td>
-<td>Models improve through format matching and retain semantic failures.</td>
-<td>Strengthen validators and hold out transformation families.</td>
-</tr>
-<tr class="odd">
-<td>F7</td>
-<td>The benchmark works only in formal domains.</td>
-<td>Constrain claims to formal and executable settings.</td>
-</tr>
-<tr class="even">
-<td>F8</td>
-<td>Review cost exceeds diagnostic gain.</td>
-<td>Reduce reviewed items or automate stronger validators.</td>
-</tr>
-</tbody>
-</table></div>
-<p>Table 15. Kill criteria.</p>
-<p class="table-display-caption" id="table-15-caption">Table 15. Kill criteria. — Criterion, Decision rule</p>
-<div aria-labelledby="table-15-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="15" id="table-15"><caption class="visually-hidden">Table 15. Kill criteria. — Criterion, Decision rule</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Criterion</strong></th>
-<th scope="col"><strong>Decision rule</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>K1</td>
-<td>Path agreement correlates almost perfectly with local validity and adds no new failure labels.</td>
-</tr>
-<tr class="even">
-<td>K2</td>
-<td>Annotators cannot reliably define target-side transformations for a core domain.</td>
-</tr>
-<tr class="odd">
-<td>K3</td>
-<td>Equivalence regimes rely on reviewer intuition without acceptable agreement.</td>
-</tr>
-<tr class="even">
-<td>K4</td>
-<td>Repair traces show that most failures are formatting or presentation artifacts.</td>
-</tr>
-<tr class="odd">
-<td>K5</td>
-<td>The benchmark cannot distinguish models, prompts, or system designs beyond noise.</td>
-</tr>
-<tr class="even">
-<td>K6</td>
-<td>The framework recommends the same evaluation independent of domain structure.</td>
-</tr>
-<tr class="odd">
-<td>K7</td>
-<td>Reviewers cannot use the failure labels to guide repair.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="conclusion">15. Conclusion</h2>
-<p>Functorial Consistency defines a testable evaluation object for structure-preserving AI. The commutation square asks whether generated artifacts preserve declared relations across source transformations, target transports, and target-side operations. Its scientific value depends on explicit equivalence regimes, validator strength, failure localization, and diagnostic novelty beyond local correctness.</p>
-<p>The strongest version of the proposal is deliberately bounded. It does not rely on category-theoretic authority, and it does not require every task to admit a fully formal structure. It requires explicit artifacts, transformations, transports, validators, and repair labels. That requirement makes the benchmark expensive, but it also makes the proposal falsifiable.</p>
-<p>This essay supplies the evaluation core of the Compositional Intelligence series. Semantic Participation specifies when artifacts qualify for membership in structured environments, and Typed Generativity specifies how candidate artifacts are constructed. Functorial Consistency tests whether those candidates preserve the relations that justify reuse, review, and downstream action.</p>
-<h2 id="appendix-a.-compact-benchmark-card-template">Appendix A. Compact benchmark card template</h2>
-<p>Table A1. Benchmark card template.</p>
-<p class="table-display-caption" id="table-16-caption">Table A1. Benchmark card template.</p>
-<div aria-labelledby="table-16-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="16" id="table-16"><caption class="visually-hidden">Table A1. Benchmark card template.</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Field</strong></th>
-<th scope="col"><strong>Entry</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>ID</td>
-<td>Stable benchmark identifier.</td>
-</tr>
-<tr class="even">
-<td>Domain</td>
-<td>Benchmark domain.</td>
-</tr>
-<tr class="odd">
-<td>Source environment</td>
-<td>E_s.</td>
-</tr>
-<tr class="even">
-<td>Target environment</td>
-<td>E_t.</td>
-</tr>
-<tr class="odd">
-<td>Source object x</td>
-<td>Artifact before transformation.</td>
-</tr>
-<tr class="even">
-<td>Source transformation f</td>
-<td>Source-side operation.</td>
-</tr>
-<tr class="odd">
-<td>Transformation family</td>
-<td>Controlled family label.</td>
-</tr>
-<tr class="even">
-<td>Translation task T</td>
-<td>Source-to-target transport.</td>
-</tr>
-<tr class="odd">
-<td>Target transformation g</td>
-<td>Target-side corresponding operation.</td>
-</tr>
-<tr class="even">
-<td>Equivalence regime epsilon</td>
-<td>Acceptance relation.</td>
-</tr>
-<tr class="odd">
-<td>Validator or review protocol</td>
-<td>Decision procedure.</td>
-</tr>
-<tr class="even">
-<td>Expected correct path relation</td>
-<td>Expected agreement.</td>
-</tr>
-<tr class="odd">
-<td>Known traps</td>
-<td>Likely failure modes.</td>
-</tr>
-<tr class="even">
-<td>Failure labels</td>
-<td>Labels used for diagnosis.</td>
-</tr>
-<tr class="odd">
-<td>Repair guidance</td>
-<td>Useful repair procedure.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="appendix-b.-worked-benchmark-cards">Appendix B. Worked benchmark cards</h2>
-<p>Table B1. Worked benchmark cards.</p>
-<p class="table-display-caption" id="table-17-caption">Table B1. Worked benchmark cards.</p>
-<div aria-labelledby="table-17-caption" class="table-scroll" data-columns="4" role="group" tabindex="0"><table data-source-table="17" id="table-17"><caption class="visually-hidden">Table B1. Worked benchmark cards.</caption>
-<colgroup>
-<col style="width: 24%"/>
-<col style="width: 25%"/>
-<col style="width: 25%"/>
-<col style="width: 25%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>ID</strong></th>
-<th scope="col"><strong>Domain</strong></th>
-<th scope="col"><strong>Square</strong></th>
-<th scope="col"><strong>Equivalence regime</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>A1</td>
-<td>Math to Lean</td>
-<td>Specialize a compact-domain maximum theorem before formalization, then compare with formalize-then-specialize.</td>
-<td>Formal implication or theorem equivalence, plus reviewed informal alignment.</td>
-</tr>
-<tr class="even">
-<td>B1</td>
-<td>Requirements to code</td>
-<td>Add order preservation and idempotence before implementation, then compare with implementation plus target-side property tests.</td>
-<td>Executable behavior under reference properties and generated counterexamples.</td>
-</tr>
-<tr class="odd">
-<td>C1</td>
-<td>Semantic parse</td>
-<td>Resolve quantifier scope in the source, then compare with logical-form normalization after parsing.</td>
-<td>Logical or denotational equivalence over controlled models.</td>
-</tr>
-<tr class="even">
-<td>D2</td>
-<td>Planning</td>
-<td>Add human approval before external transmission, then compare with plan-side insertion of an approval gate.</td>
-<td>Precondition and authority-constraint satisfaction.</td>
-</tr>
-<tr class="odd">
-<td>E2</td>
-<td>Science claim</td>
-<td>Move from simulation-derived result to empirical-claim requirement, then compare with claim-record epistemic-type change.</td>
-<td>Epistemic-type preservation and expert review.</td>
-</tr>
-</tbody>
-</table></div>
-<h2 id="appendix-c.-reviewer-rubric-for-reviewed-alignment">Appendix C. Reviewer rubric for reviewed alignment</h2>
-<p>Table C1. Reviewed-alignment rubric.</p>
-<p class="table-display-caption" id="table-18-caption">Table C1. Reviewed-alignment rubric.</p>
-<div aria-labelledby="table-18-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="18" id="table-18"><caption class="visually-hidden">Table C1. Reviewed-alignment rubric.</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Rubric dimension</strong></th>
-<th scope="col"><strong>Review question</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Source meaning alignment</td>
-<td>Does the target preserve the intended source claim, task, or protocol.</td>
-</tr>
-<tr class="even">
-<td>Transformation fidelity</td>
-<td>Does f introduce exactly the intended change.</td>
-</tr>
-<tr class="odd">
-<td>Target-side correspondence</td>
-<td>Does g implement the same change in E_t.</td>
-</tr>
-<tr class="even">
-<td>Assumption preservation</td>
-<td>Are required assumptions retained or intentionally modified.</td>
-</tr>
-<tr class="odd">
-<td>Generality control</td>
-<td>Does the target avoid unintended weakening or overstrengthening.</td>
-</tr>
-<tr class="even">
-<td>Permitted-use control</td>
-<td>Does the artifact state the claim or action it is allowed to support.</td>
-</tr>
-</tbody>
-</table></div>
-<p>Reviewed alignment should use three decisions, accept, reject, and adjudicate. Reject and adjudicate decisions must include a failure label and a repair note so that review remains connected to benchmark improvement.</p>
-<h2 id="appendix-d.-source-notes-and-verification-queue">Appendix D. Source notes and verification queue</h2>
-<p>Source-use boundaries should remain explicit. Lean documentation and Theorem Proving in Lean 4 support statements about Lean, dependent type theory, elaboration, and proof checking. LeanDojo supports programmatic interaction with Lean and retrieval-augmented theorem proving infrastructure. SCAN, CFQ, COGS, and SLOG support the compositional-generalization context. FormalBench and ConsistencyChecker support recent transformation-sensitive evaluation context. These sources motivate the evaluation problem; they do not establish Functorial Consistency as proposed here.</p>
-<p>The bibliography should be rechecked before submission for 2025 and 2026 sources. The final pass should verify ACL Anthology page ranges, arXiv versions, venue status, official documentation versions, and rapidly moving agent or formal-reasoning sources at the submission date.</p>
-<h2 id="appendix-e.-editorial-changes-from-v0.2-to-v0.3">Appendix E. Editorial changes from v0.2 to v0.3</h2>
-<p>Table E1. Revision summary.</p>
-<p class="table-display-caption" id="table-19-caption">Table E1. Revision summary. — Area, Revision</p>
-<div aria-labelledby="table-19-caption" class="table-scroll" data-columns="2" role="group" tabindex="0"><table data-source-table="19" id="table-19"><caption class="visually-hidden">Table E1. Revision summary. — Area, Revision</caption>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="header">
-<th scope="col"><strong>Area</strong></th>
-<th scope="col"><strong>Revision</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Opening</td>
-<td>The paper opens with the evaluation object and states claim status before the abstract.</td>
-</tr>
-<tr class="even">
-<td>Paragraph architecture</td>
-<td>List-like exposition has been replaced with developmental paragraphs and diagnostic cases.</td>
-</tr>
-<tr class="odd">
-<td>Equivalence regimes</td>
-<td>The acceptance relation is treated as the governing audit field for every square.</td>
-</tr>
-<tr class="even">
-<td>Domain examples</td>
-<td>Examples have been reduced to one diagnostic case per domain.</td>
-</tr>
-<tr class="odd">
-<td>Benchmark schema</td>
-<td>Item and output records have been converted into implementation-facing tables.</td>
-</tr>
-<tr class="even">
-<td>Failure protocol</td>
-<td>Failure modes and kill criteria now function as operational decision rules.</td>
-</tr>
-<tr class="odd">
-<td>Claim policy</td>
-<td>The benchmark remains a proposed design, with no reported result.</td>
-</tr>
-</tbody>
-</table></div>
+*Functorial Consistency* develops a typed protocol for evaluating that correspondence. Given a source transformation, a source-to-target translation, and a corresponding target operation, it compares transform-then-translate with translate-then-transform under an independently specified relation. The record keeps local validity, source alignment, path agreement, and validator adequacy distinct. It also distinguishes a commuting square from the stronger identity and composition laws associated with a functor.
+
+The protocol belongs to metamorphic testing and introduces no new class of logical oracle. Its proposed contribution is methodological: specifying valid relational tests, identifying counterexamples, and attributing failures across representation boundaries. The essay develops the comparison, exhibits a case of misleading agreement, and sets out a controlled evaluation against existing testing workflows. The benchmark and its anticipated benefits have yet to be established empirically.
+
+## 1. The evaluation problem
+
+An informal theorem translated into Lean provides a direct illustration. A proof accepted by the kernel certifies a judgment relative to its formal statement, dependencies, and axioms. The kernel does not decide whether that statement conveys the informal mathematician's intended claim. A proof of the existence of a supremum, for example, does not itself establish attainment by an element of the domain. The validation boundary matters precisely because a generated artifact might be impeccable inside a formal environment while expressing the wrong proposition [1].
+
+Comparable distinctions arise in software and action. A program that passes the original examples might fail a revised requirement. A plan that reaches the prescribed final state might violate an approval obligation added to the task. A scientific claim record might inherit the appearance of empirical support from a simulation. In each case the evaluator needs to examine the relationship linking the initial requirement, its revision, and the artifact produced under that revision.
+
+These evaluations concern distinct obligations. Local acceptance asks whether an artifact satisfies a designated checker. Source adequacy asks whether it expresses the intended task. Transformation compatibility asks whether the source-side change is reflected in the target-side operation. Each judgment needs its own evidence. A locally accepted artifact that violates an independently specified correspondence is an especially informative case.
+
+Within the Compositional Intelligence series, *Semantic Participation* examines admissibility in structured environments, while *Typed Generativity* examines construction under a declared target type. The present essay investigates the stability of that construction under controlled changes. The ambition is restricted to transformations carrying enough semantic structure to support an independent comparison.
+
+## 2. The typed commutation square
+
+Let \(S_0\) and \(S_1\) be spaces of source tasks, and \(Y_0\) and \(Y_1\) the corresponding spaces of target artifacts. Fix a system configuration \(\theta\), including prompts, tools, software versions, and the sampling policy. In the well-typed deterministic case, a benchmark item specifies four maps.
+
+\[
+\begin{aligned}
+f &: S_0 \longrightarrow S_1,\\
+T_\theta^{(0)} &: S_0 \longrightarrow Y_0,\\
+T_\theta^{(1)} &: S_1 \longrightarrow Y_1,\\
+g_f &: Y_0 \longrightarrow Y_1.
+\end{aligned}
+\]
+
+Both well-typed routes terminate in \(Y_1\). Their comparison is governed by a declared relation \(R_f\subseteq Y_1\times Y_1\). The arrows describe successful applications on their admissible domains, not a guarantee that an evaluated generator always produces a valid artifact. Failed, timed-out, ill-typed, or inapplicable executions receive separate outcome records. They are retained in the denominator of attempted evaluations and never assigned invented artifacts in \(Y_0\) or \(Y_1\).
+
+\[
+\boxed{\quad T_\theta^{(1)}(f(x))\;R_f\;g_f(T_\theta^{(0)}(x))\quad}
+\]
+
+The target operation \(g_f\) is specified independently of the evaluated outputs and justified as a counterpart of \(f\). It transforms artifacts, while a separate validator judges the result. Equality yields a strictly commuting square. Semantic equivalence or directed refinement yields a relation-valued compatibility test, with the comparison order fixed in the item specification. Reversing a directed relation changes the claim.
+
+The square separates four questions that are liable to be conflated. First, is \(f\) a coherent source transformation? Second, do the generated objects have the required types and satisfy their local conditions? Third, does \(g_f\) implement the semantic change prescribed by \(f\)? Fourth, do the two resulting artifacts satisfy \(R_f\)? A failing square supplies an observed discrepancy. Attribution to a particular model or test component needs further evidence.
+
+For a stochastic generator, the displayed maps represent sampled realizations conditional on their being well-typed. The agreement rate is defined relative to a declared joint sampling scheme: independently sampled paths and paths with coupled random choices need not have the same agreement probability. Retry rules, inference budgets, and failure handling are fixed in advance. Independent repetitions under an identity or no-change source transformation provide a control for ordinary sampling disagreement. Sample-level agreement differs from equality of output distributions, and one disagreeing pair does not establish a systematic failure across runs.
+
+### 2.1 Compatibility, equivariance, and functoriality
+
+The square expresses a compatibility condition resembling an intertwining or equivariance equation. Translation responds to an operation on its inputs in a way that agrees, under \(R_f\), with the corresponding operation on its outputs. This is the immediate object of measurement. Agreement on one square establishes neither a functor nor coherent target operations for all source transformations.
+
+A functor in the categorical sense assigns target objects and morphisms to source objects and morphisms and preserves identity morphisms and composition [2]. If a family of source transformations forms a category and the target operations are proposed images under a map \(F\), the additional laws have the form
+
+\[
+\begin{aligned}
+g_{\operatorname{id}_{S_i}} &= \operatorname{id}_{Y_i},\\
+g_{f_2\circ f_1} &= g_{f_2}\circ g_{f_1}
+\end{aligned}
+\]
+
+for every applicable object and composable pair. These are laws of the assignment \(f\mapsto g_f\), distinct from the compatibility of that assignment with the translation maps \(T_\theta^{(i)}\). A categorical claim additionally needs an object mapping, well-defined morphism assignments, and proofs of the relevant laws. The benchmark specifies finite checks of selected instances, not those proofs.
+
+Composition supplies an additional test. For composable source operations \(f_1\) and \(f_2\), compare the target operation assigned to \(f_2\circ f_1\) with the sequential application of \(g_{f_1}\) and \(g_{f_2}\), preserving intermediate types. Agreement of the constituent squares does not, on its own, establish compatibility with the separately assigned operation \(g_{f_2\circ f_1}\). That conclusion also depends on the target-side composition law and, for relation-valued tests, appropriate transitivity and congruence properties. The evaluation must establish those conditions or test the composite directly.
+
+The categorical framing earns its place through this separation of *typing*, *path compatibility*, and *composition*. It provides an audit discipline for specifying which constructions are comparable. It does not derive source fidelity from commutation or confer mathematical authority on a finite collection of successful tests. A study limited to individual squares is accurately described as **transformation-compatibility testing**; the fuller functorial interpretation is a conditional, stronger program.
+
+## 3. A worked square with an observable failure
+
+Consider a system that translates task descriptions into executable plans for preparing and transmitting a report. The original source task \(x\) directs preparation followed by external transmission. The source transformation \(f\) adds the condition that recorded human approval must precede transmission. The target language distinguishes the action of *requesting* approval from the event of *receiving* it.
+
+The independently specified target operation \(g_f\) introduces an approval request and guards each external send action with a report-specific `approval_recorded` predicate. Under the declared action semantics, recorded approval is initially absent, becomes true only through a separate authorized event, and persists until the report is sent. The guard is evaluated at transmission. The two routes produce the following illustrative artifacts.
+
+| Route | Executable control flow |
+| --- | --- |
+| Transform, then translate | `prepare; request_approval; send` with no approval guard |
+| Translate, then transform | `prepare; request_approval; await approval_recorded; send` with `approval_recorded` as a send precondition |
+
+The first route confuses requesting authorization with receiving it. The resulting plan permits `request_approval → send` with no intervening approval event. The second plan excludes that execution, while allowing transmission if the environment records approval. Both plans pass basic syntax and action-type checks, and both have a reachable transmitted-report state under suitable environmental actions. The independent authority specification rejects the first plan, with the unauthorized send as a concrete counterexample.
+
+The safety property is \(\mathbf{G}(\mathrm{send}(r)\Rightarrow\mathrm{approval\_recorded}(r))\), for each report \(r\). Here the state predicate denotes approval already recorded at the point of transmission, not the occurrence of an approval request. The comparison uses the sets of permitted traces projected onto common approval and transmission events, abstracting away internal control steps such as `await`. Those sets differ because the first plan permits unauthorized transmission. The comparison does not infer compliance from an approval-related action name.
+
+An authority-aware local validator applied to the revised task also rejects the first plan. The square adds no logical strength to that oracle. Its hypothesized advantage is explanatory: it ties the missing guard to the transport of a specific source requirement, yielding a targeted repair record. The benefit must justify the additional cost of specifying \(g_f\), the trace projection, and the relation.
+
+A different defect illustrates the opposite danger. Suppose a translation maps every source task to the same inert target artifact, and every assigned target operation leaves that artifact unchanged. The two paths then agree on every tested square, despite the disappearance of all source meaning. Even exact identity and composition behavior on this degenerate output would not establish faithful translation. **Path agreement establishes compatibility of routes under the declared relation. Source adequacy independently establishes correspondence with the intended task.** The benchmark needs both judgments.
+
+## 4. What the acceptance relation must mean
+
+The declared relation is the semantic content of a benchmark item. The validator is a fallible procedure for determining that relation, and its decision must be distinguished from the relation's truth. Every item records the comparison direction, the admissible artifact types, the relevant inputs or traces, and the assumptions under which the judgment is intended. Verdicts include *pass*, *fail*, and *indeterminate*, with separate records for timeouts, inadequate coverage, and unresolved reviews.
+
+| Regime | Declared relation | Evidence and limits |
+| --- | --- | --- |
+| Formal | Definitional equality, proven equivalence, or directed implication | Kernel checking establishes a formal judgment relative to named assumptions and dependencies; informal-source alignment is separate. |
+| Executable | Observational equivalence or trace refinement over a declared domain | Property tests provide sampled evidence; exhaustive checking or proof has a different status. |
+| Denotational | Equality of interpretation under a specified semantics | Normalization, decision procedures, or finite-model comparison operate within a defined fragment. |
+| Constraint-based | Pairwise refinement or agreement of permitted behaviors under preconditions, effects, resources, and authority conditions | State or trace checks cover the obligation represented by the source change; individual compliance is reported separately. |
+| Reviewed | Agreement under an explicit expert rubric | Independent judgments, disagreement statistics, and adjudication bound the reliability of the conclusion. |
+| Combined | Conjunction or specified precedence of named obligations | Every subcheck retains its provenance and indeterminate status. |
+
+An asymmetric relation cannot be presented as undirected equality. If \(R_f\) is trace inclusion, a statement that the first plan has fewer behaviors than the second is not interchangeable with its converse. Likewise, mutual satisfaction of a broad constraint might be too weak to establish equivalence. A benchmark must specify whether it tests behavioral equality, refinement, compliance with a shared specification, or some explicitly justified combination.
+
+Three judgments remain distinct. **Local admissibility** concerns well-formedness and basic environmental checks. **Source adequacy** examines correspondence with the task, including revised assumptions and permissions. **Relational compatibility** examines the two routes under \(R_f\). Disagreement across these judgments is informative only if each verdict, oracle, and applicable trust boundary is recorded. Source adequacy is never inferred from successful path agreement.
+
+The comparison also depends on an independently justified \(g_f\). In requirements-to-code evaluation, adding tests changes the validator, not the implementation. A genuine target-side transformation must transform implementations into implementations. If no justified operation exists, the appropriate alternative is a directly specified metamorphic relation on the outputs. Such items belong to a relational-only baseline, not the commutation-square track.
+
+Semantic parsing contains an analogous trap. A target operation that overwrites an incorrect parse with the intended parse would conceal the error. Normalization must be justified as meaning-preserving on its declared domain, or the intervention must be labeled as a repair. Any human adjudication needs an explicit rubric, independent initial judgments, and a record of cases outside the rubric's competence.
+
+## 5. Position relative to prior evaluation
+
+Metamorphic testing specifies relations that a system's outputs are expected to satisfy under related inputs [3]. It already addresses the problem of testing systems without a complete individual-output oracle. The present proposal inhabits this tradition, including its recent application to language models and language tasks [4]. Automated approaches such as LLMorph further illustrate that transformation-based test generation and defect detection are established technical practices [10].
+
+The formal relation is direct. For a baseline output \(a=T_\theta^{(0)}(x)\) and a transformed output \(b=T_\theta^{(1)}(f(x))\), a conventional metamorphic relation \(M_f\) could be specified by
+
+\[
+M_f(a,b)\quad\Longleftrightarrow\quad b\;R_f\;g_f(a).
+\]
+
+Given the same \(f\), \(g_f\), \(R_f\), outputs, and soundly implemented oracle, the metamorphic relation and the square express an identical acceptance condition. **Their verdicts coincide by definition.** The proposed specification consequently makes no claim of additional logical expressive power or superior fault detection relative to an equally specified metamorphic test.
+
+The research question concerns the *construction and use* of those relations. An explicit typed record might reduce invalid test definitions, expose mistakes in target-side correspondence, encourage tests of composition, or improve the evidence connecting a failure to its source transformation. It might instead add terminology and annotation cost without improving any of these outcomes. Both possibilities belong in the empirical evaluation.
+
+| Evaluation approach | Existing question | Relevant comparison |
+| --- | --- | --- |
+| Local validity | Does an artifact pass its designated checker? | Is an independently confirmed correspondence failure missed by that checker? |
+| Robustness | Does performance persist under changed inputs or environments? | Is the change annotated with an exact intended semantic effect? |
+| Self-consistency | Do repeated outputs or reasoning trajectories agree? | Does agreement persist across deliberate, differently ordered transformations? |
+| Compositional generalization | Does a system handle unfamiliar combinations of familiar parts? | Are the failed relations attributed to controlled transformations and tested for composition? |
+| Metamorphic testing | Does an expected input–output relation hold across executions? | Does a typed-square authoring protocol improve specification quality, triage, or cost against an equally informed metamorphic-testing workflow? |
+
+SCAN, CFQ, COGS, and SLOG motivate systematic and structural generalization studies [5–8]. They do not establish the proposed protocol's utility. LeanDojo provides relevant infrastructure for interacting with formal proof environments without validating these particular benchmark claims [9]. The practical contribution, if demonstrated, would be an authoring and diagnostic discipline for relation-sensitive evaluation across domains, not a replacement for those literatures.
+
+## 6. Domain instantiations
+
+### 6.1 Informal mathematics to Lean
+
+The source artifact is an informal theorem and the target artifact is a formal statement, optionally accompanied by its proof. The initial transformation family consists of well-defined specializations, changes of representation, and controlled alterations to assumptions. For example, specialize an informal theorem asserting maximum attainment by a continuous real-valued function on a nonempty compact set to a nonempty closed interval. The target-side operation performs the corresponding specialization on the formal statement.
+
+The formal propositions are compared through mutual implication under identical assumptions. Independently, a source-alignment review checks that each states maximum attainment by a witness point. Existence of a supremum alone is insufficient. Kernel acceptance establishes validity of the formal proofs, not faithful translation of the informal claim [1]. A useful record distinguishes a valid formal proof of the wrong statement from a failed proof of the intended statement, and tracks assumptions imported through the formal environment.
+
+### 6.2 Natural-language requirements to code
+
+The source artifact is a behavioral requirement; its target is an implementation satisfying a declared interface. Consider a function that removes duplicate strings while retaining their first occurrence. The source transformation extends the output interface to return both the retained sequence and the number of distinct strings. Unlike an added property already entailed by correct deduplication, this changes the target type and creates a concrete transport obligation.
+
+An independently specified target operation wraps the original implementation, retaining its output and attaching the length of that output. Thus \(g_f\) maps a sequence-returning program to a pair-returning program, with an explicit type change. The direct translation of the revised source is tested against the wrapped implementation under a declared domain of input lists. An implementation that returns the original input length instead of the deduplicated length passes on inputs without duplicates and fails on a counterexample containing repeated strings. Tests and reference properties remain validators; they are not substitutes for the required program-to-program transformation. Both implementations might still share a flawed deduplication routine, which is why source adequacy receives its own check.
+
+### 6.3 Natural language to semantic representation
+
+A controlled source transformation resolves quantifier scope or changes a surface expression without altering its meaning. The translation procedure produces a typed logical form or query representation. The corresponding target-side operation performs a meaning-preserving rewrite or a precisely defined scope transformation, with its semantic effect specified before evaluation.
+
+Logical equivalence is checked within a named fragment or over a declared finite model family. Agreement over finitely many models must be reported as bounded evidence unless the decision procedure is complete for the fragment. In scope-sensitive cases, the benchmark distinguishes genuinely equivalent expressions from expressions that agree only under a restricted model class.
+
+### 6.4 Goals to plans
+
+Planning tests examine preconditions, state changes, resource obligations, and authority constraints. Source transformations include approval requirements, resource restrictions, and changes to permitted external effects. The target-side operation must transform executable plans within the declared action schema; validation must inspect traces, not final states alone.
+
+The approval-gate example in Section 3 supplies a diagnostic item. Additional cases might test whether a constraint is named in plan text without governing executable guards. Each item must specify whether the comparison concerns a single trace, all traces permitted by a nondeterministic plan, or a refinement relation over trace sets.
+
+### 6.5 Scientific protocols to claims
+
+Scientific translation presents a distinct problem of evidential support. The source might describe a simulated stability result, an experimental protocol, or a measured outcome. Its target is a structured claim record bearing a stated evidential status. Changing the protocol to introduce empirical measurement obligations must not automatically turn simulated evidence into an observed result.
+
+The target-side operation modifies the permitted claim status or introduces an unmet-evidence obligation. Empirical status is recorded only in the presence of qualifying measurement evidence. This track involves scientific judgment about assumptions and evidence quality, and it stays exploratory pending acceptable review reliability. No experimental results are presented in this essay.
+
+## 7. Admissible transformations
+
+The first dataset uses a small, controlled set of source transformations. Every included transformation has a declared semantic effect and a corresponding, independently reviewable target operation or relational oracle. Arbitrary textual changes without an annotated meaning relation do not qualify.
+
+| Family | Source-side change | Primary control |
+| --- | --- | --- |
+| Paraphrase | Alter surface expression while preserving intended meaning | Establish semantic equivalence before testing. |
+| Specialization | Restrict a general statement or task to a declared case | Check the direction and retained assumptions. |
+| Generalization | Extend an artifact's intended domain | Establish the wider obligation independently. |
+| Constraint addition | Introduce a requirement, invariant, or authority condition | Verify its operative effect, not textual mention alone. |
+| Representation change | Re-encode an artifact inside the source environment | Distinguish source-side re-encoding from source-to-target transport. |
+| Decomposition | Divide a task into components with a recomposition rule | Check recomposed semantics and interface compatibility. |
+| Refinement | Replace an underspecified object with a more constrained one | State a directed refinement relation. |
+| Authority change | Alter which actions or claims the artifact is permitted to support | Inspect action traces or evidence-linked claim status. |
+
+These families do not all admit the same comparator. Paraphrase is naturally associated with semantic invariance, specialization with a directed relation, and authority change with a constraint on permitted effects. Benchmark-wide scoring must retain those distinctions.
+
+## 8. Failure attribution
+
+Failure localization is a proposed benefit of the square, contingent on reliable validators and an annotation protocol. Its records distinguish defects in item design, discrepancies in evaluated outputs, and weaknesses in validation.
+
+| Failure class | Diagnostic condition | Interpretation |
+| --- | --- | --- |
+| Invalid source or transformation | \(x\) or \(f\) lacks a sufficiently defined semantics | Item-design defect; exclude or repair before model scoring. |
+| Incorrect target correspondence | \(g_f\) implements a different change from \(f\) | Benchmark-design defect unless the operation is part of the system under evaluation. |
+| Type or execution failure | An attempted translation fails, violates the target type, or cannot support a required target operation | Record the attempted path and its ineligibility for relational scoring. |
+| Source-alignment failure | A well-typed artifact misstates the source task, its assumptions, or its permitted effects | Assess against the independent source-adequacy judgment, even if paths agree. |
+| Non-commutation | Both paths satisfy the eligibility conditions and fail \(R_f\) | Genuine path disagreement under the declared relation. |
+| Assumption or generality drift | An artifact loses premises, weakens the conclusion, or asserts excess generality | Substantive semantic failure supported by independent analysis. |
+| Constraint omission | A new obligation is absent from the executable artifact or operative statement | Failure to integrate the source transformation. |
+| False acceptance | The validator accepts artifacts that violate the declared relation | Validator error; revise the oracle and reassess affected records. |
+| Indeterminate judgment | Timeout, unsupported construct, insufficient evidence, or unresolved review | Withhold an agreement judgment and report coverage. |
+
+These labels are not mutually exclusive. For instance, a type-correct theorem that states a weaker claim might receive a translation-alignment label and a generality label. Primary failure attribution must distinguish *observed disagreement* from a conjectured cause. Attribution to the model, transformation operator, or validator needs evidence beyond the disagreement itself.
+
+## 9. Benchmark specification
+
+The proposed initial release is a protocol and dataset design, not an existing validated benchmark. Every item records its semantic context, both transformations, and its oracle before any evaluated model produces an output. The minimal artifact comprises a specification record, an execution record, and an adjudication record.
+
+| Specification field | Required content |
+| --- | --- |
+| `id`, `domain`, `version` | Stable identity, target domain, and item revision. |
+| `source_environment`, `target_environment` | Object languages, execution semantics, interface versions, and relevant dependencies. |
+| `source_object`, `source_transformation` | Original task, transformation definition, and independently checked semantic effect. |
+| `translation_task`, `system_configuration` | Translation instructions, model or agent configuration, sampling conditions, and tool access. |
+| `target_transformation` | Typed operation \(g_f\), its applicability domain, provenance, and independent review; required for the square track. |
+| `acceptance_relation` | Named relation, argument direction, target types, applicability domain, and decision rule. |
+| `local_validators`, `source_adequacy_validator`, `relational_validator` | Separate syntax/type checks, source-fidelity tests, and relation checks, with versions, assumptions, and timeout policy. |
+| `expected_failure_sensitivities`, `item_family` | Preregistered diagnostic categories, counterexample families, and a grouping identifier for related tasks. |
+| `review_protocol`, `authoring_method` | Rubric, reviewer qualifications, independent judgments, authoring intervention, and adjudication procedure. |
+
+The execution record contains \(T_\theta^{(0)}(x)\), \(T_\theta^{(1)}(f(x))\), the result of applying \(g_f\) where defined, the independent local, source-adequacy, and relational checks, and all error or indeterminate outcomes. It also records execution seeds, elapsed time, tool and test budgets, and relevant environment identifiers. The adjudication record identifies the observed failure, any separately supported causal diagnosis, reviewer disagreement, and the cost of producing an actionable repair.
+
+### 9.1 Initial allocation
+
+The proposed pilot comprises 100 items, with a range of 80–120 if validation costs warrant adjustment. Its purpose is to establish feasibility and refine the instruments. It is not a powered demonstration of universal model rankings.
+
+| Domain | Proposed items | Primary assessment |
+| --- | ---: | --- |
+| Informal mathematics to Lean | 25 | Proof and proposition checks with independent informal alignment. |
+| Requirements to code | 25 | Executable property and counterexample checks. |
+| Semantic parsing | 25 | Typed logical forms and constrained denotational checks. |
+| Planning | 15 | Preconditions, effects, authority, and trace validation. |
+| Scientific claim records | 10 | Reviewed evidential status and assumption alignment. |
+| **Total** | **100** | **Exploratory, domain-stratified pilot.** |
+
+The scientific track functions primarily as a feasibility study for reviewed alignment. The smaller domain groups are insufficient for strong cross-domain comparisons without further sampling and uncertainty analysis.
+
+## 10. Evaluation design and analysis
+
+The central empirical comparison has two different questions. First, does a properly specified relational test expose substantive defects that a designated local checker misses? Second, does the typed-square *authoring method* produce more reliable or useful relations than a conventional metamorphic-testing workflow equipped with comparable information? The first question evaluates the diagnostic role of relational testing; the second evaluates the contribution particular to this proposal.
+
+The second comparison is decisive for assessing any incremental methodological contribution. Both workflows receive the same task families, target semantics, intended source transformations, available reference information, and oracle budget. One authoring condition uses a conventional metamorphic-relation template; the other uses the typed-square record with explicit target-operation and source-adequacy fields. Within task-family strata, items and authoring conditions are randomized and balanced across authors; each condition covers the same families, and author experience is recorded. No author receives the same underlying task under both conditions. Independent adjudicators apply a common rubric to standardized test descriptions that conceal the authoring condition as far as possible. The analysis accounts for author and task-family clustering, and records exclusions or revisions using the same rules in both conditions.
+
+The principal quality outcomes are independent acceptance of the resulting test specification, error or indeterminacy rate, correctness of counterexamples on defect-injected references, and accuracy of failure attribution. Costs include drafting, validating the target correspondence, executing the tests, and adjudicating failures. Diagnostic yield is reported as the number of independently confirmed, distinct, actionable defects per unit of total evaluation effort, along with raw counts and false-positive rates. Each count has a declared unit of analysis, preventing multiple equivalent test cases from inflating the apparent evidence.
+
+For an authoring workflow \(w\), one descriptive cost-normalized measure is
+
+\[
+\widehat{Y}_w=
+\frac{N_{\mathrm{confirmed,actionable},w}}{H_{\mathrm{authoring},w}+H_{\mathrm{checking},w}+H_{\mathrm{adjudication},w}},
+\]
+
+with nonzero measured hours in the denominator. The study reports workflow-specific quantities and paired or cluster-aware contrasts. The ratio describes the evaluation workflow, not an intrinsic property of a model. Time and reviewer effort are measured prospectively under a common accounting rule. Automated compute and tool costs are reported separately or translated into a prespecified common cost unit.
+
+Local validity records well-typedness and basic environmental checks. Source adequacy is evaluated separately against the independently specified task, including its revised obligations. Relational outcomes are reported for the full attempted set, alongside eligibility coverage, and separately for the subset of artifacts passing relevant local checks. Restricting all analysis to locally accepted artifacts would conceal the influence of validator strength. If both evaluation methods receive an identical instantiated metamorphic relation, identical model outputs, and the same relational oracle, their pass/fail judgments are mathematically identical; the intervention then concerns documentation, independent review, and repair utility alone.
+
+Repeated model runs require explicit treatment of stochasticity. Per-domain and per-transformation-family estimates retain the appropriate sampling units, with cluster-aware uncertainty where item families or seeds induce dependence. Identity-transformation controls and multiple seeds help distinguish a transformation-associated discrepancy from baseline variation across sampled outputs. Model reliability, test sensitivity, and failure localization are analyzed as separate quantities. Evaluating a generator under direct, two-path, or type-first prompts constitutes a separate experiment from evaluating the authors and validators of the tests. Any such comparison needs matched inference budgets and must report abstentions, failures, and missing executions.
+
+Item creation and scoring remain independent. Source transformations, reference target operations, and acceptance relations are fixed before the evaluated outputs are inspected. Validators are challenged with correct references, injected substantive defects, and adversarial near-misses. Held-out transformations and explicit item provenance address test leakage and template memorization without establishing that contamination is absent. The initial allocation is an exploratory instrument-development study, not an adequately powered ranking of model families.
+
+## 11. Pilot workflow and stopping conditions
+
+Construction proceeds from a small number of validated square templates. Item authors first establish the source meaning and transformation. A separate review checks the target operation and the acceptance relation. Domain validators are tested on correct references and deliberately injected defects. Only validated items enter model evaluation. Outputs are logged independently for the two paths, and disagreements receive blinded adjudication under a fixed rubric.
+
+Expansion depends on trustworthy transformations, independently established reference judgments, and measured improvements in test specification, actionable diagnosis, or evaluation efficiency at an acceptable cost.
+
+The stopping conditions are concrete. The initial claim must be narrowed or the track discontinued under any of the following circumstances.
+
+- Target operations fail independent semantic review or are ill-typed for a substantial class of candidate items.
+- Reviewed judgments do not achieve a prespecified reliability threshold, or adjudication exposes persistent ambiguity in the acceptance relation.
+- Apparent disagreements arise predominantly from formatting, stochastic variance, or validator defects, with few confirmed substantive transformation failures.
+- Specification quality, actionable failure attribution, and cost-normalized yield show no advantage over equally informed metamorphic-testing workflows.
+- Failure labels do not improve fault localization or repair relative to a simpler test record.
+- Evidence of success is confined to a narrow formal setting while broader claims continue to be made without support.
+
+The exact thresholds for reviewer reliability, authoring quality, diagnostic yield, and practical cost belong in a preregistered protocol once item difficulty and annotation variance are estimated. Assigning numerical thresholds without pilot evidence would create false precision.
+
+## 12. Limits of the proposal
+
+The framework is deliberately selective. Some tasks lack a well-defined source transformation, a tractable target-side operation, or a reliable acceptance relation. Several domains support directed refinement more naturally than symmetric equivalence. Others contain underspecified semantics that no finite test suite fully resolves. The absence of an adequate oracle is a limitation on evaluation, not evidence of a failed model.
+
+Even a valid square diagnoses a relation on particular artifacts under a particular environment and validator. It does not establish general semantic competence, the correctness of all downstream uses, or universal preservation of structure. The stronger mathematical interpretation associated with functors calls for explicit categories, identity and composition laws, and appropriately scoped evidence beyond individual squares. Approximate relations need their own congruence and composition assumptions before transitive reasoning is justified.
+
+Task-specific checking retains independent authority. Lean proof verification, executable specifications, trace validation, and expert review establish different judgments under different trust assumptions. The square contributes only if its relational obligation or diagnostic record improves on those existing checks.
+
+## 13. Conclusion
+
+Functorial Consistency develops a disciplined question about AI-generated artifacts. If the source task changes in a specified way, does translation respect that change under a declared relation in the target environment? The commutation square makes the question explicit and exposes the assumptions needed to assess it. Its value depends on the independent specification of both routes, the typing of their outputs, and a validator commensurate with the relation being tested.
+
+The proposal rests on finite, independently checked cases. Successful path agreement neither proves general functoriality nor establishes semantic fidelity. Scientific value depends on a demonstrated improvement in test construction, error attribution, or evaluation efficiency against matched metamorphic-testing practice.
+
+Within the Compositional Intelligence series, the essay thus connects the construction of typed artifacts to the preservation of meaning, obligations, and permissible effects through transformation. That connection is most useful where the intended relation is explicit enough to be challenged by a counterexample and repaired through a recorded change.
+
+## Appendix A. Compact benchmark card
+
+| Field | Example annotation for the approval task |
+| --- | --- |
+| Source object | Prepare and transmit the specified report. |
+| Source transformation | Add mandatory recorded approval before external transmission. |
+| Translation | Produce a plan in the declared action language. |
+| Target operation | Insert approval request and a state-dependent guard on every transmit action. |
+| Target type | Executable plan with declared preconditions, effects, and action guards. |
+| Acceptance relation | Equivalence of permitted transmission traces under the declared action semantics. |
+| Local checks | Plan syntax, type and action-schema validity, and goal reachability. |
+| Source adequacy | Recorded approval is a genuine precondition for transmission under the revised task. |
+| Relational check | Trace comparison under the declared state semantics, with an explicit witness for disagreement. |
+| Defect injection | Delete the approval guard while retaining the approval-request step. |
+| Expected finding | A trace permits transmission with no recorded approval. |
+| Reviewer task | Verify the counterexample and attribute the missing guard. |
+| Limit | Strong authority-aware local validation detects the same substantive violation. |
+
+## Appendix B. Review rubric
+
+Reviewed-alignment items use three decisions: *accept*, *reject*, and *indeterminate*. Reviewers record the intended source meaning, the transformation's semantic effect, the target operation's correspondence, retained and changed assumptions, the direction of any generality change, and the permitted use of the resulting artifact. Every rejected or indeterminate item carries a reason and an adjudication trail. Reliability is measured on independent initial judgments, prior to adjudication.
+
+## References
+
+1. Lean Language Reference. [*Validating a Lean Proof*](https://lean-lang.org/doc/reference/latest/ValidatingProofs/). Official Lean documentation, accessed November 2026.
+2. Charlotte Aten, Venanzio Capretta, and William DeMeo. [*Functor and Natural Transformation*](https://categorytheory.gitlab.io/functor_and_natural_transformation.html), *Category Theory: A Concise Course*, Section 6, 2019.
+3. Tsong Yueh Chen et al. [*Metamorphic Testing: A Review of Challenges and Opportunities*](https://i.cs.hku.hk/~tse/Papers/2010s/hlmtCSUR.html). *ACM Computing Surveys* 51(1), 2018.
+4. Steven Cho, Stefano Ruberto, and Valerio Terragni. [*Metamorphic Testing of Large Language Models for Natural Language Processing*](https://doi.org/10.1109/ICSME64153.2025.00025). *Proceedings of the 41st IEEE International Conference on Software Maintenance and Evolution*, pp. 174–186, 2025.
+5. Brenden M. Lake and Marco Baroni. [*Generalization without Systematicity: On the Compositional Skills of Sequence-to-Sequence Recurrent Networks*](https://proceedings.mlr.press/v80/lake18a.html). ICML, 2018.
+6. Daniel Keysers et al. [*Measuring Compositional Generalization: A Comprehensive Method on Realistic Data*](https://research.google/pubs/measuring-compositional-generalization-a-comprehensive-method-on-realistic-data/). ICLR, 2020.
+7. Najoung Kim and Tal Linzen. [*COGS: A Compositional Generalization Challenge Based on Semantic Interpretation*](https://aclanthology.org/2020.emnlp-main.731/). EMNLP, 2020.
+8. Bingzhi Li, Lucia Donatelli, Alexander Koller, Tal Linzen, Yuekun Yao, and Najoung Kim. [*SLOG: A Structural Generalization Benchmark for Semantic Parsing*](https://aclanthology.org/2023.emnlp-main.194/). EMNLP, 2023, pp. 3213–3232.
+9. Kaiyu Yang, Aidan Swope, Alex Gu, Rahul Chalamala, Peiyang Song, Shixing Yu, Saad Godil, Ryan J. Prenger, and Animashree Anandkumar. [*LeanDojo: Theorem Proving with Retrieval-Augmented Language Models*](https://papers.nips.cc/paper/2023/hash/4441469427094f8873d0fecb0c4e1cee-Abstract-Datasets_and_Benchmarks.html). NeurIPS, 2023.
+10. Steven Cho, Stefano Ruberto, and Valerio Terragni. [*LLMorph: Automated Metamorphic Testing of Large Language Models*](https://doi.org/10.1109/ASE63991.2025.00385). *Proceedings of the 40th IEEE/ACM International Conference on Automated Software Engineering* (tool demonstration), pp. 4102–4105, 2025.

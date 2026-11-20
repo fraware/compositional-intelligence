@@ -116,76 +116,36 @@
     ],
     "functorial-consistency": [
       {
-        "caption": "Contributions of the proposed transformation benchmark",
-        "source_sha256": "aef1418dc2a75b7aad1d3c5d360f45fe8c88711eef83f5ebdcba4b131934bf3c"
+        "caption": "Approval-gate paths under the revised requirement",
+        "source_sha256": "568c4d3023c86cbe440fc604deac92b472b21bd3b4e9f822bf20a1a19994d086"
       },
       {
-        "caption": "Required fields in a Functorial Consistency evaluation item",
-        "source_sha256": "575404ddaf00a67655d6254c9f8d97e8b36222bf3e8820720c078d3432f38a18"
+        "caption": "Acceptance relations and validator evidence",
+        "source_sha256": "c87d3ea1543e5c2493171261397625720afeb1c17bb511777a1baf3f7e48a7e9"
       },
       {
-        "caption": "Comparison relations and their validator regimes",
-        "source_sha256": "37c905850f821365c79c67976e919b181be8a24656c05ebfb49a5339139c8350"
+        "caption": "Comparison with existing evaluation approaches",
+        "source_sha256": "a9af8c27b3636cea147d0bf09e4125ec52dc4bc94afb6b62c9d00425c4367d5d"
       },
       {
-        "caption": "Distinctions from adjacent evaluation families",
-        "source_sha256": "cca91bbdcb90dc7c42e3c93c31013009a7673f78e7a6cc48a9981a8c3aa1a51e"
+        "caption": "Admissible source transformation families",
+        "source_sha256": "20b1c83eeb2d96897a72144d9e51c1fc689296bad4e5dfe8cabba2823edb33b5"
       },
       {
-        "caption": "Controlled families of source transformations",
-        "source_sha256": "7a54d911a8d13358b32ff61721c06d37ae6bad8b5cbf5a3195723996a2ffb082"
+        "caption": "Diagnostic failure classes and interpretation",
+        "source_sha256": "9f7ddc293a1703210982ed6eb2cd0e889239a97a7cbdd6e6dfe824bcef948ebc"
       },
       {
-        "caption": "Proposed agreement, coverage, and adequacy metrics",
-        "source_sha256": "e00c7951028ef2e04211fe3287d393c5ee40e5b44965ba35b5d5f8a201b617af"
+        "caption": "Required fields for a benchmark specification",
+        "source_sha256": "61a69d131253592c008f14327197d778df6fb7100341b1cabc9b31fcdba107da"
       },
       {
-        "caption": "Failure labels and associated repair implications",
-        "source_sha256": "f33a3ab7a72896b20deb56988076a128c97dd0b286ba7874ae1ffd9579affe40"
+        "caption": "Initial item allocation across evaluation domains",
+        "source_sha256": "d7725f48b4932a5366a2b8247eba8ddff00c612323e95c6defd21ca6e279e2fa"
       },
       {
-        "caption": "Fields of the benchmark-item record",
-        "source_sha256": "bfc600811e3f65459d166ca6b30980742c040d8ee56e2343763ea3c8c1dedee6"
-      },
-      {
-        "caption": "Fields of the model-output record",
-        "source_sha256": "ad8e96966fe0f72eefd0c12f0dc4b09f9621f8ff581736a5f28af92c9fb3719b"
-      },
-      {
-        "caption": "Proposed seed-item allocation across domains",
-        "source_sha256": "fd1147c5d98ce122ee7b9c852edab42cc593ac2af211edfcbb280ed355d1e712"
-      },
-      {
-        "caption": "Annotation steps and acceptance conditions",
-        "source_sha256": "e7c162c1c810102338cb63ff0bbb75ae0fa1de0f3d6c61ec58e2daf6d9be1c52"
-      },
-      {
-        "caption": "Pilot phases and associated work products",
-        "source_sha256": "418eccf8eb2de17da0b7244cab96f8ae82fbe66442e92dbedad55ae2e4a48a40"
-      },
-      {
-        "caption": "Objections and required evaluation controls",
-        "source_sha256": "95da8ffa52d810b333847a40ea6d531c060527418b567818875edbea932142d5"
-      },
-      {
-        "caption": "Failure patterns and project decisions",
-        "source_sha256": "11b85e5cb34f9cd725fe5cd2a7320462c3bebd1ca691a0e08abea28bf5884c43"
-      },
-      {
-        "caption": "Proposed rejection or revision criteria",
-        "source_sha256": "d63a810764124cda5dac6d9d1fd356b15205e1289125d83ac74a94d59dce7da1"
-      },
-      {
-        "caption": "Template fields for a benchmark card",
-        "source_sha256": "0b847eb6da99a1a7768d1572806cdd9c176609a404716a29cd6a7ea238653765"
-      },
-      {
-        "caption": "Worked transformation-benchmark cards",
-        "source_sha256": "2c06506fc20a3913dd869e8ce50306bd62a364279a3fd0e3f2681a33dcb51eb3"
-      },
-      {
-        "caption": "Dimensions in the reviewed-alignment rubric",
-        "source_sha256": "fc9757584d82dd1dad50b9b17e7313dea898f509978dfc7c36c8f9a181667e26"
+        "caption": "Worked benchmark card for the approval task",
+        "source_sha256": "dc90caa560f710789747b08c1170758635394c955898ea4bec193c2b64186943"
       }
     ],
     "lambek-machines": [

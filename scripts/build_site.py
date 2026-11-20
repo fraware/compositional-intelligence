@@ -122,7 +122,7 @@ def heading_text(raw: str) -> str:
 
 def verify_table_catalog(markdown: str, captions: list[dict[str, str]], title: str) -> None:
     """Validate accessible descriptions against source-bound table digests."""
-    if title == "Lambek Machines":
+    if title in {"Lambek Machines", "Functorial Consistency"}:
         blocks = re.findall(r"(?m)(?:^\|[^\n]*\|\n){3,}", markdown)
     else:
         blocks = [match.group() for match in TABLE.finditer(markdown)]
@@ -369,7 +369,7 @@ def render_toc(body: str) -> str:
 def source_to_body(markdown: str, expected_title: str, table_captions: list[dict[str, str]]) -> tuple[str, str]:
     """Render the authored Markdown to HTML with a fixed Pandoc release."""
     match = TITLE_AUTHOR.match(markdown)
-    if match is None and expected_title in {"Lambek Machines", "Algebraic Architectures"}:
+    if match is None and expected_title in {"Lambek Machines", "Algebraic Architectures", "Functorial Consistency"}:
         match = re.match(r"\A# (" + re.escape(expected_title) + r")\n\n", markdown)
     if not match or match.group(1) != expected_title:
         raise ValueError(f"Manuscript title/author mismatch: expected {expected_title}")
@@ -400,23 +400,29 @@ def source_to_body(markdown: str, expected_title: str, table_captions: list[dict
         if '<h2 id="abstract">' not in body:
             raise ValueError(f"Missing original Abstract: {expected_title}")
         return body, hashlib.sha256(markdown.encode("utf-8")).hexdigest()
-    if expected_title == "Lambek Machines" and not table_captions:
+    if expected_title in {"Lambek Machines", "Functorial Consistency"} and not table_captions:
         table_captions = json.loads(
             (ROOT / "tables" / "captions.json").read_text(encoding="utf-8")
-        )["essays"]["lambek-machines"]
+        )["essays"][expected_title.lower().replace(" ", "-")]
     verify_table_catalog(source_body, table_captions, expected_title)
     input_format = "markdown+raw_html"
-    if expected_title == "Lambek Machines":
+    if expected_title in {"Lambek Machines", "Functorial Consistency"}:
         input_format += "+tex_math_single_backslash"
     command = ["pandoc", "--from=" + input_format, "--to=html5", "--mathml", "--wrap=none"]
     rendered = subprocess.run(command, input=source_body, text=True, capture_output=True, check=True)
     rendered_html = rendered.stdout.rstrip() + "\n"
-    if expected_title in {"Lambek Machines", "Algebraic Architectures"}:
+    if expected_title in {"Lambek Machines", "Algebraic Architectures", "Functorial Consistency"}:
         rendered_html = annotate_pandoc_math(rendered_html)
     body = render_schema_blocks(render_tables(
         render_math(rendered_html), table_captions,
         preserve_source_labels=(expected_title == "Compositional Intelligence"),
     ))
+    if expected_title == "Functorial Consistency":
+        # Mark only this revised essay's generic table hints for responsive display.
+        body = body.replace(
+            'class="table-scroll-hint"',
+            'class="table-scroll-hint fc-editorial-hint"',
+        )
     for ident in MARKDOWN_SECTION.findall(source_body):
         if f'id="{ident}"' not in body:
             raise ValueError(f"Missing rendered heading anchor {ident!r}: {expected_title}")
@@ -431,7 +437,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_synthesis_table_math(body)
     if slug == "compositional-intelligence":
         body = render_synthesis_figures(body)
-    if slug == "functorial-consistency":
+    if slug == "functorial-consistency" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_functorial_diagram(body)
     if slug == "lambek-machines" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_lambek_machines(body)
@@ -441,7 +447,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_quantitative_curry_howard(body)
     if slug == "effectful-and-conceptual-intelligence":
         body = render_effectful_and_conceptual_intelligence(body)
-    if slug not in {"lambek-machines", "algebraic-architectures"} or "AUTHORITATIVE-DOCX SHA256" in manuscript:
+    if slug not in {"lambek-machines", "algebraic-architectures", "functorial-consistency"} or "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = enhance_scientific_presentation(body)
     if slug == "compositional-intelligence":
         body = render_synthesis_mobile_tables(body)
@@ -452,7 +458,7 @@ def render_essay(slug: str, title: str, category: str, description: str, positio
         body = render_semantic_participation(body)
     if slug == "typed-generativity":
         body = render_typed_generativity(body)
-    if slug == "functorial-consistency":
+    if slug == "functorial-consistency" and "AUTHORITATIVE-DOCX SHA256" in manuscript:
         body = render_functorial_tables(body)
     before = ESSAYS[position - 1] if position > 0 else None
     after = ESSAYS[position + 1] if position < len(ESSAYS) - 1 else None
